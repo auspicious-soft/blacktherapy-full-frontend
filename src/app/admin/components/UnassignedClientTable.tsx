@@ -51,6 +51,7 @@ const UnassignedClientTable = (props: UnassignedPageProps) => {
     setCurrentPage(selectedItem.selected);
   };
 
+  const clientDetails = appointmentsData?.data?.clientId;
   
   const openAssignmentsPopup = (id: number, client: string) => {
     setAssignmentDetails({ id, client });
@@ -114,7 +115,8 @@ const UnassignedClientTable = (props: UnassignedPageProps) => {
             </tr>
           </thead>
           <tbody>
-            {currentRows.map((row:any) => (
+            {currentRows.length > 0 ? (
+            currentRows.map((row:any) => (
               <tr key={row._id}>
                 <td>{row._id}</td>
                 <td>{row.clientName}</td>
@@ -139,7 +141,12 @@ const UnassignedClientTable = (props: UnassignedPageProps) => {
                   <button onClick={() => openAssignmentsPopup(row.id, row.client)}><ViewIcon /> </button>
                 </td>
               </tr>
-            ))}
+            ))
+          ) : (
+            <tr>
+              <td className='w-full flex justify-center p-3 items-center' colSpan={4} >No data found</td>
+            </tr>
+          )}
           </tbody>
         </table>
       </div>
@@ -254,8 +261,7 @@ const UnassignedClientTable = (props: UnassignedPageProps) => {
         <ClientsAssignmentPopup
           isOpen={assignmentClientsPopup}
           onRequestClose={closeAssignmentsPopup}
-          clientId={assignmentDetails.id}
-          clientName={assignmentDetails.client}
+          clientDetails = {clientDetails}
         />
       )}
     </div>

@@ -11,7 +11,7 @@ export interface TableData {
   assignedPeerSupport: string;
   status: string;
   message?: string;
-  workshop?: string;
+  workshop?: string; 
   video?: string;
   dateAssigned?: string; // Added field for assigned date
 }
@@ -41,6 +41,9 @@ const AssignedClientsTable = (props: AssignedClientsTableProps) => {
     workshop: "",
     video: "",
   });
+
+  const clientDetails = appointmentsData?.data;
+  console.log('clientDetails:', clientDetails);
 
   const rowsPerPage = 10;
 
@@ -278,8 +281,7 @@ const AssignedClientsTable = (props: AssignedClientsTableProps) => {
         <ClientsAssignmentPopup
           isOpen={assignmentClientsPopup}
           onRequestClose={closeAssignmentsPopup}
-          clientId={assignmentDetails.id}
-          clientName={assignmentDetails.client}
+          clientDetails = {clientDetails}
         />
       )}
     </div>

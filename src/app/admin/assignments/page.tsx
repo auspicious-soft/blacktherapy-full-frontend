@@ -3,14 +3,13 @@ import AssignedClientsTable from "@/app/admin/components/AssignedClientsTable";
 import SearchBar from "@/app/admin/components/SearchBar";
 import UnassignedClientTable, {TableData} from "@/app/admin/components/UnassignedClientTable";
 import { getAppoinmentsData } from "@/services/admin/admin-service";
-import { useSession } from "next-auth/react";
 import { useState } from "react";
 import useSWR from "swr";
 const Page: React.FC = () => {
 
-
-  const [activeTab, setActiveTab]= useState('tab1');
-const {data , error, isLoading} =  useSWR(`/admin/appointments?assignedClients=${activeTab === 'tab1' ? false :  true}`, getAppoinmentsData)
+const [query, setQuery] = useState('')
+const [activeTab, setActiveTab]= useState('tab1');
+const {data , error, isLoading} =  useSWR(`/admin/appointments?assignedClients=${activeTab === 'tab1' ? false :  true}&${query}`, getAppoinmentsData)
 const appointmentsData:any = data?.data
 
 const handleTabClick = (tab: string) => {
@@ -39,7 +38,7 @@ const handleTabClick = (tab: string) => {
         </button>
         </div>
         <div>
-          <SearchBar />
+          <SearchBar setQuery={setQuery}/>
         </div>
         </div>
         <div className="mt-[30px]">
