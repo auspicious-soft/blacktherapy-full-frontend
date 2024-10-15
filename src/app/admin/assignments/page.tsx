@@ -2,36 +2,19 @@
 import AssignedClientsTable from "@/app/admin/components/AssignedClientsTable";
 import SearchBar from "@/app/admin/components/SearchBar";
 import UnassignedClientTable, {TableData} from "@/app/admin/components/UnassignedClientTable";
+import { getAppoinmentsData } from "@/services/admin/admin-service";
+import { useSession } from "next-auth/react";
 import { useState } from "react";
+import useSWR from "swr";
 const Page: React.FC = () => {
-  const initialData: TableData[] = [
-    { id: 1, client: 'Client A', assignedClinician: 'No Clinician Assigned', assignedPeerSupport: 'No Peer Support Assigned', status: 'Unassigned' },
-    { id: 2, client: 'Client B', assignedClinician: 'No Clinician Assigned', assignedPeerSupport: 'No Peer Support Assigned', status: 'Unassigned' },
-    { id: 3, client: 'Client C', assignedClinician: 'No Clinician Assigned', assignedPeerSupport: 'No Peer Support Assigned', status: 'Unassigned' },
-    { id: 4, client: 'Client D', assignedClinician: 'No Clinician Assigned', assignedPeerSupport: 'No Peer Support Assigned', status: 'Unassigned' },
-    { id: 5, client: 'Client E', assignedClinician: 'No Clinician Assigned', assignedPeerSupport: 'No Peer Support Assigned', status: 'Unassigned' },
-    { id: 6, client: 'Client F', assignedClinician: 'No Clinician Assigned', assignedPeerSupport: 'No Peer Support Assigned', status: 'Unassigned' },
-    { id: 7, client: 'Client G', assignedClinician: 'No Clinician Assigned', assignedPeerSupport: 'No Peer Support Assigned', status: 'Unassigned' },
-    { id: 8, client: 'Client H', assignedClinician: 'No Clinician Assigned', assignedPeerSupport: 'No Peer Support Assigned', status: 'Unassigned' },
-    { id: 9, client: 'Client I', assignedClinician: 'No Clinician Assigned', assignedPeerSupport: 'No Peer Support Assigned', status: 'Unassigned' },
-    { id: 10, client: 'Client J', assignedClinician: 'No Clinician Assigned', assignedPeerSupport: 'No Peer Support Assigned', status: 'Unassigned' },
-  ];
 
-const [activeTab, setActiveTab]= useState('tab1');
-const [unassignedData, setUnassignedData] = useState<TableData[]>(initialData);
-const [assignedData, setAssignedData] = useState<TableData[]>([]);
+
+  const [activeTab, setActiveTab]= useState('tab1');
+const {data , error, isLoading} =  useSWR(`/admin/appointments?assignedClients=${activeTab === 'tab1' ? false :  true}`, getAppoinmentsData)
+const appointmentsData:any = data?.data
 
 const handleTabClick = (tab: string) => {
   setActiveTab(tab);
-};
-
-const moveToAssigned = (row: TableData) => {
-  setUnassignedData(unassignedData.filter((data) => data.id !== row.id));
-  setAssignedData([...assignedData, row]);
-};
-
-const updateAssignedData = (updatedRow: TableData) => {
-  setAssignedData(assignedData.map((data) => data.id === updatedRow.id ? updatedRow : data));
 };
 
   return (
@@ -61,10 +44,10 @@ const updateAssignedData = (updatedRow: TableData) => {
         </div>
         <div className="mt-[30px]">
         {activeTab === 'tab1' &&
-        <UnassignedClientTable data={unassignedData} moveToAssigned={moveToAssigned} />
+        <UnassignedClientTable appointmentsData ={appointmentsData}  />
          }
         {activeTab === 'tab2' &&
-         <AssignedClientsTable data={assignedData} updateAssignedData={updateAssignedData} />
+         <AssignedClientsTable appointmentsData={appointmentsData} />
         }
       </div>
       </div>

@@ -3,6 +3,7 @@ import ReactPaginate from 'react-paginate';
 import Modal from 'react-modal';
 import { ButtonArrow, ViewIcon } from '@/utils/svgicons';
 import ClientsAssignmentPopup from './ClientsAssignmentPopup';
+import { useRouter } from 'next/navigation';
 
 export interface TableData {
   id: number;
@@ -14,13 +15,17 @@ export interface TableData {
   workshop?: string;
   video?: string;
 }
-
-interface UnassignedClientTableProps {
-  data: TableData[];
-  moveToAssigned: (row: TableData) => void;
+interface UnassignedPageProps {
+  appointmentsData: any
 }
 
-const UnassignedClientTable: React.FC<UnassignedClientTableProps> = ({ data, moveToAssigned }) => {
+
+const UnassignedClientTable = (props: UnassignedPageProps) => {
+
+  const {appointmentsData} = props;
+  const router = useRouter();
+  const total = appointmentsData?.total ?? 0;
+  const appointments = appointmentsData?.data ?? [];
   const [currentPage, setCurrentPage] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentRow, setCurrentRow] = useState<TableData | null>(null);
@@ -37,11 +42,10 @@ const UnassignedClientTable: React.FC<UnassignedClientTableProps> = ({ data, mov
     client: string;
   } | null>(null);
 
-  const rowsPerPage = 4;
-
+  const rowsPerPage = 10;
   const indexOfLastRow = (currentPage + 1) * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
-  const currentRows = data.slice(indexOfFirstRow, indexOfFirstRow + rowsPerPage);
+  const currentRows = appointments.slice(indexOfFirstRow, indexOfFirstRow + rowsPerPage);
 
   const handlePageClick = (selectedItem: { selected: number }) => {
     setCurrentPage(selectedItem.selected);
@@ -90,7 +94,7 @@ const UnassignedClientTable: React.FC<UnassignedClientTableProps> = ({ data, mov
         dateAssigned: new Date().toLocaleDateString(), // Add current date here
       };
 
-      moveToAssigned(updatedRow);
+      // moveToAssigned(updatedRow);
       closeModal();
     }
   };
@@ -110,12 +114,22 @@ const UnassignedClientTable: React.FC<UnassignedClientTableProps> = ({ data, mov
             </tr>
           </thead>
           <tbody>
-            {currentRows.map((row) => (
-              <tr key={row.id}>
-                <td>{row.id}</td>
-                <td>{row.client}</td>
-                <td>{row.assignedClinician}</td>
-                <td>{row.assignedPeerSupport}</td>
+            {currentRows.map((row:any) => (
+              <tr key={row._id}>
+                <td>{row._id}</td>
+                <td>{row.clientName}</td>
+                <td>
+                {row.therapistId && row.therapistId.firstName && row.therapistId.lastName
+    ? `${row.therapistId.firstName} ${row.therapistId.lastName}`
+    : "No Clinician Assigned"}
+                </td>
+                <td>
+                {row.peerSupportIds && row.peerSupportIds.length > 0 ? (
+          <span>{row.peerSupportIds[0].id}</span>  // Display only the first error
+        ) : (
+          'No peer supports assigned'
+        )}
+                </td>
                 <td>
                   <button onClick={() => openModal(row)} className="font-gothamMedium rounded-3xl py-[2px] px-[10px] text-[#26395E] bg-[#CCDDFF] text-[10px]">
                     Update Assignment
@@ -135,7 +149,7 @@ const UnassignedClientTable: React.FC<UnassignedClientTableProps> = ({ data, mov
           nextLabel={'>'}
           breakLabel={'...'}
           breakClassName={'break-me'}
-          pageCount={Math.ceil(data.length / rowsPerPage)}
+          pageCount={Math.ceil(total / rowsPerPage)}
           marginPagesDisplayed={2}
           pageRangeDisplayed={5}
           onPageChange={handlePageClick}

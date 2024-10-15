@@ -3,7 +3,7 @@ import ReactPaginate from "react-paginate";
 import Modal from "react-modal";
 import { ButtonArrow, ViewIcon } from "@/utils/svgicons";
 import ClientsAssignmentPopup from "./ClientsAssignmentPopup";
-
+import { useRouter } from 'next/navigation';
 export interface TableData {
   id: number;
   client: string;
@@ -17,14 +17,14 @@ export interface TableData {
 }
 
 interface AssignedClientsTableProps {
-  data: TableData[];
-  updateAssignedData: (updatedRow: TableData) => void;
+  appointmentsData: any;
 }
 
-const AssignedClientsTable: React.FC<AssignedClientsTableProps> = ({
-  data,
-  updateAssignedData,
-}) => {
+const AssignedClientsTable = (props: AssignedClientsTableProps) => {
+  const {appointmentsData} = props;
+  const router = useRouter();
+  const total = appointmentsData?.total ?? 0;
+  const appointments = appointmentsData?.data ?? [];
   const [currentPage, setCurrentPage] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentRow, setCurrentRow] = useState<TableData | null>(null);
@@ -42,14 +42,11 @@ const AssignedClientsTable: React.FC<AssignedClientsTableProps> = ({
     video: "",
   });
 
-  const rowsPerPage = 4;
+  const rowsPerPage = 10;
 
   const indexOfLastRow = (currentPage + 1) * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
-  const currentRows = data.slice(
-    indexOfFirstRow,
-    indexOfFirstRow + rowsPerPage
-  );
+  const currentRows = appointments.slice(indexOfFirstRow, indexOfFirstRow + rowsPerPage);
 
   const handlePageClick = (selectedItem: { selected: number }) => {
     setCurrentPage(selectedItem.selected);
@@ -96,7 +93,6 @@ const AssignedClientsTable: React.FC<AssignedClientsTableProps> = ({
         assignedDate: new Date().toISOString(), // Add the current date
       };
 
-      updateAssignedData(updatedRow);
       closeModal();
     }
   };
@@ -117,13 +113,31 @@ const AssignedClientsTable: React.FC<AssignedClientsTableProps> = ({
             </tr>
           </thead>
           <tbody>
-            {currentRows.map((row) => (
-              <tr key={row.id}>
-                <td className="">{row.id}</td>
-                <td className="">{row.client}</td>
-                <td className="">{row.assignedClinician}</td>
-                <td className="">{row.assignedPeerSupport}</td>
-                <td>{row.dateAssigned || "N/A"}</td>
+            {currentRows.map((row: any) => (
+              <tr key={row._id}>
+               <td>{row._id}</td>
+                <td>{row.clientName}</td>
+                <td>{row.therapistId?.firstName} {row.therapistId?.lastName}</td>
+                <td>
+                {row.peerSupportIds && row.peerSupportIds.length > 0 ? (
+          row.peerSupportIds.map((peer: any, index: number) => (
+            peer.error ? (
+              <span key={peer.id}>
+                {peer.error}
+                {index < row.peerSupportIds.length - 1 ? ', ' : ''} 
+              </span>
+            ) : (
+              <span key={peer.id}>
+                {peer.firstName} {peer.lastName}
+                {index < row.peerSupportIds.length - 1 ? ', ' : ''} 
+              </span>
+            )
+          ))
+        ) : (
+          'No peer supports assigned'
+        )}
+                </td>
+                <td>{new Date(row.createdAt).toLocaleDateString()}</td>
                 {/* <td className="">{row.assignedDate ? new Date(row.assignedDate).toLocaleDateString() : 'N/A'}</td> Display date */}
                 <td className="">
                   <button
@@ -135,7 +149,7 @@ const AssignedClientsTable: React.FC<AssignedClientsTableProps> = ({
                 </td>
                 <td>
                   <button
-                    onClick={() => openAssignmentsPopup(row.id, row.client)}
+                    onClick={() => openAssignmentsPopup(row._id, row.clientName)}
                   >
                     <ViewIcon />{" "}
                   </button>
@@ -151,7 +165,7 @@ const AssignedClientsTable: React.FC<AssignedClientsTableProps> = ({
           nextLabel={">"}
           breakLabel={"..."}
           breakClassName={"break-me"}
-          pageCount={Math.ceil(data.length / rowsPerPage)}
+          pageCount={Math.ceil(total / rowsPerPage)}
           marginPagesDisplayed={2}
           pageRangeDisplayed={5}
           onPageChange={handlePageClick}

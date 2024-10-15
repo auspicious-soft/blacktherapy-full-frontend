@@ -14,3 +14,7 @@ export const getAdminDashboardStats = async(route: string) => {
     const axiosInstance = await getAxiosInstance()
     return axiosInstance.get(route)
 }
+export const getAppoinmentsData = async(route: string) => {
+  const axiosInstance = await getAxiosInstance()
+  return axiosInstance.get(route)
+}

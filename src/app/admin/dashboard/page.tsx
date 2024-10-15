@@ -19,58 +19,54 @@ const Home = () => {
   const session = useSession()
  const {data , error, isLoading} =  useSWR(`/admin/dashboard?id=${session?.data?.user?.id}`, getAdminDashboardStats)
   const finalData:any = data?.data
-  console.log('finalData:', finalData);
-  if(finalData?.success) {
-
-  }
   const OverviewData = [
     {
       id: "1",
       icon: <OverviewIcon1 />,
       title: "Active Clinician",
-      value: finalData?.data?.activeClinicians
+      value: finalData?.data?.activeClinicians,
     },
     {
       id: "2",
       icon: <OverviewIcon2 />,
       title: "New Clinician",
-      value: "36",
+      value: finalData?.data?.newClinicians,
     },
     {
       id: "3",
       icon: <OverviewIcon3 />,
       title: "Active Client",
-      value: "201",
+      value: finalData?.data?.activeClients,
     },
     {
       id: "4",
       icon: <OverviewIcon4 />,
-      title: "Active Client",
-      value: "800",
+      title: "Unassigned Clients",
+      value: finalData?.data?.unassignedClients,
     },
     {
       id: "5",
       icon: <OverviewIcon5 />,
       title: "Clinician Approved",
-      value: "38",
+      value: finalData?.data?.cliniciansApproved,
     },
     {
       id: "6",
       icon: <OverviewIcon6 />,
       title: "Total Payment Requests",
-      value: "3695",
+      value: finalData?.data?.totalPaymentRequests,
     },
     {
       id: "7",
       icon: <OverviewIcon7 />,
       title: "Pending Payment Requests",
-      value: "164",
+      value: finalData?.data?.pendingPaymentRequests,
     },
     {
       id: "8",
       icon: <OverviewIcon8 />,
       title: "Pending Clinical Reviews",
-      value: "2",
+      value: finalData?.data?.pendingClinicalReviews,
     },
   ];
   return (
