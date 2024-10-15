@@ -1,0 +1,93 @@
+.sideNav {
+  width: 300px;
+  transition: width 0.3s ease;
+  background-color: #ffffff;
+  padding: 50px 25px 30px 40px;
+  justify-content: space-between;
+  display: flex;
+  flex-direction: column;
+  overflow-y: scroll;
+}
+  .sideNav.collapsed {
+    width: 120px;
+    padding: 50px 20px 30px 20px;
+}
+  
+  .header {
+    display: flex;
+    align-items: center;
+  }
+
+
+
+  .hamburgerButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  .sideNav.collapsed .header {
+    justify-content: center;
+}
+.navList {
+  list-style: none;
+  padding: 0;
+  margin-top: 75px;
+}
+  
+  .navItem {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+  }
+  
+  .navItem span {
+    margin-left: 8px;
+  }
+  
+  .sideNav.collapsed .navItem span {
+    display: none; /* Hide text when collapsed */
+  }
+  .navList li a {
+    display: flex;
+    align-items: center;
+    padding: 0 10px 0 0px;
+    border-radius: 4px;
+    grid-gap: 8px;
+    color: #A9ADB5;
+}
+.navList li {
+  margin-bottom: 20px;
+}
+.navList li.active a {
+  background: #283C63;
+  color: #fff;
+}
+.navList li.active svg path {
+  fill: #fff;
+}
+.sideNav.collapsed ul.navList {
+  width: 40px;
+  margin: 75px auto 0;
+}
+.sideNav.collapsed ul.navList a {
+  padding: 0;
+}
+@media screen and (max-width: 1023px) {
+  .sideNav {
+    position: fixed;
+    left: -110%;
+    transition: 0.3s ease;
+    top: 66px;
+    height: calc(100vh - 66px);
+}
+.sideNav.collapsed ul.navList {
+  width: 100%;
+  margin: 15px auto 0;
+}
+.sideNav.collapsed {
+  width: 300px;
+  padding: 20px 20px 20px 20px;
+  left: 0;
+  z-index: 5;
+}
+}
