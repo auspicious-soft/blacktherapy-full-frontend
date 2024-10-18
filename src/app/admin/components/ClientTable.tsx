@@ -1,6 +1,6 @@
 "use client";
 import { DeleteIcon, ViewIcon } from '@/utils/svgicons';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Modal from 'react-modal';
 import Image from 'next/image';
 import ReactPaginate from 'react-paginate';
@@ -10,7 +10,7 @@ import ClientDetailsPopup from './ClientDetailsPopup';
 interface TableData {
   id: string;
   status: string;
-  clientName: string;
+  clientName: string; 
   contact: string;
   memberSince: string;
   assignments: number;
@@ -18,85 +18,54 @@ interface TableData {
   accountStatus: boolean;
   action: boolean;
 }
-
-const ClientTable: React.FC = () => {
-  const initialData: TableData[] = [
-    {
-      id: 'F123',
-      status: 'Completed',
-      clientName: 'Herry',
-      contact: '1234567890',
-      memberSince: '01 Jan 2020',
-      assignments: 5,
-      actionss: "Action",
-      accountStatus: true,
-      action: true,
-    },
-    {
-      id: 'F545',
-      status: 'Completed',
-      clientName: 'Genny',
-      contact: '1234567890',
-      memberSince: '01 Jan 2020',
-      assignments: 5,
-      actionss: "Action",
-      accountStatus: true,
-      action: true,
-    },
-    {
-      id: 'F55',
-      status: 'Completed',
-      clientName: 'Genny',
-      contact: '1234567890',
-      memberSince: '01 Jan 2020',
-      assignments: 5,
-      actionss: "Action",
-      accountStatus: true,
-      action: true,
-    },
-    // Add more data as needed
-  ];
-
+interface ClientsDataProps {
+  clientsData: any;
+}
+const ClientTable: React.FC<ClientsDataProps> = ({ clientsData }) => {
+  const total = clientsData?.total ?? 0;
   const [currentPage, setCurrentPage] = useState(0);
-  const [data, setData] = useState<TableData[]>(initialData);
+  const [data, setClientsData] = useState(clientsData);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [selectedRow, setSelectedRow] = useState<TableData | null>(null);
-  const [clientDetailsPopup, setClientDetailsPopup]= useState(false);
+  const [selectedRow, setSelectedRow] = useState(clientsData);
+  const [clientDetailsPopup, setClientDetailsPopup] = useState(false);
   const [clientDetails, setClientDetails] = useState<{ id: string; clientName: string } | null>(null);
+  const ClientsArray = clientsData?.data;
 
-  const rowsPerPage = 2;
-
+  const rowsPerPage = 10;
+  
   const indexOfLastRow = (currentPage + 1) * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
-  const currentRows = data.slice(indexOfFirstRow, indexOfLastRow);
+  const currentRows = clientsData?.data?.slice(indexOfFirstRow, indexOfFirstRow + rowsPerPage);
 
   const handlePageClick = (selectedItem: { selected: number }) => {
     setCurrentPage(selectedItem.selected);
   };
+
   
-  const openClientPopup = (id: string, clientName: string) => {
-    setClientDetails({ id, clientName });
+  
+  const openClientPopup = (row:any) => {
+    setClientDetails(row);
     setClientDetailsPopup(true);
   };
 
   const closeClientPopup = () => {
     setClientDetailsPopup(false);
-    setClientDetails(null); // Clear the selected client details
+    setClientDetails(null); 
   };
 
   const handleToggleStatus = (id: string) => {
-    setData(
-      data.map((item) =>
-        item.id === id ? { ...item, accountStatus: !item.accountStatus } : item
-      )
+    const updatedClientsArray = ClientsArray.map((item: any) =>
+      item._id === id ? { ...item, status: !item.status } : item
     );
+    
+    setClientsData({ ...clientsData, data: updatedClientsArray });
   };
 
-  const handleEdit = (row: TableData) => {
+  const handleEdit = (row: TableData  ) => {
     setSelectedRow(row);
   };
 
-  const handleDelete = (row: TableData) => {
+  const handleDelete = (row: any) => {
     setSelectedRow(row);
     setIsDeleteModalOpen(true);
   };
@@ -106,7 +75,8 @@ const ClientTable: React.FC = () => {
   };
 
   const handleDeleteConfirm = () => {
-    setData(data.filter((item) => item.id !== selectedRow?.id));
+    const updatedClientsArray = ClientsArray.filter((item: any) => item._id !== selectedRow?._id);
+    setClientsData({ ...clientsData, data: updatedClientsArray });
     handleModalClose();
   };
 
@@ -141,16 +111,19 @@ const ClientTable: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {currentRows.map((row) => (
-              <tr key={row.id} className="border-b">
-                <td>{row.id}</td>
+          {ClientsArray?.map((row: any) => (
+              <tr key={row?._id} className="border-b">
+                <td>{row?._id}</td>
                 <td>
-                  <p className='font-gothamMedium rounded-3xl py-[2px] px-[10px] text-[#5E2626] bg-[#FFCCCC] text-[10px] '>{row.status}</p>
+                <p className={`font-gothamMedium rounded-3xl py-[2px] px-[10px] text-[10px] text-center 
+        ${row?.isOnline ? 'text-[#155724] bg-[#D4EDDA]' : 'text-[#5E2626] bg-[#FFCCCC]'}`}>
+        {row?.isOnline ? 'Completed' : 'Intake Pending'}
+            </p>
                 </td>
-                <td>{row.clientName}</td>
-                <td>{row.contact}</td>
-                <td>{row.memberSince}</td>
-                <td>{row.assignments}</td>
+                <td>{row?.firstName} {row?.lastName}</td>
+                <td>{row?.phoneNumber}</td>
+                <td>{row?.createdAt}</td>
+                <td>{row?.appointments.length}</td>
                 <td>
                   <select
                     name="actionss"
@@ -168,8 +141,8 @@ const ClientTable: React.FC = () => {
                   <label className="relative toggle-checkbox">
                     <input
                       type="checkbox"
-                      checked={row.accountStatus}
-                      onChange={() => handleToggleStatus(row.id)}
+                      checked={row?.status}
+                      onChange={() => handleToggleStatus(row?._id)}
                       className="absolute opacity-0 z-[1] w-full h-full "
                     />
                     <span className="indicator">
@@ -179,7 +152,7 @@ const ClientTable: React.FC = () => {
                 </td>
                 <td className="py-2 px-4">
                  <div className='flex gap-2 '>
-                 <button onClick={() => openClientPopup(row.id, row.clientName)}> <ViewIcon /> </button>
+                 <button onClick={() => openClientPopup(row)}> <ViewIcon /> </button>
                   <button
                     onClick={() => handleDelete(row)} >
                     <DeleteIcon />
@@ -197,7 +170,7 @@ const ClientTable: React.FC = () => {
           previousLabel={'<'}
           nextLabel={'>'}
           breakLabel={'...'}
-          pageCount={Math.ceil(data.length / rowsPerPage)}
+          pageCount={Math.ceil(total / rowsPerPage)}
           marginPagesDisplayed={2}
           pageRangeDisplayed={5}
           onPageChange={handlePageClick}
@@ -215,13 +188,10 @@ const ClientTable: React.FC = () => {
   <ClientDetailsPopup
     isOpen={clientDetailsPopup}
     onRequestClose={closeClientPopup}
-    clientId={clientDetails.id}
-    clientName={clientDetails.clientName}
+    row={clientDetails}
   />
 )}
 
-
-      {/* Delete Modal */}
       <Modal
         isOpen={isDeleteModalOpen}
         onRequestClose={handleModalClose}

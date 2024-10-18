@@ -1,24 +1,22 @@
+import { ClientsBilllingStats } from '@/services/admin/admin-service';
 import { CloseIcon } from '@/utils/svgicons';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
+import useSWR from 'swr';
 
-// Initial data for the table
-const initialData = [
-  {
-    insuranceVerified: 'Yes',
-    scaleDiscount: 'Yes',
-    billingStatus: 'Current Balance',
-    scaleTermsNote: 'dshfjsfobdas',
-    lastInsuranceCheck: 'Yes',
-    simplePractice: 'Yes',
-    name: '',
-    userRole: '',
-    date: '',
-  },
-];
+interface BillingInformationTabProps {
+  rowId: string;
+}
 
-const BillingInformationTab: React.FC = () => {
-  const [data, setData] = useState(initialData);
+const BillingInformationTab: React.FC<BillingInformationTabProps> = ({ rowId }) => {
+
+  // Fetch data using SWR
+  const { data, error, isLoading } = useSWR(`/admin/client-billing/${rowId}`, ClientsBilllingStats, {
+    revalidateOnFocus: false,
+  });
+
+  const billingInfo = data?.data?.data;
+
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [formData, setFormData] = useState({
     insuranceVerified: '',
@@ -45,7 +43,7 @@ const BillingInformationTab: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setData([...data, formData]); // Add new data to the table
+    // Handle form submission logic here
     setFormData({
       insuranceVerified: '',
       scaleDiscount: '',
@@ -62,57 +60,57 @@ const BillingInformationTab: React.FC = () => {
 
   return (
     <div className="">
-    <div className='flex justify-end mb-[22px]'>  <button
-        onClick={openModal}
-        className="!text-sm !h-[40px] !px-[30px] button">Add New</button></div>
-<div className='table-common overflo-custom'>
-      <table>
-        <thead>
-          <tr>
-            <th>Insurance Verified</th>
-            <th>Scale/Discount</th>
-            <th>Billing Status</th>
-            <th>Scale Terms/Note</th>
-            <th>Last Insurance Check</th>
-            <th>Simple Practice</th>
-            <th>Name</th>
-            <th>User Role</th>
-            <th>Date</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((row, index) => (
-            <tr key={index}>
-              <td>{row.insuranceVerified}</td>
-              <td>{row.scaleDiscount}</td>
-              <td>{row.billingStatus}</td>
-              <td>{row.scaleTermsNote}</td>
-              <td>{row.lastInsuranceCheck}</td>
-              <td>{row.simplePractice}</td>
-              <td>{row.name}</td>
-              <td>{row.userRole}</td>
-              <td>{row.date}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <div className='flex justify-end mb-[22px]'>
+        <button
+          onClick={openModal}
+          className="!text-sm !h-[40px] !px-[30px] button">Add New
+        </button>
       </div>
+
+      <div className='table-common overflow-custom'>
+        <table>
+          <thead>
+            <tr>
+              <th>Insurance Verified</th>
+              <th>Scale/Discount</th>
+              <th>Billing Status</th>
+              <th>Scale Terms/Note</th>
+              <th>Last Insurance Check</th>
+              <th>Simple Practice</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {billingInfo?.map((row: any) => (
+              <tr key={row?._id}>
+                <td>{row?.insuranceVerified ? 'Yes' : 'No'}</td>
+                <td>{row?.scaleDisount || 'N/A'}</td>
+                <td>{row?.billingStatus}</td>
+                <td>{row?.scaleTermsNote || 'N/A'}</td>
+                <td>{row?.lastInsuranceCheck ? 'Yes' : 'No'}</td>
+                <td>{row?.simplePractice ? 'Yes' : 'No'}</td>
+                <td>{new Date(row?.createdAt).toLocaleDateString()}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
         contentLabel="Add New Entry"
-        className="modal max-w-[810px] mx-auto rounded-[20px] w-full  max-h-[90vh] overflow-scroll overflo-custom "
+        className="modal max-w-[810px] mx-auto rounded-[20px] w-full max-h-[90vh] overflow-scroll"
         overlayClassName="w-full h-full p-3 fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center"
-        //ariaHideApp={false}
       >
-        <div className="flex items-center justify-between rounded-t-[20px]  p-5 md:py-[25px] md:px-[35px] bg-[#283C63]  ">
-        <h2 className="font-gothamMedium !text-white">Add New</h2>
-        <button onClick={closeModal}>
-          <CloseIcon />{" "}
-        </button>
-      </div>
+        <div className="flex items-center justify-between rounded-t-[20px] p-5 md:py-[25px] md:px-[35px] bg-[#283C63]">
+          <h2 className="font-gothamMedium !text-white">Add New</h2>
+          <button onClick={closeModal}>
+            <CloseIcon />
+          </button>
+        </div>
         <form onSubmit={handleSubmit} className='bg-white p-5 md:px-[35px] md:py-10'>
-          <div className="grid md:grid-cols-2 gap-4 md:gap-[30px] ">
+          <div className="grid md:grid-cols-2 gap-4 md:gap-[30px]">
             <div>
               <label className="block mb-2">Insurance Verified</label>
               <input
@@ -168,7 +166,7 @@ const BillingInformationTab: React.FC = () => {
               />
             </div>
             <div>
-              <label className="block mb-2">Name:</label>
+              <label className="block mb-2">Name</label>
               <input
                 type="text"
                 name="name"
@@ -177,7 +175,7 @@ const BillingInformationTab: React.FC = () => {
               />
             </div>
             <div>
-              <label className="block mb-2">User Role:</label>
+              <label className="block mb-2">User Role</label>
               <input
                 type="text"
                 name="userRole"
@@ -186,7 +184,7 @@ const BillingInformationTab: React.FC = () => {
               />
             </div>
             <div>
-              <label className="block mb-2">Date:</label>
+              <label className="block mb-2">Date</label>
               <input
                 type="text"
                 name="date"
@@ -195,7 +193,9 @@ const BillingInformationTab: React.FC = () => {
               />
             </div>
           </div>
-          <div className='mt-10 flex justify-end'><button type="submit" className="button">Update</button></div>
+          <div className='mt-10 flex justify-end'>
+            <button type="submit" className="button">Update</button>
+          </div>
         </form>
       </Modal>
     </div>

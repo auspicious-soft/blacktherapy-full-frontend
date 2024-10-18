@@ -20,9 +20,11 @@ const ClientsAssignmentPopup = (props: ClinicianDetailsPopupProps) => {
 const [activeTab, setActiveTab] = useState("tab1");
 const {clientDetails} = props;
 const handleTabClick = (tab: string) => {
-    setActiveTab(tab);
+  setActiveTab(tab);
 };
-const details = clientDetails?.clientId;
+const clientData = clientDetails?.[0]?.clientId;
+console.log('clientData:', clientData);
+
 
   return (
     <Modal
@@ -42,8 +44,8 @@ const details = clientDetails?.clientId;
         <div className="flex items-center gap-[23px] mb-5 md:mb-10">
             <div><Image src={Client} height={100} width={100} alt="Profile picture" className="rounded-full w-[100px] object-cover aspect-square " /> </div>
         <div>
-            <h3 className="font-gothamBold">{clientDetails?.insuranceCompany.firstName}{clientDetails?.insuranceCompany.lastName}</h3>
-            <p>{clientDetails?._id}</p>
+            <h3 className="font-gothamBold">{clientData?.firstName} {clientData?.lastName}</h3>
+            <p>Id- {clientData?._id}</p>
         </div>
         </div>
             <div className="flex justify-center md:justify-between items-center gap-3 border-b border-[#CDE3F1] md:max-w-[320px]  ">
@@ -68,8 +70,8 @@ const details = clientDetails?.clientId;
           </button>
         </div>
         <div className="mt-[30px]">
-          {activeTab === "tab1" && <AppointmentsTab /> }
-          {activeTab === "tab2" && <InsurenceTab /> }
+          {activeTab === "tab1" && <AppointmentsTab clientData={clientData} /> }
+          {activeTab === "tab2" && <InsurenceTab clientData={clientData}/> }
         </div>
       </div>
     </Modal>

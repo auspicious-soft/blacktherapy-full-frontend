@@ -1,13 +1,17 @@
 import React from 'react';
+interface clientsData {
+    clientData: any
+  }
+const AppointmentsTab = (props: clientsData) => {
+const {clientData} = props;
 
-const AppointmentsTab = () => {
     const questions = [
-        { question: `To begin, tell us why you're looking for help today?`, answer: 'No' },
-        { question: `To begin, tell us why you're looking for help today?`, answer: 'yes' },
-        { question: 'How would you rate your current physical health?', answer: 'Yes' },
-        { question: 'How did you here about us?', answer: 'No' },
-        { question: 'What gender do you identify with?', answer: 'Yes' },
-        { question: 'Briefly describe the main issues or concerns that bring you to therapy?', answer: 'No' },
+        { question: `To begin, tell us why you're looking for help today?`, answer: clientData?.reasonForLookingHelp },
+        { question: `To begin, tell us why you're looking for help today?`, answer: clientData?.reasonForLookingHelp },
+        { question: 'How would you rate your current physical health?', answer: clientData?.rateCurrentPhysicalHealth },
+        { question: 'How did you here about us?', answer: clientData?.howYouKnewUs },
+        { question: 'What gender do you identify with?', answer: clientData?.gender },
+        { question: 'Briefly describe the main issues or concerns that bring you to therapy?', answer: clientData?.mainIssueBrief },
     ];
 
     return (

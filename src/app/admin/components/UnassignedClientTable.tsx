@@ -7,8 +7,8 @@ import { useRouter } from 'next/navigation';
 
 export interface TableData {
   id: number;
-  client: string;
-  assignedClinician: string;
+  client: string; 
+  assignedClinician: string; 
   assignedPeerSupport: string; 
   status: string;
   message?: string;
@@ -51,7 +51,7 @@ const UnassignedClientTable = (props: UnassignedPageProps) => {
     setCurrentPage(selectedItem.selected);
   };
 
-  const clientDetails = appointmentsData?.data?.clientId;
+  const clientDetails = appointmentsData?.data;
   
   const openAssignmentsPopup = (id: number, client: string) => {
     setAssignmentDetails({ id, client });

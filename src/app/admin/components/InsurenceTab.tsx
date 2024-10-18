@@ -1,13 +1,16 @@
 import React from 'react';
-
-const InsurenceTab = () => {
+interface clientsData {
+    clientData: any
+  }
+const InsurenceTab = (props: clientsData) => {
+const {clientData} = props;
     const questions = [
-        { question: 'Insurance Company', answer: 'No' },
-        { question: 'Member ID', answer: '' },
-        { question: 'Patient first name', answer: '' },
-        { question: 'Patient last name', answer: 'No' },
-        { question: 'Date Of Birth', answer: 'Yes' },
-        { question: 'Location', answer: 'No' },
+        { question: 'Insurance Company', answer: clientData?.insuranceCompany?.insuranceCompanyName },
+        { question: 'Member ID', answer: clientData?.insuranceCompany?.memberOrSubscriberId },
+        { question: 'Patient first name', answer: clientData?.firstName },
+        { question: 'Patient last name', answer: clientData?.lastName },
+        { question: 'Date Of Birth', answer: clientData?.insuranceCompany?.dateOfBirth },
+        { question: 'Location', answer: clientData?.state },
     ];
 
     return (

@@ -9,12 +9,22 @@ export const loginService = async (payload: any) => {
 
   // }
 }
-
+//-----Dashboard Page-----
 export const getAdminDashboardStats = async(route: string) => {
     const axiosInstance = await getAxiosInstance()
     return axiosInstance.get(route)
 }
+//-------Assignment Page----
 export const getAppoinmentsData = async(route: string) => {
+  const axiosInstance = await getAxiosInstance()
+  return axiosInstance.get(route)
+}
+//------Clinician page------------
+export const getClientsPageData = async(route: string) =>{
+  const axiosInstance = await getAxiosInstance()
+  return axiosInstance.get(route)
+}
+export const ClientsBilllingStats = async (route: string) =>{
   const axiosInstance = await getAxiosInstance()
   return axiosInstance.get(route)
 }

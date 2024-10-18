@@ -4,8 +4,8 @@ import SearchBar from "@/app/admin/components/SearchBar";
 import UnassignedClientTable, {TableData} from "@/app/admin/components/UnassignedClientTable";
 import { getAppoinmentsData } from "@/services/admin/admin-service";
 import { useState } from "react";
-import useSWR from "swr";
-const Page: React.FC = () => {
+import useSWR from "swr"; 
+const Page: React.FC = () => { 
 
 const [query, setQuery] = useState('')
 const [activeTab, setActiveTab]= useState('tab1');
@@ -14,7 +14,7 @@ const appointmentsData:any = data?.data
 
 const handleTabClick = (tab: string) => {
   setActiveTab(tab);
-};
+}; 
 
   return (
     <>
