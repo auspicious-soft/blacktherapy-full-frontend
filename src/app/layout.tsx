@@ -23,8 +23,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <SessionProvider>
-        <body className={`${gothamPro.variable} ${anticDidone.variable}`}>
           <Toaster richColors />
+        <body className={`${gothamPro.variable} ${anticDidone.variable}`}>
           {children}
         </body>
       </SessionProvider>

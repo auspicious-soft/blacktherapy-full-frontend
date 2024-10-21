@@ -19,7 +19,7 @@ export const getAppoinmentsData = async(route: string) => {
   const axiosInstance = await getAxiosInstance()
   return axiosInstance.get(route)
 }
-//------Clinician page------------
+//------Client page------------
 export const getClientsPageData = async(route: string) =>{
   const axiosInstance = await getAxiosInstance()
   return axiosInstance.get(route)
@@ -39,4 +39,11 @@ export const GetClientAttachments = async (route: string) =>{
 export const GetClientNotes = async (route: string) =>{
   const axiosInstance = await getAxiosInstance()
   return axiosInstance.get(route)
+}
+
+//------Add New Client------------
+export const AddNewClient = async (payload: any) =>{
+  console.log('payload:', payload);
+  const axiosInstance = await getAxiosInstance()
+  return axiosInstance.post('/admin/clients', payload)
 }

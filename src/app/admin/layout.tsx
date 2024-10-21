@@ -7,31 +7,31 @@ import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 // import fontt from "../../assets/fonts"
 const gothamPro = localFont({
-  src: '../../assets/fonts/GothamPro.ttf',
-  display: 'swap',
-  variable: '--font-gotham',
+  src: "../../assets/fonts/GothamPro.ttf",
+  display: "swap",
+  variable: "--font-gotham",
 });
 const GothamProBlack = localFont({
-  src: '../../assets/fonts/GothamPro-Black.ttf',
-  display: 'swap',
-  variable: '--font-GothamPro-Black',
+  src: "../../assets/fonts/GothamPro-Black.ttf",
+  display: "swap",
+  variable: "--font-GothamPro-Black",
 });
 const GothamProBold = localFont({
-  src: '../../assets/fonts/GothamPro-Bold.ttf',
-  display: 'swap',
-  variable: '--font-GothamPro-Bold',
+  src: "../../assets/fonts/GothamPro-Bold.ttf",
+  display: "swap",
+  variable: "--font-GothamPro-Bold",
 });
 
 const GothamProMedium = localFont({
-  src: '../../assets/fonts/GothamPro-Medium.ttf',
-  display: 'swap',
-  variable: '--font-GothamPro-Medium',
+  src: "../../assets/fonts/GothamPro-Medium.ttf",
+  display: "swap",
+  variable: "--font-GothamPro-Medium",
 });
 
 const anticDidone = localFont({
-  src: '../../assets/fonts/AnticDidoneRegular.ttf',
-  display: 'swap',
-  variable: '--font-antic',
+  src: "../../assets/fonts/AnticDidoneRegular.ttf",
+  display: "swap",
+  variable: "--font-antic",
 });
 
 export const metadata: Metadata = {
@@ -42,17 +42,17 @@ export const metadata: Metadata = {
 export default async function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode
-  
+  children: React.ReactNode;
 }>) {
-  const session = await auth()
+  const session = await auth();
   if (!session) {
-    redirect('/login')
-  }
-  else if ((session as any)?.user?.role === 'admin') {
+    redirect("/login");
+  } else if ((session as any)?.user?.role === "admin") {
     return (
       <html lang="en">
-        <body className={`${gothamPro.variable} ${anticDidone.variable} ${GothamProBlack.variable} ${GothamProBold.variable} ${GothamProMedium.variable}`}>
+        <body
+          className={`${gothamPro.variable} ${anticDidone.variable} ${GothamProBlack.variable} ${GothamProBold.variable} ${GothamProMedium.variable}`}
+        >
           <div className="flex h-screen flex-col lg:flex-row lg:overflow-hidden">
             <div className="flex-none hidden h-[100vh] lg:block">
               <SideNav />
@@ -67,12 +67,11 @@ export default async function RootLayout({
         </body>
       </html>
     );
-  }
-  else {
+  } else {
     return (
       <div className="bg-black h-screen">
         You are not authorized to view this page
       </div>
-    )
+    );
   }
 }
