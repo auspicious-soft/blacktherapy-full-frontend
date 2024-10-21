@@ -76,9 +76,8 @@ const AddClientForm = () => {
         };
 
         const response = await AddNewClient(formDataToSubmit);
-        console.log('formDataToSubmit:', formDataToSubmit);
 
-        if (response?.status === 200) {
+        if (response?.status === 201) {
           toast.success("Client added successfully");
           setFormData({
             serviceSubscribed: "",
