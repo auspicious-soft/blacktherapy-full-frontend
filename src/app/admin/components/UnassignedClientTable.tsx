@@ -16,17 +16,16 @@ export interface TableData {
   video?: string;
 }
 interface UnassignedPageProps {
-  appointmentsData: any
+  appointmentsData: any 
+  setQuery: any;
 }
 
 
-const UnassignedClientTable = (props: UnassignedPageProps) => {
+const UnassignedClientTable:React.FC<UnassignedPageProps> = ({setQuery, appointmentsData}) => {
 
-  const {appointmentsData} = props;
   const router = useRouter();
   const total = appointmentsData?.total ?? 0;
-  const appointments = appointmentsData?.data ?? [];
-  const [currentPage, setCurrentPage] = useState(0);
+  const unassignedData = appointmentsData?.data;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentRow, setCurrentRow] = useState<TableData | null>(null);
   const [formData, setFormData] = useState({
@@ -43,18 +42,15 @@ const UnassignedClientTable = (props: UnassignedPageProps) => {
   } | null>(null);
 
   const rowsPerPage = 10;
-  const indexOfLastRow = (currentPage + 1) * rowsPerPage;
-  const indexOfFirstRow = indexOfLastRow - rowsPerPage;
-  const currentRows = appointments.slice(indexOfFirstRow, indexOfFirstRow + rowsPerPage);
 
   const handlePageClick = (selectedItem: { selected: number }) => {
-    setCurrentPage(selectedItem.selected);
-  };
+    setQuery(`page=${selectedItem.selected + 1}&limit=${rowsPerPage}`)
+  }
 
-  const clientDetails = appointmentsData?.data;
+ 
   
-  const openAssignmentsPopup = (id: number, client: string) => {
-    setAssignmentDetails({ id, client });
+  const openAssignmentsPopup = (row: any) => {
+    setAssignmentDetails(row);
     setAssignmentClientsPopup(true);
   };
 
@@ -115,8 +111,8 @@ const UnassignedClientTable = (props: UnassignedPageProps) => {
             </tr>
           </thead>
           <tbody>
-            {currentRows.length > 0 ? (
-            currentRows.map((row:any) => (
+            {unassignedData?.length > 0 ? (
+            unassignedData?.map((row:any) => (
               <tr key={row._id}>
                 <td>{row._id}</td>
                 <td>{row.clientName}</td>
@@ -138,7 +134,7 @@ const UnassignedClientTable = (props: UnassignedPageProps) => {
                   </button>
                 </td>
                 <td>
-                  <button onClick={() => openAssignmentsPopup(row.id, row.client)}><ViewIcon /> </button>
+                  <button onClick={() => openAssignmentsPopup(row)}><ViewIcon /> </button>
                 </td>
               </tr>
             ))
@@ -261,7 +257,7 @@ const UnassignedClientTable = (props: UnassignedPageProps) => {
         <ClientsAssignmentPopup
           isOpen={assignmentClientsPopup}
           onRequestClose={closeAssignmentsPopup}
-          clientDetails = {clientDetails}
+          row = {assignmentDetails}
         />
       )}
     </div>

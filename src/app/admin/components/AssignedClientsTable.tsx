@@ -18,10 +18,10 @@ export interface TableData {
 
 interface AssignedClientsTableProps {
   appointmentsData: any;
+  setQuery: any;
 }
 
-const AssignedClientsTable = (props: AssignedClientsTableProps) => {
-  const {appointmentsData} = props;
+const AssignedClientsTable:React.FC<AssignedClientsTableProps> = ({appointmentsData, setQuery}) => {
   const router = useRouter();
   const total = appointmentsData?.total ?? 0;
   const appointments = appointmentsData?.data ?? [];
@@ -42,19 +42,15 @@ const AssignedClientsTable = (props: AssignedClientsTableProps) => {
     video: "",
   });
 
-  const clientDetails = appointmentsData?.data;
+  const assignedData = appointmentsData?.data;
   const rowsPerPage = 10;
 
-  const indexOfLastRow = (currentPage + 1) * rowsPerPage;
-  const indexOfFirstRow = indexOfLastRow - rowsPerPage;
-  const currentRows = appointments.slice(indexOfFirstRow, indexOfFirstRow + rowsPerPage);
-
   const handlePageClick = (selectedItem: { selected: number }) => {
-    setCurrentPage(selectedItem.selected);
-  };
+    setQuery(`page=${selectedItem.selected + 1}&limit=${rowsPerPage}`)
+  }
 
-  const openAssignmentsPopup = (id: number, client: string) => {
-    setAssignmentDetails({ id, client });
+  const openAssignmentsPopup = (row: any) => {
+    setAssignmentDetails(row);
     setAssignmentClientsPopup(true);
   };
 
@@ -114,7 +110,7 @@ const AssignedClientsTable = (props: AssignedClientsTableProps) => {
             </tr>
           </thead>
           <tbody>
-            {currentRows.map((row: any) => (
+            {assignedData?.map((row: any) => (
               <tr key={row._id}>
                <td>{row._id}</td>
                 <td>{row.clientName}</td>
@@ -150,7 +146,7 @@ const AssignedClientsTable = (props: AssignedClientsTableProps) => {
                 </td>
                 <td>
                   <button
-                    onClick={() => openAssignmentsPopup(row._id, row.clientName)}
+                    onClick={() => openAssignmentsPopup(row)}
                   >
                     <ViewIcon />{" "}
                   </button>
@@ -184,7 +180,7 @@ const AssignedClientsTable = (props: AssignedClientsTableProps) => {
           }
         />
       </div>
-
+ 
       <Modal
         isOpen={isModalOpen}
         onRequestClose={closeModal}
@@ -279,7 +275,7 @@ const AssignedClientsTable = (props: AssignedClientsTableProps) => {
         <ClientsAssignmentPopup
           isOpen={assignmentClientsPopup}
           onRequestClose={closeAssignmentsPopup}
-          clientDetails = {clientDetails}
+          row = {assignmentDetails}
         />
       )}
     </div>

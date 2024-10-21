@@ -1,65 +1,38 @@
+import { GetClientNotes } from "@/services/admin/admin-service";
 import { CloseIcon } from "@/utils/svgicons";
 import React, { useState } from "react";
 import Modal from "react-modal";
+import useSWR from "swr";
 
-// Helper function to get current time
-const getCurrentDateTime = () => {
-    const now = new Date();
-    const date = now.toLocaleDateString();
-    const time = now.toLocaleTimeString();
-    return `${date} ${time}`;
-  };
-
-// Note interface to define the structure of a note
-interface Note {
-  note: string;
-  dateTime: string;
+interface NotesProps {
+  rowId: string;
 }
+const ClientNotesTab: React.FC<NotesProps> = ({rowId}) => {
+  const [modalIsOpen, setModalIsOpen] = useState(false); 
+  const [newNote, setNewNote] = useState("");
+  const { data, error, isLoading } = useSWR(`/admin/client/notes/${rowId}`, GetClientNotes);
+  const notesInfo = data?.data?.data;
 
-const ClientNotesTab: React.FC = () => {
-  const [notes, setNotes] = useState<Note[]>([]); // State to manage the notes array
-  const [modalIsOpen, setModalIsOpen] = useState(false); // State to manage modal visibility
-  const [newNote, setNewNote] = useState(""); // State to manage new note input
 
-  // Function to open the modal
   const openModal = () => setModalIsOpen(true);
   
-  // Function to close the modal
   const closeModal = () => setModalIsOpen(false);
 
-  // Handle input change for the note field
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setNewNote(e.target.value);
   };
 
-  // Function to handle the form submission
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    const newEntry: Note = {
-      note: newNote,
-      dateTime: getCurrentDateTime(), 
-     // Automatically gets the current time
-    };
-
-    // Add new note to the notes array
-    setNotes([...notes, newEntry]);
-
-    // Clear the input field after submission
-    setNewNote("");
-    closeModal();
-  };
+  }
 
   return (
     <div>
-      {/* Button to open the modal for adding a new note */}
       <div className="flex justify-end mb-[22px]">
         <button onClick={openModal} className="!text-sm !h-[40px] !px-[30px] button">
           Add New
         </button>
       </div>
-
-      {/* Table to display notes and corresponding times */}
       <div className="table-common overflo-custom">
         <table>
           <thead>
@@ -69,10 +42,10 @@ const ClientNotesTab: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {notes.map((entry, index) => (
-              <tr key={index}>
-                <td>{entry.note}</td>
-                <td>{entry.dateTime}</td>
+            {notesInfo?.map((row: any) => (
+              <tr key={row?._id}>
+                <td>{row?.note}</td>
+                <td>{row?.createdAt}</td>
               </tr>
             ))}
           </tbody>

@@ -1,17 +1,17 @@
 import React from 'react';
 interface clientsData {
-    clientData: any
+    row: any
   }
-const AppointmentsTab = (props: clientsData) => {
-const {clientData} = props;
+const AppointmentsTab:React.FC<clientsData> = ({row}) => {
 
+ 
     const questions = [
-        { question: `To begin, tell us why you're looking for help today?`, answer: clientData?.reasonForLookingHelp },
-        { question: `To begin, tell us why you're looking for help today?`, answer: clientData?.reasonForLookingHelp },
-        { question: 'How would you rate your current physical health?', answer: clientData?.rateCurrentPhysicalHealth },
-        { question: 'How did you here about us?', answer: clientData?.howYouKnewUs },
-        { question: 'What gender do you identify with?', answer: clientData?.gender },
-        { question: 'Briefly describe the main issues or concerns that bring you to therapy?', answer: clientData?.mainIssueBrief },
+        { question: `To begin, tell us why you're looking for help today?`, answer: row?.clientId?.reasonForLookingHelp },
+        { question: `To begin, tell us why you're looking for help today?`, answer: row?.clientId?.reasonForLookingHelp },
+        { question: 'How would you rate your current physical health?', answer: row?.clientId?.rateCurrentPhysicalHealth },
+        { question: 'How did you here about us?', answer: row?.clientId?.howYouKnewUs },
+        { question: 'What gender do you identify with?', answer: row?.clientId?.gender },
+        { question: 'Briefly describe the main issues or concerns that bring you to therapy?', answer: row?.clientId?.mainIssueBrief },
     ];
 
     return (

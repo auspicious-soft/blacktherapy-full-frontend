@@ -123,9 +123,9 @@ const ClientDetailsPopup = (props: ClientDetailsPopupProps) => {
           {activeTab === "tab2" && <ClientsAssignmentsTab row={row} />}
           {activeTab==="tab3" && <ClientsInsurenceTab row={row} />}
           {activeTab==="tab4" && <BillingInformationTab rowId={row?._id} /> }
-          {activeTab==="tab5" && <ServiceAssignmentTab /> }
-          {activeTab==="tab6" && <AttachmentsTabs /> }
-          {activeTab==="tab7" && <ClientNotesTab/> }
+          {activeTab==="tab5" && <ServiceAssignmentTab rowId={row?._id}/> }
+          {activeTab==="tab6" && <AttachmentsTabs rowId={row?._id}/> }
+          {activeTab==="tab7" && <ClientNotesTab rowId={row?._id}/> }
         </div>
       </div>
     </Modal>

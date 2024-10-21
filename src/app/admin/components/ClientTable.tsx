@@ -20,11 +20,10 @@ interface TableData {
 }
 interface ClientsDataProps {
   clientsData: any;
+  setQuery: any;
 }
-const ClientTable: React.FC<ClientsDataProps> = ({ clientsData }) => {
+const ClientTable: React.FC<ClientsDataProps> = ({ clientsData, setQuery }) => {
   const total = clientsData?.total ?? 0;
-  const [currentPage, setCurrentPage] = useState(0);
-  const [data, setClientsData] = useState(clientsData);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState(clientsData);
   const [clientDetailsPopup, setClientDetailsPopup] = useState(false);
@@ -32,15 +31,9 @@ const ClientTable: React.FC<ClientsDataProps> = ({ clientsData }) => {
   const ClientsArray = clientsData?.data;
 
   const rowsPerPage = 10;
-  
-  const indexOfLastRow = (currentPage + 1) * rowsPerPage;
-  const indexOfFirstRow = indexOfLastRow - rowsPerPage;
-  const currentRows = clientsData?.data?.slice(indexOfFirstRow, indexOfFirstRow + rowsPerPage);
-
   const handlePageClick = (selectedItem: { selected: number }) => {
-    setCurrentPage(selectedItem.selected);
-  };
-
+    setQuery(`page=${selectedItem.selected + 1}&limit=${rowsPerPage}`)
+  }
   
   
   const openClientPopup = (row:any) => {
@@ -58,7 +51,6 @@ const ClientTable: React.FC<ClientsDataProps> = ({ clientsData }) => {
       item._id === id ? { ...item, status: !item.status } : item
     );
     
-    setClientsData({ ...clientsData, data: updatedClientsArray });
   };
 
   const handleEdit = (row: TableData  ) => {
@@ -76,7 +68,6 @@ const ClientTable: React.FC<ClientsDataProps> = ({ clientsData }) => {
 
   const handleDeleteConfirm = () => {
     const updatedClientsArray = ClientsArray.filter((item: any) => item._id !== selectedRow?._id);
-    setClientsData({ ...clientsData, data: updatedClientsArray });
     handleModalClose();
   };
 
@@ -139,7 +130,7 @@ const ClientTable: React.FC<ClientsDataProps> = ({ clientsData }) => {
                 </td>
                 <td className="py-2 px-4">
                   <label className="relative toggle-checkbox">
-                    <input
+                    <input 
                       type="checkbox"
                       checked={row?.status}
                       onChange={() => handleToggleStatus(row?._id)}
@@ -182,9 +173,9 @@ const ClientTable: React.FC<ClientsDataProps> = ({ clientsData }) => {
           nextLinkClassName={'py-2 px-4 inline-block'}
           disabledClassName={'opacity-50 cursor-not-allowed'}
         />
-      </div>
+      </div> 
           
-    {clientDetails && (
+    {clientDetails && ( 
   <ClientDetailsPopup
     isOpen={clientDetailsPopup}
     onRequestClose={closeClientPopup}

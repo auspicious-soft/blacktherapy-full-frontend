@@ -1,16 +1,16 @@
 import React from 'react';
 interface clientsData {
-    clientData: any
+    row: any
   }
 const InsurenceTab = (props: clientsData) => {
-const {clientData} = props;
+const {row} = props;
     const questions = [
-        { question: 'Insurance Company', answer: clientData?.insuranceCompany?.insuranceCompanyName },
-        { question: 'Member ID', answer: clientData?.insuranceCompany?.memberOrSubscriberId },
-        { question: 'Patient first name', answer: clientData?.firstName },
-        { question: 'Patient last name', answer: clientData?.lastName },
-        { question: 'Date Of Birth', answer: clientData?.insuranceCompany?.dateOfBirth },
-        { question: 'Location', answer: clientData?.state },
+        { question: 'Insurance Company', answer: row?.clientId?.insuranceCompany?.insuranceCompanyName },
+        { question: 'Member ID', answer: row?.clientId?.insuranceCompany?.memberOrSubscriberId },
+        { question: 'Patient first name', answer: row?.clientId?.firstName },
+        { question: 'Patient last name', answer: row?.clientId?.lastName },
+        { question: 'Date Of Birth', answer: row?.clientId?.insuranceCompany?.dateOfBirth },
+        { question: 'Location', answer: row?.clientId?.state },
     ];
 
     return (

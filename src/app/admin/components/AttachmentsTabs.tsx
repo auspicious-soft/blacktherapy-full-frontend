@@ -1,6 +1,12 @@
+import { GetClientAttachments } from "@/services/admin/admin-service";
 import { AddMoreIcon, CloseIcon } from "@/utils/svgicons";
 import React, { useState } from "react";
 import Modal from "react-modal";
+import useSWR from "swr";
+
+interface AttachmentsTabsProps {
+  rowId: string;
+}
 
 const initialData = [
   {
@@ -10,8 +16,11 @@ const initialData = [
   },
 ];
 
-const AttachmentsTabs: React.FC = () => {
-  const [data, setData] = useState(initialData);
+const AttachmentsTabs: React.FC<AttachmentsTabsProps> = ({ rowId }) => {
+  const { data, error, isLoading } = useSWR(`/admin/client/attachments/${rowId}`, GetClientAttachments);
+  const attachmentsInfo = data?.data?.data;
+
+  const [dataa, setData] = useState(initialData);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
@@ -51,7 +60,7 @@ const AttachmentsTabs: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setData([...data, formData]); // Add new data to the table
+    setData([...dataa, formData]); // Add new data to the table
     setFormData({
       title: '',
       viewAttachments: [{ name: "", url: "" }],
@@ -80,24 +89,19 @@ const AttachmentsTabs: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {data.map((row, index) => (
-              <tr key={index}>
-                <td>{row.title}</td>
-                <td>
-                  {row.viewAttachments.map((file, fileIndex) => (
-                    <a
-                      key={fileIndex}
-                      href={file.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {file.name}
+            {attachmentsInfo?.map((row: any) =>
+              row?.attachmemts?.map((attachment: string, attachmentIndex: number) => (
+                <tr key={`${row?._id}-${attachmentIndex}`}>
+                  <td>{row?.title}</td>
+                  <td>
+                    <a href={attachment} className="text-[#26395E]">
+                      View File
                     </a>
-                  ))}
-                </td>
-                <td>{row.userRole}</td>
-              </tr>
-            ))}
+                  </td>
+                  <td>Admin</td> {/* Show role only once {attachmentIndex === 0 ? "Admin" : ""} */}
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>
@@ -162,8 +166,7 @@ const AttachmentsTabs: React.FC = () => {
               onClick={addMoreAttachments}
               className="flex gap-[9px] items-center text-[#707070] font-gothamBold text-xs "
             >
-            <AddMoreIcon/>
-           
+              <AddMoreIcon />
               Add More
             </button>
           </div>
