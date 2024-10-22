@@ -62,7 +62,7 @@ h6 {
 th,
 td {
   padding: 11px 20px;
-  color: #26395e;
+  color: #686C78;
   white-space: nowrap;
 }
 .table-common {
@@ -110,12 +110,12 @@ label {
   color: #707070;
   font-size: 12px;
 }
-/* .bg-flower {
+.bg-flower {
 background-image: url(../../assets/images/card-bg.png);
 background-repeat: no-repeat;
 background-position: center;
 background-size: cover;
-} */
+}
 button:disabled {
   opacity: 0.4;
 }

@@ -1,52 +1,51 @@
 "use client";
-import React, { useState, ChangeEvent, FormEvent } from "react";
+import React, { useState, ChangeEvent, FormEvent, useTransition } from "react";
 import { ButtonArrow, DeleteIcon } from "@/utils/svgicons";
-import { v4 as uuidv4 } from "uuid";
-import deleteCross from "@/assets/images/deleteCross.png";
 import Modal from 'react-modal';
 import Image from "next/image";
 import ReactPaginate from 'react-paginate';
 import SearchBar from "@/app/admin/components/SearchBar";
-
+import useSWR from "swr";
+import { AddNewWellness, DeleteWellness, GetClientWellness } from "@/services/admin/admin-service";
+import deleteCross from "@/assets/images/deleteCross.png";
+import { toast } from "sonner";
+import Notification from "../components/Notification";
 interface FormData {
-  id: string;
   title: string;
   assignTo: string;
-  uploadLink: string;
-  attachment: File | null;
+  link: string;
+  attachment: string;
   description: string;
 }
 
 const Page = () => {
-  const [formData, setFormData] = useState<Omit<FormData, "id">>({
+  const [formData, setFormData] = useState<FormData>({
     title: "",
-    assignTo: "Client",
-    uploadLink: "",
-    attachment: null,
+    assignTo: "",
+    link: "",
+    attachment: "",
     description: "",
   });
-
-  const [currentPage, setCurrentPage] = useState(0);
-  const [data, setData] = useState<FormData[]>([]);
-  const [selectedTab, setSelectedTab] = useState<"Client" | "Clinician">("Client");
+  
+  const [isPending, startTransition] = useTransition();
+  const [selectedTab, setSelectedTab] = useState("clients");
+  const [query, setQuery] = useState('');
+  const { data, error, isLoading, mutate } = useSWR(`/admin/wellness?assignTo=${selectedTab === 'clients' ? 'clients' : 'therapist'}&${query}`, GetClientWellness);
+  const clientsTrainingData = data?.data?.data;
+  const [notification, setNotification] = useState<string | null>(null);
+  const total = data?.data?.total ?? 0;
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deleteItemId, setDeleteItemId] = useState<string | null>(null);
 
-  const rowsPerPage = 4;
-
-  // Filter data based on selected tab
-  const filteredData = data.filter((item) => item.assignTo === selectedTab);
-
-  // Calculate pagination based on filtered data
-  const indexOfLastRow = (currentPage + 1) * rowsPerPage;
-  const indexOfFirstRow = indexOfLastRow - rowsPerPage;
-  const currentRows = filteredData.slice(indexOfFirstRow, indexOfLastRow);
+  const rowsPerPage = 10;
 
   const handlePageClick = (selectedItem: { selected: number }) => {
-    setCurrentPage(selectedItem.selected);
-  };
+    setQuery(`page=${selectedItem.selected + 1}&limit=${rowsPerPage}`)
+  }
 
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleInputChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
     const { name, value, files } = e.target as HTMLInputElement & { files: FileList };
     setFormData({
       ...formData,
@@ -54,16 +53,31 @@ const Page = () => {
     });
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setData([...data, { ...formData, id: uuidv4() }]);
-    setFormData({
-      title: "",
-      assignTo: "Client",
-      uploadLink: "",
-      attachment: null,
-      description: "",
+
+    startTransition(async () => {
+      try {
+        formData.attachment = 'http://example.com/attachments/yoga-session.pdf'
+        const response = await AddNewWellness(formData); 
+        if (response?.status === 201) {
+          // toast.success("Wellness entry added successfully");
+          setFormData({
+            title: "",
+            assignTo: "",
+            link: "",
+            attachment: "",
+            description: "",
+          });
+        } else {
+          toast.error("Failed to add wellness entry");
+        }
+      } catch (error) {
+        console.error("Error adding wellness entry:", error);
+        toast.error("An error occurred while adding the wellness entry");
+      }
     });
+    setNotification("Therapist Registeration Successful");
   };
 
   const handleDelete = (id: string) => {
@@ -71,57 +85,31 @@ const Page = () => {
     setIsDeleteModalOpen(true);
   };
 
+    const handleDeleteConfirm = async (id: string) => {
+      const route = `/admin/delete-wellness/${id}`; 
+      try {
+        const response = await DeleteWellness(route); 
+        if (response.status === 200) {
+          toast.success("Wellness entry deleted successfully");
+        } else {
+          toast.error("Failed to delete wellness entry");
+        }
+      } catch (error) {
+        console.error("Error deleting wellness entry:", error);
+        toast.error("An error occurred while deleting the wellness entry");
+      }
+      setIsDeleteModalOpen(false);
+      mutate()
+    };
+    
+
+  
   const handleModalClose = () => {
     setIsDeleteModalOpen(false);
     setDeleteItemId(null);
   };
 
-  const handleDeleteCancel = () => {
-    handleModalClose();
-  };
 
-  const handleDeleteConfirm = () => {
-    if (deleteItemId) {
-      setData(data.filter((item) => item.id !== deleteItemId));
-    }
-    handleModalClose();
-  };
-
-  const handleAttachmentClick = (attachment: File | null) => {
-    if (attachment) {
-      const fileURL = URL.createObjectURL(attachment);
-      window.open(fileURL, "_blank");
-    }
-  };
-
-  const renderTableRows = () => {
-    return currentRows.map((item, index) => (
-      <tr key={item.id}>
-        <td>{index + 1}</td>
-        <td>{item.title}</td>
-        <td>{item.uploadLink}</td>
-        <td>{item.assignTo}</td>
-        <td>
-          {item.attachment ? (
-            <button
-              className="font-gothamMedium rounded-3xl py-[2px] px-[10px] text-[#26395E] bg-[#CCDDFF] text-[10px]"
-              onClick={() => handleAttachmentClick(item.attachment)}
-            >
-              View Attachment
-            </button>
-          ) : (
-            "No Attachment"
-          )}
-        </td>
-        <td>{item.description}</td>
-        <td>
-          <button onClick={() => handleDelete(item.id)}>
-            <DeleteIcon />
-          </button>
-        </td>
-      </tr>
-    ));
-  };
 
   return (
     <>
@@ -129,9 +117,9 @@ const Page = () => {
         Wellness
       </h1>
       <h2 className="mb-[30px]">Overview</h2>
-      <div className=" bg-white rounded-[10px] w-full p-5">
+      <div className="bg-white rounded-[10px] w-full p-5">
         <form onSubmit={handleSubmit}>
-          <div className=" grid md:flex flex-wrap gap-[30px] ">
+          <div className="grid md:flex flex-wrap gap-[30px]">
             <div className="md:w-[calc(33.33%-30px)]">
               <label className="block mb-2">Title</label>
               <input
@@ -140,25 +128,28 @@ const Page = () => {
                 value={formData.title}
                 onChange={handleInputChange}
                 placeholder="John"
+                required
               />
             </div>
             <div className="md:w-[calc(33.33%-30px)]">
               <label className="block mb-2">Assign To</label>
               <select
                 name="assignTo"
+                required
                 value={formData.assignTo}
                 onChange={handleInputChange}
               >
-                <option value="Client">Client</option>
-                <option value="Clinician">Clinician</option>
+                <option value="client">Client</option>
+                <option value="therapist">Clinician</option>
               </select>
             </div>
             <div className="md:w-[calc(33.33%-30px)]">
               <label className="block mb-2">Upload Link</label>
               <input
                 type="text"
-                name="uploadLink"
-                value={formData.uploadLink}
+                required
+                name="link"
+                value={formData.link}
                 onChange={handleInputChange}
                 placeholder="https://www.youtube.com"
               />
@@ -167,6 +158,7 @@ const Page = () => {
               <label className="block mb-2">Choose Attachment</label>
               <input
                 type="file"
+                required
                 name="attachment"
                 onChange={handleInputChange}
               />
@@ -176,14 +168,15 @@ const Page = () => {
               <textarea
                 name="description"
                 value={formData.description}
+                required
                 onChange={handleInputChange}
                 rows={4}
               ></textarea>
             </div>
           </div>
           <div className="mt-[30px] flex justify-end ">
-            <button type="submit" className="button px-[30px]">
-              Submit<ButtonArrow />
+          <button type="submit" className="button px-[30px]" disabled={isPending}>
+              {isPending ? 'Submitting...' : 'Submit'}<ButtonArrow />
             </button>
           </div>
         </form>
@@ -192,25 +185,25 @@ const Page = () => {
         <div className="flex justify-center md:justify-between flex-col md:flex-row">
           <div className="flex gap-5 mb-4">
             <button
-              className={`md:h-[46px] py-3 px-4 text-sm rounded-[5px] border border-[#283c63] ${selectedTab === "Client" ? 'active bg-[#283c63] !text-white' : ''} text-[#26395e]`}
+              className={`md:h-[46px] py-3 px-4 text-sm rounded-[5px] border border-[#283c63] ${selectedTab === "clients" ? 'active bg-[#283c63] !text-white' : ''} text-[#26395e]`}
               onClick={() => {
-                setSelectedTab("Client");
-                setCurrentPage(0); // Reset to first page when changing tab
+                setSelectedTab("clients");
               }}
             >
               Client Training Portal
             </button>
             <button
-              className={`md:h-[46px] py-3 px-4 text-sm rounded-[5px] border border-[#283c63] ${selectedTab === "Clinician" ? 'active bg-[#283c63] !text-white' : ''} text-[#26395e]`}
+              className={`md:h-[46px] py-3 px-4 text-sm rounded-[5px] border border-[#283c63] ${selectedTab === "therapist" ? 'active bg-[#283c63] !text-white' : ''} text-[#26395e]`}
               onClick={() => {
-                setSelectedTab("Clinician");
-                setCurrentPage(0); // Reset to first page when changing tab
+                setSelectedTab("therapist");
               }}
             >
               Clinician Training Portal
             </button>
           </div>
-         <div className="mb-4 flex justify-center"> <SearchBar /></div>
+          <div className="mb-4 flex justify-center">
+            <SearchBar setQuery={setQuery}/>
+          </div>
         </div>
         <div className="table-common overflo-custom">
           <table className="">
@@ -225,7 +218,48 @@ const Page = () => {
                 <th>Action</th>
               </tr>
             </thead>
-            <tbody>{renderTableRows()}</tbody>
+            <tbody>
+            {isLoading ? (
+      <tr>
+        <td colSpan={5} className="">
+          Loading... 
+        </td>
+      </tr>
+    ) : error ? (
+      <tr>
+        <td colSpan={5} className="text-center text-red-500">
+          Error loading payments data.
+        </td>
+      </tr>
+    ) :clientsTrainingData?.length > 0 ? (
+              clientsTrainingData?.map((row: any) => (
+                <tr key={row?._id}>
+                  <td>{row?._id}</td>
+                  <td>{row?.title}</td>
+                  <td>
+                    <a href={row?.link} className="text-[#26395E] ">
+                      {row?.link}</a>
+                  </td>
+                  <td>{row?.assignTo}</td>
+                  <td>
+                    <a href={row?.attachment}
+                    className="font-gothamMedium rounded-3xl py-[4px] px-[10px] text-[#26395E] bg-[#CCDDFF] text-[10px]">
+                      View Attachment</a>
+                  </td>
+                  <td>{row?.description}</td>
+                  <td>
+                    <button onClick={() => handleDelete(row?._id)}>
+                      <DeleteIcon />
+                    </button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td className='w-full flex justify-center p-3 items-center' colSpan={5} >No data found</td>
+              </tr>
+            )}
+            </tbody>
           </table>
         </div>
         <div className="text-right">
@@ -234,14 +268,14 @@ const Page = () => {
             nextLabel={'>'}
             breakLabel={'...'}
             breakClassName={'break-me'}
-            pageCount={Math.ceil(filteredData.length / rowsPerPage)}
+            pageCount={Math.ceil(total / rowsPerPage)}
             marginPagesDisplayed={2}
             pageRangeDisplayed={5}
             onPageChange={handlePageClick}
             containerClassName={'inline-flex mt-[34px] rounded-[5px] border border-[#d5dce9]'}
-            pageClassName={'text-[#26395e] '}  //list item
-            pageLinkClassName={'py-2 px-4 inline-block'} //anchor tag
-            activeClassName={'bg-[#26395e] rounded-[5px] text-white'} //active anchor
+            pageClassName={'text-[#26395e] '}
+            pageLinkClassName={'py-2 px-4 inline-block'}
+            activeClassName={'bg-[#26395e] rounded-[5px] text-white'}
             previousLinkClassName={'py-2 px-4 inline-block'}
             nextLinkClassName={'py-2 px-4 inline-block'}
             disabledClassName={'opacity-50 cursor-not-allowed'}
@@ -254,25 +288,29 @@ const Page = () => {
           className="modal max-w-[584px] mx-auto bg-white rounded-xl w-full p-5 bg-flower"
           overlayClassName="overlay"
         >
+          <div className="flex flex-col justify-center items-center">
           <Image src={deleteCross} alt='delete' height={174} width={174} className="mx-auto" />
-          <h2 className="text-[20px] text-center leading-normal mt-[-20px]">Are you sure you want to Delete?</h2>
-          <div className="flex items-center justify-center gap-6 mt-8">
+            <p className="text-[#283C63] font-bold text-[20px] text-center leading-normal mt-[-20px] ">Are you sure you want to delete?</p>
+
+            <div className="flex gap-4 mt-5">
             <button 
               type="button"
-              onClick={handleDeleteConfirm}
+              onClick={() => handleDeleteConfirm(deleteItemId as string)}
               className="py-[10px] px-8 bg-[#CC0000] text-white rounded"
             >
               Yes, Delete
             </button>
             <button 
               type="button"
-              onClick={handleDeleteCancel}
+              onClick={handleModalClose}
               className='py-[10px] px-8 bg-[#283C63] text-white rounded'
             >
               No
             </button>
+            </div>
           </div>
         </Modal>
+        <Notification message={notification} onClose={() => setNotification(null)} />
       </div>
     </>
   );

@@ -3,21 +3,15 @@ import React, {useState} from "react";
 import { ButtonArrow } from "@/utils/svgicons";
 import Image from 'next/image';
 import success from "@/assets/images/succes.png";
-
+import Notification from "../components/Notification";
 
 const Page = () => {
   const [notification, setNotification] = useState<string | null>(null);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault(); // Prevent the default form submission
+    e.preventDefault(); 
 
-    // Show the notification
     setNotification("Therapist Registeration Successful");
-
-    // Hide the notification after 3 seconds
-    setTimeout(() => {
-      setNotification(null);
-    }, 3000);
   };
   return (
     <>
@@ -52,14 +46,7 @@ const Page = () => {
          <button type="submit" className="button px-[30px]">Submit<ButtonArrow /> </button>
          </div>
         </form>
-        {notification && (
-        <div className="fixed inset-0 grid place-items-center w-full h-full bg-gray-500 bg-opacity-75">
-          <div className="bg-white text-[#283C63] py-[60px] rounded-[20px] shadow-lg max-w-[584px] w-full">
-            <Image src={success} alt="success" height={130} width={115} className="mx-auto" />
-            <h2 className="text-center mt-[40px]">{notification}</h2>
-          </div>
-        </div>
-      )}
+        <Notification message={notification} onClose={() => setNotification(null)} />
       </div>
     </>
   );

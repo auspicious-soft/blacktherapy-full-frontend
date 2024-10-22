@@ -43,7 +43,28 @@ export const GetClientNotes = async (route: string) =>{
 
 //------Add New Client------------
 export const AddNewClient = async (payload: any) =>{
-  console.log('payload:', payload);
   const axiosInstance = await getAxiosInstance()
   return axiosInstance.post('/admin/clients', payload)
 }
+//-----Get Payments Data------------
+export const GetPaymentsData = async (route: string) =>{
+  const axiosInstance = await getAxiosInstance()
+  return axiosInstance.get(route)
+}
+
+
+
+//-------------Client wellness page-------
+export const GetClientWellness = async (route: string) =>{
+  const axiosInstance = await getAxiosInstance()
+  return axiosInstance.get(route)
+}
+export const AddNewWellness = async (payload: any) =>{
+  console.log('payload:', payload);
+  const axiosInstance = await getAxiosInstance()
+  return axiosInstance.post('/admin/wellness', payload)
+}
+export const DeleteWellness = async (route: any) => {
+  const axiosInstance = await getAxiosInstance();
+  return axiosInstance.delete(route);
+};

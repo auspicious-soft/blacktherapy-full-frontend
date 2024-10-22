@@ -110,7 +110,7 @@ const UnassignedClientTable:React.FC<UnassignedPageProps> = ({setQuery, appointm
               <th>Action</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody> 
             {unassignedData?.length > 0 ? (
             unassignedData?.map((row:any) => (
               <tr key={row._id}>
