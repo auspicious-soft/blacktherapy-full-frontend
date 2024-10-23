@@ -161,7 +161,7 @@ const Page = () => {
         attachment: "http://example.com/attachments/static-task-file.pdf", 
         priority: "High", 
       };
-      const response = await AssignTaskToUser(taskPayload, `/admin/users/${assignTaskId}`);
+      const response = await AssignTaskToUser(`/admin/users/${assignTaskId}`, taskPayload);
       if (response?.status === 201) {
         toast.success("Task assigned successfully");
         setAssignTaskModalOpen(false);

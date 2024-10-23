@@ -52,6 +52,11 @@ export const GetPaymentsData = async (route: string) =>{
   const axiosInstance = await getAxiosInstance()
   return axiosInstance.get(route)
 }
+export const UpdatePaymentRequest = async (route: string, payload: any) => {
+  const axiosInstance = await getAxiosInstance();
+  return axiosInstance.patch(route, payload);
+};
+
 
 //-------------Client wellness page-------
 export const GetClientWellness = async (route: string) =>{
