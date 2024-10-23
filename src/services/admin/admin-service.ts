@@ -5,9 +5,6 @@ export const loginService = async (payload: any) => {
   if ( payload.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL && payload.password) {
     return await axiosInstance.post(`/admin/login`, payload);
   }
-  // else if () {
-
-  // }
 }
 //-----Dashboard Page-----
 export const getAdminDashboardStats = async(route: string) => {
@@ -83,7 +80,7 @@ export const DeleteUser = async (route: any) => {
   const axiosInstance = await getAxiosInstance();
   return axiosInstance.delete(route);
 };
-export const AssignTaskToUser = async (payload: any, route: any) =>{
+export const AssignTaskToUser = async (route: string, payload: any) =>{
   const axiosInstance = await getAxiosInstance()
   return axiosInstance.post(route, payload)
 }
