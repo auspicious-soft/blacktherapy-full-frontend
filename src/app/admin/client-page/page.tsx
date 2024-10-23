@@ -9,14 +9,14 @@ const Page: React.FC = () => {
     const { data, error, isLoading } = useSWR(`/admin/clients?${query}`, getClientsPageData);
     const clientsData: any= data?.data; 
 
-
+ 
     return (
         <>
             <h1 className="font-antic text-[#283C63] text-[30px] leading-[1.2em] mb-[25px] lg:text-[40px] lg:mb-[50px]">
                 Clients
             </h1>
         
-            <ClientTable clientsData={clientsData} setQuery = {setQuery} />
+            <ClientTable clientsData={clientsData}  error={error} isLoading={isLoading} setQuery = {setQuery} />
         </>
     );
 }; 

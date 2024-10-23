@@ -61,6 +61,7 @@ const Page = () => {
         formData.attachment = 'http://example.com/attachments/yoga-session.pdf'
         const response = await AddNewWellness(formData); 
         if (response?.status === 201) {
+          setNotification("Therapist Registeration Successful");
           // toast.success("Wellness entry added successfully");
           setFormData({
             title: "",
@@ -77,7 +78,6 @@ const Page = () => {
         toast.error("An error occurred while adding the wellness entry");
       }
     });
-    setNotification("Therapist Registeration Successful");
   };
 
   const handleDelete = (id: string) => {

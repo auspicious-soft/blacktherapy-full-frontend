@@ -5,12 +5,11 @@ import Modal from 'react-modal';
 import useSWR from 'swr';
 
 interface BillingInformationTabProps {
-  rowId: string;
+  rowId: string; 
 }
 
 const BillingInformationTab: React.FC<BillingInformationTabProps> = ({ rowId }) => {
 
-  // Fetch data using SWR
   const { data, error, isLoading } = useSWR(`/admin/client-billing/${rowId}`, ClientsBilllingStats, {
     revalidateOnFocus: false,
   });

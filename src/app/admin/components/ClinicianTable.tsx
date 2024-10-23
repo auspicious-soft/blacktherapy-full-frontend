@@ -17,106 +17,57 @@ interface TableData {
   contact: string;
   address: string;
   memberSince: string;
-  noOfAppointments: number;
+  noOfAppointments: number; 
   accountStatus: boolean; 
   status2: string;
 }
+interface TherapistsDataProps { 
+  therapistsData: any;
+  setQuery: any;
+  error: any;
+  isLoading: any;
+}
 
-const ClinicianTable: React.FC = () => {
-  const data: TableData[] = [
-    {
-      id: 1,
-      status: "Active",
-      training: "Training 1",
-      name: "Clinician A",
-      contact: "123456789",
-      address: "Address 1",
-      memberSince: "26 July 2023",
-      noOfAppointments: 5,
-      accountStatus: true,
-      status2: "Interview Pending",
-    },
-    {
-      id: 2,
-      status: "Inactive",
-      training: "Training 2",
-      name: "Clinician B",
-      contact: "987654321",
-      address: "Address 2",
-      memberSince: "26 July 2023",
-      noOfAppointments: 3,
-      accountStatus: false,
-      status2: "Status ",
-    },
-    {
-      id: 12,
-      status: "Doesn’t Meet Qualifications",
-      training: "Training 1",
-      name: "Clinician A",
-      contact: "123456789",
-      address: "Address 1",
-      memberSince: "26 July 2023",
-      noOfAppointments: 5,
-      accountStatus: true,
-      status2: "Interview Pending",
-    },
-    {
-      id: 13,
-      status: "Inactive",
-      training: "Training 2",
-      name: "Clinician B",
-      contact: "987654321",
-      address: "Address 2",
-      memberSince: "26 July 2023",
-      noOfAppointments: 3,
-      accountStatus: false,
-      status2: "Applicant Reviewed",
-    },
-    // Add more data as needed
-  ];
 
-  const [currentPage, setCurrentPage] = useState(0);
+const ClinicianTable: React.FC<TherapistsDataProps> = ({therapistsData, setQuery, isLoading, error} ) => {
+
+  const total = therapistsData?.total ?? 0;
+
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isAssignTaskModalOpen, setIsAssignTaskModalOpen] = useState(false);
-  const [selectedRow, setSelectedRow] = useState<TableData | null>(null);
-  const [tableData, setTableData] = useState(data); // State to hold table data
+  const [selectedRow, setSelectedRow] = useState(therapistsData);
   const [cliniciantDetailsPopup, setCliniciantDetailsPopup]= useState(false);
   const [clinicianDetails, setClinicianDetails] = useState<{ id: number; name: string } | null>(null);
-  const rowsPerPage = 5;
 
-  // Calculate the indexes for slicing the data array 
-  const indexOfLastRow = (currentPage + 1) * rowsPerPage;
-  const indexOfFirstRow = indexOfLastRow - rowsPerPage;
-  const currentRows = tableData.slice(
-    indexOfFirstRow,
-    indexOfFirstRow + rowsPerPage
-  );
+  const therapistsDataArray = therapistsData?.data;
+
+  const rowsPerPage = 5;
+  const handlePageClick = (selectedItem: { selected: number }) => {
+    setQuery(`page=${selectedItem.selected + 1}&limit=${rowsPerPage}`)
+  }
+
   const handleModalClose = () => {
     setIsDeleteModalOpen(false);
   };
 
   const handleToggleStatus = (id: number) => {
-    setTableData(
-      tableData.map((item) =>
-        item.id === id ? { ...item, accountStatus: !item.accountStatus } : item
-      )
-    );
+    // setTableData(
+    //   tableData.map((item) =>
+    //     item.id === id ? { ...item, accountStatus: !item.accountStatus } : item
+    //   )
+    // );
   };
 
     
-  const openClinicianPopup = (id: number, name: string) => {
-    setClinicianDetails({ id, name });
+  const openClinicianPopup = (row: any) => {
+    setClinicianDetails(row);
     setCliniciantDetailsPopup(true);
   };
 
   const closeClinicianPopup = () => {
     setCliniciantDetailsPopup(false);
-    setClinicianDetails(null); // Clear the selected client details
-  };
-
-  const handlePageClick = (selectedItem: { selected: number }) => {
-    setCurrentPage(selectedItem.selected);
+    setClinicianDetails(null); 
   };
 
   const openEditModal = (row: TableData) => {
@@ -134,8 +85,8 @@ const ClinicianTable: React.FC = () => {
     setIsDeleteModalOpen(true);
   };
   const handleDeleteConfirm = () => {
-    setTableData(tableData.filter((item) => item.id !== selectedRow?.id));
-    handleModalClose();
+    // setTableData(tableData.filter((item) => item.id !== selectedRow?.id));
+    // handleModalClose();
   };
   const handleDeleteCancel = () => { 
     handleModalClose();
@@ -187,25 +138,38 @@ const ClinicianTable: React.FC = () => {
           </tr>
         </thead>
         <tbody>
-          {currentRows.map((row) => (
-            <tr key={row.id}>
-              <td>{row.id}</td>
+          {isLoading ? (
+      <tr>
+        <td colSpan={5} className="">
+          Loading... 
+        </td>
+      </tr>
+    ) : error ? (
+      <tr>
+        <td colSpan={5} className="text-center text-red-500">
+          Error loading payments data.
+        </td>
+      </tr>
+    ) :therapistsDataArray?.length > 0 ? (
+          therapistsDataArray?.map((row: any) => (
+            <tr key={row?._id}>
+              <td>{row?._id}</td>
               <td> <p className=" inline-block font-gothamMedium text-center leading-[normal] rounded-3xl py-[3px] px-[10px] text-[#26395E] bg-[#CCDDFF] text-[10px] ">
-              {row.status}</p></td>
+              {row?.status}</p></td>
               <td><p className=" font-gothamMedium text-center leading-[normal] rounded-3xl py-[3px] px-[10px] text-[#A85C03] bg-[#fffdd1] text-[10px] ">
-              {row.training}</p>
+              {row?.training}</p>
               </td>
-              <td>{row.name}</td>
-              <td>{row.contact}</td>
-              <td>{row.address}</td>
-              <td>{row.memberSince}</td>
-              <td>{row.noOfAppointments}</td>
+              <td>{row?.firstName} {row?.lastName} </td>
+              <td>{row?.phoneNumber}</td>
+              <td>{row?.address}</td>
+              <td>{row?.createdAt}</td>
+              <td>{row?.appointments.length}</td>
               <td>
                <div className="toggle-checkbox relative">
                <input
                   type="checkbox"
                   checked={row.accountStatus}
-                  onChange={() => handleToggleStatus(row.id)}
+                  onChange={() => handleToggleStatus(row?._id)}
                   className="absolute opacity-0 z-[1] w-full h-full "
                 />
                 <span className="indicator ">
@@ -215,7 +179,7 @@ const ClinicianTable: React.FC = () => {
               </td>
               <td>
                 <div className="flex gap-2">
-                  <button onClick={() => openClinicianPopup(row.id, row.name)}><ViewIcon /> </button>
+                  <button onClick={() => openClinicianPopup(row)}><ViewIcon /> </button>
                 <button
                   onClick={() => openEditModal(row)}
                   className=""
@@ -255,7 +219,12 @@ const ClinicianTable: React.FC = () => {
               </td>
              
             </tr>
-          ))}
+          ))
+        ) : (
+          <tr>
+            <td className='w-full flex justify-center p-3 items-center' colSpan={5} >No data found</td>
+          </tr>
+        )}
         </tbody>
       </table>
       </div>
@@ -265,7 +234,7 @@ const ClinicianTable: React.FC = () => {
         nextLabel={'>'}
         breakLabel={'...'}
         breakClassName={'break-me'}
-        pageCount={Math.ceil(data.length / rowsPerPage)}
+        pageCount={Math.ceil(total / rowsPerPage)}
         marginPagesDisplayed={2}
         pageRangeDisplayed={5}
         onPageChange={handlePageClick}
@@ -327,8 +296,7 @@ const ClinicianTable: React.FC = () => {
   <ClinicianDetailsPopup
     isOpen={cliniciantDetailsPopup}
     onRequestClose={closeClinicianPopup}
-    clinicianId={clinicianDetails.id}
-    clinicianName={clinicianDetails.name}
+    row={clinicianDetails}
   />
 )}
     </div>

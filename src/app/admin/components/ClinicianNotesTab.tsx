@@ -1,24 +1,21 @@
-import { AddClientNotesData, GetClientNotes } from "@/services/admin/admin-service";
+import { AddEmployeeNotesData, GetEmployeeNotesData } from "@/services/admin/admin-service";
 import { CloseIcon } from "@/utils/svgicons";
 import React, { ChangeEvent, useState, useTransition } from "react";
 import Modal from "react-modal";
 import { toast } from "sonner";
 import useSWR from "swr";
- 
+
 interface NotesProps {
   rowId: string;
 }
-const ClientNotesTab: React.FC<NotesProps> = ({rowId}) => {
-  const [modalIsOpen, setModalIsOpen] = useState(false); 
-  const [newNote, setNewNote] = useState("");
-  const { data, error, isLoading, mutate } = useSWR(`/admin/client/notes/${rowId}`, GetClientNotes);
+const ClinicianNotesTab: React.FC<NotesProps> = ({ rowId }) => {
+  const [modalIsOpen, setModalIsOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
-  
+  const [newNote, setNewNote] = useState("");
+  const { data, error, isLoading, mutate } = useSWR(`/admin/thrapists/notes/${rowId}`, GetEmployeeNotesData);
   const notesInfo = data?.data?.data;
 
-
   const openModal = () => setModalIsOpen(true);
-  
   const closeModal = () => setModalIsOpen(false);
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -28,7 +25,7 @@ const ClientNotesTab: React.FC<NotesProps> = ({rowId}) => {
   const handleAddNote = async () => {
      startTransition(async () => {
       try {
-        const response = await AddClientNotesData(`/admin/client/notes/${rowId}`, { note: newNote });
+        const response = await AddEmployeeNotesData(`/admin/thrapists/notes/${rowId}`, { note: newNote });
         console.log('response:', response);
         if (response?.status === 201) {
           mutate(); 
@@ -37,7 +34,8 @@ const ClientNotesTab: React.FC<NotesProps> = ({rowId}) => {
         } else {
           toast.error("Error adding the note.");
         }
-      } catch (error) {
+      } catch (err) {
+        console.log('err:', err);
         toast.error("Error submitting the note.");
       }
      });
@@ -46,11 +44,13 @@ const ClientNotesTab: React.FC<NotesProps> = ({rowId}) => {
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Error loading notes.</p>;
 
-
   return (
     <div>
       <div className="flex justify-end mb-[22px]">
-        <button onClick={openModal} className="!text-sm !h-[40px] !px-[30px] button">
+        <button
+          onClick={() => setModalIsOpen(true)}
+          className="!text-sm !h-[40px] !px-[30px] button"
+        >
           Add New
         </button>
       </div>
@@ -78,15 +78,18 @@ const ClientNotesTab: React.FC<NotesProps> = ({rowId}) => {
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
         contentLabel="Add New Note"
-        className="modal max-w-[600px] mx-auto rounded-[20px] w-full  max-h-[90vh] overflow-scroll overflo-custom"
+        className="modal max-w-[600px] mx-auto rounded-[20px] w-full max-h-[90vh] overflow-scroll overflo-custom"
         overlayClassName="w-full h-full px-3 fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center"
         ariaHideApp={false}
       >
-        <div className="flex items-center justify-between rounded-t-[20px]  p-5 md:py-[25px] md:px-[35px] bg-[#283C63]">
+        <div className="flex items-center justify-between rounded-t-[20px] p-5 md:py-[25px] md:px-[35px] bg-[#283C63]">
           <h2 className="font-gothamMedium !text-white">Add New Note</h2>
-          <button onClick={closeModal}><CloseIcon /> </button>
+          <button onClick={closeModal}>
+            <CloseIcon />{" "}
+          </button>
         </div>
 
+        {/* Input for the new note */}
         <div className="bg-white p-5 md:px-[35px] md:py-10">
           <div>
             <label className="block mb-2">Note</label>
@@ -114,4 +117,4 @@ const ClientNotesTab: React.FC<NotesProps> = ({rowId}) => {
   );
 };
 
-export default ClientNotesTab;
+export default ClinicianNotesTab;

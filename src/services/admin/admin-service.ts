@@ -40,6 +40,10 @@ export const GetClientNotes = async (route: string) =>{
   const axiosInstance = await getAxiosInstance()
   return axiosInstance.get(route)
 }
+export const AddClientNotesData = async (route:string, payload: any) =>{
+  const axiosInstance = await getAxiosInstance()
+  return axiosInstance.post(route, payload)
+}
 
 //------Add New Client------------
 export const AddNewClient = async (payload: any) =>{
@@ -52,15 +56,12 @@ export const GetPaymentsData = async (route: string) =>{
   return axiosInstance.get(route)
 }
 
-
-
 //-------------Client wellness page-------
 export const GetClientWellness = async (route: string) =>{
   const axiosInstance = await getAxiosInstance()
   return axiosInstance.get(route)
 }
 export const AddNewWellness = async (payload: any) =>{
-  console.log('payload:', payload);
   const axiosInstance = await getAxiosInstance()
   return axiosInstance.post('/admin/wellness', payload)
 }
@@ -68,3 +69,40 @@ export const DeleteWellness = async (route: any) => {
   const axiosInstance = await getAxiosInstance();
   return axiosInstance.delete(route);
 };
+
+//---------Add User------------------
+export const GetUserDetails = async (route: string) =>{
+  const axiosInstance = await getAxiosInstance()
+  return axiosInstance.get(route)
+}
+export const AddNewUser = async (payload: any) =>{
+  const axiosInstance = await getAxiosInstance()
+  return axiosInstance.post('/admin/users', payload)
+}
+export const DeleteUser = async (route: any) => {
+  const axiosInstance = await getAxiosInstance();
+  return axiosInstance.delete(route);
+};
+export const AssignTaskToUser = async (payload: any, route: any) =>{
+  const axiosInstance = await getAxiosInstance()
+  return axiosInstance.post(route, payload)
+}
+
+//----------- Clinician/Therapist page --------------
+export const GetTherapistsData = async (route: string) =>{
+  const axiosInstance = await getAxiosInstance()
+  return axiosInstance.get(route)
+}
+export const GetEmployeeRecordsData = async (route: string) =>{
+  const axiosInstance = await getAxiosInstance()
+  return axiosInstance.get(route)
+}
+export const GetEmployeeNotesData = async (route: string) =>{
+  const axiosInstance = await getAxiosInstance()
+  return axiosInstance.get(route)
+}
+export const AddEmployeeNotesData = async (route:string, payload: any) =>{
+  const axiosInstance = await getAxiosInstance()
+  return axiosInstance.post(route, payload)
+}
+

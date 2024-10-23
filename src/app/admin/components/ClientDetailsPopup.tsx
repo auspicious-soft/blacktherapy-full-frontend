@@ -13,7 +13,7 @@ import ClientNotesTab from "./ClientNotesTab";
 
 interface ClientDetailsPopupProps {
   isOpen: boolean;
-  onRequestClose: () => void;
+  onRequestClose: () => void; 
   row: any;
 }
 

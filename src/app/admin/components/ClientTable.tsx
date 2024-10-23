@@ -18,11 +18,13 @@ interface TableData {
   accountStatus: boolean;
   action: boolean;
 }
-interface ClientsDataProps {
+interface ClientsDataProps { 
   clientsData: any;
   setQuery: any;
+  error: any;
+  isLoading: any;
 }
-const ClientTable: React.FC<ClientsDataProps> = ({ clientsData, setQuery }) => {
+const ClientTable: React.FC<ClientsDataProps> = ({ clientsData, setQuery, error, isLoading }) => {
   const total = clientsData?.total ?? 0;
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState(clientsData);
@@ -102,7 +104,20 @@ const ClientTable: React.FC<ClientsDataProps> = ({ clientsData, setQuery }) => {
             </tr>
           </thead>
           <tbody>
-          {ClientsArray?.map((row: any) => (
+          {isLoading ? (
+      <tr>
+        <td colSpan={5} className="">
+          Loading... 
+        </td>
+      </tr>
+    ) : error ? (
+      <tr>
+        <td colSpan={5} className="text-center text-red-500">
+          Error loading payments data.
+        </td>
+      </tr>
+    ) :ClientsArray?.length > 0 ? (
+          ClientsArray?.map((row: any) => (
               <tr key={row?._id} className="border-b">
                 <td>{row?._id}</td>
                 <td>
@@ -151,7 +166,12 @@ const ClientTable: React.FC<ClientsDataProps> = ({ clientsData, setQuery }) => {
                  </div>
                 </td>
               </tr>
-            ))}
+            ))
+          ) : (
+            <tr>
+              <td className='w-full flex justify-center p-3 items-center' colSpan={5} >No data found</td>
+            </tr>
+          )}
           </tbody>
         </table>
       </div>

@@ -7,20 +7,16 @@ import ClientNotesTab from "./ClientNotesTab";
 import ClinicianPersonalinfo from "./ClinicianPersonalinfo";
 import ClinicianOtherInfo from "./ClinicianOtherInfo";
 import ClinicianRecord from "./ClinicianRecord";
-
-interface ClinicianDetailsPopupProps {
+import ClinicianNotesTab from "./ClinicianNotesTab";
+  interface ClinicianDetailsPopupProps {
   isOpen: boolean;
   onRequestClose: () => void;
-  clinicianId: number;
-  clinicianName: string;
+  row: any
 }
 
-const ClinicianDetailsPopup: React.FC<ClinicianDetailsPopupProps> = ({
-  isOpen,
-  onRequestClose,
-  clinicianId,
-  clinicianName 
-}) => {
+const ClinicianDetailsPopup: React.FC<ClinicianDetailsPopupProps> = ({ isOpen, onRequestClose, row,}) => {
+
+
 const [activeTab, setActiveTab] = useState("tab1");
 const handleTabClick = (tab: string) => {
     setActiveTab(tab);
@@ -44,8 +40,8 @@ const handleTabClick = (tab: string) => {
         <div className="flex items-center gap-[23px] mb-5 md:mb-10">
             <div><Image src={Client} height={100} width={100} alt="Profile picture" className="rounded-full w-[100px] object-cover aspect-square " /> </div>
         <div>
-            <h3 className="font-gothamBold">{clinicianName}</h3>
-            <p>{clinicianId}</p>
+            <h3 className="font-gothamBold">{row?.firstName} {row?.lastName} </h3>
+            <p>{row?._id}</p>
         </div>
         </div>
             <div className="mobile-scroll flex justify-between items-center gap-3 border-b border-[#CDE3F1] ">
@@ -91,10 +87,10 @@ const handleTabClick = (tab: string) => {
           </button>
         </div>
         <div className="mt-[30px]">
-          {activeTab === "tab1" && <ClinicianPersonalinfo />}
-          {activeTab === "tab2" && <ClinicianOtherInfo />}
-          {activeTab==="tab3" && <ClinicianRecord />}
-          {activeTab==="tab4" && <ClientNotesTab/> }
+          {activeTab === "tab1" && <ClinicianPersonalinfo row={row} />}
+          {activeTab === "tab2" && <ClinicianOtherInfo row={row} />}
+          {activeTab==="tab3" && <ClinicianRecord rowId={row?._id}/>}
+          {activeTab==="tab4" && <ClinicianNotesTab rowId={row?._id} /> }
         </div>
       </div>
     </Modal>

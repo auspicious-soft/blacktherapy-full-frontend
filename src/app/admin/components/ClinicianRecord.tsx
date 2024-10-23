@@ -1,13 +1,93 @@
-
-import { CloseIcon } from '@/utils/svgicons';
 import React, { useState } from 'react';
 import Modal from 'react-modal';
+import useSWR from 'swr';
+import { GetEmployeeRecordsData } from '@/services/admin/admin-service';
+import { CloseIcon } from '@/utils/svgicons';
 
- // For accessibility with Next.js
+interface ClinicianRecordProps {
+  rowId: any;
+}
 
-const ClinicianRecord = () => {
-  // State for modal visibility
-  const [modalIsOpen, setModalIsOpen] = useState(false);
+const TSGEmployeeDetails = ({ record }: { record: any }) => (
+  <div className='bg-[#EBF4F9] rounded-[10px] p-5 mb-[15px]'>
+    <h3 className="text-[18px] leading-[normal] mb-6">TSG Employee</h3>
+    <div className='grid grid-cols-[minmax(0,_5fr)_minmax(0,_7fr)] gap-[30px]'>
+      <label>Employment Status
+        <p className='text-[#283C63] text-[18px] underline font-gothamMedium leading-[normal] mt-1'>
+          {record.employmentStatus || "Withdrawn"}
+        </p>
+      </label>
+      <label>TSG Employee Name
+        <p className='text-[#283C63] text-sm font-gothamMedium leading-[normal] mt-1'>{record?.tsgEmployeeName}</p>
+      </label>
+      <label>TSG Employee Owner
+        <p className='text-[#283C63] text-sm font-gothamMedium leading-[normal] mt-1'>{record?.tsgEmployeeOwner}</p>
+      </label>
+      <label>Assigned Employee ID
+        <p className='text-[#283C63] text-sm font-gothamMedium leading-[normal] mt-1'>{record?.assignedEmployeeId}</p>
+      </label>
+    </div>
+  </div>
+);
+
+const EmploymentInformation = ({ record }: { record: any }) => (
+  <div className='bg-[#EBF4F9] rounded-[10px] p-5 mb-[15px]'>
+    <h3 className="text-[18px] leading-[normal] mb-6">Employment Information</h3>
+    <div className='grid grid-cols-[minmax(0,_5fr)_minmax(0,_7fr)] gap-[30px]'>
+      <label>Company Assigned To
+        <p className='text-[#283C63] text-sm font-gothamMedium leading-[normal] mt-1'>{record?.companyAssignedTo}</p>
+      </label>
+      <label>Position
+        <p className='text-[#283C63] text-sm font-gothamMedium leading-[normal] mt-1'>{record?.position}</p>
+      </label>
+      <label>Assigned Office
+        <p className='text-[#283C63] text-sm font-gothamMedium leading-[normal] mt-1'>{record?.assignedOffice}</p>
+      </label>
+      <label>Supervisor
+        <p className='text-[#283C63] text-sm font-gothamMedium leading-[normal] mt-1'>{record?.supervisor}</p>
+      </label>
+      <label>Office Number/Other
+        <p className='text-[#283C63] text-sm font-gothamMedium leading-[normal] mt-1'>{record?.officeNumberOther}</p>
+      </label>
+      <label>Ring Central Extension
+        <p className='text-[#283C63] text-sm font-gothamMedium leading-[normal] mt-1'>{record?.ringCentralExtension}</p>
+      </label>
+      <label>Company Email Address
+        <p className='text-[#283C63] text-sm font-gothamMedium leading-[normal] mt-1'>{record?.companyEmailAddress}</p>
+      </label>
+    </div>
+  </div>
+);
+
+const EmployeeAccessSystem = ({ record }: { record: any }) => (
+  <div className='bg-[#EBF4F9] rounded-[10px] p-5 mb-[15px]'>
+    <h3 className="text-[18px] leading-[normal] mb-6">Employee Access & System</h3>
+    <div className='grid grid-cols-[minmax(0,_5fr)_minmax(0,_7fr)] gap-[30px]'>
+      <label>Medicaid Checks Allowed?
+        <p className='text-[#283C63] text-sm font-gothamMedium leading-[normal] mt-1'>
+          {record.medicaidChecksAllowed ? 'Yes' : 'No'}
+        </p>
+      </label>
+      <label>Axis Care
+        <p className='text-[#283C63] text-sm font-gothamMedium leading-[normal] mt-1'>{record?.axisCare}</p>
+      </label>
+      <label>Simple Practice
+        <p className='text-[#283C63] text-sm font-gothamMedium leading-[normal] mt-1'>{record?.simplePractice}</p>
+      </label>
+      <label>Zoho CRM
+        <p className='text-[#283C63] text-sm font-gothamMedium leading-[normal] mt-1'>{record?.zohoCRM}</p>
+      </label>
+      <label>Employee Email
+        <p className='text-[#283C63] text-sm font-gothamMedium leading-[normal] mt-1'>{record?.employeeEmail}</p>
+      </label>
+    </div>
+  </div>
+);
+
+const ClinicianRecord: React.FC<ClinicianRecordProps> = ({ rowId }) => {
+  const { data, error, isLoading } = useSWR(`/admin/therapists/employee-records/${rowId}`, GetEmployeeRecordsData, {
+    revalidateOnFocus: false,
+  });
 
   const [formData, setFormData] = useState({
     employmentStatus: 'Withdrawn',
@@ -27,98 +107,29 @@ const ClinicianRecord = () => {
     zohoCRM: 'NA',
     employeeEmail: 'abs@gmail.com'
   });
+  const [modalIsOpen, setModalIsOpen] = useState(false);
 
-  // Handle input change
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prevState) => ({ ...prevState, [name]: value }));
-  };
+  const employeeRecord = data?.data?.data?.[0]; 
+  console.log('employeeRecord:', employeeRecord);
 
-  // Handle form submission
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setModalIsOpen(false); // Close the modal after updating data
-  };
+  if (isLoading) return <p>Loading...</p>;
+  if (error) return <p>Error loading employee records.</p>;
 
+  const handleSubmit =()=>{
+    console.log();
+  }
+  const handleChange =() =>{
+
+  }
   return (
-    <div className="">
-        <div className='flex justify-end mb-[30px]'>
-      <button
-        className="!text-sm !h-[40px] !px-[30px] button"
-        onClick={() => setModalIsOpen(true)}
-      >
-        Add New
-      </button></div>
-
-      {/* Display the data */}
-      <div className="mt-">
-        <div className='bg-[#EBF4F9] rounded-[10px] p-5 mb-[15px] '>
-          <h3 className="text-[18px] leading-[normal] mb-6">TSG Employee</h3>
-          <div className='grid grid-cols-[minmax(0,_5fr)_minmax(0,_7fr)] gap-[30px] '>
-          <label htmlFor="">Employment Status
-            <p className='text-[#283C63] text-[18px] underline font-gothamMedium leading-[normal] mt-1'>{formData.employmentStatus}</p>
-          </label>
-          <label htmlFor="">TSG Employee Name
-            <p className='text-[#283C63] text-sm font-gothamMedium leading-[normal] mt-1'>{formData.employeeName}</p>
-          </label>
-          <label htmlFor="">TSG Employee Owner
-            <p className='text-[#283C63] text-sm font-gothamMedium leading-[normal] mt-1'>{formData.employeeOwner}</p>
-          </label>
-          <label htmlFor="">Assigned Employee ID
-            <p className='text-[#283C63] text-sm font-gothamMedium leading-[normal] mt-1'>{formData.employeeId}</p>
-          </label>
-          </div>
-        </div>
-
-        <div className='bg-[#EBF4F9] rounded-[10px] p-5 mb-[15px] '>
-          <h3 className="text-[18px] leading-[normal] mb-6">Employment Information</h3>
-          <div className='grid grid-cols-[minmax(0,_5fr)_minmax(0,_7fr)] gap-[30px] '>
-          <label htmlFor="">Company Assigned To
-            <p className='text-[#283C63] text-sm font-gothamMedium leading-[normal] mt-1'>{formData.companyAssigned}</p>
-          </label>
-          <label htmlFor="">Position
-            <p className='text-[#283C63] text-sm font-gothamMedium leading-[normal] mt-1'>{formData.position}</p>
-          </label>
-          <label htmlFor="">Assigned Office
-            <p className='text-[#283C63] text-sm font-gothamMedium leading-[normal] mt-1'>{formData.assignedOffice}</p>
-          </label>
-          <label htmlFor="">Supervisor
-            <p className='text-[#283C63] text-sm font-gothamMedium leading-[normal] mt-1'>{formData.supervisor}</p>
-          </label>
-          <label htmlFor="">Office Number/Other
-            <p className='text-[#283C63] text-sm font-gothamMedium leading-[normal] mt-1'>{formData.officeNumber}</p>
-          </label>
-          <label htmlFor="">Ring Central Extension
-            <p className='text-[#283C63] text-sm font-gothamMedium leading-[normal] mt-1'>{formData.ringCentralExtension}</p>
-          </label>
-          <label htmlFor="">Company Email Address
-            <p className='text-[#283C63] text-sm font-gothamMedium leading-[normal] mt-1'>{formData.companyEmail}</p>
-          </label>
-          </div>
-        </div>
-
-        <div className='bg-[#EBF4F9] rounded-[10px] p-5 mb-[15px] '>
-          <h3 className="text-[18px] leading-[normal] mb-6">TSG Employee</h3>
-          <div className='grid grid-cols-[minmax(0,_5fr)_minmax(0,_7fr)] gap-[30px] '>
-          <label htmlFor="">Medicaid Checks Allowed?
-            <p className='text-[#283C63] text-sm font-gothamMedium leading-[normal] mt-1'>{formData.medicaidChecks}</p>
-          </label>
-          <label htmlFor="">Axis Care
-            <p className='text-[#283C63] text-sm font-gothamMedium leading-[normal] mt-1'>{formData.axisCare}</p>
-          </label>
-          <label htmlFor="">Simple Practice
-            <p className='text-[#283C63] text-sm font-gothamMedium leading-[normal] mt-1'>{formData.simplePractice}</p>
-          </label>
-          <label htmlFor="">Zoho CRM
-            <p className='text-[#283C63] text-sm font-gothamMedium leading-[normal] mt-1'>{formData.zohoCRM}</p>
-          </label>
-          <label htmlFor="">Employee Email
-            <p className='text-[#283C63] text-sm font-gothamMedium leading-[normal] mt-1'>{formData.employeeEmail}</p>
-          </label>
-          </div>
-        </div>
-
-      </div>
+    <div>
+      {employeeRecord && (
+        <>
+          <TSGEmployeeDetails record={employeeRecord} />
+          <EmploymentInformation record={employeeRecord} />
+          <EmployeeAccessSystem record={employeeRecord} />
+        </>
+      )}
 
       {/* Modal for editing fields */}
       <Modal

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, ChangeEvent, FormEvent } from "react";
+import React, { useState, ChangeEvent, FormEvent, useTransition } from "react";
 import { ButtonArrow, DeleteIcon } from "@/utils/svgicons";
 import { v4 as uuidv4 } from "uuid";
 import deleteCross from "@/assets/images/deleteCross.png";
@@ -7,57 +7,96 @@ import Modal from "react-modal";
 import Image from "next/image";
 import SearchBar from "@/app/admin/components/SearchBar";
 import ReactPaginate from 'react-paginate';
-
+import { AddNewUser, AssignTaskToUser, DeleteUser, GetUserDetails } from "@/services/admin/admin-service";
+import useSWR from "swr";
+import Notification from "../components/Notification";
+import { toast } from "sonner";
+import { notEqual } from "assert";
+ 
 interface FormData {
-  id: string;
   fullName: string;
   email: string;
   password: string;
   role: string;
-  task: string | null;
+}
+interface TaskData {
+  title: string,
+  dueDate: string,
+  priority: string,
+  note: string,
+  attachment : string,
 }
 
 const Page = () => {
-  const [formData, setFormData] = useState<Omit<FormData, "id" | "task">>({
+  const [formData, setFormData] = useState<FormData>({
     fullName: "",
     email: "",
     password: "",
-    role: "Support Team Agent",
+    role: "",
   });
+  const [taskData, setTaskData]= useState<TaskData>(
+    {
+    title: "",
+    dueDate: "",
+    priority: "",
+    note: "",
+    attachment : "",
+    }
+  )
+  const [isPending, startTransition] = useTransition();
+  const [query, setQuery] = useState('');
+  const { data, error, isLoading, mutate } = useSWR(`/admin/users?${query}`, GetUserDetails);
 
-  const [data, setData] = useState<FormData[]>([]);
-  const [selectedTab, setSelectedTab] = useState<"Client" | "Clinician">("Client");
+  const getUserData = data?.data?.data;
+
+  const [notification, setNotification] = useState<string | null>(null);
+  const total = data?.data?.total ?? 0;
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deleteItemId, setDeleteItemId] = useState<string | null>(null);
-  const [assignTaskId, setAssignTaskId] = useState<string | null>(null);
   const [assignTaskModalOpen, setAssignTaskModalOpen] = useState(false);
-  const [task, setTask] = useState<string>("");
+  const [assignTaskId, setAssignTaskId] = useState<string | null>(null);
 
-  // Pagination state
-  const [currentPage, setCurrentPage] = useState(0);
-  const rowsPerPage = 4;
+  const rowsPerPage = 10;
 
-  const indexOfLastRow = (currentPage + 1) * rowsPerPage;
-  const indexOfFirstRow = indexOfLastRow - rowsPerPage;
-  const currentRows = data.slice(indexOfFirstRow, indexOfLastRow);
+  const handlePageClick = (selectedItem: { selected: number }) => {
+    setQuery(`page=${selectedItem.selected + 1}&limit=${rowsPerPage}`)
+  }
 
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target; 
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value, 
+    }));
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setData([...data, { ...formData, id: uuidv4(), task: null }]);
-    setFormData({
-      fullName: "",
-      email: "",
-      password: "",
-      role: "Support Team Agent",
+
+    startTransition(async () => {
+      try {
+        const response = await AddNewUser(formData); 
+        if (response?.status === 201) {
+          setNotification("User Added Successfully");
+          // toast.success("Wellness entry added successfully");
+          setFormData({
+            fullName: "",
+            email: "",
+            password: "",
+            role: "",
+          });
+        } else {
+          toast.error("Failed to add User Data");
+        }
+      } catch (error) {
+        console.error("Error adding User Data:", error);
+        toast.error("An error occurred while adding the User Data");
+      }
     });
+    
   };
 
   const handleDelete = (id: string) => {
@@ -74,11 +113,21 @@ const Page = () => {
     handleModalClose();
   };
 
-  const handleDeleteConfirm = () => {
-    if (deleteItemId) {
-      setData(data.filter((item) => item.id !== deleteItemId));
+  const handleDeleteConfirm = async (id: string) => {
+    const route = `/admin/users/${id}`; 
+    try {
+      const response = await DeleteUser(route); 
+      if (response.status === 200) {
+        toast.success("User deleted successfully");
+      } else {
+        toast.error("Failed to delete User");
+      }
+    } catch (error) {
+      console.error("Error deleting User:", error);
+      toast.error("An error occurred while deleting the User");
     }
-    handleModalClose();
+    setIsDeleteModalOpen(false);
+    mutate()
   };
 
   const handleAssignTask = (id: string) => {
@@ -91,36 +140,47 @@ const Page = () => {
     setAssignTaskId(null);
   };
 
-  const handleAssignTaskSubmit = () => {
-    if (assignTaskId) {
-      setData(data.map(item => item.id === assignTaskId ? { ...item, task } : item));
+  const handleAssignTaskInput = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setTaskData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+ const handleAssignTaskSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+
+  startTransition(async () => {
+    try {
+      const formattedDueDate = new Date(taskData.dueDate).toISOString();
+
+      const taskPayload = {
+        ...taskData,
+        dueDate: formattedDueDate, 
+        attachment: "http://example.com/attachments/static-task-file.pdf", 
+        priority: "High", 
+      };
+      const response = await AssignTaskToUser(taskPayload, `/admin/users/${assignTaskId}`);
+      if (response?.status === 201) {
+        toast.success("Task assigned successfully");
+        setAssignTaskModalOpen(false);
+        setTaskData({
+          title: "",
+          dueDate: "",
+          priority: "",
+          note: "",
+          attachment: "",
+        });
+      } else {
+        console.error("Failed to assign task.");
+      }
+    } catch (error) {
+      console.error("An error occurred while assigning the task:", error);
     }
-    setTask("");
-    handleAssignTaskModalClose();
-  };
+  });
+};
 
-  const handlePageClick = (selectedItem: { selected: number }) => {
-    setCurrentPage(selectedItem.selected);
-  };
-
-  const renderTableRows = () => {
-    return currentRows.map((item, index) => (
-      <tr key={item.id}>
-        <td>{index + 1 + currentPage * rowsPerPage}</td>
-        <td>{item.fullName}</td>
-        <td>{item.role}</td>
-        <td>{item.email}</td>
-        <td>
-          <button onClick={() => handleAssignTask(item.id)} className="font-gothamMedium rounded-3xl py-[2px] px-[10px] text-[#26395E] bg-[#CCDDFF] text-[10px]">Assign Task</button>
-        </td>
-        <td>
-          <button onClick={() => handleDelete(item.id)}>
-            <DeleteIcon />
-          </button>
-        </td>
-      </tr>
-    ));
-  };
 
   return (
     <>
@@ -137,6 +197,7 @@ const Page = () => {
                 value={formData.fullName}
                 onChange={handleInputChange}
                 placeholder="John Doe"
+                required
               />
             </div>
             <div className="md:w-[calc(33.33%-30px)]">
@@ -147,6 +208,7 @@ const Page = () => {
                 value={formData.email}
                 onChange={handleInputChange}
                 placeholder="john.doe@example.com"
+                required
               />
             </div>
             <div className="md:w-[calc(33.33%-30px)]">
@@ -157,6 +219,7 @@ const Page = () => {
                 value={formData.password}
                 onChange={handleInputChange}
                 placeholder="Password"
+                required
               />
             </div>
             <div className="md:w-[calc(33.33%-30px)]">
@@ -165,16 +228,26 @@ const Page = () => {
                 name="role"
                 value={formData.role}
                 onChange={handleInputChange}
+                required
               >
+                <option value="" disabled>--Select</option>
                 <option value="Support Team Agent">Support Team Agent</option>
+                <option value="Support Team Supervisor"> Support Team Supervisor</option>
                 <option value="Office Admin">Office Admin</option>
                 <option value="Clinical Director">Clinical Director</option>
+                <option value="QP / Supervisor">QP / Supervisor</option>
+                <option value="Director of Operation/ Billing">Director of Operation/ Billing</option>
+                <option value="Director">Director</option>
+                <option value="Clinician">Clinician</option>
+                <option value="Peer Support Specialist">Peer Support Specialist</option>
+                <option value="Para Professional">Para Professional</option>
+                <option value="AP">AP</option>
               </select>
             </div>
           </div>
           <div className="mt-[30px] flex justify-end ">
-            <button type="submit" className="button px-[30px]">
-              Submit<ButtonArrow />
+          <button type="submit" className="button px-[30px]" disabled={isPending}>
+              {isPending ? 'Submitting...' : 'Submit'}<ButtonArrow />
             </button>
           </div>
         </form>
@@ -183,7 +256,7 @@ const Page = () => {
         <div className="mb-5">
             <h2 className="mb-[30px]">All Users</h2>
             <div className="flex justify-end">
-                <SearchBar />
+                <SearchBar setQuery={setQuery}/>
             </div>
         </div>
         <div className="table-common overflo-custom">
@@ -198,7 +271,42 @@ const Page = () => {
                 <th>Action</th>
               </tr>
             </thead>
-            <tbody>{renderTableRows()}</tbody>
+            <tbody>
+            {isLoading ? (
+      <tr>
+        <td colSpan={5} className="">
+          Loading... 
+        </td>
+      </tr>
+    ) : error ? (
+      <tr>
+        <td colSpan={5} className="text-center text-red-500">
+          Error loading payments data.
+        </td>
+      </tr>
+    ) :getUserData?.length > 0 ? (
+      getUserData?.map((row: any) => (
+                <tr key={row?._id}>
+                  <td>{row?._id}</td>
+                  <td>{row?.fullName}</td>
+                  <td>{row?.role}</td>
+                  <td>{row?.email}</td>
+                  <td>
+               <button onClick={() => handleAssignTask(row?._id)} className="font-gothamMedium rounded-3xl py-[2px] px-[10px] text-[#26395E] bg-[#CCDDFF] text-[10px]">Assign Task</button>
+                  </td>
+                   <td>
+                    <button onClick={() => handleDelete(row?._id)}>
+                      <DeleteIcon />
+                    </button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td className='w-full flex justify-center p-3 items-center' colSpan={5} >No data found</td>
+              </tr>
+            )}
+            </tbody>
           </table>
         </div>
         <div className="text-right mt-4">
@@ -207,7 +315,7 @@ const Page = () => {
             nextLabel={'>'}
             breakLabel={'...'}
             breakClassName={'break-me'}
-            pageCount={Math.ceil(data.length / rowsPerPage)}
+            pageCount={Math.ceil(total / rowsPerPage)}
             marginPagesDisplayed={2}
             pageRangeDisplayed={5}
             onPageChange={handlePageClick}
@@ -232,7 +340,7 @@ const Page = () => {
   <div className="flex items-center justify-center gap-6 mt-8">
   <button 
          type="button"
-         onClick={handleDeleteConfirm}
+         onClick={() => handleDeleteConfirm(deleteItemId as string)}
          className="py-[10px] px-8 bg-[#CC0000] text-white rounded"
        >
          Yes, Delete
@@ -242,49 +350,56 @@ const Page = () => {
        onClick={handleDeleteCancel}
        className='py-[10px] px-8 bg-[#283C63] text-white rounded'>No </button>
    </div>
-  </Modal>
+       </Modal>
 
-       <Modal         //Assign Task Popup
+       <Modal  
          isOpen={assignTaskModalOpen}
          onRequestClose={handleAssignTaskModalClose}
          contentLabel="Assign Task"
          className="modal max-w-[584px] mx-auto bg-white rounded-xl w-full p-5"
          overlayClassName="overlay"
        >
-        <button
-             type="button"
-             onClick={handleAssignTaskModalClose}
-             className="float-right py-[5px] px-3 bg-[#CC0000] text-white rounded"
-           >X </button>    
-         <h2>Assign Task</h2>
+        <button type="button" onClick={handleAssignTaskModalClose}
+          className="float-right py-[5px] px-3 bg-[#CC0000] text-white rounded">X </button>    
+         <h2>Assign Task </h2>
+
+         <form onSubmit={handleAssignTaskSubmit}>
          <label htmlFor="">Title</label>
-         <input type="text" name="task"
-           value={task}
-           onChange={(e) => setTask(e.target.value)} id="" />
-           <label htmlFor="">Due Date</label>
-         <input type="date" name="task"
-           value={task}
-           onChange={(e) => setTask(e.target.value)} id="" />
+         <input type="text" name="title"
+           value={taskData.title}
+           onChange={handleAssignTaskInput} id="" />
+
+          <label htmlFor="">Due Date</label>
+         <input type="date" name="dueDate"
+           value={taskData.dueDate}
+           onChange={handleAssignTaskInput} id="" />
+
          <label htmlFor="">Priority</label>
-         <input type="text" name="task"
-           value={task}
-           onChange={(e) => setTask(e.target.value)} id="" />
+         <input type="text" name="priority"
+           value={taskData.priority}
+           onChange={handleAssignTaskInput} id="" />
+
          <label htmlFor="">Add File</label>
-         <input type="file" name="task"
-           value={task}
-           onChange={(e) => setTask(e.target.value)} id="" />
+         <input type="file" name="attachment"
+           value={taskData.attachment}
+           onChange={handleAssignTaskInput} id="" />
+
          <label htmlFor="">Note</label>
-         <textarea name="" id=""rows={3}></textarea>
+         <textarea name="note" value={taskData.note} onChange={handleAssignTaskInput} rows={3}>
+
+         </textarea>
       
          <div className="flex justify-end mt-4">
           
            <button
-             type="button"
-             onClick={handleAssignTaskSubmit}
+             type="submit"
              className="button"
            >Submit <ButtonArrow /></button>
+           
          </div>
+         </form>
        </Modal>
+       <Notification message={notification} onClose={() => setNotification(null)} />
      </div>
    </>
  );
