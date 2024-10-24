@@ -1,19 +1,186 @@
-import { ButtonArrow } from '@/utils/svgicons';
-import React from 'react';
+import { UpdateTherapistData } from '@/services/admin/admin-service';
+import { ButtonArrow } from '@/utils/svgicons'; 
+import React, { FormEvent, useEffect, useState, useTransition } from 'react';
 import Modal from 'react-modal';
-
+import { toast } from 'sonner';
+ 
 interface EditModalProps {
   isOpen: boolean;
   onRequestClose: () => void;
-  formData: any;
-  handleInputChange: (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
-  handleFormSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
+  row: any;
+}
+interface FormData {
+  email: string,
+  companyProvidedEmail: string,
+  providerType: string,
+  licensedAndCertified: string,
+  computerAndWifi: string,
+  expInTeleHealthPlatform: string,
+  anyDisciplinaryActionTaken: string,
+  independentMalpracticeInsurance: string,
+  insuranceCompanyName: string,
+  claimedFilledInLast6Months: string,
+  profilePic: string,
+  firstName: string,
+  lastName: string,
+  phoneNumber: string,
+  dob: string,
+  state: string,
+  cityState: string,
+  zipCode: string,
+  addressLine1: string,
+  addressLine2: string,
+  licenseOrCertificationExpiryDate: string;
+  licenseOrCertificationIssuedDate: string,
+  PNPINumber: string,
+  taxonomyCode: string,
+  requireSupervision: string,
+  licenceType: string,
+  licenceOrCertificationNumber: number,
+  licenceOrCertificationState: string,
+  licensingBoardOrAgency: string,
+  validSupervisionAgreement: string,
+  licenseOrCertificationFile: string,
+  preferredLanguage: string,
+  fluencyOtherThanEnglish: string,
+  yearsOfExperience: number,
+  helpingApproach: string,
+  clientele: string,
+  generalExpertise: string,
+  preferredCommunicationMethod: string,
+  aboutYou: string,
 }
 
-const EditClinicianModal: React.FC<EditModalProps> = ({ isOpen, onRequestClose, formData, handleInputChange, handleFormSubmit }) => {
- 
- 
-  return (
+const EditClinicianModal: React.FC<EditModalProps> = ({ row, isOpen, onRequestClose }) => {
+
+  const [isPending, startTransition] = useTransition();
+  const [formData, setFormData] = useState<FormData>({
+    email: '',
+  companyProvidedEmail: '',
+  providerType: '',
+  licensedAndCertified: '',
+  computerAndWifi: '',
+  expInTeleHealthPlatform: '',
+  anyDisciplinaryActionTaken: '',
+  independentMalpracticeInsurance: '',
+  insuranceCompanyName: '',
+  claimedFilledInLast6Months: '',
+  profilePic: '',
+  firstName: '',
+  lastName: '',
+  phoneNumber: '',
+  dob: '',
+  state: '',
+  cityState: '',
+  zipCode: '',
+  addressLine1: '',
+  addressLine2: '',
+  licenseOrCertificationExpiryDate: '',
+  licenseOrCertificationIssuedDate: '',
+  PNPINumber: '',
+  taxonomyCode: '',
+  requireSupervision: '',
+  licenceType: '',
+  licenceOrCertificationNumber: 0,
+  licenceOrCertificationState: '',
+  licensingBoardOrAgency: '',
+  validSupervisionAgreement: '',
+  licenseOrCertificationFile: '',
+  preferredLanguage: '',
+  fluencyOtherThanEnglish: '',
+  yearsOfExperience: 0,
+  helpingApproach: '',
+  clientele: '',
+  generalExpertise: '',
+  preferredCommunicationMethod: '',
+  aboutYou: '',
+
+  });
+
+  useEffect(() => {
+    if (row) {
+      setFormData(prevFormData => ({
+        ...prevFormData,
+        email: row?.email,
+        companyProvidedEmail: row?.otherDetailsOfTherapist?.companyProvidedEmail,
+        providerType: row?.providerType,
+        licensedAndCertified: row?.otherDetailsOfTherapist?.licensedAndCertified,
+        computerAndWifi: row?.otherDetailsOfTherapist?.computerAndWifi,
+        expInTeleHealthPlatform: row?.otherDetailsOfTherapist?.expInTeleHealthPlatform,
+        anyDisciplinaryActionTaken: row?.otherDetailsOfTherapist?.anyDisciplinaryActionTaken,
+        independentMalpracticeInsurance: row?.otherDetailsOfTherapist?.independentMalpracticeInsurance,
+        insuranceCompanyName: row?.otherDetailsOfTherapist?.insuranceCompanyName,
+        claimedFilledInLast6Months: row?.otherDetailsOfTherapist?.claimedFilledInLast6Months,
+        profilePic: row?.otherDetailsOfTherapist?.profilePic,
+        firstName: row?.firstName,
+        lastName: row?.lastName ,
+        phoneNumber: row?.phoneNumber,
+        dob: row?.otherDetailsOfTherapist?.dob?.split('T')[0],
+        state: row?.otherDetailsOfTherapist?.state,
+        cityState: row?.otherDetailsOfTherapist?.cityState,
+        zipCode: row?.otherDetailsOfTherapist?.zipCode,
+        addressLine1: row?.otherDetailsOfTherapist?.addressLine1,
+        addressLine2: row?.otherDetailsOfTherapist?.addressLine2,
+        licenseOrCertificationExpiryDate: row?.otherDetailsOfTherapist?.licenseOrCertificationExpiryDate?.split('T')[0],
+        licenseOrCertificationIssuedDate: row?.otherDetailsOfTherapist?.licenseOrCertificationIssuedDate?.split('T')[0],
+        PNPINumber: row?.otherDetailsOfTherapist?.PNPINumber,
+        taxonomyCode: row?.otherDetailsOfTherapist?.taxonomyCode,
+        requireSupervision: row?.otherDetailsOfTherapist?.requireSupervision,
+        licenceType: row?.otherDetailsOfTherapist?.licenceType,
+        licenceOrCertificationNumber: row?.otherDetailsOfTherapist?.licenceOrCertificationNumber,
+        licenceOrCertificationState: row?.otherDetailsOfTherapist?.licenceOrCertificationState,
+        licensingBoardOrAgency: row?.otherDetailsOfTherapist?.licensingBoardOrAgency,
+        validSupervisionAgreement: row?.otherDetailsOfTherapist?.validSupervisionAgreement,
+        licenseOrCertificationFile: row?.otherDetailsOfTherapist?.licenseOrCertificationFile,
+        preferredLanguage: row?.otherDetailsOfTherapist?.preferredLanguage,
+        fluencyOtherThanEnglish: row?.otherDetailsOfTherapist?.fluencyOtherThanEnglish,
+        yearsOfExperience: row?.otherDetailsOfTherapist?.yearsOfExperience,
+        helpingApproach: row?.otherDetailsOfTherapist?.helpingApproach,
+        clientele: row?.otherDetailsOfTherapist?.clientele,
+        generalExpertise: row?.otherDetailsOfTherapist?.generalExpertise,
+        preferredCommunicationMethod: row?.otherDetailsOfTherapist?.preferredCommunicationMethod,
+        aboutYou: row?.otherDetailsOfTherapist?.aboutYou,
+      }));
+    }
+  }, [row]);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev: any) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleFormSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+  
+    startTransition(async () => {
+      try {
+        const { providerType, cityState, ...updatedFormData } = {
+          ...formData,
+          profilePic: "http://example.com/attachments/static-profile-pic.jpg", 
+          licenseOrCertificationFile: "http://example.com/attachments/static-license-file.pdf",
+        };
+  
+        const response = await UpdateTherapistData(`/admin/therapists/${row?._id}`, updatedFormData);
+        console.log('response:', response);
+        
+        if (response?.status === 201) {
+          toast.success("Therapist data updated successfully");
+          
+        } else {
+          toast.error("Failed to update therapist data");
+        }
+      } catch (error) {
+        console.error("Error updating therapist data:", error);
+        toast.error("An error occurred while updating the therapist data");
+      }
+    });
+  };
+  
+
+   return (
     <Modal
       isOpen={isOpen}
       onRequestClose={onRequestClose}
@@ -21,34 +188,33 @@ const EditClinicianModal: React.FC<EditModalProps> = ({ isOpen, onRequestClose, 
       className="bg-white w-[90%] rounded-[20px] p-[40px] max-h-[90vh] overflow-scroll overflo-custom "
       overlayClassName="w-full h-full fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center"
     >
-      <h2 className="text-xl font-semibold mb-4">Update Assignment Information</h2>
+      <h2 className="text-xl font-semibold mb-4">Edit Clinician Details</h2>
       <form onSubmit={handleFormSubmit}>
         <div className="grid md:grid-cols-2 gap-4">
           <div>
             <label className='block mb-2' htmlFor="">Email Address</label>
-            <input type="email" name="" id="" value={formData.email} onChange={handleInputChange}/>
+            <input type="email" name="email" id="" defaultValue={formData.email} onChange={handleInputChange} required/>
           </div>
           <div>
             <label className="block mb-2">Would you like a company provided email account?</label>
             <select
-              name="assignedClinician"
-              value={formData.chhoseaccount}
+              name="companyProvidedEmail"
+              value={formData.companyProvidedEmail} 
               onChange={handleInputChange}
-              className=""
+              required
             >
-              <option value="">Select</option>
-              <option value="Clinician 1">option 1</option>
-              <option value="Clinician 2">option 2</option>
-              <option value="Clinician 3">option 3</option>
+              <option value="" disabled>Select</option>
+              <option value="true">Yes</option>
+              <option value="false">No</option>
             </select>
           </div>
           <div>
             <label className="block mb-2">Provider Type?</label>
             <select
               name="assignedPeerSupport"
-              value={formData.assignedPeerSupport}
+              value={formData.providerType}
               onChange={handleInputChange}
-              className=""
+              required
             >
               <option value="">Select</option>
               <option value="Peer 1">Peer 1</option>
@@ -59,127 +225,112 @@ const EditClinicianModal: React.FC<EditModalProps> = ({ isOpen, onRequestClose, 
           <div>
             <label className="block mb-2">Are you licensed and/or certified?</label>
             <select
-              name="message"
-              value={formData.message}
+              name="licensedAndCertified"
+              value={formData.licensedAndCertified}
               onChange={handleInputChange}
-              className=""
+              required
             >
-              <option value="">Select</option>
-              <option value="Message 1">Message 1</option>
-              <option value="Message 2">Message 2</option>
-              <option value="Message 3">Message 3</option>
+              <option value="" disabled>Select</option>
+              <option value="true">Yes</option>
+              <option value="false">No</option>
             </select>
           </div>
           <div>
             <label className="block mb-2">Do you have computer equipment and Wifi to access our platform?</label>
             <select
-              name="workshop"
-              value={formData.workshop}
+              name="computerAndWifi"
+              value={formData.computerAndWifi}
               onChange={handleInputChange}
-              className=""
+              required
             >
-              <option value="">Select</option>
-              <option value="Workshop 1">Workshop 1</option>
-              <option value="Workshop 2">Workshop 2</option>
-              <option value="Workshop 3">Workshop 3</option>
+            <option value="" disabled>Select</option>
+              <option value="true">Yes</option>
+              <option value="false">No</option>
             </select>
           </div>
           <div>
             <label className="block mb-2">Do you have experience working on a telehealth platform?</label>
             <select
-              name="video"
-              value={formData.video}
+              name="expInTeleHealthPlatform"
+              value={formData.expInTeleHealthPlatform}
               onChange={handleInputChange}
-              className=""
+              required
             >
-              <option value="">Select</option>
-              <option value="Video 1">Video 1</option>
-              <option value="Video 2">Video 2</option>
-              <option value="Video 3">Video 3</option>
+             <option value="" disabled>Select</option>
+              <option value="true">Yes</option>
+              <option value="false">No</option>
             </select>
           </div>
           <div>
             <label className="block mb-2">Do you have any disciplinary actions (including pending) with any licensing or credentialing board?</label>
             <select
-              name="assignedClinician"
-              value={formData.chhoseaccount}
+              name="anyDisciplinaryActionTaken"
+              value={formData.anyDisciplinaryActionTaken}
               onChange={handleInputChange}
-              className=""
+              required
             >
-              <option value="">Select</option>
-              <option value="Clinician 1">option 1</option>
-              <option value="Clinician 2">option 2</option>
-              <option value="Clinician 3">option 3</option>
+              <option value="" disabled>Select</option>
+              <option value="true">Yes</option>
+              <option value="false">No</option>
             </select>
           </div>
           <div>
             <label className="block mb-2">Do you have independent Malpractice Insurance? If you do not currently have malpractice insurance, it is easy to acquire online! Please STOP and return to this form once you have acquired your malpractice insurance.</label>
             <select
-              name="assignedClinician"
-              value={formData.chhoseaccount}
+              name="independentMalpracticeInsurance"
+              value={formData.independentMalpracticeInsurance}
               onChange={handleInputChange}
-              className=""
+              required
             >
-              <option value="">Select</option>
-              <option value="Clinician 1">option 1</option>
-              <option value="Clinician 2">option 2</option>
-              <option value="Clinician 3">option 3</option>
+            <option value="" disabled>Select</option>
+              <option value="true">Yes</option>
+              <option value="false">No</option>
             </select>
           </div>
           <div>
             <label className="block mb-2">Insurance Company</label>
-            <select
-              name="assignedClinician"
-              value={formData.chhoseaccount}
-              onChange={handleInputChange}
-              className=""
-            >
-              <option value="">Select</option>
-              <option value="Clinician 1">option 1</option>
-              <option value="Clinician 2">option 2</option>
-              <option value="Clinician 3">option 3</option>
-            </select>
+            <input type="text" value={formData.insuranceCompanyName} name="insuranceCompanyName" onChange={handleInputChange} required/>
           </div>
           <div>
             <label className="block mb-2">Have you had a claim filed in the last 6 months.?</label>
             <select
-              name="assignedClinician"
-              value={formData.chhoseaccount}
+              name="claimedFilledInLast6Months"
+              value={formData.claimedFilledInLast6Months}
               onChange={handleInputChange}
-              className=""
+              required
             >
-              <option value="">Select</option>
-              <option value="Clinician 1">option 1</option>
-              <option value="Clinician 2">option 2</option>
-              <option value="Clinician 3">option 3</option>
+              <option value="" disabled>Select</option>
+              <option value="true">Yes</option>
+              <option value="false">No</option>
             </select>
           </div>
           <div>
           <label className="block mb-2">Profile Image</label>
-          <input type="file" name="" id=""  value={formData.chhoseaccount}  onChange={handleInputChange} />
+          <input type="file" name="profilePic" id="" onChange={handleInputChange} required/>
           </div>
           <div>
           <label className="block mb-2">First Name*</label>
-          <input type="text" name="" id=""  value={formData.chhoseaccount}  onChange={handleInputChange} />
+          <input type="text" name="firstName" id=""  value={formData.firstName}  onChange={handleInputChange} required/>
           </div>
           <div>
           <label className="block mb-2">Last Name*</label>
-          <input type="text" name="" id=""  value={formData.chhoseaccount}  onChange={handleInputChange} />
+          <input type="text" name="lastName" id=""  value={formData.lastName}  onChange={handleInputChange} required/>
           </div>
           <div>
           <label className="block mb-2">Phone Number*</label>
-          <input type="number" name="" id=""  value={formData.chhoseaccount}  onChange={handleInputChange} />
+          <input type="number" name="phoneNumber" id=""  value={formData.phoneNumber}  onChange={handleInputChange} required/>
           </div>
           <div>
           <label className="block mb-2">Date of Birth*</label>
-          <input type="date" name="" id=""  value={formData.chhoseaccount}  onChange={handleInputChange} />
+          <input type="date" name="dob" id=""  value={formData.dob}  onChange={handleInputChange}required />
           </div>
           <div>
             <label className="block mb-2">State*</label>
             <select
-              name="assignedClinician"
-              value={formData.chhoseaccount}
+              name="state"
+              value={formData.state}
               onChange={handleInputChange}
+              required
               className="w-full p-2 border rounded"
             >
               <option value="">Select</option>
@@ -189,109 +340,128 @@ const EditClinicianModal: React.FC<EditModalProps> = ({ isOpen, onRequestClose, 
           </div>
           <div>
           <label className="block mb-2">City*</label>
-          <input type="text" name="" id=""  value={formData.chhoseaccount}  onChange={handleInputChange} />
+          <input type="text" name="cityState" id="" value={formData.cityState}  onChange={handleInputChange} required/>
           </div>
           <div>
           <label className="block mb-2">Zip Code*</label>
-          <input type="number" name="" id=""  value={formData.chhoseaccount}  onChange={handleInputChange} />
+          <input type="number" name="zipCode" id=""  value={formData.zipCode}  onChange={handleInputChange} required/>
           </div>
           <div>
           <label className="block mb-2">Address Line 1*</label>
-          <input type="text" name="" id=""  value={formData.chhoseaccount}  onChange={handleInputChange} />
+          <input type="text" name="addressLine1" id=""  value={formData.addressLine1}  onChange={handleInputChange}required />
           </div>
           <div>
           <label className="block mb-2">Address Line 2*</label>
-          <input type="text" name="" id=""  value={formData.chhoseaccount}  onChange={handleInputChange} />
+          <input type="text" name="addressLine2" id=""  value={formData.addressLine2}  onChange={handleInputChange} required/>
           </div>
           <div>
           <label className="block mb-2">Licensure/Certification Issued Date *</label>
-          <input type="date" name="" id=""  value={formData.chhoseaccount}  onChange={handleInputChange} />
+          <input type="date" name="licenseOrCertificationIssuedDate" id=""  value={formData.licenseOrCertificationIssuedDate} required onChange={handleInputChange} />
           </div>
           <div>
           <label className="block mb-2">Licensure/Certification Expiration *</label>
-          <input type="date" name="" id=""  value={formData.chhoseaccount}  onChange={handleInputChange} />
+          <input type="date" name="licenseOrCertificationExpiryDate" required  value={formData.licenseOrCertificationExpiryDate}  onChange={handleInputChange} />
           </div>
           <div>
           <label className="block mb-2">NPI number * <br/> (If applicable,if not write N/A)</label>
-          <input type="number" name="" id=""  value={formData.chhoseaccount}  onChange={handleInputChange} />
+          <input type="number" name="PNPINumber" required  value={formData.PNPINumber}  onChange={handleInputChange} />
           </div>
           <div>
           <label className="block mb-2">Taxonomy code(If applicable,if not write N/A) *</label>
-          <input type="text" name="" id=""  value={formData.chhoseaccount}  onChange={handleInputChange} />
+          <input type="text" name="taxonomyCode" required  value={formData.taxonomyCode}  onChange={handleInputChange} />
           </div>
           <div>
           <label className="block mb-2">Do you require supervision?</label>
-          <input type="date" name="" id=""  value={formData.chhoseaccount}  onChange={handleInputChange} />
+          <select
+              name="requireSupervision"
+              value={formData.requireSupervision}
+              onChange={handleInputChange}
+              required
+            >
+              <option value="" disabled>Select</option>
+              <option value="true">Yes</option>
+              <option value="false">No</option>
+            </select>
+         
           </div>
           <div>
           <label className="block mb-2">License Type *</label>
-          <input type="date" name="" id=""  value={formData.chhoseaccount}  onChange={handleInputChange} />
+          <input type="text" name="licenceType" required  value={formData.licenceType}  onChange={handleInputChange} />
           </div>
           <div>
           <label className="block mb-2">Licensure/Certification Number *</label>
-          <input type="number" name="" id=""  value={formData.chhoseaccount}  onChange={handleInputChange} />
+          <input type="number" name="licenceOrCertificationNumber" required  value={formData.licenceOrCertificationNumber}  onChange={handleInputChange} />
           </div>
           <div>
           <label className="block mb-2">Licensure/Certification State*</label>
-          <input type="text" name="" id=""  value={formData.chhoseaccount}  onChange={handleInputChange} />
+          <input type="text" name="licenceOrCertificationState" required  value={formData.licenceOrCertificationState}  onChange={handleInputChange} />
           </div>
           <div>
           <label className="block mb-2">Which licensing board or agency issued your credentials?</label>
-          <input type="date" name="" id=""  value={formData.chhoseaccount}  onChange={handleInputChange} />
+          <input type="text" name="licensingBoardOrAgency" required  value={formData.licensingBoardOrAgency}  onChange={handleInputChange} />
           </div>
           <div>
           <label className="block mb-2">Do you have a supervisor with a valid supervision agreement in place?</label>
-          <input type="date" name="" id=""  value={formData.chhoseaccount}  onChange={handleInputChange} />
+          <input type="text" name="validSupervisionAgreement" required  value={formData.validSupervisionAgreement}  onChange={handleInputChange} />
           </div>
           <div>
-          <label className="block mb-2">Profile Image</label>
-          <input type="file" name="" id=""  value={formData.chhoseaccount}  onChange={handleInputChange} />
+          <label className="block mb-2">Add file</label>
+          <input type="file" name="licenseOrCertificationFile" required  onChange={handleInputChange} />
           </div>
           <div>
           <label className="block mb-2">Preferred Language?</label>
-          <input type="text" name="" id=""  value={formData.chhoseaccount}  onChange={handleInputChange} />
+          <input type="text" name="preferredLanguage" required value={formData.preferredLanguage}  onChange={handleInputChange} />
           </div>
           <div>
           <label className="block mb-2">Are you fluent in any other languages besides english?</label>
-          <input type="date" name="" id=""  value={formData.chhoseaccount}  onChange={handleInputChange} />
+          <select
+              name="fluencyOtherThanEnglish"
+              value={formData.fluencyOtherThanEnglish}
+              onChange={handleInputChange}
+              required
+            >
+              <option value="" disabled>Select</option>
+              <option value="true">Yes</option>
+              <option value="false">No</option>
+            </select>
           </div>
           <div>
           <label className="block mb-2">Year of Experience?</label>
-          <input type="date" name="" id=""  value={formData.chhoseaccount}  onChange={handleInputChange} />
+          <input type="number" name="yearsOfExperience" required  value={formData.yearsOfExperience}  onChange={handleInputChange} />
           </div>
           <div>
           <label className="block mb-2">Your Approach to Helping?</label>
-          <input type="number" name="" id=""  value={formData.chhoseaccount}  onChange={handleInputChange} />
+          <input type="text" name="helpingApproach" required  value={formData.helpingApproach}  onChange={handleInputChange} />
           </div>
           <div>
           <label className="block mb-2">Clientele*</label>
-          <input type="text" name="" id=""  value={formData.chhoseaccount}  onChange={handleInputChange} />
+          <input type="text" name="clientele" required value={formData.clientele}  onChange={handleInputChange} />
           </div>
           <div>
           <label className="block mb-2">General Expertise*</label>
-          <input type="text" name="" id=""  value={formData.chhoseaccount}  onChange={handleInputChange} />
+          <input type="text" name="generalExpertise" required value={formData.generalExpertise}  onChange={handleInputChange} />
           </div>
           <div>
             <label className="block mb-2">Which are your preferred means of online consultation?*</label>
             <select
-              name="workshop"
-              value={formData.workshop}
+              name="preferredCommunicationMethod"
+              value={formData.preferredCommunicationMethod}
               onChange={handleInputChange}
-              className=""
+              required
             >
               <option value="">Select</option>
-              <option value="Workshop 1">Audio</option>
-              <option value="Workshop 2">Video</option>
-              <option value="Workshop 3">Chat</option>
+              <option value="Audio">Audio</option>
+              <option value="Video">Video</option>
+              <option value="Chat">Chat</option>
             </select>
           </div>
         </div>
         <div>
-          <label className="block mb-2">About Description*</label>
+          <label className="block mb-2 mt-3">About Description*</label>
           <textarea 
           name="description" 
-          id=""  
-          value={formData.chhoseaccount} 
+          required 
+          value={formData.aboutYou} 
           rows={4} 
           ></textarea>
           </div>

@@ -8,6 +8,8 @@ import deleteCross from "@/assets/images/deleteCross.png"
 import Modal from 'react-modal';
 import Image from 'next/image';
 import ClinicianDetailsPopup from "./ClinicianDetailsPopup";
+import { DeleteClinician } from "@/services/admin/admin-service";
+import { toast } from "sonner";
 
 interface TableData {
   id: number;
@@ -26,10 +28,11 @@ interface TherapistsDataProps {
   setQuery: any;
   error: any;
   isLoading: any;
+  mutate: any;
 }
 
 
-const ClinicianTable: React.FC<TherapistsDataProps> = ({therapistsData, setQuery, isLoading, error} ) => {
+const ClinicianTable: React.FC<TherapistsDataProps> = ({therapistsData, setQuery, isLoading, error, mutate} ) => {
 
   const total = therapistsData?.total ?? 0;
 
@@ -39,6 +42,8 @@ const ClinicianTable: React.FC<TherapistsDataProps> = ({therapistsData, setQuery
   const [selectedRow, setSelectedRow] = useState(therapistsData);
   const [cliniciantDetailsPopup, setCliniciantDetailsPopup]= useState(false);
   const [clinicianDetails, setClinicianDetails] = useState<{ id: number; name: string } | null>(null);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [taskId, setTaskId] = useState<string | null>(null);
 
   const therapistsDataArray = therapistsData?.data;
 
@@ -70,7 +75,7 @@ const ClinicianTable: React.FC<TherapistsDataProps> = ({therapistsData, setQuery
     setClinicianDetails(null); 
   };
 
-  const openEditModal = (row: TableData) => {
+  const openEditModal = (row: any) => {
     setSelectedRow(row);
     setIsEditModalOpen(true);
   };
@@ -80,20 +85,39 @@ const ClinicianTable: React.FC<TherapistsDataProps> = ({therapistsData, setQuery
     setSelectedRow(null);
   };
 
-  const handleDelete = (row: TableData) => {
-    setSelectedRow(row);
+  const handleDelete = ( id: any) => {
+    setDeleteId(id);
+    //setSelectedRow(row);
+
     setIsDeleteModalOpen(true);
   };
-  const handleDeleteConfirm = () => {
-    // setTableData(tableData.filter((item) => item.id !== selectedRow?.id));
-    // handleModalClose();
+
+  const handleDeleteConfirm = async (id: string) => {
+    const route = `/admin/therapists/${id}`; 
+    try {
+      const response = await DeleteClinician(route); 
+      if (response.status === 200) {
+        toast.success("Clinician deleted successfully");
+      } else {
+        toast.error("Failed to delete Clinician");
+      }
+    } catch (error) {
+      console.error("Error deleting Clinician", error);
+      toast.error("An error occurred while deleting the Clinician");
+    }
+    setIsDeleteModalOpen(false);
+    mutate()
   };
+
   const handleDeleteCancel = () => { 
     handleModalClose();
   };
-  const openAssignTaskModal = (row: TableData) => {
+  const openAssignTaskModal = (row: any) => {
+    //setTaskId(id);
     setSelectedRow(row);
     setIsAssignTaskModalOpen(true);
+
+    console.log('hiiiiiiiiiiiiiiii');
   };
 
   const closeAssignTaskModal = () => {
@@ -131,7 +155,7 @@ const ClinicianTable: React.FC<TherapistsDataProps> = ({therapistsData, setQuery
             <th>Address</th>
             <th>Member Since</th>
             <th>No of Appointments</th>
-            <th>Account Status</th>
+            {/* <th>Account Status</th> */}
             <th>Actions</th>
             <th>Assign Task</th>
             <th>Status</th>
@@ -161,10 +185,11 @@ const ClinicianTable: React.FC<TherapistsDataProps> = ({therapistsData, setQuery
               </td>
               <td>{row?.firstName} {row?.lastName} </td>
               <td>{row?.phoneNumber}</td>
-              <td>{row?.address}</td>
+              <td>{row?.otherDetailsOfTherapist?.addressLine1} {row?.otherDetailsOfTherapist?.addressLine2}, {row?.otherDetailsOfTherapist?.state}
+              </td>
               <td>{row?.createdAt}</td>
               <td>{row?.appointments.length}</td>
-              <td>
+              {/* <td>
                <div className="toggle-checkbox relative">
                <input
                   type="checkbox"
@@ -176,7 +201,7 @@ const ClinicianTable: React.FC<TherapistsDataProps> = ({therapistsData, setQuery
                   <span className="dot"></span>
                 </span>
                </div>
-              </td>
+              </td> */}
               <td>
                 <div className="flex gap-2">
                   <button onClick={() => openClinicianPopup(row)}><ViewIcon /> </button>
@@ -186,7 +211,7 @@ const ClinicianTable: React.FC<TherapistsDataProps> = ({therapistsData, setQuery
                 > <EditIcon />
                 </button>
                 <button
-                 onClick={() => handleDelete(row)}
+                 onClick={() => handleDelete(row?._id)}
                 > <DeleteIcon />
                 </button>
                 </div>
@@ -199,7 +224,7 @@ const ClinicianTable: React.FC<TherapistsDataProps> = ({therapistsData, setQuery
                   Assign Task
                 </button>
               </td>
-              <td>
+              <td> 
                 <select
                   name="status2"
                   value={row.status2}
@@ -259,7 +284,7 @@ const ClinicianTable: React.FC<TherapistsDataProps> = ({therapistsData, setQuery
    <div className="flex items-center justify-center gap-6 mt-8">
    <button 
           type="button"
-          onClick={handleDeleteConfirm}
+          onClick={()=> handleDeleteConfirm(deleteId as string)}
           className="py-[10px] px-8 bg-[#CC0000] text-white rounded"
         >
           Yes, Delete
@@ -278,18 +303,14 @@ const ClinicianTable: React.FC<TherapistsDataProps> = ({therapistsData, setQuery
         <EditClinicianModal
           isOpen={isEditModalOpen}
           onRequestClose={closeEditModal}
-          formData={selectedRow}
-          handleInputChange={handleInputChange}
-          handleFormSubmit={handleFormSubmit}
+         row={selectedRow}
         />
       )}
       {selectedRow && (
         <AssignTaskModal
           isOpen={isAssignTaskModalOpen}
           onRequestClose={closeAssignTaskModal}
-          formData={selectedRow}
-          handleInputChange={handleInputChange}
-          handleFormSubmit={handleFormSubmit}
+         row={selectedRow}
         />
       )}
     {clinicianDetails && (

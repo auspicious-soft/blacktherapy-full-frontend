@@ -1,8 +1,6 @@
-import React, { useState } from 'react';
-import Modal from 'react-modal';
+import React from 'react';
 import useSWR from 'swr';
 import { GetEmployeeRecordsData } from '@/services/admin/admin-service';
-import { CloseIcon } from '@/utils/svgicons';
 
 interface ClinicianRecordProps {
   rowId: any;
@@ -88,157 +86,21 @@ const ClinicianRecord: React.FC<ClinicianRecordProps> = ({ rowId }) => {
   const { data, error, isLoading } = useSWR(`/admin/therapists/employee-records/${rowId}`, GetEmployeeRecordsData, {
     revalidateOnFocus: false,
   });
+  const employeeRecord = data?.data?.data;
 
-  const [formData, setFormData] = useState({
-    employmentStatus: 'Withdrawn',
-    employeeName: 'dsfasdas',
-    employeeOwner: 'sdfsfsd',
-    employeeId: 'sdfaas',
-    companyAssigned: 'dsfs',
-    position: 'dsfasdas',
-    assignedOffice: 'sdfsfsd',
-    supervisor: 'sdfaas',
-    officeNumber: 'sdfsfsd',
-    ringCentralExtension: 'sdfaas',
-    companyEmail: 'sdfsfsd',
-    medicaidChecks: 'Yes',
-    axisCare: 'yes',
-    simplePractice: 'NA',
-    zohoCRM: 'NA',
-    employeeEmail: 'abs@gmail.com'
-  });
-  const [modalIsOpen, setModalIsOpen] = useState(false);
 
-  const employeeRecord = data?.data?.data?.[0]; 
-  console.log('employeeRecord:', employeeRecord);
-
-  if (isLoading) return <p>Loading...</p>;
-  if (error) return <p>Error loading employee records.</p>;
-
-  const handleSubmit =()=>{
-    console.log();
-  }
-  const handleChange =() =>{
-
-  }
   return (
     <div>
-      {employeeRecord && (
-        <>
-          <TSGEmployeeDetails record={employeeRecord} />
-          <EmploymentInformation record={employeeRecord} />
-          <EmployeeAccessSystem record={employeeRecord} />
-        </>
-      )}
-
-      {/* Modal for editing fields */}
-      <Modal
-        isOpen={modalIsOpen}
-        onRequestClose={() => setModalIsOpen(false)}
-        contentLabel="Edit Item"
-        className="modal max-w-[1180px] mx-auto rounded-[20px] w-full  max-h-[90vh] overflow-scroll overflo-custom "
-        overlayClassName="w-full h-full p-3 fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center"
-    >
-    <div className="flex items-center justify-between rounded-t-[20px]  p-5 md:py-[25px] md:px-[35px] bg-[#283C63]  ">
-        <h2 className="font-gothamMedium text-white">Edit Employment Info</h2>
-        <button onClick={() => setModalIsOpen(false)}><CloseIcon /> </button>
-    </div>  
-        <div className='bg-white p-5 md:px-[35px] md:py-10'>
-          <form onSubmit={handleSubmit} className="">
-           <div className='grid md:grid-cols-2  gap-4 md:gap-[30px] '>
-            <div>
-              <label className="block mb-2">Assigned Employee ID</label>
-              <input type="text"  name="employeeId" value={formData.employeeId} onChange={handleChange} />
-            </div>
-            <div>
-              <label className="block mb-2">TSG Employee Name</label>
-              <input
-                type="text"
-                name="employeeName"
-                value={formData.employeeName}
-                onChange={handleChange}
-              />
-            </div>
-            <div>
-              <label className="block mb-2">TSG Employee Owner</label>
-              <input
-                type="text"
-                name="employeeOwner"
-                value={formData.employeeOwner}
-                onChange={handleChange}
-              />
-            </div>
-            <div>
-              <label className="block mb-2">Assigned Office</label>
-              <input
-                type="text"
-                name="assignedOffice"
-                value={formData.assignedOffice}
-                onChange={handleChange}
-              />
-            </div>
-            <div>
-              <label className="block mb-2">Company Assigned To</label>
-              <input type="text"  name="companyAssigned" value={formData.companyAssigned} onChange={handleChange} />
-            </div>
-            <div>
-              <label className="block mb-2">Position</label>
-              <input type="text"  name="position" value={formData.position} onChange={handleChange} />
-            </div>
-            <div>
-              <label className="block mb-2">Ring Central Extension</label>
-              <input type="text"  name="ringCentralExtension" value={formData.ringCentralExtension} onChange={handleChange} />
-            </div>
-            <div>
-              <label className="block mb-2">Supervisor</label>
-              <input type="text"  name="supervisor" value={formData.supervisor} onChange={handleChange} />
-            </div>
-            <div>
-              <label className="block mb-2">Office Number/Other </label>
-              <input type="text"  name="officeNumber" value={formData.officeNumber} onChange={handleChange} />
-            </div>
-            <div>
-              <label className="block mb-2">Medicaid Checks Allowed</label>
-              <input type="text"  name="medicaidChecks" value={formData.medicaidChecks} onChange={handleChange} />
-            </div>
-            <div>
-              <label className="block mb-2">Office Assigned Other</label>
-              <input type="text"  name="assignedOffice" value={formData.assignedOffice} onChange={handleChange} />
-            </div>
-            <div>
-              <label className="block mb-2">Company Email Address</label>
-              <input type="text"  name="companyEmail" value={formData.companyEmail} onChange={handleChange} />
-            </div>
-            <div>
-              <label className="block mb-2">Zoho CRM</label>
-              <input type="text"  name="zohoCRM" value={formData.zohoCRM} onChange={handleChange} />
-            </div>
-            <div>
-              <label className="block mb-2">Axis Care</label>
-              <input type="text"  name="axisCare" value={formData.axisCare} onChange={handleChange} />
-            </div>
-            <div>
-              <label className="block mb-2">Simple Pactice</label>
-              <input type="text"  name="simplePractice" value={formData.simplePractice} onChange={handleChange} />
-            </div>
-            <div>
-              <label className="block mb-2">Employee Email</label>
-              <input type="text"  name="employeeEmail" value={formData.employeeEmail} onChange={handleChange} />
-            </div>
-
-            </div>
-            {/* Add more fields as necessary */}
-            <div className='mt-5 md:mt-10 flex justify-end'>
-            <button
-              type="submit"
-              className="button !px-[30px]"
-            >Submit
-            </button>
-            </div>
-          </form>
-        </div>
-      </Modal>
-    </div>
+      {employeeRecord?.length > 0 ? (
+      <>
+        <TSGEmployeeDetails record={employeeRecord?.[0]} />
+        <EmploymentInformation record={employeeRecord?.[0]} />
+        <EmployeeAccessSystem record={employeeRecord?.[0]} />
+      </>
+    ) : (
+      <p>No data found</p> 
+    )}
+  </div>
   );
 };
 

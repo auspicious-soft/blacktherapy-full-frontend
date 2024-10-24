@@ -12,7 +12,7 @@ import { toast } from "sonner";
 import Notification from "../components/Notification";
 interface FormData {
   title: string;
-  assignTo: string;
+  assignTo: string; 
   link: string;
   attachment: string;
   description: string;

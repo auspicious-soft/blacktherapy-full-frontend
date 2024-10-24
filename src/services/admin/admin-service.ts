@@ -99,6 +99,13 @@ export const GetEmployeeRecordsData = async (route: string) =>{
   const axiosInstance = await getAxiosInstance()
   return axiosInstance.get(route)
 }
+//-------update employee records
+// export const UpdateEmployeeRecord = async (route:string, payload: any) =>{
+//   console.log('payload:', payload);
+//   const axiosInstance = await getAxiosInstance()
+//   return axiosInstance.post(route, payload)
+// }
+
 export const GetEmployeeNotesData = async (route: string) =>{
   const axiosInstance = await getAxiosInstance()
   return axiosInstance.get(route)
@@ -107,4 +114,35 @@ export const AddEmployeeNotesData = async (route:string, payload: any) =>{
   const axiosInstance = await getAxiosInstance()
   return axiosInstance.post(route, payload)
 }
+export const DeleteClinician = async (route: any) => {
+  const axiosInstance = await getAxiosInstance();
+  return axiosInstance.delete(route);
+};
+export const AssignTaskToTherapist = async (route: string, payload: any) =>{
+  const axiosInstance = await getAxiosInstance()
+  return axiosInstance.post(route, payload)
+}
 
+
+//----------update/EDIT therapist---- pending
+export const UpdateTherapistData = async (route:string, payload: any) =>{
+  console.log('payload:', payload);
+  console.log('route:', route);
+  const axiosInstance = await getAxiosInstance()
+  return axiosInstance.put(route, payload)
+}
+
+
+export const AddNewTherapist = async ( route: string, payload: any) =>{
+  console.log('payload:', payload);
+  console.log('route:', route);
+  const axiosInstance = await getAxiosInstance()
+  return axiosInstance.post(route, payload)
+}
+
+
+//=-------------Update Therapist Details
+export const UpdateTherapistDetails = async (route:string, payload: any) =>{
+  const axiosInstance = await getAxiosInstance()
+  return axiosInstance.post(route, payload)
+}

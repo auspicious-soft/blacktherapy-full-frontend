@@ -41,7 +41,7 @@ const AddClientForm = () => {
   
   const [isPending, startTransition] = useTransition();
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: any) => { 
     e.preventDefault();
     
     const {

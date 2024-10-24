@@ -1,16 +1,75 @@
+import { AssignTaskToTherapist } from '@/services/admin/admin-service';
 import { ButtonArrow } from '@/utils/svgicons';
-import React from 'react';
+import React, { ChangeEvent, FormEvent, useState, useTransition } from 'react';
 import Modal from 'react-modal';
-
+import { toast } from 'sonner';
+ 
 interface AssignTaskModalProps {
   isOpen: boolean;
   onRequestClose: () => void;
-  formData: any;
-  handleInputChange: (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
-  handleFormSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
+  row: any;
+}
+interface TaskData {
+  title: string,
+  dueDate: string,
+  priority: string,
+  note: string,
+  attachment : string,
 }
 
-const AssignTaskModal: React.FC<AssignTaskModalProps> = ({ isOpen, onRequestClose, formData, handleInputChange, handleFormSubmit }) => {
+const AssignTaskModal: React.FC<AssignTaskModalProps> = ({ isOpen, onRequestClose, row }) => {
+  const [isPending, startTransition] = useTransition();
+  const [taskData, setTaskData]= useState<TaskData>(
+    {
+    title: "",
+    dueDate: "",
+    priority: "",
+    note: "",
+    attachment : "",
+    }
+  )
+
+  const handleAssignTaskInput = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setTaskData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+
+  const handleAssignTaskSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+  
+    startTransition(async () => {
+      try {
+        const formattedDueDate = new Date(taskData.dueDate).toISOString();
+  
+        const taskPayload = {
+          ...taskData,
+          dueDate: formattedDueDate, 
+          attachment: "http://example.com/attachments/static-task-file.pdf", 
+          priority: "High", 
+        };
+        const response = await AssignTaskToTherapist(`/admin/therapists/${row?._id}`, taskPayload);
+        if (response?.status === 201) {
+          toast.success("Task assigned successfully");
+          setTaskData({
+            title: "",
+            dueDate: "",
+            priority: "",
+            note: "",
+            attachment: "",
+          });
+        } else {
+          console.error("Failed to assign task.");
+        }
+      } catch (error) {
+        console.error("An error occurred while assigning the task:", error);
+      }
+    });
+  };
+
   return (
     <Modal
       isOpen={isOpen}
@@ -20,15 +79,15 @@ const AssignTaskModal: React.FC<AssignTaskModalProps> = ({ isOpen, onRequestClos
       overlayClassName="overlay"
     >
       <h2 className="text-white bg-[#283C63] py-8 font-gothamMedium px-[50px]  ">Assign Task</h2>
-      <form onSubmit={handleFormSubmit} className='py-[40px] px-[60px]'>
+      <form onSubmit={handleAssignTaskSubmit} className='py-[40px] px-[60px]'>
         <div className="grid gap-[30px  ] ">
           <div>
             <label className="block mb-2">Title</label>
             <input
               type="text"
-              name="taskName"
-              value={formData.title}
-              onChange={handleInputChange}
+              name="title"
+              value={taskData.title}
+              onChange={handleAssignTaskInput}
               className="w-full p-2 border rounded"
             />
           </div>
@@ -37,32 +96,24 @@ const AssignTaskModal: React.FC<AssignTaskModalProps> = ({ isOpen, onRequestClos
             <input
               type="date"
               name="dueDate"
-              value={formData.dueDate}
-              onChange={handleInputChange}
+              value={taskData.dueDate}
+              onChange={handleAssignTaskInput}
               className="w-full p-2 border rounded"
             />
           </div>
           <div>
             <label className="block mb-2">Priority</label>
-            <select
-              name="priority"
-              value={formData.priority}
-              onChange={handleInputChange}
-              className="w-full p-2 border rounded"
-            >
-              <option value="">Select</option>
-              <option value="High">High</option>
-              <option value="Medium">Medium</option>
-              <option value="Low">Low</option>
-            </select>
+            <input type="text" name="priority"
+           value={taskData.priority}
+           onChange={handleAssignTaskInput} id="" />
           </div>
           <div>
             <label className="block mb-2">Choose File</label>
             <input
               type="file"
-              name="assignedTo"
-              value={formData.choosefile}
-              onChange={handleInputChange}
+              name="attachment"
+              value={taskData.attachment}
+              onChange={handleAssignTaskInput}
               className="w-full p-2 border rounded"
             />
           </div>
@@ -70,9 +121,9 @@ const AssignTaskModal: React.FC<AssignTaskModalProps> = ({ isOpen, onRequestClos
             <label className="block mb-2">Note</label>            
             <input
               type="text"
-              name="assignedTo"
-              value={formData.note}
-              onChange={handleInputChange}
+              name="note"
+              value={taskData.note}
+              onChange={handleAssignTaskInput}
               className="w-full p-2 border rounded"
             />
           </div>

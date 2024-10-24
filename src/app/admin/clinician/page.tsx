@@ -6,7 +6,7 @@ import useSWR from "swr";
 
 const Page: React.FC = () => { 
   const [query, setQuery] = useState('');
-  const { data, error, isLoading } = useSWR(`/admin/therapists?${query}`, GetTherapistsData);
+  const { data, error, isLoading, mutate } = useSWR(`/admin/therapists?${query}`, GetTherapistsData);
   const therapistsData: any= data?.data; 
 
   return (
@@ -14,7 +14,7 @@ const Page: React.FC = () => {
       <h1 className="font-antic text-[#283C63] text-[30px] leading-[1.2em] mb-[25px] lg:text-[40px] lg:mb-[50px]">
         Clinician
       </h1>
-      <ClinicianTable therapistsData={therapistsData} error={error} isLoading={isLoading} setQuery={setQuery} />
+      <ClinicianTable therapistsData={therapistsData} mutate={mutate} error={error} isLoading={isLoading} setQuery={setQuery} />
     </>
   );
 };
