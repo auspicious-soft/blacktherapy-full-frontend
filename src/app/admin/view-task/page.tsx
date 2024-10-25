@@ -20,6 +20,7 @@ interface TableData {
 }
 
 const TableComponent: React.FC = () => {
+  const [query, setQuery] = useState('');
   const [data, setData] = useState<TableData[]>([
     {
       id: 1,
@@ -109,7 +110,7 @@ const TableComponent: React.FC = () => {
         All Tasks
       </h1>
       <div className='flex justify-end mb-5'>
-        <SearchBar />
+        <SearchBar setQuery={setQuery} />
       </div>
       <div className='table-common overflo-custom'>
         <table className="">
