@@ -31,7 +31,7 @@ const Page: React.FC = () => {
         router.push('/therapist/dashboard')
       }
     }
-  }, [router, session])
+  }, [router, session]) 
 
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault();
