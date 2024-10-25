@@ -16,6 +16,7 @@ const Page: React.FC = () => {
   const { data: session } = useSession();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [role, setRole] = useState("client");
   const router = useRouter();
 
   useEffect(() => {
@@ -35,7 +36,7 @@ const Page: React.FC = () => {
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault();
     if (!email || !password) return toast.error('All fields are required')
-    const resss = await loginAction({ email, password })
+    const resss = await loginAction({ email, password, role })
     if (resss?.success) {
       toast.success('Logged in successfully')
       if (resss?.data?.role === 'admin') {
@@ -79,6 +80,32 @@ const Page: React.FC = () => {
                   placeholder="Password"
                   onChange={(e) => setPassword(e.target.value)}
                 />
+                <div className="role-toggle mb-4 md:mb-[30px] flex justify-center space-x-4">
+                  <label className="flex items-center space-x-2 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="role"
+                      required
+                      value="client"
+                      checked={role === "client"}
+                      onChange={(e) => setRole(e.target.value)}
+                      className="form-radio text-blue-600"
+                    />
+                    <span>Member</span>
+                  </label>
+                  <label className="flex items-center space-x-2 cursor-pointer">
+                    <input
+                      type="radio"
+                      required
+                      name="role"
+                      value="therapist"
+                      checked={role === "therapist"}
+                      onChange={(e) => setRole(e.target.value)}
+                      className="form-radio text-blue-600"
+                    />
+                    <span>Clinician</span>
+                  </label>
+                </div>
                 <Link href="/forgotpassword" className="text-[#686c78] text-sm text-right inline-block w-full mb-4 md:mb-[30px]">Forgot Password</Link>
                 <button type="submit" className="button w-full">Submit <ButtonSvg /></button>
               </form>
