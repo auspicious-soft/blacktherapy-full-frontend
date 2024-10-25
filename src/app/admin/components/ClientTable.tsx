@@ -138,10 +138,13 @@ const ClientTable: React.FC<ClientsDataProps> = ({ clientsData, setQuery, error,
               <tr key={row?._id} className="border-b">
                 <td>{row?._id}</td>
                 <td>
-                <p className={`font-gothamMedium rounded-3xl py-[2px] px-[10px] text-[10px] text-center 
-        ${row?.isOnline ? 'text-[#155724] bg-[#D4EDDA]' : 'text-[#5E2626] bg-[#FFCCCC]'}`}>
-        {row?.isOnline ? 'Completed' : 'Intake Pending'}
+                <p
+          className={`font-gothamMedium rounded-3xl py-[2px] px-[10px] text-[10px] text-center 
+          ${row?.status === 'Active Client' ? 'text-[#155724] bg-[#D4EDDA]' : 'text-[#5E2626] bg-[#FFCCCC]'}`}
+        >
+            {row?.status === 'Active Client' ? 'Active Client' : row?.status}
             </p>
+
                 </td>
                 <td>{row?.firstName} {row?.lastName}</td>
                 <td>{row?.phoneNumber}</td>
@@ -149,7 +152,7 @@ const ClientTable: React.FC<ClientsDataProps> = ({ clientsData, setQuery, error,
                 <td>{row?.appointments.length}</td>
                 <td>
                   <select
-                    name="actionss"
+                    name="status"
                     value={row?.status}
                     onChange={handleInputChange}
                     className="w-auto border-none h-auto bg-transparent p-0"
