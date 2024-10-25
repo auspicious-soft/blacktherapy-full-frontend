@@ -1,11 +1,12 @@
 "use client";
-import { GetPaymentsData } from "@/services/admin/admin-service";
+import { GetPaymentsData, UpdatePaymentRequest } from "@/services/admin/admin-service";
 import { ButtonArrow } from "@/utils/svgicons";
-import React, { useState } from "react";
+import React, { FormEvent, useState, useTransition } from "react";
 import Modal from "react-modal";
 import useSWR from "swr";
 import ReactPaginate from 'react-paginate';
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 interface PaymentData {
   id: string;
@@ -19,12 +20,24 @@ interface PaymentData {
   submissionDate: string;
   note?: string; 
 }
+interface PaymentApproveData {
+  progressNotes: string,
+  status: string,
+  payoutAmount: number,
+  payoutDate: string,
+  payoutTime: string,
+  payoutMethod: string,
+  statusChangedBy: string,
+  detailsAboutPayment: string,
+}
 
 const Page: React.FC = () => { 
   
   const [activeTab, setActiveTab] = useState("pending");
+  const [isPending, startTransition] = useTransition();
+  
   const [query, setQuery] = useState('')
-  const {data , error, isLoading} =  useSWR(`/admin/payment-requests?status=${activeTab === 'pending' ? 'pending' : activeTab === 'approved' ? 'approved' : 'rejected'}&${query}`, GetPaymentsData)
+  const {data , error, isLoading, mutate} =  useSWR(`/admin/payment-requests?status=${activeTab === 'pending' ? 'pending' : activeTab === 'approved' ? 'approved' : 'rejected'}&${query}`, GetPaymentsData)
   const router = useRouter();
   const paymentsData = data?.data?.data;
   const total = data?.data?.total ?? 0;
@@ -33,14 +46,15 @@ const Page: React.FC = () => {
 
   const [showApproveModal, setShowApproveModal] = useState(false);
   const [showRejectModal, setShowRejectModal] = useState(false);
-  const [approveDetails, setApproveDetails] = useState({
-    note: "",
+  const [approveDetails, setApproveDetails] = useState<PaymentApproveData>({
+    progressNotes: "",
     status: "",
-    amount: "",
-    date: "",
-    time: "",
-    paymentmethod: "",
-    details: "",
+    payoutAmount: 0,
+    payoutDate: "",
+    payoutTime: "",
+    payoutMethod: "",
+    statusChangedBy: "",
+    detailsAboutPayment: "",
 
   });
   const [rejectNote, setRejectNote] = useState("");
@@ -52,44 +66,74 @@ const Page: React.FC = () => {
     setQuery(`page=${selectedPage}&limit=${rowsPerPage}`);
   };
   
-  const handleApprove = (payment: any) => {
-    setSelectedPaymentID(payment);
+  const handleApprove = (id: string) => {
+    setSelectedPaymentID(id);
     setShowApproveModal(true);
   };
 
   const handleReject = (id: string) => {
-    console.log('id:', id);
+
     setSelectedPaymentID(id);
     setShowRejectModal(true);
+  }; 
+
+  const approvePaymentInput = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value, type } = e.target;
+  
+    setApproveDetails((prev) => ({
+      ...prev,
+      [name]: type === "number" ? Number(value) : value, 
+    }));
   };
-
-  const approvePayment = () => {
-    // if (selectedPayment) {
-    //   const updatedPayments = paymentsData.map((p: any) =>
-    //     p.id === selectedPayment.id
-    //       ? { ...selectedPayment, ...approveDetails, paymentStatus: "approved" }
-    //       : p
-    //   );
-    //   setShowApproveModal(false);
-    //   setSelectedPayment(null);
-    // }
-
-    console.log("hghgh");
+  
+  const approvePayment = async (e: FormEvent<HTMLFormElement>, id: string) => {
+    e.preventDefault();
+  
+    const approvedData: PaymentApproveData = {
+      ...approveDetails,
+      status: "approved",
+      statusChangedBy: "admin", 
+    };
+  
+    try {
+      const response = await UpdatePaymentRequest(`/admin/payment-requests/${id}`, approvedData);
+      console.log('response:', response);
+  
+      if (response?.status === 200) {
+        toast.success("Payment data updated successfully");
+        setShowApproveModal(false);
+        mutate();
+      } else {
+        toast.error("Failed to update Payment data");
+      }
+    } catch (error) {
+      console.error("Error updating Payment data:", error);
+      toast.error("An error occurred while updating the Payment data");
+    }
   };
-
-
-  const rejectPayment = (id: string) => {
-    // if (selectedPayment) {
-    //   const updatedPayments = paymentsData.map((p: any) =>
-    //     p.id === selectedPayment.id
-    //       ? { ...selectedPayment, note: rejectNote, paymentStatus: "rejected" }
-    //       : p
-    //   );
-    //   setShowRejectModal(false);
-    //   setSelectedPayment(null);
-    // }
-
-    console.log("llll");
+  
+  const rejectPayment = async (e: FormEvent<HTMLFormElement>, id: string) => {
+    e.preventDefault();
+  
+    const rejectNoteData = {
+      rejectNote,
+      status: "rejected",
+    };
+    try {
+      const response = await UpdatePaymentRequest(`/admin/payment-requests/${id}`, rejectNoteData);
+      console.log('response:', response);
+  
+      if (response?.status === 200) {
+        toast.success("Payment data updated successfully");
+        setShowRejectModal(false);
+        mutate(); 
+      } else {
+        toast.error("Failed to update Payment data");
+      }
+    } catch (error) {
+      console.error("Error updating Payment data:", error);
+      toast.error("An error occurred while updating the Payment data");
+    }
   };
 
   return (
@@ -179,7 +223,7 @@ const Page: React.FC = () => {
                       onChange={(e) =>
                         e.target.value === "Approve"
                           ? handleApprove(payment?._id)
-                          : handleReject(payment)
+                          : handleReject(payment?._id)
                       }
                       defaultValue=""
                     >
@@ -239,49 +283,48 @@ const Page: React.FC = () => {
         <div className="">
           <h2 className="text-white bg-[#283C63] py-8 font-gothamMedium px-[50px]  ">Approve Payment #123</h2>
          <div className="py-[40px] px-[60px] ">
+         <form onSubmit={(e) => approvePayment(e, selectedPaymentID as string)}>
          <div className="mb-4">
             <label className="block mb-2">Progress Note/Assessment Submitted & Approved?</label>
             <input
               type="text"
-              value={approveDetails.note}
-              onChange={(e) =>
-                setApproveDetails({ ...approveDetails, note: e.target.value })}  />
+              name="progressNotes"
+              value={approveDetails.progressNotes}
+              onChange={approvePaymentInput}  />
           </div>
           <div className="mb-4">
             <label className="block mb-2">Status Of Payment Request</label>
             <input
+             name="status"
               type="text"
               value={approveDetails.status}
-              onChange={(e) =>
-                setApproveDetails({ ...approveDetails, status: e.target.value })}  />
+              onChange={approvePaymentInput}  />
           </div>
           <div className="mb-4">
             <label className="block mb-2">Payout Amount</label>
             <input
               type="number"
-              value={approveDetails.amount}
-              onChange={(e) =>
-                setApproveDetails({ ...approveDetails, amount: e.target.value })}  />
+              name="payoutAmount"
+              value={approveDetails.payoutAmount}
+              onChange={approvePaymentInput}  />
           </div>
          <div className="mb-4">
             <label className="block mb-2">Date</label>
             <input
               type="date"
-              value={approveDetails.date}
-              onChange={(e) =>
-                setApproveDetails({ ...approveDetails, date: e.target.value })
-              }
+              name="payoutDate"
+              value={approveDetails.payoutDate}
+              onChange={approvePaymentInput}
               className="w-full p-2 border rounded"
             />
           </div>
           <div className="mb-4">
             <label className="block mb-2">Time</label>
             <input
-              type="time"
-              value={approveDetails.time}
-              onChange={(e) =>
-                setApproveDetails({ ...approveDetails, time: e.target.value })
-              }
+            type="time"
+              name="payoutTime"
+              value={approveDetails.payoutTime}
+              onChange={approvePaymentInput}
               className="w-full p-2 border rounded"
             />
           </div>
@@ -289,17 +332,17 @@ const Page: React.FC = () => {
             <label className="block mb-2">Payout Method</label>
             <input
               type="text"
-              value={approveDetails.paymentmethod}
-              onChange={(e) =>
-                setApproveDetails({ ...approveDetails, paymentmethod: e.target.value })}  />
+              name="payoutMethod"
+              value={approveDetails.payoutMethod}
+              onChange={approvePaymentInput}  />
           </div>
           <div className="mb-4">
             <label className="block mb-2">Details about Payment</label>
             <input
               type="text"
-              value={approveDetails.details}
-              onChange={(e) =>
-                setApproveDetails({ ...approveDetails, details: e.target.value })}  />
+              name="detailsAboutPayment"
+              value={approveDetails.detailsAboutPayment}
+              onChange={approvePaymentInput}  />
           </div>
           <div className="flex gap-5 justify-end">
           <button
@@ -307,10 +350,11 @@ const Page: React.FC = () => {
             className="button"
           >Close </button>
           <button
-            onClick={approvePayment}
+            type="submit"
             className="button"
           > Approve <ButtonArrow /> </button>
           </div>
+          </form>
          </div>
         </div>
       </Modal>
@@ -326,6 +370,7 @@ const Page: React.FC = () => {
         <div className="">
         <h2 className="text-white bg-[#283C63] py-8 font-gothamMedium px-[50px]  ">Reject Note</h2>
           <div className="py-[40px] px-[60px] ">
+          <form onSubmit={(e) => rejectPayment(e, selectedPaymentID as string)}>
           <div className="mb-4">
             <label className="block mb-2 text-[#707070]">Note</label>
             <textarea
@@ -338,16 +383,15 @@ const Page: React.FC = () => {
          <div className="flex gap-5 justify-end mt-[40px]">
          <button
             onClick={() => setShowRejectModal(false)}
-            className="button"
-          >
-            Close
+            className="button"> Close
           </button>
           <button
-            onClick={()=> rejectPayment(selectedPaymentID as string)}
+            type="submit"
             className="button"
           > Submit <ButtonArrow/>
           </button>
          </div>
+         </form>
       
           </div>
         </div>

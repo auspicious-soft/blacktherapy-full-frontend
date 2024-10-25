@@ -6,97 +6,64 @@ import ReactPaginate from 'react-paginate';
 import deleteCross from "@/assets/images/deleteCross.png"
 import { DeleteIcon } from '@/utils/svgicons';
 import SearchBar from '@/app/admin/components/SearchBar';
+import { deleteTaskData, getTasksData } from '@/services/admin/admin-service';
+import useSWR from 'swr';
+import { toast } from 'sonner';
 
-interface TableData {
-  id: number;
-  status: 'Pending' | 'Completed';
-  from: string;
-  to: string;
-  title: string;
-  dueDate: string;
-  priority: 'High' | 'Medium' | 'Low';
-  attachment: string;
-  note: string;
-}
 
-const TableComponent: React.FC = () => {
+const TableComponent: React.FC = () => { 
   const [query, setQuery] = useState('');
-  const [data, setData] = useState<TableData[]>([
-    {
-      id: 1,
-      status: 'Pending',
-      from: 'Alice',
-      to: 'Bob',
-      title: 'Project Proposal',
-      dueDate: '2024-08-10',
-      priority: 'High',
-      attachment: 'View docs',
-      note: 'Initial draft',
-    },
-    {
-      id: 2,
-      status: 'Completed',
-      from: 'Carol',
-      to: 'Dave',
-      title: 'Design Review',
-      dueDate: '2024-08-12',
-      priority: 'Medium',
-      attachment: 'View docs',
-      note: 'Reviewed and approved',
-    },
-    {
-      id: 3,
-      status: 'Pending',
-      from: 'Eve',
-      to: 'Frank',
-      title: 'Budget Report',
-      dueDate: '2024-08-15',
-      priority: 'Low',
-      attachment: 'View docs',
-      note: 'Awaiting feedback',
-    },
-    // Add more data for testing pagination
-  ]);
-  const [currentPage, setCurrentPage] = useState(0);
+  const { data, error, isLoading, mutate } = useSWR(`/admin/therapists/tasks?${query}`, getTasksData);
+  const taskData = data?.data?.data;
+  const total = data?.data?.total ?? 0;
   const [modalIsOpen, setIsOpen] = useState<boolean>(false);
-  const [deleteId, setDeleteId] = useState<number | null>(null);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
 
-  const openModal = (id: number) => {
+  const openModal = (id: string) => {
     setDeleteId(id);
     setIsOpen(true);
   };
 
   const closeModal = () => {
     setIsOpen(false);
-    setDeleteId(null);
   };
 
-  const deleteEntry = () => {
-    if (deleteId !== null) {
-      setData(data.filter((item) => item.id !== deleteId));
-      closeModal();
-    }
-  };
+    const confirmDeleteEntry = async (id: string) => {
+      console.log('id:', id);
+      // const route = `/admin/therapists/tasks/${id}`; 
+      try {
+        const response = await deleteTaskData(`/admin/therapists/tasks/${id}`); 
+        //console.log('id:', id);
+        if (response.status === 200) {
+          setIsOpen(false);
+          toast.success("User deleted successfully");
+        } else {
+          toast.error("Failed to delete User");
+        }
+      } catch (error) {
+        console.error("Error deleting User:", error);
+        toast.error("An error occurred while deleting the User");
+      }
+      
+      mutate()
+    };
 
-  const rowsPerPage = 2;
-  const indexOfLastRow = (currentPage + 1) * rowsPerPage;
-  const indexOfFirstRow = indexOfLastRow - rowsPerPage;
-  const currentRows = data.slice(indexOfFirstRow, indexOfLastRow);
+  const rowsPerPage = 10;
 
   const handlePageClick = (selectedItem: { selected: number }) => {
-    setCurrentPage(selectedItem.selected);
-  };
+    setQuery(`page=${selectedItem.selected + 1}&limit=${rowsPerPage}`)
+  }
 
-  const getStatusColor = (status: 'Pending' | 'Completed'): string => {
-    return status === 'Pending' ? 'text-[#C00] bg-[#FFD9D9]' : 'text-[#42A803] bg-[#CBFFB2]';
+  const getStatusColor = (status: 'Background Check Pending' | 'Completed'): string => {
+    return status === 'Background Check Pending' ? 'text-[#A85C03] bg-[#FFFDD1]' : 'text-[#42A803] bg-[#CBFFB2]';
   };
 
   const getPriorityColor = (priority: 'High' | 'Medium' | 'Low'): string => {
     switch (priority) {
       case 'High':
-        return 'text-[#C00] bg-[#FFD9D9]';
-      case 'Medium':
         return 'text-[#A85C03] bg-[#FFFDD1]';
+      case 'Medium':
+        return 'text-[#C00] bg-[#FFD9D9]';
       case 'Low':
         return 'text-[#42A803] bg-[#CBFFB2]';
       default:
@@ -110,7 +77,7 @@ const TableComponent: React.FC = () => {
         All Tasks
       </h1>
       <div className='flex justify-end mb-5'>
-        <SearchBar setQuery={setQuery} />
+        <SearchBar setQuery={setQuery}/>
       </div>
       <div className='table-common overflo-custom'>
         <table className="">
@@ -129,26 +96,26 @@ const TableComponent: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {currentRows.map((item) => (
-              <tr key={item.id}>
-                <td>{item.id}</td>
+            {taskData?.map((row: any) => (
+              <tr key={row?._id}>
+                <td>{row?._id}</td>
                 <td>
-                  <p className={`px-[10px] py-[2px] text-[10px] text-center rounded-3xl ${getStatusColor(item.status)}`}>{item.status}</p>
+                  <p className={`px-[10px] py-[2px] text-[10px] text-center rounded-3xl ${getStatusColor(row?.therapistId?.status)}`}>{row?.therapistId?.status}</p>
                 </td>
-                <td>{item.from}</td>
-                <td>{item.to}</td>
-                <td>{item.title}</td>
-                <td>{item.dueDate}</td>
+                <td>Admin</td>
+                <td>{row?.therapistId?.firstName} {row?.therapistId?.lastName}</td>
+                <td>{row?.title}</td>
+                <td>{row?.dueDate}</td>
                 <td>
-                  <p className={`px-[10px] py-[2px] text-[10px] text-center rounded-3xl ${getPriorityColor(item.priority)}`}>{item.priority}</p>
+                  <p className={`px-[10px] py-[2px] text-[10px] text-center rounded-3xl ${getPriorityColor(row?.priority)}`}>{row?.priority}</p>
                 </td>
                 <td>
-                  <a href="#" onClick={() => alert(`Opening attachment for ${item.title}`)}>{item.attachment}</a>
+                  <a href="#" onClick={() => alert(`Opening attachment for ${row?.title}`)}>{row?.attachment}</a>
                 </td>
-                <td>{item.note}</td>
+                <td>{row?.note}</td>
                 <td>
                   <button
-                    onClick={() => openModal(item.id)}
+                    onClick={() => openModal(row?._id)}
                     className=""
                   ><DeleteIcon /></button>
                 </td>
@@ -161,15 +128,15 @@ const TableComponent: React.FC = () => {
           isOpen={modalIsOpen}
           onRequestClose={closeModal}
           contentLabel="Confirm Deletion"
-          className="bg-white w-[90%] max-w-[668px] max-h-[90vh] overflow-auto bg-flower"
-          overlayClassName="w-full h-full fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center"
-        >
+          className="modal max-w-[584px] mx-auto bg-white rounded-xl w-full p-5 bg-flower"
+          overlayClassName="overlay"
+           >
           <Image src={deleteCross} alt='delete' height={174} width={174} className="mx-auto" />
           <h2 className="text-[20px] text-center leading-normal mt-[-20px]">Are you sure you want to Delete?</h2>
           <div className="flex items-center justify-center gap-6 mt-8">
             <button 
               type="button"
-              onClick={deleteEntry}
+              onClick={()=>confirmDeleteEntry(deleteId as string)}
               className="py-[10px] px-8 bg-[#CC0000] text-white rounded"
             >
               Yes, Delete
@@ -190,7 +157,7 @@ const TableComponent: React.FC = () => {
           nextLabel={'>'}
           breakLabel={'...'}
           breakClassName={'break-me'}
-          pageCount={Math.ceil(data.length / rowsPerPage)}
+          pageCount={Math.ceil(total / rowsPerPage)}
           marginPagesDisplayed={2}
           pageRangeDisplayed={5}
           onPageChange={handlePageClick}
@@ -208,3 +175,7 @@ const TableComponent: React.FC = () => {
 };
 
 export default TableComponent;
+  function setIsDeleteModalOpen(arg0: boolean) {
+    throw new Error('Function not implemented.');
+  }
+

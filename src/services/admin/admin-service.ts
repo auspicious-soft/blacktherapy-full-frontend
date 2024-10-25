@@ -23,6 +23,11 @@ export const getAppoinmentsData = async (route: string) => {
   const axiosInstance = await getAxiosInstance()
   return axiosInstance.get(route)
 }
+export const updateAssignments = async (route:string, payload: any) =>{
+  const axiosInstance = await getAxiosInstance()
+  return axiosInstance.patch(route, payload)
+}
+
 //------Client page------------
 export const getClientsPageData = async (route: string) => {
   const axiosInstance = await getAxiosInstance()
@@ -48,6 +53,10 @@ export const AddClientNotesData = async (route: string, payload: any) => {
   const axiosInstance = await getAxiosInstance()
   return axiosInstance.post(route, payload)
 }
+export const deleteClientData = async (route: any) => {
+  const axiosInstance = await getAxiosInstance();
+  return axiosInstance.delete(route);
+};
 
 //------Add New Client------------
 export const AddNewClient = async (payload: any) => {
@@ -60,6 +69,7 @@ export const GetPaymentsData = async (route: string) => {
   return axiosInstance.get(route)
 }
 export const UpdatePaymentRequest = async (route: string, payload: any) => {
+  console.log('payload:', payload);
   const axiosInstance = await getAxiosInstance();
   return axiosInstance.patch(route, payload);
 };
@@ -106,12 +116,6 @@ export const GetEmployeeRecordsData = async (route: string) => {
   const axiosInstance = await getAxiosInstance()
   return axiosInstance.get(route)
 }
-//-------update employee records
-// export const UpdateEmployeeRecord = async (route:string, payload: any) =>{
-//   console.log('payload:', payload);
-//   const axiosInstance = await getAxiosInstance()
-//   return axiosInstance.post(route, payload)
-// }
 
 export const GetEmployeeNotesData = async (route: string) => {
   const axiosInstance = await getAxiosInstance()
@@ -153,3 +157,13 @@ export const UpdateTherapistDetails = async (route: string, payload: any) => {
   const axiosInstance = await getAxiosInstance()
   return axiosInstance.post(route, payload)
 }
+
+//-------View Tasks----------
+export const getTasksData = async (route: string) =>{
+  const axiosInstance = await getAxiosInstance()
+  return axiosInstance.get(route)
+}
+export const deleteTaskData = async (route: any) => {
+  const axiosInstance = await getAxiosInstance();
+  return axiosInstance.delete(route);
+};

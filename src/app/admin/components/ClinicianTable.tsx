@@ -87,8 +87,6 @@ const ClinicianTable: React.FC<TherapistsDataProps> = ({therapistsData, setQuery
 
   const handleDelete = ( id: any) => {
     setDeleteId(id);
-    //setSelectedRow(row);
-
     setIsDeleteModalOpen(true);
   };
 

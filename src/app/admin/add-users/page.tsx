@@ -118,6 +118,7 @@ const Page = () => {
     try {
       const response = await DeleteUser(route); 
       if (response.status === 200) {
+        setIsDeleteModalOpen(false);
         toast.success("User deleted successfully");
       } else {
         toast.error("Failed to delete User");
@@ -126,7 +127,7 @@ const Page = () => {
       console.error("Error deleting User:", error);
       toast.error("An error occurred while deleting the User");
     }
-    setIsDeleteModalOpen(false);
+   
     mutate()
   };
 
@@ -371,7 +372,7 @@ const Page = () => {
 
           <label htmlFor="">Due Date</label>
          <input type="date" name="dueDate"
-           value={taskData.dueDate}
+           value={taskData.dueDate} 
            onChange={handleAssignTaskInput} id="" />
 
          <label htmlFor="">Priority</label>
