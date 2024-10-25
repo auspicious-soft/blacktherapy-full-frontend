@@ -19,7 +19,7 @@ interface OptionType {
   label: string;
 }
 const customStyles: StylesConfig<any, true> = {
-  control: (styles) => ({
+  control: (styles: any) => ({
     ...styles,
     backgroundColor: "white",
     height: "50px",
@@ -32,29 +32,29 @@ const customStyles: StylesConfig<any, true> = {
     borderRadius: "10px",
     alignItems: "center", // Vertically center content
   }),
-  placeholder: (styles) => ({
+  placeholder: (styles: any) => ({
     ...styles,
     color: "#6B6B6B", // Placeholder color
     fontSize: "14px",
   }),
-  input: (styles) => ({
+  input: (styles: any) => ({
     ...styles,
     margin: "0",
     padding: "0",
     height: "42px",
   }),
-  dropdownIndicator: (styles) => ({
+  dropdownIndicator: (styles: any) => ({
     ...styles,
   }),
-  option: (styles, { isDisabled, isFocused, isSelected }) => ({
+  option: (styles: any, { isDisabled, isFocused, isSelected }: any) => ({
     ...styles,
     backgroundColor: isDisabled
       ? undefined
       : isSelected
-      ? "#283C63"
-      : isFocused
-      ? "#283C63"
-      : undefined,
+        ? "#283C63"
+        : isFocused
+          ? "#283C63"
+          : undefined,
     color: isDisabled ? "#ccc" : isSelected ? "white" : "black",
     cursor: isDisabled ? "not-allowed" : "default",
     padding: 2,
@@ -67,12 +67,12 @@ const customStyles: StylesConfig<any, true> = {
         : undefined,
     },
   }),
-  multiValue: (styles) => ({
+  multiValue: (styles: any) => ({
     ...styles,
     backgroundColor: "#283C63",
     color: "white",
   }),
-  multiValueLabel: (styles) => ({
+  multiValueLabel: (styles: any) => ({
     ...styles,
     color: "white",
     padding: 6,
@@ -113,8 +113,8 @@ const CustomSelect: React.FC<CustomSelectProps<OptionType>> = ({
         options={options}
         styles={customStyles}
         placeholder={placeholder}
-        isMulti={isMulti} 
-        isSearchable={isSearchable} 
+        isMulti={isMulti}
+        isSearchable={isSearchable}
         required={required}
       />
     </div>
