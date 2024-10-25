@@ -13,7 +13,7 @@ import {
 } from "@/utils/svgicons";
 import { useSession } from "next-auth/react";
 import useSWR from "swr";
-
+import ReactLoading from 'react-loading';
 
 const Home = () => {
   const session = useSession()
@@ -69,6 +69,10 @@ const Home = () => {
       value: finalData?.data?.pendingClinicalReviews,
     },
   ];
+  if (isLoading) {
+    return <ReactLoading type={'spin'} color={'#26395e'} height={'20%'} width={'20%'} />
+  }
+
   return (
     <>
       <h1 className="font-antic text-[#283C63] text-[30px] leading-[1.2em] mb-[25px] lg:text-[40px] lg:mb-[50px]">
@@ -81,11 +85,11 @@ const Home = () => {
             key={card.id}
             icon={card.icon}
             title={card.title}
-            value={card.value ?? 'Loading...'}
+            value={card.value}
           />
         ))}
       </div>
     </>
-  )
+  );
 }
 export default Home
