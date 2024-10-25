@@ -69,9 +69,6 @@ const Home = () => {
       value: finalData?.data?.pendingClinicalReviews,
     },
   ];
-  if (isLoading) {
-    return <ReactLoading type={'spin'} color={'#26395e'} height={'20%'} width={'20%'} />
-  }
 
   return (
     <>
@@ -85,7 +82,7 @@ const Home = () => {
             key={card.id}
             icon={card.icon}
             title={card.title}
-            value={card.value}
+            value={card.value ?? <ReactLoading type={'spin'} color={'#26395e'} height={'20px'} width={'20px'} />}
           />
         ))}
       </div>
