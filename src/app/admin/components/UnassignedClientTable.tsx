@@ -4,7 +4,7 @@ import Modal from 'react-modal';
 import { ButtonArrow, ViewIcon } from '@/utils/svgicons';
 import ClientsAssignmentPopup from './ClientsAssignmentPopup';
 import { useRouter } from 'next/navigation';
-
+import ReactLoading from 'react-loading';
 export interface TableData {
   id: number;
   client: string; 
@@ -18,10 +18,11 @@ export interface TableData {
 interface UnassignedPageProps {
   appointmentsData: any 
   setQuery: any;
+  isLoading: boolean
 }
 
 
-const UnassignedClientTable:React.FC<UnassignedPageProps> = ({setQuery, appointmentsData}) => {
+const UnassignedClientTable:React.FC<UnassignedPageProps> = ({setQuery, appointmentsData, isLoading}) => {
 
   const router = useRouter();
   const total = appointmentsData?.total ?? 0;
@@ -140,7 +141,7 @@ const UnassignedClientTable:React.FC<UnassignedPageProps> = ({setQuery, appointm
             ))
           ) : (
             <tr>
-              <td className='w-full flex justify-center p-3 items-center' colSpan={4} >No data found</td>
+              <td className='w-full flex justify-center p-3 items-center' colSpan={4} >{isLoading && <ReactLoading type={'spin'} color={'#26395e'} height={'20px'} width={'20px'} />}</td>
             </tr>
           )}
           </tbody>

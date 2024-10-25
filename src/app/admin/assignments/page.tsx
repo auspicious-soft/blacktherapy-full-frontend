@@ -43,10 +43,10 @@ const handleTabClick = (tab: string) => {
         </div>
         <div className="mt-[30px]">
         {activeTab === 'tab1' &&
-        <UnassignedClientTable appointmentsData ={appointmentsData} setQuery = {setQuery}  />
+        <UnassignedClientTable appointmentsData ={appointmentsData} setQuery = {setQuery} isLoading ={isLoading} />
          }
         {activeTab === 'tab2' &&
-         <AssignedClientsTable appointmentsData={appointmentsData} setQuery = {setQuery}/>
+         <AssignedClientsTable appointmentsData={appointmentsData} setQuery = {setQuery} />
         }
       </div>
       </div>
