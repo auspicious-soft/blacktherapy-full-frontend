@@ -6,6 +6,8 @@ import Image from 'next/image';
 import ReactPaginate from 'react-paginate';
 import deleteCross from "@/assets/images/deleteCross.png";
 import ClientDetailsPopup from './ClientDetailsPopup';
+import { deleteClientData } from '@/services/admin/admin-service';
+import { toast } from 'sonner';
 
 interface TableData {
   id: string;
@@ -23,13 +25,16 @@ interface ClientsDataProps {
   setQuery: any;
   error: any;
   isLoading: any;
+  mutate: any;
 }
-const ClientTable: React.FC<ClientsDataProps> = ({ clientsData, setQuery, error, isLoading }) => {
+const ClientTable: React.FC<ClientsDataProps> = ({ clientsData, setQuery, error, isLoading, mutate }) => {
   const total = clientsData?.total ?? 0;
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState(clientsData);
   const [clientDetailsPopup, setClientDetailsPopup] = useState(false);
   const [clientDetails, setClientDetails] = useState<{ id: string; clientName: string } | null>(null);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
+
   const ClientsArray = clientsData?.data;
 
   const rowsPerPage = 10;
@@ -47,6 +52,10 @@ const ClientTable: React.FC<ClientsDataProps> = ({ clientsData, setQuery, error,
     setClientDetailsPopup(false);
     setClientDetails(null); 
   };
+  const handleModalClose = () => {
+    setIsDeleteModalOpen(false);
+  };
+
 
   const handleToggleStatus = (id: string) => {
     const updatedClientsArray = ClientsArray.map((item: any) =>
@@ -59,18 +68,26 @@ const ClientTable: React.FC<ClientsDataProps> = ({ clientsData, setQuery, error,
     setSelectedRow(row);
   };
 
-  const handleDelete = (row: any) => {
-    setSelectedRow(row);
+  const handleDelete = (id: any) => {
+    setDeleteId(id);
     setIsDeleteModalOpen(true);
   };
 
-  const handleModalClose = () => {
-    setIsDeleteModalOpen(false);
-  };
 
-  const handleDeleteConfirm = () => {
-    const updatedClientsArray = ClientsArray.filter((item: any) => item._id !== selectedRow?._id);
-    handleModalClose();
+  const handleDeleteConfirm = async (id: string) => {
+    try {
+      const response = await deleteClientData(`/admin/clients/${id}`); 
+      if (response.status === 200) {
+        toast.success("Client deleted successfully");
+        setIsDeleteModalOpen(false);
+      } else {
+        toast.error("Failed to delete Client");
+      }
+    } catch (error) {
+      console.error("Error deleting Client", error);
+      toast.error("An error occurred while deleting the Client");
+    }
+    mutate()
   };
 
   const handleDeleteCancel = () => {
@@ -98,8 +115,8 @@ const ClientTable: React.FC<ClientsDataProps> = ({ clientsData, setQuery, error,
               <th>Contact</th>
               <th>Member Since</th>
               <th>Assignments</th>
-              <th>Actions</th>
-              <th>Account Status</th>
+              <th>Action</th>
+              {/* <th>Account Status</th> */}
               <th>Actions</th>
             </tr>
           </thead>
@@ -133,17 +150,37 @@ const ClientTable: React.FC<ClientsDataProps> = ({ clientsData, setQuery, error,
                 <td>
                   <select
                     name="actionss"
-                    value={row.actionss}
+                    value={row?.status}
                     onChange={handleInputChange}
                     className="w-auto border-none h-auto bg-transparent p-0"
                   >
-                    <option value="Applicant Reviewed">Applicant Reviewed</option>
-                    <option value="Interview Pending">Interview Pending</option>
-                    <option value="Incomplete Application">Incomplete Application</option>
-                    <option value="Doesn't Meet Qualifications">Doesn&apos;t Meet Qualifications</option>
+                    <option value="Active Client">Active Client</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Callback Pending">Callback Pending</option>
+                    <option value="Insurance Verified">Insurence Verified</option>
+                    <option value="Pending Clinical Review">Pending Clinical Review</option>
+                    <option value="Waiting Assignment">Waiting Assignment</option>
+                    <option value="Assessment Pending">Assessment Pending</option>
+                    <option value="Assessment Scheduled">Assessment Scheduled</option>
+                    <option value="Insurance Hold">Insurance Hold</option>
+                    <option value="Ineligible Due to insurance">Ineligible Due to insurance</option>
+                    <option value="Alert -SEE NOTES">Alert -SEE NOTES</option>
+                    <option value="Alert - Past Due Balance/Collection">Alert - Past Due Balance/Collection</option>
+                    <option value="Unresponsive - Week 1">Unresponsive - Week 1</option>
+                    <option value="Unresponsive - Week 2">Unresponsive - Week 2</option>
+                    <option value="Unresponsive - Week 3">Unresponsive - Week 3</option>
+                    <option value="Unresponsive - Week 4">Unresponsive - Week 4</option>
+                    <option value="No Contact Sent">No Contact Sent</option>
+                    <option value="Inactive - Discharged">Inactive - Discharged</option>
+                    <option value="Inactive - Unresponsive">Inactive - Unresponsive</option>
+                    <option value="Inactive - Bad Lead">Inactive - Bad Lead</option>
+                    <option value="Inactive - Referred Out">Inactive - Referred Out</option>
+                    <option value="Inactive - Not Interested">Inactive - Not Interested</option>
+                    <option value="Intake Pending">Intake Pending</option>
+                    <option value="Intake Complete">Intake Complete</option>
                   </select>
                 </td>
-                <td className="py-2 px-4">
+                {/* <td className="py-2 px-4">
                   <label className="relative toggle-checkbox">
                     <input 
                       type="checkbox"
@@ -155,12 +192,12 @@ const ClientTable: React.FC<ClientsDataProps> = ({ clientsData, setQuery, error,
                       <span className="dot"></span>
                     </span>
                   </label>
-                </td>
+                </td> */}
                 <td className="py-2 px-4">
                  <div className='flex gap-2 '>
                  <button onClick={() => openClientPopup(row)}> <ViewIcon /> </button>
                   <button
-                    onClick={() => handleDelete(row)} >
+                    onClick={() => handleDelete(row?._id)} >
                     <DeleteIcon />
                   </button>
                  </div>
@@ -200,7 +237,7 @@ const ClientTable: React.FC<ClientsDataProps> = ({ clientsData, setQuery, error,
     isOpen={clientDetailsPopup}
     onRequestClose={closeClientPopup}
     row={clientDetails}
-  />
+  /> 
 )}
 
       <Modal
@@ -215,7 +252,7 @@ const ClientTable: React.FC<ClientsDataProps> = ({ clientsData, setQuery, error,
         <div className="flex items-center justify-center gap-6 mt-8">
           <button
             type="button"
-            onClick={handleDeleteConfirm}
+            onClick={()=>handleDeleteConfirm(deleteId as string) }
             className="py-[10px] px-8 bg-[#CC0000] text-white rounded"
           >
             Yes, Delete

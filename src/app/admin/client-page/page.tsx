@@ -6,7 +6,7 @@ import useSWR from "swr";
 
 const Page: React.FC = () => {
     const [query, setQuery] = useState('');
-    const { data, error, isLoading } = useSWR(`/admin/clients?${query}`, getClientsPageData);
+    const { data, error, isLoading, mutate } = useSWR(`/admin/clients?${query}`, getClientsPageData);
     const clientsData: any= data?.data; 
 
  
@@ -16,7 +16,7 @@ const Page: React.FC = () => {
                 Clients
             </h1>
         
-            <ClientTable clientsData={clientsData}  error={error} isLoading={isLoading} setQuery = {setQuery} />
+            <ClientTable clientsData={clientsData} mutate={mutate}  error={error} isLoading={isLoading} setQuery = {setQuery} />
         </>
     );
 }; 

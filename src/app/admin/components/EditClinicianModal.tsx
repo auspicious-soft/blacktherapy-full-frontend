@@ -3,11 +3,18 @@ import { ButtonArrow } from '@/utils/svgicons';
 import React, { FormEvent, useEffect, useState, useTransition } from 'react';
 import Modal from 'react-modal';
 import { toast } from 'sonner';
+import CustomSelect from './CustomSelect';
+import { USStates } from '@/data/UsStatesData';
+import { ActionMeta, MultiValue, SingleValue } from 'react-select';
  
 interface EditModalProps {
   isOpen: boolean;
   onRequestClose: () => void;
   row: any;
+}
+interface OptionType {
+  value: string;
+  label: string;
 }
 interface FormData {
   email: string,
@@ -25,7 +32,7 @@ interface FormData {
   lastName: string,
   phoneNumber: string,
   dob: string,
-  state: string,
+  state: string | null,
   cityState: string,
   zipCode: string,
   addressLine1: string,
@@ -152,6 +159,21 @@ const EditClinicianModal: React.FC<EditModalProps> = ({ row, isOpen, onRequestCl
     }));
   };
 
+  const handleSelectChange = (selectedOption: SingleValue<OptionType> | MultiValue<OptionType>, actionMeta: ActionMeta<OptionType>) => {
+    const value = selectedOption
+      ? Array.isArray(selectedOption)
+        ? (selectedOption as MultiValue<OptionType>).map(opt => opt.value).join(", ")
+        : (selectedOption as OptionType).value
+      : null;
+  
+    // Use a type assertion to ensure TypeScript understands the complete return type
+    setFormData((prev: FormData) => ({
+      ...prev,
+      state: value, // Set the selected state
+    }));
+  };
+  
+
   const handleFormSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
   
@@ -216,10 +238,13 @@ const EditClinicianModal: React.FC<EditModalProps> = ({ row, isOpen, onRequestCl
               onChange={handleInputChange}
               required
             >
-              <option value="">Select</option>
-              <option value="Peer 1">Peer 1</option>
-              <option value="Peer 2">Peer 2</option>
-              <option value="Peer 3">Peer 3</option>
+              <option value="" disabled>Select</option>
+              <option value="Therapist">Therapist</option>
+              <option value="Peer 2">Peer Support Specialist</option>
+              <option value="Peer 3">Paraprofessional</option>
+              <option value="">Qualified Professional</option>
+              <option value="">Associate Professional</option>
+              <option value="Other">Other</option>
             </select>
           </div>
           <div>
@@ -322,21 +347,17 @@ const EditClinicianModal: React.FC<EditModalProps> = ({ row, isOpen, onRequestCl
           </div>
           <div>
           <label className="block mb-2">Date of Birth*</label>
-          <input type="date" name="dob" id=""  value={formData.dob}  onChange={handleInputChange}required />
+          <input type="date" name="dob" id=""  value={formData.dob}  onChange={handleInputChange} required />
           </div>
           <div>
-            <label className="block mb-2">State*</label>
-            <select
-              name="state"
-              value={formData.state}
-              onChange={handleInputChange}
-              required
-              className="w-full p-2 border rounded"
-            >
-              <option value="">Select</option>
-              <option value="Clinician 1">option 1</option>
-              <option value="Clinician 2">option 2</option>
-            </select>
+ <CustomSelect
+        name="state"
+        value={USStates.find(option => option.value === formData.state) || null} // Find the selected state or fallback to null
+        options={USStates}
+        onChange={handleSelectChange} 
+        placeholder="Select State"
+      />
+
           </div>
           <div>
           <label className="block mb-2">City*</label>
