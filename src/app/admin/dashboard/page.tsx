@@ -81,7 +81,7 @@ const Home = () => {
             key={card.id}
             icon={card.icon}
             title={card.title}
-            value={card.value ?? 0}
+            value={card.value ?? 'Loading...'}
           />
         ))}
       </div>
