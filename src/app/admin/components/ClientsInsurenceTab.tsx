@@ -1,20 +1,18 @@
+import { updateClientsDetails } from '@/services/admin/admin-service';
 import React, { useState } from 'react';
+import { toast } from 'sonner';
 
 interface ClientInterfaceProps {
   row: any;
+  mutate: any;
 }
 
-const ClientsInsurenceTab: React.FC<ClientInterfaceProps> = ({ row }) => {
+const ClientsInsurenceTab: React.FC<ClientInterfaceProps> = ({ row, mutate }) => {
   const [formData, setFormData] = useState({
     insuranceCompanyName: row?.insuranceCompany?.insuranceCompanyName || '',
     memberOrSubscriberId: row?.insuranceCompany?.memberOrSubscriberId || ''
   });
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault(); // Prevent the default form submission
-    // Handle form submission here (e.g., sending data to backend)
-    console.log("Form submitted:", formData);
-  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -23,7 +21,17 @@ const ClientsInsurenceTab: React.FC<ClientInterfaceProps> = ({ row }) => {
       [name]: value
     });
   };
-
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault(); 
+    try {
+      await updateClientsDetails(`/admin/clients/${row._id}`, formData); 
+      toast.success('Client details updated successfully');
+      mutate(); 
+    } catch (error) {
+      console.error('Error updating client details:', error);
+      toast.error('Error updating client details'); 
+    }
+  };  
   return (
     <div>
       <form onSubmit={handleSubmit} className="grid md:grid-cols-2 gap-4 md:gap-5">

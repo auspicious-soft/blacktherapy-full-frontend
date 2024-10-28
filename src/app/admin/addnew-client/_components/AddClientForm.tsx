@@ -3,6 +3,9 @@ import { AddNewClient } from "@/services/admin/admin-service";
 import { ButtonArrow } from "@/utils/svgicons";
 import React, { useState, useTransition } from "react";
 import { toast } from "sonner";
+import CustomSelect from "../../components/CustomSelect";
+import { USStates } from "@/data/UsStatesData";
+import { SingleValue } from "react-select";
 
 type FormDataType = {
   serviceSubscribed: string;
@@ -20,7 +23,10 @@ type FormDataType = {
   addressLine1: string;
   addressLine2: string;
 };
-
+interface OptionType {
+  value: string;
+  label: string;
+}
 const AddClientForm = () => {
   const [formData, setFormData] = useState<FormDataType>({
     serviceSubscribed: "",
@@ -41,9 +47,27 @@ const AddClientForm = () => {
   
   const [isPending, startTransition] = useTransition();
 
+  const handleSelectChange = (selectedOption: SingleValue<OptionType>) => {
+    const value = selectedOption ? (selectedOption as OptionType).value : '';
+    setFormData((prev) => ({
+      ...prev,
+      state: value, 
+    }));
+  };
+
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+
+    setFormData((prevData) => ({
+      ...prevData,
+      [name as keyof FormDataType]: value, 
+    }));
+  };
+
   const handleSubmit = async (e: any) => { 
     e.preventDefault();
-    
     const {
       firstName,
       lastName,
@@ -66,7 +90,7 @@ const AddClientForm = () => {
     }
 
     startTransition(async () => {
-      try {
+      try { 
         const formDataToSubmit = {
           ...restFormData,
           password,
@@ -105,16 +129,8 @@ const AddClientForm = () => {
     });
   };
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    const { name, value } = e.target;
 
-    setFormData((prevData) => ({
-      ...prevData,
-      [name as keyof FormDataType]: value, // Assert name as a key of FormDataType
-    }));
-  };
+  
 
   return (
     <div>
@@ -156,7 +172,7 @@ const AddClientForm = () => {
                 <option value="through EAP">Through EAP</option>
               </select>
             </div>
-            <div className="">
+            <div className="selector">
               <label className="block mb-2">First Name</label>
               <input
                 type="text"
@@ -168,7 +184,7 @@ const AddClientForm = () => {
                 required
               />
             </div>
-            <div className="">
+            <div className="selector">
               <label className="block mb-2">Last Name</label>
               <input
                 type="text"
@@ -180,7 +196,7 @@ const AddClientForm = () => {
                 required
               />
             </div>
-            <div className="">
+            <div className="selector">
               <label className="block mb-2">Date of Birth</label>
               <input
                 type="date"
@@ -191,7 +207,7 @@ const AddClientForm = () => {
                 required
               />
             </div>
-            <div>
+            <div className="selector">
               <label className="block mb-2">Phone</label>
               <input
                 type="tel"
@@ -203,7 +219,7 @@ const AddClientForm = () => {
                 required
               />
             </div>
-            <div>
+            <div className="selector">
               <label className="block mb-2">Email</label>
               <input
                 type="email"
@@ -215,7 +231,7 @@ const AddClientForm = () => {
                 required
               />
             </div>
-            <div>
+            <div className="selector">
               <label className="block mb-2">Password</label>
               <input
                 type="password"
@@ -227,7 +243,7 @@ const AddClientForm = () => {
                 required
               />
             </div>
-            <div>
+            <div className="selector">
               <label className="block mb-2">Confirm Password</label>
               <input
                 type="password"
@@ -239,7 +255,7 @@ const AddClientForm = () => {
                 required
               />
             </div>
-            <div>
+            <div className="selector">
               <label className="block mb-2">City</label>
               <input
                 type="text"
@@ -251,19 +267,16 @@ const AddClientForm = () => {
                 required
               />
             </div>
-            <div>
-              <label className="block mb-2">State</label>
-              <input
-                type="text"
-                name="state"
-                value={formData.state}
-                onChange={handleInputChange}
-                id="state"
-                placeholder="State"
-                required
-              />
+            <div className="selector">
+            <CustomSelect
+        name="state"
+        value={USStates.find(option => option.value === formData.state) || null} 
+        options={USStates}
+        onChange={handleSelectChange} 
+        placeholder="Select State"
+      />
             </div>
-            <div>
+            <div className="selector">
               <label className="block mb-2">Zip Code</label>
               <input
                 type="text"
@@ -275,7 +288,7 @@ const AddClientForm = () => {
                 required
               />
             </div>
-            <div>
+            <div className="selector">
               <label className="block mb-2">Address Line 1</label>
               <input
                 type="text"
@@ -287,7 +300,7 @@ const AddClientForm = () => {
                 required
               />
             </div>
-            <div>
+            <div className="selector">
               <label className="block mb-2">Address Line 2</label>
               <input
                 type="text"

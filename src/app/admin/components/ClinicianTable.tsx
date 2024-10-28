@@ -96,6 +96,7 @@ const ClinicianTable: React.FC<TherapistsDataProps> = ({therapistsData, setQuery
       const response = await DeleteClinician(route); 
       if (response.status === 200) {
         toast.success("Clinician deleted successfully");
+        mutate()
       } else {
         toast.error("Failed to delete Clinician");
       }
@@ -104,7 +105,7 @@ const ClinicianTable: React.FC<TherapistsDataProps> = ({therapistsData, setQuery
       toast.error("An error occurred while deleting the Clinician");
     }
     setIsDeleteModalOpen(false);
-    mutate()
+    
   };
 
   const handleDeleteCancel = () => { 
@@ -302,6 +303,7 @@ const ClinicianTable: React.FC<TherapistsDataProps> = ({therapistsData, setQuery
           isOpen={isEditModalOpen}
           onRequestClose={closeEditModal}
          row={selectedRow}
+         mutate={mutate}
         />
       )}
       {selectedRow && (

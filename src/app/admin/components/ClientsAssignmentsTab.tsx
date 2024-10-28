@@ -1,13 +1,41 @@
-import React from "react";
+import { updateClientsDetails } from "@/services/admin/admin-service";
+import React, { useState } from "react";
+import { toast } from "sonner";
 
 interface ClientsAssignmentsProps {
   row: any; 
+  mutate: any;
 }
 
-const ClientsAssignmentsTab: React.FC<ClientsAssignmentsProps> = ({ row }) => {
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault(); // Prevent the default form submission
+const ClientsAssignmentsTab: React.FC<ClientsAssignmentsProps> = ({ row, mutate }) => {
+  const [formData, setFormData] = useState({
+    reasonForLookingHelp: row?.reasonForLookingHelp || "",
+    howYouKnewUs: row?.howYouKnewUs || "",
+    rateCurrentPhysicalHealth: row?.rateCurrentPhysicalHealth || "",
+    rateSleepingHabits: row?.rateSleepingHabits || "",
+    gender: row?.gender || "",
+    mainIssueBrief: row?.mainIssueBrief || "",
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault(); 
+    try {
+      await updateClientsDetails(`/admin/clients/${row._id}`, formData); 
+      toast.success('Client details updated successfully');
+      mutate(); 
+    } catch (error) {
+      console.error('Error updating client details:', error);
+      toast.error('Error updating client details'); 
+    }
+  };  
 
   return (
     <div>
@@ -15,8 +43,8 @@ const ClientsAssignmentsTab: React.FC<ClientsAssignmentsProps> = ({ row }) => {
         <div className="grid md:grid-cols-2 gap-4 md:gap-5">
           <div>
             <label className="block mb-2">To begin, tell us why you&apos;re looking for help today?</label>
-            <select name="reasonForLookingHelp" value={row?.reasonForLookingHelp || ""} className="">
-              <option value="">--Select--</option>
+            <select name="reasonForLookingHelp" value={formData.reasonForLookingHelp} onChange={handleChange}>
+              <option value="" disabled>--Select--</option>
               <option value="I need assistance with anxiety management.">I need assistance with anxiety management.</option>
               <option value="Help with anxiety">Help with anxiety</option>
               <option value="Help with depression">Help with depression</option>
@@ -26,8 +54,8 @@ const ClientsAssignmentsTab: React.FC<ClientsAssignmentsProps> = ({ row }) => {
           
           <div>
             <label className="block mb-2">How did you know about us?</label>
-            <select name="howYouKnewUs" value={row?.howYouKnewUs || ""} className="">
-              <option value="">--Select--</option>
+            <select name="howYouKnewUs" value={formData.howYouKnewUs} onChange={handleChange}>
+              <option value="" disabled>--Select--</option>
               <option value="Through social media">Through social media</option>
               <option value="Referral">Referral</option>
               <option value="Online search">Online search</option>
@@ -36,7 +64,7 @@ const ClientsAssignmentsTab: React.FC<ClientsAssignmentsProps> = ({ row }) => {
           
           <div>
             <label className="block mb-2">How would you rate your current physical health?</label>
-            <select name="rateCurrentPhysicalHealth" value={row?.rateCurrentPhysicalHealth || ""} className="">
+            <select name="rateCurrentPhysicalHealth" value={formData.rateCurrentPhysicalHealth} onChange={handleChange}>
               <option value="">--Select--</option>
               <option value="Good">Good</option>
               <option value="Fair">Fair</option>
@@ -46,7 +74,7 @@ const ClientsAssignmentsTab: React.FC<ClientsAssignmentsProps> = ({ row }) => {
 
           <div>
             <label className="block mb-2">How would you rate your sleeping habits?</label>
-            <select name="rateSleepingHabits" value={row?.rateSleepingHabits || ""} className="">
+            <select name="rateSleepingHabits" value={formData.rateSleepingHabits} onChange={handleChange}>
               <option value="">--Select--</option>
               <option value="Good">Good</option>
               <option value="Fair">Fair</option>
@@ -56,7 +84,7 @@ const ClientsAssignmentsTab: React.FC<ClientsAssignmentsProps> = ({ row }) => {
 
           <div>
             <label className="block mb-2">What gender do you identify with?</label>
-            <select name="gender" value={row?.gender || ""} className="">
+            <select name="gender" value={formData.gender} onChange={handleChange}>
               <option value="">--Select--</option>
               <option value="Male">Male</option>
               <option value="Female">Female</option>
@@ -69,8 +97,9 @@ const ClientsAssignmentsTab: React.FC<ClientsAssignmentsProps> = ({ row }) => {
             <input
               type="text"
               name="mainIssueBrief"
-              value={row?.mainIssueBrief || ""}
+              value={formData.mainIssueBrief}
               placeholder="Describe your concerns"
+              onChange={handleChange}
               className=""
             />
           </div>

@@ -13,12 +13,14 @@ import ClientNotesTab from "./ClientNotesTab";
 
 interface ClientDetailsPopupProps {
   isOpen: boolean;
-  onRequestClose: () => void; 
+  onRequestClose: () => void;  
   row: any;
+  mutate: any
 }
 
 const ClientDetailsPopup = (props: ClientDetailsPopupProps) => {
   const {row} = props;
+  const {mutate} = props;
   const [activeTab, setActiveTab] = useState("tab1");
   const handleTabClick = (tab: string) => {
     setActiveTab(tab);
@@ -119,9 +121,9 @@ const ClientDetailsPopup = (props: ClientDetailsPopupProps) => {
           </button>
         </div>
         <div className="mt-[30px]">
-          {activeTab === "tab1" && <PersonalInformationTab row={row} />}
-          {activeTab === "tab2" && <ClientsAssignmentsTab row={row} />}
-          {activeTab==="tab3" && <ClientsInsurenceTab row={row} />}
+          {activeTab === "tab1" && <PersonalInformationTab row={row} mutate={mutate} />}
+          {activeTab === "tab2" && <ClientsAssignmentsTab row={row} mutate={mutate}/>}
+          {activeTab==="tab3" && <ClientsInsurenceTab row={row} mutate={mutate} />}
           {activeTab==="tab4" && <BillingInformationTab rowId={row?._id} /> }
           {activeTab==="tab5" && <ServiceAssignmentTab rowId={row?._id}/> }
           {activeTab==="tab6" && <AttachmentsTabs rowId={row?._id}/> }

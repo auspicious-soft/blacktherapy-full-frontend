@@ -6,7 +6,7 @@ import Image from 'next/image';
 import ReactPaginate from 'react-paginate';
 import deleteCross from "@/assets/images/deleteCross.png";
 import ClientDetailsPopup from './ClientDetailsPopup';
-import { deleteClientData } from '@/services/admin/admin-service';
+import { deleteClientData, updateClientsDetails } from '@/services/admin/admin-service';
 import { toast } from 'sonner';
 
 interface TableData {
@@ -56,18 +56,6 @@ const ClientTable: React.FC<ClientsDataProps> = ({ clientsData, setQuery, error,
     setIsDeleteModalOpen(false);
   };
 
-
-  const handleToggleStatus = (id: string) => {
-    const updatedClientsArray = ClientsArray.map((item: any) =>
-      item._id === id ? { ...item, status: !item.status } : item
-    );
-    
-  };
-
-  const handleEdit = (row: TableData  ) => {
-    setSelectedRow(row);
-  };
-
   const handleDelete = (id: any) => {
     setDeleteId(id);
     setIsDeleteModalOpen(true);
@@ -94,14 +82,31 @@ const ClientTable: React.FC<ClientsDataProps> = ({ clientsData, setQuery, error,
     handleModalClose();
   };
 
-  const handleInputChange = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  const handleInputChange = async (
+    event: React.ChangeEvent<HTMLSelectElement>,
+    id: string
   ) => {
-    if (selectedRow) {
+    if (id) {
       const { name, value } = event.target;
-      setSelectedRow({ ...selectedRow, [name]: value });
+      const updatedRow = { ...ClientsArray.find((client: any) => client._id === id), [name]: value };
+      setSelectedRow(updatedRow);
+      const actionData = {
+        id: updatedRow._id, 
+        [name]: value, 
+      };
+      try {
+        await updateClientsDetails(`/admin/clients/${updatedRow._id}`, actionData);
+        toast.success('Client status updated successfully');
+        mutate();
+      } catch (error) {
+        console.log('Error:', error);
+        toast.error('Error updating client status');
+      }
+      
+     
     }
   };
+  
 
   return (
     <div className="">
@@ -154,7 +159,7 @@ const ClientTable: React.FC<ClientsDataProps> = ({ clientsData, setQuery, error,
                   <select
                     name="status"
                     value={row?.status}
-                    onChange={handleInputChange}
+                    onChange={(event)=>handleInputChange(event, row?._id)}
                     className="w-auto border-none h-auto bg-transparent p-0"
                   >
                     <option value="Active Client">Active Client</option>
@@ -183,19 +188,6 @@ const ClientTable: React.FC<ClientsDataProps> = ({ clientsData, setQuery, error,
                     <option value="Intake Complete">Intake Complete</option>
                   </select>
                 </td>
-                {/* <td className="py-2 px-4">
-                  <label className="relative toggle-checkbox">
-                    <input 
-                      type="checkbox"
-                      checked={row?.status}
-                      onChange={() => handleToggleStatus(row?._id)}
-                      className="absolute opacity-0 z-[1] w-full h-full "
-                    />
-                    <span className="indicator">
-                      <span className="dot"></span>
-                    </span>
-                  </label>
-                </td> */}
                 <td className="py-2 px-4">
                  <div className='flex gap-2 '>
                  <button onClick={() => openClientPopup(row)}> <ViewIcon /> </button>
@@ -240,6 +232,7 @@ const ClientTable: React.FC<ClientsDataProps> = ({ clientsData, setQuery, error,
     isOpen={clientDetailsPopup}
     onRequestClose={closeClientPopup}
     row={clientDetails}
+    mutate={mutate}
   /> 
 )}
 

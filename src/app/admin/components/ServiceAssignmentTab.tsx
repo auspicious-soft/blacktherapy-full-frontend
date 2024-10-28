@@ -1,59 +1,57 @@
-import { ServiceAssignmentStats } from '@/services/admin/admin-service';
+import { addServiceAgreements, ServiceAssignmentStats } from '@/services/admin/admin-service';
 import { CloseIcon } from '@/utils/svgicons';
 import React, { useState } from 'react';
 import Modal from 'react-modal';
+import { toast } from 'sonner';
 import useSWR from 'swr';
 
 interface ServiceAssignmentProps {
   rowId: string;
 }
-
 const ServiceAssignmentTab: React.FC<ServiceAssignmentProps> = ({ rowId }) => {
   const { data, error, isLoading } = useSWR(`/admin/client-service-assignment/${rowId}`, ServiceAssignmentStats);
   const serviceInfo = data?.data?.data;
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [isUpdateMode, setIsUpdateMode] = useState(false);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<any>({
     id: '',
-    ccaCompletionDate: '',
-    serviceReceived: '',
-    pcpInEhr: '',
-    authorization: '',
-    authorizationStatus: '',
-    ccaDate: '',
-    therapist: '',
-    pcpCompletion: '',
-    authorizationComplete: '',
+    ccaInEHR: '',
     ccaCompletedBy: '',
-    assignedPeer: '',
+    ccaCompletionDate: '',
+    servicesReviewing: '',
+    assignedTherapist: '',
+    peerSupportTherapist: '',
+    pcpInEHR: '',
+    pcpCompletionDate: '',
     pcpCompletedBy: '',
+    authorizationRequired: '',
+    authorizationCompleted: '',
     authorizationCompletedBy: '',
+    authorizationStatus: '',
   });
 
   const openModal = (rowData?: any) => {
     if (rowData) {
-      // Populate formData with the selected row's data for updating
       setFormData({ ...rowData });
-      setIsUpdateMode(true); // Switch to update mode
+      setIsUpdateMode(true); 
     } else {
-      // Reset formData for new entry
       setFormData({
         id: '',
-        ccaCompletionDate: '',
-        serviceReceived: '',
-        pcpInEhr: '',
-        authorization: '',
-        authorizationStatus: '',
-        ccaDate: '',
-        therapist: '',
-        pcpCompletion: '',
-        authorizationComplete: '',
+        ccaInEHR: '',
         ccaCompletedBy: '',
-        assignedPeer: '',
+        ccaCompletionDate: '',
+        servicesReviewing: '',
+        assignedTherapist: '',
+        peerSupportTherapist: '',
+        pcpInEHR: '',
+        pcpCompletionDate: '',
         pcpCompletedBy: '',
+        authorizationRequired: '',
+        authorizationCompleted: '',
         authorizationCompletedBy: '',
+        authorizationStatus: '',
       });
-      setIsUpdateMode(false); // Switch to add mode
+      setIsUpdateMode(false); 
     }
     setModalIsOpen(true);
   };
@@ -68,26 +66,31 @@ const ServiceAssignmentTab: React.FC<ServiceAssignmentProps> = ({ rowId }) => {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (isUpdateMode) {
-      // Logic for updating data
-      console.log("Updating data:", formData);
-    } else {
-      // Logic for adding new data
-      console.log("Adding new data:", formData);
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault(); 
+    try {
+      await addServiceAgreements(`/admin/client-service-assignment/${rowId}`, formData); 
+      toast.success('Client details updated successfully');
+      // mutate(); 
+    } catch (error) {
+      console.error('Error updating client details:', error);
+      toast.error('Error updating client details'); 
     }
-    closeModal();
   };
 
   return (
     <div>
-      {/* Conditionally render Add New button if no data */}
-      {!serviceInfo?.length && (
+         <div className='flex justify-end mb-[22px]'>
+        <button
+          onClick={openModal}
+          className="!text-sm !h-[40px] !px-[30px] button">Add New
+        </button>
+      </div>
+      {/* {!serviceInfo?.length && (
         <div className='flex justify-end mb-[22px]'>
           <button onClick={() => openModal()} className="!text-sm !h-[40px] !px-[30px] button">Add New</button>
         </div>
-      )}
+      )} */}
 
       <div className='table-common overflo-custom'>
         <table>
@@ -158,7 +161,7 @@ const ServiceAssignmentTab: React.FC<ServiceAssignmentProps> = ({ rowId }) => {
         <div className="grid md:grid-cols-2 gap-4 md:gap-[30px] ">
           <div>
             <label className="block mb-2">CCA in EHR System</label>
-            <input type="text" name="id" value={formData.id} onChange={handleInputChange} />
+            <input type="text" name="ccaInEHR" value={formData.ccaInEHR} onChange={handleInputChange} />
           </div>
           <div>
             <label className="block mb-2">CCA Completion Date*</label>
@@ -166,27 +169,27 @@ const ServiceAssignmentTab: React.FC<ServiceAssignmentProps> = ({ rowId }) => {
           </div>
           <div>
             <label className="block mb-2">CCA Completed By</label>
-            <input type="text" name="ccaCompletionDate" value="{formData.ccaCompletionDate}" onChange={handleInputChange} />
+            <input type="text" name="ccaCompletedBy" value={formData.ccaCompletedBy} onChange={handleInputChange} />
           </div>
           <div>
             <label className="block mb-2">Service Receiving</label>
-            <input type="text" name="serviceReceived" value={formData.serviceReceived} onChange={handleInputChange} />
+            <input type="text" name="servicesReviewing" value={formData.servicesReviewing} onChange={handleInputChange} />
           </div>
           <div>
             <label className="block mb-2">Assigned Therapist</label>
-            <input type="text" name="ccaCompletionDate" value="{formData.ccaCompletionDate}" onChange={handleInputChange} />
+            <input type="text" name="assignedTherapist" value={formData.assignedTherapist} onChange={handleInputChange} />
           </div>
           <div>
             <label className="block mb-2">Assigned Peer Support</label>
-            <input type="text" name="assignedPeer" value={formData.assignedPeer} onChange={handleInputChange} />
+            <input type="text" name="peerSupportTherapist" value={formData.peerSupportTherapist} onChange={handleInputChange} />
           </div>
           <div>
             <label className="block mb-2">PCP in EHR:</label>
-            <input type="text" name="pcpInEhr" value={formData.pcpInEhr} onChange={handleInputChange} />
+            <input type="text" name="pcpInEHR" value={formData.pcpInEHR} onChange={handleInputChange} />
           </div>
           <div>
             <label className="block mb-2">PCP Completion Date*</label>
-            <input type="text" name="pcpCompletion" value={formData.pcpCompletion} onChange={handleInputChange} />
+            <input type="text" name="pcpCompletionDate" value={formData.pcpCompletionDate} onChange={handleInputChange} />
           </div>
           <div>
             <label className="block mb-2">PCP Completed By</label>
@@ -194,15 +197,15 @@ const ServiceAssignmentTab: React.FC<ServiceAssignmentProps> = ({ rowId }) => {
           </div>
           <div>
             <label className="block mb-2">Authorization Required?</label>
-            <input type="text" name="authorization" value={formData.authorization} onChange={handleInputChange} />
+            <input type="text" name="authorizationRequired" value={formData.authorizationRequired} onChange={handleInputChange} />
           </div>
           <div>
             <label className="block mb-2">Authorization Completed/ Submitted ?</label>
-            <input type="text" name="authorizationStatus" value="{formData.authorizationStatus}" onChange={handleInputChange} />
+            <input type="text" name="authorizationCompleted" value={formData.authorizationCompleted} onChange={handleInputChange} />
           </div>
           <div>
             <label className="block mb-2">Authorization Complete By</label>
-            <input type="text" name="authorizationComplete" value={formData.authorizationComplete} onChange={handleInputChange} />
+            <input type="text" name="authorizationCompletedBy" value={formData.authorizationCompletedBy} onChange={handleInputChange} />
           </div>
           <div>
             <label className="block mb-2">Authorization Status</label>
