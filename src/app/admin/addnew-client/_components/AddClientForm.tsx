@@ -47,7 +47,7 @@ const AddClientForm = () => {
   
   const [isPending, startTransition] = useTransition();
 
-  const handleSelectChange = (selectedOption: SingleValue<OptionType>) => {
+  const handleSelectChange = (selectedOption:any) => {
     const value = selectedOption ? (selectedOption as OptionType).value : '';
     setFormData((prev) => ({
       ...prev,
