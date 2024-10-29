@@ -8,11 +8,11 @@ interface CustomSelectProps<OptionType> {
     actionMeta: ActionMeta<OptionType>
   ) => void;
   options: OptionsOrGroups<OptionType, GroupBase<OptionType>>;
-  isMulti?: true; // The isMulti prop can only be true, not a general boolean
-  placeholder?: string; // Custom placeholder
-  isSearchable?: boolean; // To enable/disable search
-  name: string; // To ensure the name is dynamic for form fields
-  required?: boolean; // To handle required field validation
+  isMulti?: true; 
+  placeholder?: string; 
+  isSearchable?: boolean; 
+  name: string; 
+  required?: boolean;
 }
 interface OptionType {
   value: string;
@@ -84,11 +84,11 @@ const CustomSelect: React.FC<CustomSelectProps<OptionType>> = ({
   value,
   onChange,
   options,
-  isMulti, // default is single select
+  isMulti,
   placeholder = "Select...",
-  isSearchable = true, // default is searchable
+  isSearchable = true, 
   name,
-  required = true, // optional required flag
+  required = true, 
 }) => {
   const handleChange = (selectedOption: SingleValue<OptionType> | MultiValue<OptionType>, actionMeta: ActionMeta<OptionType>) => {
     const event = {
@@ -96,13 +96,13 @@ const CustomSelect: React.FC<CustomSelectProps<OptionType>> = ({
         name,
         value: selectedOption,
       },
-    } as unknown as React.ChangeEvent<HTMLInputElement>; // Mimic the event for form handling
+    } as unknown as React.ChangeEvent<HTMLInputElement>; 
 
-    onChange(selectedOption, actionMeta); // Pass selected options and metadata to parent
+    onChange(selectedOption, actionMeta); 
   };
 
   return (
-    <div>
+    <div className="state-select">
       <label htmlFor={name} className="block mb-2">
         {name}*
       </label>

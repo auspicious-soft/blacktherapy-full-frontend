@@ -41,7 +41,12 @@ export const ServiceAssignmentStats = async (route: string) => {
   const axiosInstance = await getAxiosInstance()
   return axiosInstance.get(route)
 }
-export const GetClientAttachments = async (route: string) => {
+export const addServiceAgreements = async (route:string, payload: any) =>{
+  const axiosInstance = await getAxiosInstance()
+  return axiosInstance.post(route, payload)
+}
+
+export const GetClientAttachments = async (route: string) =>{
   const axiosInstance = await getAxiosInstance()
   return axiosInstance.get(route)
 }
@@ -57,6 +62,16 @@ export const deleteClientData = async (route: any) => {
   const axiosInstance = await getAxiosInstance();
   return axiosInstance.delete(route);
 };
+export const updateClientsDetails = async (route: string, payload: any) => {
+  console.log('payload:', payload);
+  const axiosInstance = await getAxiosInstance();
+  return axiosInstance.patch(route, payload);
+};
+export const addClientBilling = async (route:string, payload: any) =>{
+  const axiosInstance = await getAxiosInstance()
+  return axiosInstance.post(route, payload)
+}
+
 
 //------Add New Client------------
 export const AddNewClient = async (payload: any) => {
@@ -69,7 +84,6 @@ export const GetPaymentsData = async (route: string) => {
   return axiosInstance.get(route)
 }
 export const UpdatePaymentRequest = async (route: string, payload: any) => {
-  console.log('payload:', payload);
   const axiosInstance = await getAxiosInstance();
   return axiosInstance.patch(route, payload);
 };

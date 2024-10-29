@@ -1,13 +1,21 @@
-import { ClientsBilllingStats } from '@/services/admin/admin-service';
+import { addClientBilling, ClientsBilllingStats } from '@/services/admin/admin-service';
 import { CloseIcon } from '@/utils/svgicons';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useTransition } from 'react';
 import Modal from 'react-modal';
+import { toast } from 'sonner';
 import useSWR from 'swr';
 
 interface BillingInformationTabProps {
   rowId: string; 
 }
-
+interface FormData {
+  insuranceVerified: boolean,
+  scaleDisount: number,
+  billingStatus: string,
+  scaleTermsOrNotes: string,
+  lastInsuranceCheck: string,
+  simplePractice: boolean,
+}
 const BillingInformationTab: React.FC<BillingInformationTabProps> = ({ rowId }) => {
 
   const { data, error, isLoading } = useSWR(`/admin/client-billing/${rowId}`, ClientsBilllingStats, {
@@ -15,46 +23,55 @@ const BillingInformationTab: React.FC<BillingInformationTabProps> = ({ rowId }) 
   });
 
   const billingInfo = data?.data?.data;
+  const [isPending, startTransition] = useTransition();
 
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [formData, setFormData] = useState({
-    insuranceVerified: '',
-    scaleDiscount: '',
+  const [formData, setFormData] = useState<FormData>({
+    insuranceVerified: false,
+    scaleDisount: 0,
     billingStatus: '',
-    scaleTermsNote: '',
+    scaleTermsOrNotes: '',
     lastInsuranceCheck: '',
-    simplePractice: '',
-    name: '',
-    userRole: '',
-    date: '',
+    simplePractice: false,
   });
 
   const openModal = () => setModalIsOpen(true);
   const closeModal = () => setModalIsOpen(false);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: value,
+      [name]: name === 'insuranceVerified' || name === 'simplePractice' ? value === 'true' : value,
     });
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission logic here
-    setFormData({
-      insuranceVerified: '',
-      scaleDiscount: '',
-      billingStatus: '',
-      scaleTermsNote: '',
-      lastInsuranceCheck: '',
-      simplePractice: '',
-      name: '',
-      userRole: '',
-      date: '',
+    startTransition(async () => {
+      try {
+        const response = await addClientBilling(`/admin/client-billing/${rowId}`, formData); 
+        console.log('formData:', formData);
+        console.log('response:', response);
+        if (response?.status === 201) {
+          toast.success("Billing Added Successfully");
+          closeModal();
+          setFormData({
+            insuranceVerified: false,
+            scaleDisount: 0,
+            billingStatus: '',
+            scaleTermsOrNotes: '',
+            lastInsuranceCheck: '',
+            simplePractice: false,
+          });
+        } else {
+          toast.error("Failed to add billing entry");
+        }
+      } catch (error) {
+        console.error("Error adding billing entry:", error);
+        toast.error("An error occurred while adding the billing entry");
+      }
     });
-    closeModal();
   };
 
   return (
@@ -112,37 +129,42 @@ const BillingInformationTab: React.FC<BillingInformationTabProps> = ({ rowId }) 
           <div className="grid md:grid-cols-2 gap-4 md:gap-[30px]">
             <div>
               <label className="block mb-2">Insurance Verified</label>
-              <input
-                type="text"
-                name="insuranceVerified"
-                value={formData.insuranceVerified}
-                onChange={handleInputChange}
-              />
+              <select name="insuranceVerified"
+                value={formData.insuranceVerified ? 'true' : 'false'}
+                onChange={handleInputChange}>
+                  <option value="" disabled>--Select-</option>
+                  <option value="true">Yes</option>
+                  <option value="false">No</option>
+                </select>
             </div>
             <div>
               <label className="block mb-2">Scale/Discount</label>
               <input
-                type="text"
-                name="scaleDiscount"
-                value={formData.scaleDiscount}
+                type="number"
+                name="scaleDisount"
+                value={formData.scaleDisount}
                 onChange={handleInputChange}
               />
             </div>
             <div>
               <label className="block mb-2">Billing Status</label>
-              <input
-                type="text"
+             <select
                 name="billingStatus"
                 value={formData.billingStatus}
                 onChange={handleInputChange}
-              />
+              >
+                <option value="" disabled>--Select--</option>
+                <option value="pending">Pending</option>
+                <option value="approved">Approved</option>
+                <option value="rejected">Rejected</option>
+              </select>
             </div>
             <div>
               <label className="block mb-2">Scale Terms/Note</label>
               <input
                 type="text"
-                name="scaleTermsNote"
-                value={formData.scaleTermsNote}
+                name="scaleTermsOrNotes"
+                value={formData.scaleTermsOrNotes}
                 onChange={handleInputChange}
               />
             </div>
@@ -157,39 +179,13 @@ const BillingInformationTab: React.FC<BillingInformationTabProps> = ({ rowId }) 
             </div>
             <div>
               <label className="block mb-2">Entered into Simple Practice</label>
-              <input
-                type="text"
-                name="simplePractice"
-                value={formData.simplePractice}
-                onChange={handleInputChange}
-              />
-            </div>
-            <div>
-              <label className="block mb-2">Name</label>
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleInputChange}
-              />
-            </div>
-            <div>
-              <label className="block mb-2">User Role</label>
-              <input
-                type="text"
-                name="userRole"
-                value={formData.userRole}
-                onChange={handleInputChange}
-              />
-            </div>
-            <div>
-              <label className="block mb-2">Date</label>
-              <input
-                type="text"
-                name="date"
-                value={formData.date}
-                onChange={handleInputChange}
-              />
+              <select  name="simplePractice"
+                value={formData.simplePractice ? 'true' : 'false'}
+                onChange={handleInputChange}>
+                  <option value="" disabled>--Select--</option>
+                  <option value="true">Yes</option>
+                  <option value="false">No</option>
+                </select>
             </div>
           </div>
           <div className='mt-10 flex justify-end'>

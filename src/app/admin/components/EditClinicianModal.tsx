@@ -11,6 +11,7 @@ interface EditModalProps {
   isOpen: boolean;
   onRequestClose: () => void;
   row: any;
+  mutate: any;
 }
 interface OptionType {
   value: string;
@@ -18,22 +19,22 @@ interface OptionType {
 }
 interface FormData {
   email: string,
-  companyProvidedEmail: string,
+  companyProvidedEmail: boolean,
   providerType: string,
-  licensedAndCertified: string,
-  computerAndWifi: string,
-  expInTeleHealthPlatform: string,
-  anyDisciplinaryActionTaken: string,
-  independentMalpracticeInsurance: string,
+  licensedAndCertified: boolean,
+  computerAndWifi: boolean,
+  expInTeleHealthPlatform: boolean,
+  anyDisciplinaryActionTaken: boolean,
+  independentMalpracticeInsurance: boolean,
   insuranceCompanyName: string,
-  claimedFilledInLast6Months: string,
+  claimedFilledInLast6Months: boolean,     
   profilePic: string,
   firstName: string,
   lastName: string,
   phoneNumber: string,
   dob: string,
   state: string | null,
-  cityState: string,
+  city: string,
   zipCode: string,
   addressLine1: string,
   addressLine2: string,
@@ -41,7 +42,7 @@ interface FormData {
   licenseOrCertificationIssuedDate: string,
   PNPINumber: string,
   taxonomyCode: string,
-  requireSupervision: string,
+  requireSupervision: boolean,
   licenceType: string,
   licenceOrCertificationNumber: number,
   licenceOrCertificationState: string,
@@ -49,7 +50,7 @@ interface FormData {
   validSupervisionAgreement: string,
   licenseOrCertificationFile: string,
   preferredLanguage: string,
-  fluencyOtherThanEnglish: string,
+  fluencyOtherThanEnglish: boolean,
   yearsOfExperience: number,
   helpingApproach: string,
   clientele: string,
@@ -58,50 +59,49 @@ interface FormData {
   aboutYou: string,
 }
 
-const EditClinicianModal: React.FC<EditModalProps> = ({ row, isOpen, onRequestClose }) => {
+const EditClinicianModal: React.FC<EditModalProps> = ({ row, isOpen, onRequestClose, mutate }) => {
 
   const [isPending, startTransition] = useTransition();
   const [formData, setFormData] = useState<FormData>({
-    email: '',
-  companyProvidedEmail: '',
-  providerType: '',
-  licensedAndCertified: '',
-  computerAndWifi: '',
-  expInTeleHealthPlatform: '',
-  anyDisciplinaryActionTaken: '',
-  independentMalpracticeInsurance: '',
-  insuranceCompanyName: '',
-  claimedFilledInLast6Months: '',
-  profilePic: '',
-  firstName: '',
-  lastName: '',
-  phoneNumber: '',
-  dob: '',
-  state: '',
-  cityState: '',
-  zipCode: '',
-  addressLine1: '',
-  addressLine2: '',
-  licenseOrCertificationExpiryDate: '',
-  licenseOrCertificationIssuedDate: '',
-  PNPINumber: '',
-  taxonomyCode: '',
-  requireSupervision: '',
-  licenceType: '',
+  email: "",
+  companyProvidedEmail: false,
+  providerType: "",
+  licensedAndCertified: false,
+  computerAndWifi: false,
+  expInTeleHealthPlatform: false,
+  anyDisciplinaryActionTaken: false,
+  independentMalpracticeInsurance: false,
+  insuranceCompanyName: "",
+  claimedFilledInLast6Months: false,
+  profilePic: "",
+  firstName: "",
+  lastName: "",
+  phoneNumber: "",
+  dob: "",
+  state: "",
+  city: "",
+  zipCode: "",
+  addressLine1: "",
+  addressLine2: "",
+  licenseOrCertificationExpiryDate: "",
+  licenseOrCertificationIssuedDate: "",
+  PNPINumber: "",
+  taxonomyCode: "",
+  requireSupervision: false,
+  licenceType: "",
   licenceOrCertificationNumber: 0,
-  licenceOrCertificationState: '',
-  licensingBoardOrAgency: '',
-  validSupervisionAgreement: '',
-  licenseOrCertificationFile: '',
-  preferredLanguage: '',
-  fluencyOtherThanEnglish: '',
+  licenceOrCertificationState: "",
+  licensingBoardOrAgency: "",
+  validSupervisionAgreement: "",
+  licenseOrCertificationFile: "",
+  preferredLanguage: "",
+  fluencyOtherThanEnglish: false,
   yearsOfExperience: 0,
-  helpingApproach: '',
-  clientele: '',
-  generalExpertise: '',
-  preferredCommunicationMethod: '',
-  aboutYou: '',
-
+  helpingApproach: "",
+  clientele: "",
+  generalExpertise: "",
+  preferredCommunicationMethod: "",
+  aboutYou: "",
   });
 
   useEffect(() => {
@@ -109,22 +109,22 @@ const EditClinicianModal: React.FC<EditModalProps> = ({ row, isOpen, onRequestCl
       setFormData(prevFormData => ({
         ...prevFormData,
         email: row?.email,
-        companyProvidedEmail: row?.otherDetailsOfTherapist?.companyProvidedEmail,
+        companyProvidedEmail: row?.otherDetailsOfTherapist?.companyProvidedEmail === "true",
         providerType: row?.providerType,
-        licensedAndCertified: row?.otherDetailsOfTherapist?.licensedAndCertified,
-        computerAndWifi: row?.otherDetailsOfTherapist?.computerAndWifi,
-        expInTeleHealthPlatform: row?.otherDetailsOfTherapist?.expInTeleHealthPlatform,
-        anyDisciplinaryActionTaken: row?.otherDetailsOfTherapist?.anyDisciplinaryActionTaken,
-        independentMalpracticeInsurance: row?.otherDetailsOfTherapist?.independentMalpracticeInsurance,
+        licensedAndCertified: row?.otherDetailsOfTherapist?.licensedAndCertified === "true",
+        computerAndWifi: row?.otherDetailsOfTherapist?.computerAndWifi === "true",
+        expInTeleHealthPlatform: row?.otherDetailsOfTherapist?.expInTeleHealthPlatform === "true",
+        anyDisciplinaryActionTaken: row?.otherDetailsOfTherapist?.anyDisciplinaryActionTaken === "true",
+        independentMalpracticeInsurance: row?.otherDetailsOfTherapist?.independentMalpracticeInsurance === "true",
         insuranceCompanyName: row?.otherDetailsOfTherapist?.insuranceCompanyName,
-        claimedFilledInLast6Months: row?.otherDetailsOfTherapist?.claimedFilledInLast6Months,
+        claimedFilledInLast6Months: row?.otherDetailsOfTherapist?.claimedFilledInLast6Months === "true",
         profilePic: row?.otherDetailsOfTherapist?.profilePic,
         firstName: row?.firstName,
         lastName: row?.lastName ,
         phoneNumber: row?.phoneNumber,
-        dob: row?.otherDetailsOfTherapist?.dob?.split('T')[0],
+        dob: row?.otherDetailsOfTherapist?.dob?.split('T')[0], //
         state: row?.otherDetailsOfTherapist?.state,
-        cityState: row?.otherDetailsOfTherapist?.cityState,
+        city: row?.otherDetailsOfTherapist?.city,
         zipCode: row?.otherDetailsOfTherapist?.zipCode,
         addressLine1: row?.otherDetailsOfTherapist?.addressLine1,
         addressLine2: row?.otherDetailsOfTherapist?.addressLine2,
@@ -132,7 +132,7 @@ const EditClinicianModal: React.FC<EditModalProps> = ({ row, isOpen, onRequestCl
         licenseOrCertificationIssuedDate: row?.otherDetailsOfTherapist?.licenseOrCertificationIssuedDate?.split('T')[0],
         PNPINumber: row?.otherDetailsOfTherapist?.PNPINumber,
         taxonomyCode: row?.otherDetailsOfTherapist?.taxonomyCode,
-        requireSupervision: row?.otherDetailsOfTherapist?.requireSupervision,
+        requireSupervision: row?.otherDetailsOfTherapist?.requireSupervision === "true",
         licenceType: row?.otherDetailsOfTherapist?.licenceType,
         licenceOrCertificationNumber: row?.otherDetailsOfTherapist?.licenceOrCertificationNumber,
         licenceOrCertificationState: row?.otherDetailsOfTherapist?.licenceOrCertificationState,
@@ -140,7 +140,7 @@ const EditClinicianModal: React.FC<EditModalProps> = ({ row, isOpen, onRequestCl
         validSupervisionAgreement: row?.otherDetailsOfTherapist?.validSupervisionAgreement,
         licenseOrCertificationFile: row?.otherDetailsOfTherapist?.licenseOrCertificationFile,
         preferredLanguage: row?.otherDetailsOfTherapist?.preferredLanguage,
-        fluencyOtherThanEnglish: row?.otherDetailsOfTherapist?.fluencyOtherThanEnglish,
+        fluencyOtherThanEnglish: row?.otherDetailsOfTherapist?.fluencyOtherThanEnglish === "true",
         yearsOfExperience: row?.otherDetailsOfTherapist?.yearsOfExperience,
         helpingApproach: row?.otherDetailsOfTherapist?.helpingApproach,
         clientele: row?.otherDetailsOfTherapist?.clientele,
@@ -151,13 +151,40 @@ const EditClinicianModal: React.FC<EditModalProps> = ({ row, isOpen, onRequestCl
     }
   }, [row]);
 
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev: any) => ({
-      ...prev,
-      [name]: value,
-    }));
+    const { name, value, type } = e.target;
+  
+    // Handle boolean conversion for select inputs
+    // if (type === "select-one") {
+    //   const booleanValue = value === "true"; // Convert string "true"/"false" to boolean
+    //   setFormData((prev: FormData) => ({
+    //     ...prev,
+    //     [name]: booleanValue,
+    //   }));
+    // } else
+     if (type === "file") {
+      const target = e.target as HTMLInputElement;
+      const files = target.files;
+      setFormData((prev: FormData) => ({
+        ...prev,
+        [name]: files ? files[0] : null,
+      }));
+    } else if (type === "date") {
+      const formattedDate = new Date(value).toISOString().split('T')[0];
+      console.log('formattedDate:', formattedDate);
+      setFormData((prev: FormData) => ({
+        ...prev,
+        [name]: formattedDate,
+      }));
+    } else {
+      setFormData((prev: FormData) => ({
+        ...prev,
+        [name]: type === "number" ? Number(value) : value,
+      }));
+    }
   };
+
 
   const handleSelectChange = (selectedOption: SingleValue<OptionType> | MultiValue<OptionType>, actionMeta: ActionMeta<OptionType>) => {
     const value = selectedOption
@@ -165,32 +192,32 @@ const EditClinicianModal: React.FC<EditModalProps> = ({ row, isOpen, onRequestCl
         ? (selectedOption as MultiValue<OptionType>).map(opt => opt.value).join(", ")
         : (selectedOption as OptionType).value
       : null;
-  
-    // Use a type assertion to ensure TypeScript understands the complete return type
     setFormData((prev: FormData) => ({
       ...prev,
-      state: value, // Set the selected state
+      state: value, 
     }));
   };
   
 
   const handleFormSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-  
+
+    console.log('formData:', formData);
     startTransition(async () => {
       try {
-        const { providerType, cityState, ...updatedFormData } = {
+        const { ...updatedFormData } = {
           ...formData,
           profilePic: "http://example.com/attachments/static-profile-pic.jpg", 
           licenseOrCertificationFile: "http://example.com/attachments/static-license-file.pdf",
         };
   
+        console.log('updatedFormData:', updatedFormData);
         const response = await UpdateTherapistData(`/admin/therapists/${row?._id}`, updatedFormData);
         console.log('response:', response);
         
-        if (response?.status === 201) {
+        if (response?.status === 200) {
           toast.success("Therapist data updated successfully");
-          
+          mutate()
         } else {
           toast.error("Failed to update therapist data");
         }
@@ -221,7 +248,7 @@ const EditClinicianModal: React.FC<EditModalProps> = ({ row, isOpen, onRequestCl
             <label className="block mb-2">Would you like a company provided email account?</label>
             <select
               name="companyProvidedEmail"
-              value={formData.companyProvidedEmail} 
+              value={formData.companyProvidedEmail? "true" : "false"} 
               onChange={handleInputChange}
               required
             >
@@ -233,17 +260,17 @@ const EditClinicianModal: React.FC<EditModalProps> = ({ row, isOpen, onRequestCl
           <div>
             <label className="block mb-2">Provider Type?</label>
             <select
-              name="assignedPeerSupport"
+              name="providerType"
               value={formData.providerType}
               onChange={handleInputChange}
               required
             >
               <option value="" disabled>Select</option>
-              <option value="Therapist">Therapist</option>
-              <option value="Peer 2">Peer Support Specialist</option>
-              <option value="Peer 3">Paraprofessional</option>
-              <option value="">Qualified Professional</option>
-              <option value="">Associate Professional</option>
+              <option value="Licensed Therapist">Licensed Therapist</option>
+              <option value="Peer Support Specialist">Peer Support Specialist</option>
+              <option value="Paraprofessional">Paraprofessional</option>
+              <option value="Qualified Professional">Qualified Professional</option>
+              <option value="Associate Professional">Associate Professional</option>
               <option value="Other">Other</option>
             </select>
           </div>
@@ -251,7 +278,7 @@ const EditClinicianModal: React.FC<EditModalProps> = ({ row, isOpen, onRequestCl
             <label className="block mb-2">Are you licensed and/or certified?</label>
             <select
               name="licensedAndCertified"
-              value={formData.licensedAndCertified}
+              value={formData.licensedAndCertified? "true" : "false"}
               onChange={handleInputChange}
               required
             >
@@ -264,7 +291,7 @@ const EditClinicianModal: React.FC<EditModalProps> = ({ row, isOpen, onRequestCl
             <label className="block mb-2">Do you have computer equipment and Wifi to access our platform?</label>
             <select
               name="computerAndWifi"
-              value={formData.computerAndWifi}
+              value={formData.computerAndWifi? "true" : "false"}
               onChange={handleInputChange}
               required
             >
@@ -277,7 +304,7 @@ const EditClinicianModal: React.FC<EditModalProps> = ({ row, isOpen, onRequestCl
             <label className="block mb-2">Do you have experience working on a telehealth platform?</label>
             <select
               name="expInTeleHealthPlatform"
-              value={formData.expInTeleHealthPlatform}
+              value={formData.expInTeleHealthPlatform? "true" : "false"}
               onChange={handleInputChange}
               required
             >
@@ -290,7 +317,7 @@ const EditClinicianModal: React.FC<EditModalProps> = ({ row, isOpen, onRequestCl
             <label className="block mb-2">Do you have any disciplinary actions (including pending) with any licensing or credentialing board?</label>
             <select
               name="anyDisciplinaryActionTaken"
-              value={formData.anyDisciplinaryActionTaken}
+              value={formData.anyDisciplinaryActionTaken? "true" : "false"}
               onChange={handleInputChange}
               required
             >
@@ -303,7 +330,7 @@ const EditClinicianModal: React.FC<EditModalProps> = ({ row, isOpen, onRequestCl
             <label className="block mb-2">Do you have independent Malpractice Insurance? If you do not currently have malpractice insurance, it is easy to acquire online! Please STOP and return to this form once you have acquired your malpractice insurance.</label>
             <select
               name="independentMalpracticeInsurance"
-              value={formData.independentMalpracticeInsurance}
+              value={formData.independentMalpracticeInsurance? "true" : "false"}
               onChange={handleInputChange}
               required
             >
@@ -314,13 +341,13 @@ const EditClinicianModal: React.FC<EditModalProps> = ({ row, isOpen, onRequestCl
           </div>
           <div>
             <label className="block mb-2">Insurance Company</label>
-            <input type="text" value={formData.insuranceCompanyName} name="insuranceCompanyName" onChange={handleInputChange} required/>
+            <input type="text" name="insuranceCompanyName" value={formData.insuranceCompanyName} onChange={handleInputChange} required/>
           </div>
           <div>
             <label className="block mb-2">Have you had a claim filed in the last 6 months.?</label>
             <select
               name="claimedFilledInLast6Months"
-              value={formData.claimedFilledInLast6Months}
+              value={formData.claimedFilledInLast6Months? "true" : "false"}
               onChange={handleInputChange}
               required
             >
@@ -331,7 +358,7 @@ const EditClinicianModal: React.FC<EditModalProps> = ({ row, isOpen, onRequestCl
           </div>
           <div>
           <label className="block mb-2">Profile Image</label>
-          <input type="file" name="profilePic" id="" onChange={handleInputChange} required/>
+          <input type="file" name="profilePic" id="" onChange={handleInputChange} />
           </div>
           <div>
           <label className="block mb-2">First Name*</label>
@@ -343,7 +370,7 @@ const EditClinicianModal: React.FC<EditModalProps> = ({ row, isOpen, onRequestCl
           </div>
           <div>
           <label className="block mb-2">Phone Number*</label>
-          <input type="number" name="phoneNumber" id=""  value={formData.phoneNumber}  onChange={handleInputChange} required/>
+          <input type="text" name="phoneNumber" id=""  value={formData.phoneNumber}  onChange={handleInputChange} required/>
           </div>
           <div>
           <label className="block mb-2">Date of Birth*</label>
@@ -361,11 +388,11 @@ const EditClinicianModal: React.FC<EditModalProps> = ({ row, isOpen, onRequestCl
           </div>
           <div>
           <label className="block mb-2">City*</label>
-          <input type="text" name="cityState" id="" value={formData.cityState}  onChange={handleInputChange} required/>
+          <input type="text" name="city" id="" value={formData.city}  onChange={handleInputChange} required/>
           </div>
           <div>
           <label className="block mb-2">Zip Code*</label>
-          <input type="number" name="zipCode" id=""  value={formData.zipCode}  onChange={handleInputChange} required/>
+          <input type="text" name="zipCode" id=""  value={formData.zipCode}  onChange={handleInputChange} required/>
           </div>
           <div>
           <label className="block mb-2">Address Line 1*</label>
@@ -385,7 +412,7 @@ const EditClinicianModal: React.FC<EditModalProps> = ({ row, isOpen, onRequestCl
           </div>
           <div>
           <label className="block mb-2">NPI number * <br/> (If applicable,if not write N/A)</label>
-          <input type="number" name="PNPINumber" required  value={formData.PNPINumber}  onChange={handleInputChange} />
+          <input type="text" name="PNPINumber" required  value={formData.PNPINumber}  onChange={handleInputChange} />
           </div>
           <div>
           <label className="block mb-2">Taxonomy code(If applicable,if not write N/A) *</label>
@@ -395,7 +422,7 @@ const EditClinicianModal: React.FC<EditModalProps> = ({ row, isOpen, onRequestCl
           <label className="block mb-2">Do you require supervision?</label>
           <select
               name="requireSupervision"
-              value={formData.requireSupervision}
+              value={formData.requireSupervision? "true" : "false"}
               onChange={handleInputChange}
               required
             >
@@ -411,7 +438,7 @@ const EditClinicianModal: React.FC<EditModalProps> = ({ row, isOpen, onRequestCl
           </div>
           <div>
           <label className="block mb-2">Licensure/Certification Number *</label>
-          <input type="number" name="licenceOrCertificationNumber" required  value={formData.licenceOrCertificationNumber}  onChange={handleInputChange} />
+          <input type="number" minLength={9} name="licenceOrCertificationNumber" required  value={formData.licenceOrCertificationNumber}  onChange={handleInputChange} />
           </div>
           <div>
           <label className="block mb-2">Licensure/Certification State*</label>
@@ -427,7 +454,7 @@ const EditClinicianModal: React.FC<EditModalProps> = ({ row, isOpen, onRequestCl
           </div>
           <div>
           <label className="block mb-2">Add file</label>
-          <input type="file" name="licenseOrCertificationFile" required  onChange={handleInputChange} />
+          <input type="file" name="licenseOrCertificationFile"   onChange={handleInputChange} />
           </div>
           <div>
           <label className="block mb-2">Preferred Language?</label>
@@ -437,7 +464,7 @@ const EditClinicianModal: React.FC<EditModalProps> = ({ row, isOpen, onRequestCl
           <label className="block mb-2">Are you fluent in any other languages besides english?</label>
           <select
               name="fluencyOtherThanEnglish"
-              value={formData.fluencyOtherThanEnglish}
+              value={formData.fluencyOtherThanEnglish ? "true" : "false"}
               onChange={handleInputChange}
               required
             >
@@ -465,12 +492,13 @@ const EditClinicianModal: React.FC<EditModalProps> = ({ row, isOpen, onRequestCl
           <div>
             <label className="block mb-2">Which are your preferred means of online consultation?*</label>
             <select
+              key={formData.preferredCommunicationMethod}
               name="preferredCommunicationMethod"
               value={formData.preferredCommunicationMethod}
               onChange={handleInputChange}
               required
             >
-              <option value="">Select</option>
+              <option value="" disabled>Select</option>
               <option value="Audio">Audio</option>
               <option value="Video">Video</option>
               <option value="Chat">Chat</option>
@@ -479,12 +507,15 @@ const EditClinicianModal: React.FC<EditModalProps> = ({ row, isOpen, onRequestCl
         </div>
         <div>
           <label className="block mb-2 mt-3">About Description*</label>
-          <textarea 
-          name="description" 
+    <input type="text" name="aboutYou"  value={formData.aboutYou} onChange={handleInputChange} />
+          {/* <textarea 
+          
+          name="aboutYou" 
           required 
           value={formData.aboutYou} 
+          onChange={handleInputChange}
           rows={4} 
-          ></textarea>
+          ></textarea> */}
           </div>
      <div className='flex justify-end'>
      <button type="submit" className="mt-4 button">Submit <ButtonArrow /></button>
