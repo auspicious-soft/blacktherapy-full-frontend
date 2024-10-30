@@ -46,7 +46,7 @@ const Page: React.FC = () => {
             <UnassignedClientTable appointmentsData={appointmentsData} setQuery={setQuery} isLoading={isLoading} mutate={mutate} />
           }
           {activeTab === 'tab2' &&
-            <AssignedClientsTable appointmentsData={appointmentsData} setQuery={setQuery} mutate={mutate} />
+            <AssignedClientsTable appointmentsData={appointmentsData} isLoading={isLoading} setQuery={setQuery} mutate={mutate} />
           }
 
         </div>
