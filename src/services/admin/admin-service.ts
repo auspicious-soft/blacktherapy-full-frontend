@@ -17,6 +17,7 @@ export const getAppoinmentsData = async(route: string) => {
   return axiosInstance.get(route)
 }
 export const updateAssignments = async (route:string, payload: any) =>{
+  console.log('payload:', payload);
   const axiosInstance = await getAxiosInstance()
   return axiosInstance.patch(route, payload)
 }
@@ -34,14 +35,17 @@ export const ServiceAssignmentStats = async (route: string) =>{
   const axiosInstance = await getAxiosInstance()
   return axiosInstance.get(route)
 }
-export const addServiceAgreements = async (route:string, payload: any) =>{
+export const updateServiceAgreements = async (route:string, payload: any) =>{
   const axiosInstance = await getAxiosInstance()
-  return axiosInstance.post(route, payload)
+  return axiosInstance.put(route, payload)
 }
-
 export const GetClientAttachments = async (route: string) =>{
   const axiosInstance = await getAxiosInstance()
   return axiosInstance.get(route)
+}
+export const addClientAttachments = async (route:string, payload: any) =>{
+  const axiosInstance = await getAxiosInstance()
+  return axiosInstance.post(route, payload)
 }
 export const GetClientNotes = async (route: string) =>{
   const axiosInstance = await getAxiosInstance()
@@ -56,7 +60,6 @@ export const deleteClientData = async (route: any) => {
   return axiosInstance.delete(route);
 };
 export const updateClientsDetails = async (route: string, payload: any) => {
-  console.log('payload:', payload);
   const axiosInstance = await getAxiosInstance();
   return axiosInstance.patch(route, payload);
 };

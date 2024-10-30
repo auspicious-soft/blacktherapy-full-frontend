@@ -9,7 +9,7 @@ const Page: React.FC = () => {
 
 const [query, setQuery] = useState('')
 const [activeTab, setActiveTab]= useState('tab1');
-const {data , error, isLoading} =  useSWR(`/admin/appointments?assignedClients=${activeTab === 'tab1' ? false :  true}&${query}`, getAppoinmentsData)
+const {data , error, isLoading, mutate} =  useSWR(`/admin/appointments?assignedClients=${activeTab === 'tab1' ? false :  true}&${query}`, getAppoinmentsData)
 const appointmentsData:any = data?.data
 
 const handleTabClick = (tab: string) => {
@@ -43,10 +43,10 @@ const handleTabClick = (tab: string) => {
         </div>
         <div className="mt-[30px]">
         {activeTab === 'tab1' &&
-        <UnassignedClientTable appointmentsData ={appointmentsData} setQuery = {setQuery}  />
+        <UnassignedClientTable appointmentsData ={appointmentsData} setQuery = {setQuery} mutate={mutate} />
          }
         {activeTab === 'tab2' &&
-         <AssignedClientsTable appointmentsData={appointmentsData} setQuery = {setQuery}/>
+         <AssignedClientsTable appointmentsData={appointmentsData} setQuery = {setQuery} mutate={mutate} />
         }
       </div>
       </div>

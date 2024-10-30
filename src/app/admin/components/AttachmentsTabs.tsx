@@ -1,7 +1,8 @@
-import { GetClientAttachments } from "@/services/admin/admin-service";
+import { addClientAttachments, GetClientAttachments } from "@/services/admin/admin-service";
 import { AddMoreIcon, CloseIcon } from "@/utils/svgicons";
 import React, { useState } from "react";
 import Modal from "react-modal";
+import { toast } from "sonner";
 import useSWR from "swr";
 
 interface AttachmentsTabsProps {
@@ -12,20 +13,21 @@ const initialData = [
   {
     title: "Yes",
     viewAttachments: [{ name: "attachment1.pdf", url: "#" }],
-    userRole: "Current Balance",
+    userRole: "Admin",
   },
 ];
 
 const AttachmentsTabs: React.FC<AttachmentsTabsProps> = ({ rowId }) => {
-  const { data, error, isLoading } = useSWR(`/admin/client/attachments/${rowId}`, GetClientAttachments);
+  const { data, error, isLoading , mutate} = useSWR(`/admin/client/attachments/${rowId}`, GetClientAttachments);
   const attachmentsInfo = data?.data?.data;
+  console.log('attachmentsInfo:', attachmentsInfo);
 
   const [dataa, setData] = useState(initialData);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
     viewAttachments: [{ name: "", url: "" }],
-    userRole: '',
+    userRole: 'Admin',
   });
 
   const openModal = () => setModalIsOpen(true);
@@ -45,7 +47,7 @@ const AttachmentsTabs: React.FC<AttachmentsTabsProps> = ({ rowId }) => {
       const newAttachments = [...formData.viewAttachments];
       newAttachments[index] = {
         name: files[0].name,
-        url: URL.createObjectURL(files[0]),  // Create a preview URL for the file
+        url: URL.createObjectURL(files[0]),  
       };
       setFormData({ ...formData, viewAttachments: newAttachments });
     }
@@ -58,16 +60,38 @@ const AttachmentsTabs: React.FC<AttachmentsTabsProps> = ({ rowId }) => {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setData([...dataa, formData]); // Add new data to the table
-    setFormData({
-      title: '',
-      viewAttachments: [{ name: "", url: "" }],
-      userRole: '',
-    });
-    closeModal();
+
+    const attachmentData = {
+      title: formData.title,
+      attachments: formData.viewAttachments.map((attachment) => attachment.name), 
+    };
+    console.log('attachments:', attachmentData);
+    try {
+      const response = await addClientAttachments(`/admin/client/attachments/${rowId}`, attachmentData);
+      console.log('response:', response);
+  
+      if (response.status === 201) {
+        toast.success("Attachment added successfully");
+        setData([...dataa, formData]); 
+        closeModal();
+        setFormData({
+          title: '',
+          viewAttachments: [{ name: "", url: "" }],
+          userRole: 'Admin',
+        });
+        mutate(); 
+        setModalIsOpen(false);
+      } else {
+        toast.error("Failed to add attachment");
+      }
+    } catch (error) {
+      console.error("Error adding attachment", error);
+      toast.error("An error occurred while adding the attachment");
+    }
   };
+
 
   return (
     <div>
@@ -84,25 +108,31 @@ const AttachmentsTabs: React.FC<AttachmentsTabsProps> = ({ rowId }) => {
           <thead>
             <tr>
               <th>Title</th>
-              <th>View Attachments</th>
+              <th>View Attachments</th> 
               <th>User Role</th>
             </tr>
           </thead>
           <tbody>
-            {attachmentsInfo?.map((row: any) =>
-              row?.attachmemts?.map((attachment: string, attachmentIndex: number) => (
-                <tr key={`${row?._id}-${attachmentIndex}`}>
-                  <td>{row?.title}</td>
-                  <td>
-                    <a href={attachment} className="text-[#26395E]">
-                      View File
-                    </a>
-                  </td>
-                  <td>Admin</td> {/* Show role only once {attachmentIndex === 0 ? "Admin" : ""} */}
-                </tr>
-              ))
-            )}
-          </tbody>
+  {attachmentsInfo?.map((row: any) => (
+    <tr key={row._id}>
+      <td>{row.title}</td>
+      <td>
+        {row.attachments?.map((attachment: string, index: number) => (
+          <div key={index}>
+            <a href={attachment} target="_blank" rel="noopener noreferrer" className="text-[#26395E]">
+              View Attachment
+            </a>
+          </div>
+        ))}
+      </td>
+      <td>Admin</td>
+    </tr>
+  ))}
+</tbody>
+
+
+
+
         </table>
       </div>
 
@@ -135,9 +165,8 @@ const AttachmentsTabs: React.FC<AttachmentsTabsProps> = ({ rowId }) => {
               <label className="block mb-2">User Role</label>
               <input
                 type="text"
-                name="userRole"
-                value={formData.userRole}
-                onChange={handleInputChange}
+                value="Admin"
+                disabled
               />
             </div>
             {formData.viewAttachments.map((attachment, index) => (
