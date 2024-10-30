@@ -237,7 +237,7 @@ const Page: React.FC = () => {
                 )}
                 {activeTab === "rejected" && (
                   <td>
-                    <button onClick={() => handleApprove(payment)}>
+                    <button onClick={() => handleApprove(payment?._id)}>
                       Re-Approve
                     </button>
                   </td>

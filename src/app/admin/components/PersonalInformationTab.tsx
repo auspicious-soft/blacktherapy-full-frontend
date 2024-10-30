@@ -54,14 +54,20 @@ const PersonalInformationTab: React.FC<PersonalInformationTabProps> = ({ row, mu
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault(); 
     try {
-      await updateClientsDetails(`/admin/clients/${row._id}`, formData); 
-      toast.success('Client details updated successfully');
-      mutate(); 
+      const response = await updateClientsDetails(`/admin/clients/${row._id}`, formData);
+      if (response.status === 200) {
+        toast.success('Client details updated successfully');
+        mutate(); 
+      } else {
+        toast.error('Failed to update client details');
+        console.error('Unexpected response:', response);
+      }
     } catch (error) {
       console.error('Error updating client details:', error);
-      toast.error('Error updating client details'); 
+      toast.error('Error updating client details');
     }
   };
+  
   return (
     <div>
       <form onSubmit={handleSubmit}>

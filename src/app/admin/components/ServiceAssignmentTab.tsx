@@ -1,16 +1,21 @@
-import { addServiceAgreements, ServiceAssignmentStats } from '@/services/admin/admin-service';
+import { GetTherapistsData, ServiceAssignmentStats, updateServiceAgreements } from '@/services/admin/admin-service';
 import { CloseIcon } from '@/utils/svgicons';
+import useTherapists from '@/utils/useTherapists';
 import React, { useState } from 'react';
 import Modal from 'react-modal';
 import { toast } from 'sonner';
 import useSWR from 'swr';
+import CustomSelect from './CustomSelect';
 
 interface ServiceAssignmentProps {
   rowId: string;
 }
 const ServiceAssignmentTab: React.FC<ServiceAssignmentProps> = ({ rowId }) => {
-  const { data, error, isLoading } = useSWR(`/admin/client-service-assignment/${rowId}`, ServiceAssignmentStats);
+  const { data, error, isLoading, mutate } = useSWR(`/admin/client-service-assignment/${rowId}`, ServiceAssignmentStats);
   const serviceInfo = data?.data?.data;
+  const { therapistData } = useTherapists();
+
+  const [selectedPeers, setSelectedPeers] = useState<any>([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [isUpdateMode, setIsUpdateMode] = useState(false);
   const [formData, setFormData] = useState<any>({
@@ -20,75 +25,88 @@ const ServiceAssignmentTab: React.FC<ServiceAssignmentProps> = ({ rowId }) => {
     ccaCompletionDate: '',
     servicesReviewing: '',
     assignedTherapist: '',
-    peerSupportTherapist: '',
+    peerSupportTherapist: [],
     pcpInEHR: '',
     pcpCompletionDate: '',
     pcpCompletedBy: '',
-    authorizationRequired: '',
-    authorizationCompleted: '',
+    authorizationRequired: false,
+    authorizationCompleted: false,
     authorizationCompletedBy: '',
     authorizationStatus: '',
   });
 
-  const openModal = (rowData?: any) => {
-    if (rowData) {
-      setFormData({ ...rowData });
+  const openModal = (row: any) => {
+    if (row) {
+      setFormData({ ...row });
       setIsUpdateMode(true); 
     } else {
-      setFormData({
-        id: '',
-        ccaInEHR: '',
-        ccaCompletedBy: '',
-        ccaCompletionDate: '',
-        servicesReviewing: '',
-        assignedTherapist: '',
-        peerSupportTherapist: '',
-        pcpInEHR: '',
-        pcpCompletionDate: '',
-        pcpCompletedBy: '',
-        authorizationRequired: '',
-        authorizationCompleted: '',
-        authorizationCompletedBy: '',
-        authorizationStatus: '',
-      });
-      setIsUpdateMode(false); 
+      setFormData({ 
+        id: row?._id,
+        ccaInEHR: row?.ccaInEHR,
+        ccaCompletedBy: row?.ccaCompletedBy,
+        ccaCompletionDate: row?.ccaCompletionDate,
+        servicesReviewing: row?.servicesReviewing,
+        assignedTherapist: row?.assignedTherapist,
+        peerSupportTherapist: row?.peerSupportTherapist,
+        pcpInEHR: row?.pcpInEHR,
+        pcpCompletionDate: row?.pcpCompletionDate,
+        pcpCompletedBy: row?.pcpCompletedBy,
+        authorizationRequired: row?.authorizationRequired,
+        authorizationCompleted: row?.authorizationCompleted,
+        authorizationCompletedBy: row?.authorizationCompletedBy,
+        authorizationStatus: row?.authorizationStatus,
+      }); 
     }
     setModalIsOpen(true);
   };
 
   const closeModal = () => setModalIsOpen(false);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
+    const processedValue = (name === 'authorizationRequired' || name === 'authorizationCompleted') 
+      ? value === 'true' 
+      : value;
+  
     setFormData({
       ...formData,
-      [name]: value,
+      [name]: processedValue,
+    });
+  };
+  
+  const handlePeerSupportChange = (selectedOptions: any) => {
+    setSelectedPeers(selectedOptions);
+    setFormData({
+      ...formData,
+      peerSupportTherapist: selectedOptions.map((option: any) => option.value),
     });
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault(); 
+    console.log('formData:', formData);
     try {
-      await addServiceAgreements(`/admin/client-service-assignment/${rowId}`, formData); 
-      toast.success('Client details updated successfully');
-      // mutate(); 
+      const response = await updateServiceAgreements(`/admin/client-service-assignment/${rowId}`, formData); 
+      console.log('response:', response);
+      if (response.status === 200) {
+        toast.success('Service Assignment details updated successfully');
+        mutate(); 
+      } else {
+        toast.error('Failed to update Service Assignment details');
+        console.error('Unexpected response:', response);
+      }
     } catch (error) {
-      console.error('Error updating client details:', error);
-      toast.error('Error updating client details'); 
+      console.error('Error updating Service Assignment details:', error);
+      toast.error('Error updating Service Assignment details');
     }
   };
-
+  
+ 
   return (
     <div>
-         <div className='flex justify-end mb-[22px]'>
-        <button
-          onClick={openModal}
-          className="!text-sm !h-[40px] !px-[30px] button">Add New
-        </button>
-      </div>
       {/* {!serviceInfo?.length && (
         <div className='flex justify-end mb-[22px]'>
-          <button onClick={() => openModal()} className="!text-sm !h-[40px] !px-[30px] button">Add New</button>
+          <button onClick={() => openModal(e as any)} className="!text-sm !h-[40px] !px-[30px] button">Add New</button>
         </div>
       )} */}
 
@@ -131,7 +149,6 @@ const ServiceAssignmentTab: React.FC<ServiceAssignmentProps> = ({ rowId }) => {
                 <td>{row?.pcpCompletedBy}</td>
                 <td>{row?.authorizationCompletedBy}</td>
                 <td>
-                  {/* Update button for each row */}
                   <button onClick={() => openModal(row)} className='hover:underline font-bold'>Update</button>
                 </td>
               </tr>
@@ -165,7 +182,7 @@ const ServiceAssignmentTab: React.FC<ServiceAssignmentProps> = ({ rowId }) => {
           </div>
           <div>
             <label className="block mb-2">CCA Completion Date*</label>
-            <input type="text" name="ccaCompletionDate" value={formData.ccaCompletionDate} onChange={handleInputChange} />
+            <input type="date" name="ccaCompletionDate" value={formData.ccaCompletionDate} onChange={handleInputChange} />
           </div>
           <div>
             <label className="block mb-2">CCA Completed By</label>
@@ -180,8 +197,15 @@ const ServiceAssignmentTab: React.FC<ServiceAssignmentProps> = ({ rowId }) => {
             <input type="text" name="assignedTherapist" value={formData.assignedTherapist} onChange={handleInputChange} />
           </div>
           <div>
-            <label className="block mb-2">Assigned Peer Support</label>
-            <input type="text" name="peerSupportTherapist" value={formData.peerSupportTherapist} onChange={handleInputChange} />
+            <CustomSelect
+                name="Assigned Peer Support"
+                //value= {formData.peerSupportTherapist}
+                value={selectedPeers}
+                onChange={handlePeerSupportChange}
+                options={therapistData}
+                isMulti={true}
+              />
+            {/* <input type="text" name="peerSupportTherapist" value={formData.peerSupportTherapist} onChange={handleInputChange} /> */}
           </div>
           <div>
             <label className="block mb-2">PCP in EHR:</label>
@@ -189,7 +213,7 @@ const ServiceAssignmentTab: React.FC<ServiceAssignmentProps> = ({ rowId }) => {
           </div>
           <div>
             <label className="block mb-2">PCP Completion Date*</label>
-            <input type="text" name="pcpCompletionDate" value={formData.pcpCompletionDate} onChange={handleInputChange} />
+            <input type="date" name="pcpCompletionDate" value={formData.pcpCompletionDate} onChange={handleInputChange} />
           </div>
           <div>
             <label className="block mb-2">PCP Completed By</label>
@@ -197,11 +221,31 @@ const ServiceAssignmentTab: React.FC<ServiceAssignmentProps> = ({ rowId }) => {
           </div>
           <div>
             <label className="block mb-2">Authorization Required?</label>
-            <input type="text" name="authorizationRequired" value={formData.authorizationRequired} onChange={handleInputChange} />
+            <select
+              name="authorizationRequired"
+              value={formData.authorizationRequired? "true" : "false"}
+              onChange={handleInputChange}
+              required
+            >
+            <option value="" disabled>Select</option>
+              <option value="true">Yes</option>
+              <option value="false">No</option>
+            </select>
+            {/* <input type="text" name="authorizationRequired" value={formData.authorizationRequired} onChange={handleInputChange} /> */}
           </div>
           <div>
             <label className="block mb-2">Authorization Completed/ Submitted ?</label>
-            <input type="text" name="authorizationCompleted" value={formData.authorizationCompleted} onChange={handleInputChange} />
+            <select
+              name="authorizationCompleted"
+              value={formData.authorizationCompleted? "true" : "false"}
+              onChange={handleInputChange}
+              required
+            >
+            <option value="" disabled>Select</option>
+              <option value="true">Yes</option>
+              <option value="false">No</option>
+            </select>
+            {/* <input type="text" name="authorizationCompleted" value={formData.authorizationCompleted} onChange={handleInputChange} /> */}
           </div>
           <div>
             <label className="block mb-2">Authorization Complete By</label>

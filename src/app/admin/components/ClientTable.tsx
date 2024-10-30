@@ -68,6 +68,7 @@ const ClientTable: React.FC<ClientsDataProps> = ({ clientsData, setQuery, error,
       if (response.status === 200) {
         toast.success("Client deleted successfully");
         setIsDeleteModalOpen(false);
+        mutate()
       } else {
         toast.error("Failed to delete Client");
       }
@@ -75,7 +76,6 @@ const ClientTable: React.FC<ClientsDataProps> = ({ clientsData, setQuery, error,
       console.error("Error deleting Client", error);
       toast.error("An error occurred while deleting the Client");
     }
-    mutate()
   };
 
   const handleDeleteCancel = () => {

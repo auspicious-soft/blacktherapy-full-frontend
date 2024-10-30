@@ -316,7 +316,7 @@ const AddClientForm = () => {
             <button
               type="submit"
               disabled={isPending}
-              className="flex items-center justify-center bg-[#283C63] hover:bg-[#1B2838] text-white font-semibold py-2 px-4 rounded"
+              className="flex items-center justify-center bg-[#283C63] hover:bg-[#1B2838] text-white  py-4 px-6 rounded"
             >
               <span className="mr-2">{isPending ? "Loading..." : "Add Client"}</span>
               <ButtonArrow />
