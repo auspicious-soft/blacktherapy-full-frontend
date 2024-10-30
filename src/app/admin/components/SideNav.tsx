@@ -115,7 +115,7 @@ const SideNav = () => {
       </div>
       <div className="">
         <ul className="navList">
-          <li className="!m-0 cursor-pointer" onClick={handleLogout} >
+          <li className="!m-0 cursor-pointer flex items-center gap-2" onClick={handleLogout} >
             <LogOut />
             <span className="text-[#283C63] text-[600]">Log Out</span>
           </li>

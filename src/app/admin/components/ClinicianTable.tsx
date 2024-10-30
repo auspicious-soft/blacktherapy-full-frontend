@@ -14,18 +14,6 @@ import {
 } from "@/services/admin/admin-service";
 import { toast } from "sonner";
 
-interface TableData {
-  id: number;
-  status: string;
-  training: string;
-  name: string;
-  contact: string;
-  address: string;
-  memberSince: string;
-  noOfAppointments: number;
-  accountStatus: boolean;
-  status2: string;
-}
 interface TherapistsDataProps {
   therapistsData: any;
   setQuery: any;
@@ -53,7 +41,6 @@ const ClinicianTable: React.FC<TherapistsDataProps> = ({
     name: string;
   } | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
-  const [taskId, setTaskId] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
   const therapistsDataArray = therapistsData?.data;
