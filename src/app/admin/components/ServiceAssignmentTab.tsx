@@ -120,7 +120,6 @@ const ServiceAssignmentTab: React.FC<ServiceAssignmentProps> = ({ rowId }) => {
         <table>
           <thead>
             <tr>
-              <th>ID</th>
               <th>CCA Completion Date</th>
               <th>Service Received</th>
               <th>PCP in EHR</th>
@@ -140,7 +139,6 @@ const ServiceAssignmentTab: React.FC<ServiceAssignmentProps> = ({ rowId }) => {
           <tbody>
             {serviceInfo?.map((row: any) => (
               <tr key={row?._id}>
-                {/* <td>{row?._id}</td> */}
                 <td>{row?.ccaCompletionDate}</td>
                 <td>{row?.servicesReviewing}</td>
                 <td>{row?.pcpInEHR}</td>
@@ -155,13 +153,14 @@ const ServiceAssignmentTab: React.FC<ServiceAssignmentProps> = ({ rowId }) => {
                   <span key={peer._id}>{peer.firstName} {peer.lastName}</span>
                 ))}</td>
                 <td>{row?.pcpCompletedBy}</td>
-                <td>{row?.authorizationCompletedBy}</td>
+                <td>{row?.authorizationCompletedBy ?? ''}</td>
                 <td>
                   <button onClick={() => openModal(row)} className='hover:underline font-bold'>Update</button>
                 </td>
               </tr>
             ))}
           </tbody>
+
         </table>
       </div>
 
@@ -185,15 +184,15 @@ const ServiceAssignmentTab: React.FC<ServiceAssignmentProps> = ({ rowId }) => {
         <form onSubmit={handleSubmit} className="bg-white p-5 md:px-[35px] md:py-10">
           <div className="grid md:grid-cols-2 gap-4 md:gap-[30px] ">
             {/* <div>
-                  <label className="block mb-2">Client ID</label>
-                  <input
-                    type="text"
-                    name="clientId"
-                    value={formData.clientId}
-                    onChange={handleInputChange}
-                    className="border border-gray-300 rounded w-full p-2"
-                  />
-                </div> */}
+                      <label className="block mb-2">Client ID</label>
+                      <input
+                        type="text"
+                        name="clientId"
+                        value={formData.clientId}
+                        onChange={handleInputChange}
+                        className="border border-gray-300 rounded w-full p-2"
+                      />
+                    </div> */}
             <div>
               <label className="block mb-2">CCA in EHR</label>
               <input
