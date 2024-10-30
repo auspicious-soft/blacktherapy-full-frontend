@@ -9,23 +9,23 @@ import UpdateAssignments from './UpdateAssignments';
 
 export interface TableData {
   id: number;
-  client: string; 
-  assignedClinician: string; 
-  assignedPeerSupport: string; 
+  client: string;
+  assignedClinician: string;
+  assignedPeerSupport: string;
   status: string;
   message?: string;
   workshop?: string;
   video?: string;
 }
 interface UnassignedPageProps {
-  appointmentsData: any 
+  appointmentsData: any
   setQuery: any;
   mutate: any;
   isLoading: boolean
 }
 
 
-const UnassignedClientTable:React.FC<UnassignedPageProps> = ({setQuery, appointmentsData, mutate, isLoading}) => {
+const UnassignedClientTable: React.FC<UnassignedPageProps> = ({ setQuery, appointmentsData, mutate, isLoading }) => {
 
   const total = appointmentsData?.total ?? 0;
   const unassignedData = appointmentsData?.data;
@@ -51,8 +51,8 @@ const UnassignedClientTable:React.FC<UnassignedPageProps> = ({setQuery, appointm
     setQuery(`page=${selectedItem.selected + 1}&limit=${rowsPerPage}`)
   }
 
- 
-  
+
+
   const openAssignmentsPopup = (row: any) => {
     setAssignmentDetails(row);
     setAssignmentClientsPopup(true);
@@ -62,7 +62,7 @@ const UnassignedClientTable:React.FC<UnassignedPageProps> = ({setQuery, appointm
     setAssignmentClientsPopup(false);
     setAssignmentDetails(null); // Clear the selected client details
   };
-  
+
   const openModal = (row: any) => {
     setCurrentRow(row);
     setUpdateAssignment(true);
@@ -85,39 +85,39 @@ const UnassignedClientTable:React.FC<UnassignedPageProps> = ({setQuery, appointm
               <th>Action</th>
             </tr>
           </thead>
-          <tbody> 
+          <tbody>
             {unassignedData?.length > 0 ? (
-            unassignedData?.map((row:any) => (
-              <tr key={row._id}>
-                <td>{row._id}</td>
-                <td>{row.clientName}</td>
-                <td>
-                {row.therapistId && row.therapistId.firstName && row.therapistId.lastName
-    ? `${row.therapistId.firstName} ${row.therapistId.lastName}`
-    : "No Clinician Assigned"}
-                </td>
-                <td>
-                {row.peerSupportIds && row.peerSupportIds.length > 0 ? (
-          <span>{row.peerSupportIds[0].id}</span>  // Display only the first error
-        ) : (
-          'No peer supports assigned' 
-        )}
-                </td>
-                <td>
-                  <button onClick={() => openModal(row)} className="font-gothamMedium rounded-3xl py-[2px] px-[10px] text-[#26395E] bg-[#CCDDFF] text-[10px]">
-                    Update Assignment
-                  </button>
-                </td>
-                <td>
-                  <button onClick={() => openAssignmentsPopup(row)}><ViewIcon /> </button>
-                </td>
+              unassignedData?.map((row: any) => (
+                <tr key={row._id}>
+                  <td>{row._id}</td>
+                  <td>{row.clientName}</td>
+                  <td>
+                    {row.therapistId && row.therapistId.firstName && row.therapistId.lastName
+                      ? `${row.therapistId.firstName} ${row.therapistId.lastName}`
+                      : "No Clinician Assigned"}
+                  </td>
+                  <td>
+                    {row.peerSupportIds && row.peerSupportIds.length > 0 ? (
+                      <span>{row.peerSupportIds[0].id}</span>  // Display only the first error
+                    ) : (
+                      'No peer supports assigned'
+                    )}
+                  </td>
+                  <td>
+                    <button onClick={() => openModal(row)} className="font-gothamMedium rounded-3xl py-[2px] px-[10px] text-[#26395E] bg-[#CCDDFF] text-[10px]">
+                      Update Assignment
+                    </button>
+                  </td>
+                  <td>
+                    <button onClick={() => openAssignmentsPopup(row)}><ViewIcon /> </button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td className='w-full flex justify-center p-3 items-center' colSpan={4} >{isLoading ? <ReactLoading type={'spin'} color={'#26395e'} height={'20px'} width={'20px'} /> : <p className='text-center'>No data found</p>}</td>
               </tr>
-            ))
-          ) : (
-            <tr>
-              <td className='w-full flex justify-center p-3 items-center' colSpan={4} >{isLoading && <ReactLoading type={'spin'} color={'#26395e'} height={'20px'} width={'20px'} />}</td>
-            </tr>
-          )}
+            )}
           </tbody>
         </table>
       </div>
@@ -140,19 +140,19 @@ const UnassignedClientTable:React.FC<UnassignedPageProps> = ({setQuery, appointm
         />
       </div>
 
-        <UpdateAssignments
+      <UpdateAssignments
         isOpen={updateAssignment}
-        onRequestClose={()=> setUpdateAssignment(false)}
-        row ={currentRow}
+        onRequestClose={() => setUpdateAssignment(false)}
+        row={currentRow}
         mutate={mutate}
-        />
+      />
 
 
       {assignmentDetails && (
         <ClientsAssignmentPopup
           isOpen={assignmentClientsPopup}
           onRequestClose={closeAssignmentsPopup}
-          row = {assignmentDetails}
+          row={assignmentDetails}
         />
       )}
     </div>
@@ -160,4 +160,3 @@ const UnassignedClientTable:React.FC<UnassignedPageProps> = ({setQuery, appointm
 };
 
 export default UnassignedClientTable;
-  
