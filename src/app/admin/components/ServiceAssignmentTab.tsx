@@ -10,6 +10,12 @@ import CustomSelect from './CustomSelect';
 interface ServiceAssignmentProps {
   rowId: string;
 }
+const formatDate = (date: Date) => {
+  if (!date) return '';
+  const d = new Date(date);
+  return d.toISOString().split('T')[0]; // Format as 'YYYY-MM-DD'
+};
+
 const ServiceAssignmentTab: React.FC<ServiceAssignmentProps> = ({ rowId }) => {
   const { data, error, isLoading, mutate } = useSWR(`/admin/client-service-assignment/${rowId}`, ServiceAssignmentStats);
   const serviceInfo = data?.data?.data;
@@ -19,10 +25,10 @@ const ServiceAssignmentTab: React.FC<ServiceAssignmentProps> = ({ rowId }) => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [isUpdateMode, setIsUpdateMode] = useState(false);
   const [formData, setFormData] = useState<any>({
-    id: '',
+    clientId: '',
     ccaInEHR: '',
-    ccaCompletedBy: '',
     ccaCompletionDate: '',
+    ccaCompletedBy: '',
     servicesReviewing: '',
     assignedTherapist: '',
     peerSupportTherapist: [],
@@ -37,43 +43,52 @@ const ServiceAssignmentTab: React.FC<ServiceAssignmentProps> = ({ rowId }) => {
 
   const openModal = (row: any) => {
     if (row) {
-      setFormData({ ...row });
-      setIsUpdateMode(true); 
-    } else {
-      setFormData({ 
-        id: row?._id,
-        ccaInEHR: row?.ccaInEHR,
-        ccaCompletedBy: row?.ccaCompletedBy,
-        ccaCompletionDate: row?.ccaCompletionDate,
-        servicesReviewing: row?.servicesReviewing,
-        assignedTherapist: row?.assignedTherapist,
-        peerSupportTherapist: row?.peerSupportTherapist,
-        pcpInEHR: row?.pcpInEHR,
-        pcpCompletionDate: row?.pcpCompletionDate,
-        pcpCompletedBy: row?.pcpCompletedBy,
-        authorizationRequired: row?.authorizationRequired,
-        authorizationCompleted: row?.authorizationCompleted,
-        authorizationCompletedBy: row?.authorizationCompletedBy,
-        authorizationStatus: row?.authorizationStatus,
-      }); 
+      setFormData({
+        clientId: row.clientId,
+        ccaInEHR: row.ccaInEHR,
+        ccaCompletedBy: row.ccaCompletedBy,
+        ccaCompletionDate: row.ccaCompletionDate,
+        servicesReviewing: row.servicesReviewing,
+        assignedTherapist: row.assignedTherapist?._id || '',
+        peerSupportTherapist: row.peerSupportTherapist || [],
+        pcpInEHR: row.pcpInEHR,
+        pcpCompletionDate: row.pcpCompletionDate,
+        pcpCompletedBy: row.pcpCompletedBy,
+        authorizationRequired: row.authorizationRequired,
+        authorizationCompleted: row.authorizationCompleted,
+        authorizationCompletedBy: row.authorizationCompletedBy,
+        authorizationStatus: row.authorizationStatus,
+      });
+
+      // Set selected peers for the multi-select
+      const selectedPeerOptions = row.peerSupportTherapist?.map((peer: any) => ({
+        value: peer._id,
+        label: `${peer.firstName} ${peer.lastName}`,
+      })) || [];
+
+      setSelectedPeers(selectedPeerOptions);
+      setIsUpdateMode(true);
     }
     setModalIsOpen(true);
   };
-
-  const closeModal = () => setModalIsOpen(false);
+  const closeModal = () => {
+    setIsUpdateMode(false);
+    setSelectedPeers([]);
+    setModalIsOpen(false);
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    const processedValue = (name === 'authorizationRequired' || name === 'authorizationCompleted') 
-      ? value === 'true' 
+    const processedValue = (name === 'authorizationRequired' || name === 'authorizationCompleted')
+      ? value === 'true'
       : value;
-  
+
     setFormData({
       ...formData,
       [name]: processedValue,
     });
   };
-  
+
   const handlePeerSupportChange = (selectedOptions: any) => {
     setSelectedPeers(selectedOptions);
     setFormData({
@@ -83,33 +98,24 @@ const ServiceAssignmentTab: React.FC<ServiceAssignmentProps> = ({ rowId }) => {
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault(); 
-    console.log('formData:', formData);
+    e.preventDefault();
     try {
-      const response = await updateServiceAgreements(`/admin/client-service-assignment/${rowId}`, formData); 
-      console.log('response:', response);
+      const response = await updateServiceAgreements(`/admin/client-service-assignment/${rowId}`, formData);
       if (response.status === 200) {
         toast.success('Service Assignment details updated successfully');
-        mutate(); 
+        mutate();
+        closeModal();
       } else {
         toast.error('Failed to update Service Assignment details');
-        console.error('Unexpected response:', response);
       }
     } catch (error) {
       console.error('Error updating Service Assignment details:', error);
       toast.error('Error updating Service Assignment details');
     }
   };
-  
- 
+
   return (
     <div>
-      {/* {!serviceInfo?.length && (
-        <div className='flex justify-end mb-[22px]'>
-          <button onClick={() => openModal(e as any)} className="!text-sm !h-[40px] !px-[30px] button">Add New</button>
-        </div>
-      )} */}
-
       <div className='table-common overflo-custom'>
         <table>
           <thead>
@@ -134,18 +140,20 @@ const ServiceAssignmentTab: React.FC<ServiceAssignmentProps> = ({ rowId }) => {
           <tbody>
             {serviceInfo?.map((row: any) => (
               <tr key={row?._id}>
-                <td>{row?._id}</td>
+                {/* <td>{row?._id}</td> */}
                 <td>{row?.ccaCompletionDate}</td>
                 <td>{row?.servicesReviewing}</td>
                 <td>{row?.pcpInEHR}</td>
-                <td>{row?.authorizationRequired}</td>
+                <td>{row?.authorizationRequired ? "Yes" : "No"}</td>
                 <td>{row?.authorizationStatus}</td>
                 <td>{row?.ccaCompletionDate}</td>
-                <td>{row?.assignedTherapist}</td>
-                <td>{row?.pcpCompletion}</td>
-                <td>{row?.authorizationComplete}</td>
+                <td>{row?.assignedTherapist?.firstName} {row?.assignedTherapist?.lastName}</td>
+                <td>{row?.pcpCompletionDate}</td>
+                <td>{row?.authorizationCompleted ? "Yes" : "No"}</td>
                 <td>{row?.ccaCompletedBy}</td>
-                <td>{row?.peerSupportTherapist}</td>
+                <td>{row?.peerSupportTherapist?.map((peer: any) => (
+                  <span key={peer._id}>{peer.firstName} {peer.lastName}</span>
+                ))}</td>
                 <td>{row?.pcpCompletedBy}</td>
                 <td>{row?.authorizationCompletedBy}</td>
                 <td>
@@ -175,91 +183,158 @@ const ServiceAssignmentTab: React.FC<ServiceAssignmentProps> = ({ rowId }) => {
         </div>
 
         <form onSubmit={handleSubmit} className="bg-white p-5 md:px-[35px] md:py-10">
-        <div className="grid md:grid-cols-2 gap-4 md:gap-[30px] ">
-          <div>
-            <label className="block mb-2">CCA in EHR System</label>
-            <input type="text" name="ccaInEHR" value={formData.ccaInEHR} onChange={handleInputChange} />
-          </div>
-          <div>
-            <label className="block mb-2">CCA Completion Date*</label>
-            <input type="date" name="ccaCompletionDate" value={formData.ccaCompletionDate} onChange={handleInputChange} />
-          </div>
-          <div>
-            <label className="block mb-2">CCA Completed By</label>
-            <input type="text" name="ccaCompletedBy" value={formData.ccaCompletedBy} onChange={handleInputChange} />
-          </div>
-          <div>
-            <label className="block mb-2">Service Receiving</label>
-            <input type="text" name="servicesReviewing" value={formData.servicesReviewing} onChange={handleInputChange} />
-          </div>
-          <div>
-            <label className="block mb-2">Assigned Therapist</label>
-            <input type="text" name="assignedTherapist" value={formData.assignedTherapist} onChange={handleInputChange} />
-          </div>
-          <div>
-            <CustomSelect
-                name="Assigned Peer Support"
-                //value= {formData.peerSupportTherapist}
-                value={selectedPeers}
+          <div className="grid md:grid-cols-2 gap-4 md:gap-[30px] ">
+            {/* <div>
+                  <label className="block mb-2">Client ID</label>
+                  <input
+                    type="text"
+                    name="clientId"
+                    value={formData.clientId}
+                    onChange={handleInputChange}
+                    className="border border-gray-300 rounded w-full p-2"
+                  />
+                </div> */}
+            <div>
+              <label className="block mb-2">CCA in EHR</label>
+              <input
+                type="text"
+                name="ccaInEHR"
+                value={formData.ccaInEHR}
+                onChange={handleInputChange}
+                className="border border-gray-300 rounded w-full p-2"
+              />
+            </div>
+            <div>
+              <label className="block mb-2">CCA Completion Date</label>
+              <input
+                type="date"
+                name="ccaCompletionDate"
+                value={formatDate(formData.ccaCompletionDate)}
+                onChange={handleInputChange}
+                className="border border-gray-300 rounded w-full p-2"
+              />
+            </div>
+            <div>
+              <label className="block mb-2">CCA Completed By</label>
+              <input
+                type="text"
+                name="ccaCompletedBy"
+                value={formData.ccaCompletedBy}
+                onChange={handleInputChange}
+                className="border border-gray-300 rounded w-full p-2"
+              />
+            </div>
+            <div>
+              <label className="block mb-2">Services Reviewing</label>
+              <input
+                type="text"
+                name="servicesReviewing"
+                value={formData.servicesReviewing}
+                onChange={handleInputChange}
+                className="border border-gray-300 rounded w-full p-2"
+              />
+            </div>
+            <div>
+              <CustomSelect
+                name="Assigned Therapist"
+                value={therapistData.find((therapist: any) => {
+                  return therapist.value === formData.assignedTherapist
+                })} // Ensure it’s the whole object or null
+                onChange={(selectedOption: any) => {
+                  setFormData({ ...formData, assignedTherapist: selectedOption.value });
+                }}
+                options={therapistData}
+              />
+
+            </div>
+            <div>
+              <CustomSelect
+                required={false}
+                name="Peer Support Therapist"
+                isMulti
+                value={selectedPeers} // Use the selected peers state
                 onChange={handlePeerSupportChange}
                 options={therapistData}
-                isMulti={true}
               />
-            {/* <input type="text" name="peerSupportTherapist" value={formData.peerSupportTherapist} onChange={handleInputChange} /> */}
+
+            </div>
+            <div>
+              <label className="block mb-2">PCP in EHR</label>
+              <input
+                type="text"
+                name="pcpInEHR"
+                value={formData.pcpInEHR}
+                onChange={handleInputChange}
+                className="border border-gray-300 rounded w-full p-2"
+              />
+            </div>
+            <div>
+              <label className="block mb-2">PCP Completion Date</label>
+              <input
+                type="date"
+                name="pcpCompletionDate"
+                value={formatDate(formData.pcpCompletionDate)}
+                onChange={handleInputChange}
+                className="border border-gray-300 rounded w-full p-2"
+              />
+            </div>
+            <div>
+              <label className="block mb-2">PCP Completed By</label>
+              <input
+                type="text"
+                name="pcpCompletedBy"
+                value={formData.pcpCompletedBy}
+                onChange={handleInputChange}
+                className="border border-gray-300 rounded w-full p-2"
+              />
+            </div>
+            <div>
+              <label className="block mb-2">Authorization Required</label>
+              <select
+                name="authorizationRequired"
+                value={formData.authorizationRequired ? 'true' : 'false'}
+                onChange={handleInputChange}
+                className="border border-gray-300 rounded w-full p-2"
+              >
+                <option value="false">No</option>
+                <option value="true">Yes</option>
+              </select>
+            </div>
+            <div>
+              <label className="block mb-2">Authorization Completed</label>
+              <select
+                name="authorizationCompleted"
+                value={formData.authorizationCompleted ? 'true' : 'false'}
+                onChange={handleInputChange}
+                className="border border-gray-300 rounded w-full p-2"
+              >
+                <option value="false">No</option>
+                <option value="true">Yes</option>
+              </select>
+            </div>
+            <div>
+              <label className="block mb-2">Authorization Completed By</label>
+              <input
+                type="text"
+                name="authorizationCompletedBy"
+                value={formData.authorizationCompletedBy}
+                onChange={handleInputChange}
+                className="border border-gray-300 rounded w-full p-2"
+              />
+            </div>
+            <div>
+              <label className="block mb-2">Authorization Status</label>
+              <input
+                type="text"
+                name="authorizationStatus"
+                value={formData.authorizationStatus}
+                onChange={handleInputChange}
+                className="border border-gray-300 rounded w-full p-2"
+              />
+            </div>
           </div>
-          <div>
-            <label className="block mb-2">PCP in EHR:</label>
-            <input type="text" name="pcpInEHR" value={formData.pcpInEHR} onChange={handleInputChange} />
-          </div>
-          <div>
-            <label className="block mb-2">PCP Completion Date*</label>
-            <input type="date" name="pcpCompletionDate" value={formData.pcpCompletionDate} onChange={handleInputChange} />
-          </div>
-          <div>
-            <label className="block mb-2">PCP Completed By</label>
-            <input type="text" name="pcpCompletedBy" value={formData.pcpCompletedBy} onChange={handleInputChange} />
-          </div>
-          <div>
-            <label className="block mb-2">Authorization Required?</label>
-            <select
-              name="authorizationRequired"
-              value={formData.authorizationRequired? "true" : "false"}
-              onChange={handleInputChange}
-              required
-            >
-            <option value="" disabled>Select</option>
-              <option value="true">Yes</option>
-              <option value="false">No</option>
-            </select>
-            {/* <input type="text" name="authorizationRequired" value={formData.authorizationRequired} onChange={handleInputChange} /> */}
-          </div>
-          <div>
-            <label className="block mb-2">Authorization Completed/ Submitted ?</label>
-            <select
-              name="authorizationCompleted"
-              value={formData.authorizationCompleted? "true" : "false"}
-              onChange={handleInputChange}
-              required
-            >
-            <option value="" disabled>Select</option>
-              <option value="true">Yes</option>
-              <option value="false">No</option>
-            </select>
-            {/* <input type="text" name="authorizationCompleted" value={formData.authorizationCompleted} onChange={handleInputChange} /> */}
-          </div>
-          <div>
-            <label className="block mb-2">Authorization Complete By</label>
-            <input type="text" name="authorizationCompletedBy" value={formData.authorizationCompletedBy} onChange={handleInputChange} />
-          </div>
-          <div>
-            <label className="block mb-2">Authorization Status</label>
-            <input type="text" name="authorizationStatus" value={formData.authorizationStatus} onChange={handleInputChange} />
-          </div>
-          </div>
-          <div className="mt-5 md:mt-10 flex justify-end">
-            <button type="submit" className="button ">
-              {isUpdateMode ? "Update" : "Add"}
-            </button>
+          <div className="mt-6 flex justify-end">
+            <button type="submit" className="bg-[#283c63] text-white px-4 py-2 rounded">Update</button>
           </div>
         </form>
       </Modal>
