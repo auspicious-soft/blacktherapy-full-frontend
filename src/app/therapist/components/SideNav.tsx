@@ -6,13 +6,14 @@ import { DashboardIcon, Humbruger, Logo, LogOut, BillingIcon, PasswordIcon, Paym
 import Link from "next/link";
 import './SideNav.css';  
 import { useRouter } from "next/navigation";
+import { signOut } from "next-auth/react";
 
 const SideNav = () => {
   const router = useRouter();
 
-  const handleLogout = () => {
-    localStorage.removeItem('authToken');
-    router.push('https://blacktherapy.vercel.app/');
+  const handleLogout = async() => {
+    await signOut({ redirect: false })
+    router.push('/');
   };
 
   const [isCollapsed, setIsCollapsed] = useState(false);

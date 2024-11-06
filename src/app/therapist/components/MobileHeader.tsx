@@ -6,14 +6,15 @@ import { DashboardIcon, Humbruger, Logo, LogOut, BillingIcon, PasswordIcon, Paym
 import Link from "next/link";
 import './SideNav.css'; 
 import { useRouter } from "next/navigation";
+import { signOut } from "next-auth/react";
 
 const MobileHeader = () => {
   const router = useRouter();
- 
-  // const handleLogout = () => {
-  //   localStorage.removeItem('authToken');
-  //   router.push('https://blacktherapy.vercel.app/');
-  // };
+  
+  const handleLogout = async() => {
+    await signOut({ redirect: false })
+    router.push('/');
+  };
 
   const [isCollapsed, setIsCollapsed] = useState(false);
 
@@ -80,13 +81,12 @@ const MobileHeader = () => {
         </ul>
       </div>
       <div className="">
-        <ul className="navList">
+      <ul className="navList">
           <li className="!m-0">
-          <Link href="/">
-          <LogOut />
-              <span className="text-[#283C63] text-[600]">Log Out</span>
-            </Link>
-            
+            <a onClick={handleLogout} style={{ cursor: 'pointer' }}>
+              <LogOut />
+              {!isCollapsed && <span className="text-[#283C63] text-[600]">Log Out</span>}
+            </a>
           </li>
         </ul>
       </div>
