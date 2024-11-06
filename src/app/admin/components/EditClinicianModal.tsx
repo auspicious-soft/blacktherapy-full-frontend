@@ -234,7 +234,7 @@ const EditClinicianModal: React.FC<EditModalProps> = ({ row, isOpen, onRequestCl
       isOpen={isOpen}
       onRequestClose={onRequestClose}
       contentLabel="Update Assignment"
-      className="bg-white w-[90%] rounded-[20px] p-[40px] max-h-[90vh] overflow-scroll overflo-custom "
+      className="bg-white w-[90%] rounded-[20px] p-[40px] max-h-[90vh] overflow-auto overflo-custom "
       overlayClassName="w-full h-full fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center"
     >
       <h2 className="text-xl font-semibold mb-4">Edit Clinician Details</h2>

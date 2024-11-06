@@ -78,7 +78,7 @@ const ClientNotesTab: React.FC<NotesProps> = ({rowId}) => {
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
         contentLabel="Add New Note"
-        className="modal max-w-[600px] mx-auto rounded-[20px] w-full  max-h-[90vh] overflow-scroll overflo-custom"
+        className="modal max-w-[600px] mx-auto rounded-[20px] w-full  max-h-[90vh] overflow-auto overflo-custom"
         overlayClassName="w-full h-full px-3 fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center"
         ariaHideApp={false}
       >
