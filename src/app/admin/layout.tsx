@@ -72,7 +72,7 @@ export default async function RootLayout({
     );
   } else {
     return (
-      <div className="bg-black h-screen">
+      <div className="bg-black h-screen text-white">
         You are not authorized to view this page
       </div>
     );
