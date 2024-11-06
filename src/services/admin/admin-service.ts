@@ -13,7 +13,6 @@ export const getAppoinmentsData = async (route: string) => {
   return axiosInstance.get(route)
 }
 export const updateAssignments = async (route:string, payload: any) =>{
-  console.log('payload:', payload);
   const axiosInstance = await getAxiosInstance()
   return axiosInstance.patch(route, payload)
 }
@@ -143,16 +142,12 @@ export const AssignTaskToTherapist = async (route: string, payload: any) => {
 
 //----------update/EDIT therapist---- pending
 export const UpdateTherapistData = async (route: string, payload: any) => {
-  console.log('payload:', payload);
-  console.log('route:', route);
   const axiosInstance = await getAxiosInstance()
   return axiosInstance.put(route, payload)
 }
 
 
 export const AddNewTherapist = async (route: string, payload: any) => {
-  console.log('payload:', payload);
-  console.log('route:', route);
   const axiosInstance = await getAxiosInstance()
   return axiosInstance.post(route, payload)
 }
