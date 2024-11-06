@@ -168,7 +168,7 @@ const ServiceAssignmentTab: React.FC<ServiceAssignmentProps> = ({ rowId }) => {
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
         contentLabel="Add New Entry"
-        className="modal max-w-[810px] mx-auto rounded-[20px] w-full max-h-[90vh] overflow-scroll overflo-custom"
+        className="modal max-w-[810px] mx-auto rounded-[20px] w-full max-h-[90vh] overflow-auto overflo-custom"
         overlayClassName="w-full h-full fixed p-3 inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center"
         ariaHideApp={false}
       >

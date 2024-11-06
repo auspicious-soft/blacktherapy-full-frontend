@@ -277,7 +277,7 @@ const Page: React.FC = () => {
         isOpen={showApproveModal}
         onRequestClose={() => setShowApproveModal(false)}
         contentLabel="Approve Payment"
-        className="bg-white w-[90%] max-w-[668px] max-h-[90vh] overflow-scroll overflo-custom   "
+        className="bg-white w-[90%] max-w-[668px] max-h-[90vh] overflow-auto overflo-custom   "
         overlayClassName="w-full h-full fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center"
       >
         <div className="">
@@ -364,7 +364,7 @@ const Page: React.FC = () => {
         isOpen={showRejectModal}
         onRequestClose={() => setShowRejectModal(false)}
         contentLabel="Reject Payment"
-        className="bg-white w-[90%] max-w-[668px] max-h-[90vh] overflow-scroll overflo-custom   "
+        className="bg-white w-[90%] max-w-[668px] max-h-[90vh] overflow-auto overflo-custom   "
         overlayClassName="w-full h-full fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center"
       >
         <div className="">

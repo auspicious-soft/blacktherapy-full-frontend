@@ -32,7 +32,7 @@ const handleTabClick = (tab: string) => {
       isOpen={props.isOpen}
       onRequestClose={props.onRequestClose}
       contentLabel="Delete Item"
-      className="modal max-w-[1180px] md:px-0 px-3 mx-auto rounded-[20px] w-full  max-h-[90vh] overflow-scroll overflo-custom "
+      className="modal max-w-[1180px] md:px-0 px-3 mx-auto rounded-[20px] w-full  max-h-[90vh] overflow-auto overflo-custom "
       overlayClassName="w-full h-full fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center"
     >
     <div className="flex items-center justify-between rounded-t-[20px] p-5 md:py-[25px] md:px-[35px] bg-[#283C63]  ">
