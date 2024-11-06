@@ -16,7 +16,7 @@ const Page: React.FC = () => {
   const { data: session } = useSession();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("client");
+  // const [role, setRole] = useState("client");
   const router = useRouter();
 
   useEffect(() => {
@@ -24,19 +24,19 @@ const Page: React.FC = () => {
       if ((session as any)?.user?.role === 'therapist') {
         router.push('/therapist/dashboard')
       }
-      if ((session as any)?.user?.role === 'client') {
+      else if ((session as any)?.user?.role === 'client') {
         router.push('/customer/dashboard')
       }
-      else {
+      else  {
         router.push('/admin/dashboard')
       }
     }
-  }, [router, session])
+  }, [router, (session as any)?.user?.role])
 
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault();
     if (!email || !password) return toast.error('All fields are required')
-    const resss = await loginAction({ email, password, role })
+    const resss = await loginAction({ email, password })
     if (resss?.success) {
       toast.success('Logged in successfully')
       if (resss?.data?.role === 'client') {
@@ -80,7 +80,7 @@ const Page: React.FC = () => {
                   placeholder="Password"
                   onChange={(e) => setPassword(e.target.value)}
                 />
-                <div className="role-toggle mb-4 md:mb-[30px] flex justify-center space-x-4">
+                {/* <div className="role-toggle mb-4 md:mb-[30px] flex justify-center space-x-4">
                   <label className="flex items-center space-x-2 cursor-pointer">
                     <input
                       type="radio"
@@ -105,7 +105,7 @@ const Page: React.FC = () => {
                     />
                     <span>Clinician</span>
                   </label>
-                </div>
+                </div> */}
                 <Link href="/forgotpassword" className="text-[#686c78] text-sm text-right inline-block w-full mb-4 md:mb-[30px]">Forgot Password</Link>
                 <button type="submit" className="button w-full">Submit <ButtonSvg /></button>
               </form>
