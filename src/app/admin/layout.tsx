@@ -44,10 +44,13 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await auth();
+  const session = await auth()
+  const notUserOrAdmin = ['therapist', 'client'] 
+
   if (!session) {
-    redirect("/login");
-  } else if ((session as any)?.user?.role === "admin") {
+    redirect("/login")
+  } 
+  else if (!notUserOrAdmin.includes((session as any)?.user?.role)) {
     return (
       <html lang="en">
         <body
@@ -69,7 +72,7 @@ export default async function RootLayout({
     );
   } else {
     return (
-      <div className="bg-black h-screen">
+      <div className="bg-black h-screen text-white">
         You are not authorized to view this page
       </div>
     );

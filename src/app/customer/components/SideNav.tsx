@@ -1,22 +1,23 @@
 "use client";
 import { useState } from "react";
-import { usePathname } from 'next/navigation'; 
+import { usePathname } from 'next/navigation';
 import { BillingInsuranceIcon, ChangePasswordIcon, DashboardIcon, Humbruger, Logo, LogOut, ProfileIcon, WellnessIcon } from "@/utils/svgicons";
 import Link from "next/link";
-import './SideNav.css'; 
+import './SideNav.css';
 import { useRouter } from "next/navigation";
+import { signOut } from "next-auth/react";
 
 const SideNav = () => {
   const router = useRouter();
 
-  const handleLogout = () => {
-    localStorage.removeItem('authToken');
-    router.push('https://blacktherapy.vercel.app/');
+  const handleLogout = async () => {
+    await signOut({ redirect: false })
+    router.push('/');
   };
 
   const [isCollapsed, setIsCollapsed] = useState(false);
 
-  const pathname = usePathname(); 
+  const pathname = usePathname();
 
   const toggleSidebar = () => {
     setIsCollapsed(!isCollapsed);
@@ -64,7 +65,7 @@ const SideNav = () => {
             </Link>
           </li>
           <li className={isActive('/customer/billing-insurance')}>
-          <Link href="/customer/billing-insurance">
+            <Link href="/customer/billing-insurance">
               <BillingInsuranceIcon />
               {!isCollapsed && <span>Billing & Insurance</span>}
             </Link>
