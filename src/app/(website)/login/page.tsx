@@ -21,33 +21,32 @@ const Page: React.FC = () => {
 
   useEffect(() => {
     if (session) {
-      if ((session as any)?.user?.role === 'admin') {
-        router.push('/admin/dashboard')
+      if ((session as any)?.user?.role === 'therapist') {
+        router.push('/therapist/dashboard')
       }
-      else if ((session as any)?.user?.role === 'client') {
+      if ((session as any)?.user?.role === 'client') {
         router.push('/customer/dashboard')
       }
       else {
-        router.push('/therapist/dashboard')
+        router.push('/admin/dashboard')
       }
     }
-  }, [router, session]) 
+  }, [router, session])
 
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault();
     if (!email || !password) return toast.error('All fields are required')
     const resss = await loginAction({ email, password, role })
-    console.log('resss: ', resss);
     if (resss?.success) {
       toast.success('Logged in successfully')
-      if (resss?.data?.role === 'admin') {
-        window.location.href = '/admin/dashboard'
-      }
-      else if (resss?.data?.role === 'client') {
+      if (resss?.data?.role === 'client') {
         window.location.href = '/customer/dashboard'
       }
-      else {
+      else if (resss?.data?.role === 'therapist') {
         window.location.href = '/therapist/dashboard'
+      }
+      else {
+        window.location.href = '/admin/dashboard'
       }
     } else {
       toast.error(Array.isArray(resss?.message) ? resss?.message[0].message : resss?.message);

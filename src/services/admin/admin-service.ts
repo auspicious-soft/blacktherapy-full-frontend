@@ -1,18 +1,7 @@
 import { getAxiosInstance } from "@/utils/axios";
 import { axiosInstance } from "@/utils/axios";
 
-export const loginService = async (payload: any) => {
-  if (payload.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL && payload.password) {
-    return await axiosInstance.post(`/admin/login`, { email: payload.email, password: payload.password });
-  }
-  if (payload.role === 'client') {
-    return await axiosInstance.post(`/client/login`, { email: payload.email, password: payload.password });;
-  }
-  if (payload.role === 'therapist') {
-    return await axiosInstance.post(`/therapist/login`, { email: payload.email, password: payload.password });
-  }
-
-}
+export const loginService = async (payload: any) => await axiosInstance.post(`/login`, { email: payload.email, password: payload.password });
 //-----Dashboard Page-----
 export const getAdminDashboardStats = async (route: string) => {
   const axiosInstance = await getAxiosInstance()
