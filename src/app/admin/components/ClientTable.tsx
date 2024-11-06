@@ -122,36 +122,32 @@ const ClientTable: React.FC<ClientsDataProps> = ({ clientsData, setQuery, error,
               <th>Assignments</th>
               <th>Action</th>
               {/* <th>Account Status</th> */}
-              <th>Actions</th>
+              <th>Delete</th>
             </tr>
           </thead>
           <tbody>
           {isLoading ? (
       <tr>
-        <td colSpan={5} className="">
-          Loading... 
-        </td>
+        <td colSpan={5} className="">Loading...</td>
       </tr>
     ) : error ? (
       <tr>
-        <td colSpan={5} className="text-center text-red-500">
-          Error loading payments data.
-        </td>
+        <td colSpan={5} className="text-center text-red-500">Error loading payments data.</td>
       </tr>
     ) :ClientsArray?.length > 0 ? (
           ClientsArray?.map((row: any) => (
               <tr key={row?._id} className="border-b">
                 <td>{row?._id}</td>
                 <td>
-                <p
-          className={`font-gothamMedium rounded-3xl py-[2px] px-[10px] text-[10px] text-center 
+                <p className={`font-gothamMedium rounded-3xl py-[2px] px-[10px] text-[10px] text-center 
           ${row?.status === 'Active Client' ? 'text-[#155724] bg-[#D4EDDA]' : 'text-[#5E2626] bg-[#FFCCCC]'}`}
         >
             {row?.status === 'Active Client' ? 'Active Client' : row?.status}
             </p>
 
                 </td>
-                <td>{row?.firstName} {row?.lastName}</td>
+                <td className='hover:underline hover:font-bold cursor-pointer'
+                onClick={() => openClientPopup(row)}>{row?.firstName} {row?.lastName}</td>
                 <td>{row?.phoneNumber}</td>
                 <td>{row?.createdAt}</td>
                 <td>{row?.appointments.length}</td>
@@ -189,8 +185,8 @@ const ClientTable: React.FC<ClientsDataProps> = ({ clientsData, setQuery, error,
                   </select>
                 </td>
                 <td className="py-2 px-4">
-                 <div className='flex gap-2 '>
-                 <button onClick={() => openClientPopup(row)}> <ViewIcon /> </button>
+                 <div className='text-center '>
+                 {/* <button onClick={() => openClientPopup(row)}> <ViewIcon /> </button> */}
                   <button
                     onClick={() => handleDelete(row?._id)} >
                     <DeleteIcon />

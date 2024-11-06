@@ -239,7 +239,6 @@ const Page = () => {
                 <option value="QP / Supervisor">QP / Supervisor</option>
                 <option value="Director of Operation/ Billing">Director of Operation/ Billing</option>
                 <option value="Director">Director</option>
-                <option value="Clinician">Clinician</option>
                 <option value="Peer Support Specialist">Peer Support Specialist</option>
                 <option value="Para Professional">Para Professional</option>
                 <option value="AP">AP</option>

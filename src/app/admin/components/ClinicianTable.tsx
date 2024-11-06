@@ -159,7 +159,7 @@ const ClinicianTable: React.FC<TherapistsDataProps> = ({
               <th>No of Appointments</th>
               <th>Actions</th>
               <th>Assign Task</th>
-              <th>Status</th>
+              <th>Action Status</th>
             </tr>
           </thead>
           <tbody>
@@ -171,7 +171,7 @@ const ClinicianTable: React.FC<TherapistsDataProps> = ({
               </tr>
             ) : error ? (
               <tr>
-                <td colSpan={5} className="text-center text-red-500">
+                <td colSpan={5} className="text-center text-red-500 ">
                   Error loading payments data.
                 </td>
               </tr>

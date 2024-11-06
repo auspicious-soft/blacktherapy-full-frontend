@@ -55,8 +55,7 @@ const AssignedClientsTable: React.FC<AssignedClientsTableProps> = ({ appointment
   }
 
   const openAssignmentsPopup = (row: any) => {
-    setAssignmentDetails(row);
-    setAssignmentClientsPopup(true);
+    setAssignmentDetails(row); 
   };
 
   const closeAssignmentsPopup = () => {
@@ -97,22 +96,22 @@ const AssignedClientsTable: React.FC<AssignedClientsTableProps> = ({ appointment
           <tbody>
             {assignedData?.length > 0 ? (
               assignedData?.map((row: any) => (
-                <tr key={row._id}>
-                  <td>{row._id}</td>
-                  <td>{row.clientName}</td>
-                  <td>{row.therapistId?.firstName} {row.therapistId?.lastName}</td>
+                <tr key={row?._id}>
+                  <td>{row?._id}</td>
+                  <td>{row?.clientName}</td>
+                  <td>{row?.therapistId?.firstName} {row?.therapistId?.lastName}</td>
                   <td>
-                    {row.peerSupportIds && row.peerSupportIds.length > 0 ? (
-                      row.peerSupportIds.map((peer: any, index: number) => (
+                    {row?.peerSupportIds && row?.peerSupportIds.length > 0 ? (
+                      row?.peerSupportIds.map((peer: any, index: number) => (
                         peer.error ? (
                           <span key={peer.id}>
                             {peer.error}
-                            {index < row.peerSupportIds.length - 1 ? ', ' : ''}
+                            {index < row?.peerSupportIds.length - 1 ? ', ' : ''}
                           </span>
                         ) : (
-                          <span key={peer.id}>
-                            {peer.firstName} {peer.lastName}
-                            {index < row.peerSupportIds.length - 1 ? ', ' : ''}
+                          <span key={peer?.id}>
+                            {peer?.firstName} {peer?.lastName}
+                            {index < row?.peerSupportIds.length - 1 ? ', ' : ''}
                           </span>
                         )
                       ))
@@ -120,7 +119,7 @@ const AssignedClientsTable: React.FC<AssignedClientsTableProps> = ({ appointment
                       'No peer supports assigned'
                     )}
                   </td>
-                  <td>{new Date(row.createdAt).toLocaleDateString()}</td>
+                  <td>{new Date(row?.createdAt).toLocaleDateString()}</td>
                   {/* <td className="">{row.assignedDate ? new Date(row.assignedDate).toLocaleDateString() : 'N/A'}</td> Display date */}
                   <td className="">
                     <button

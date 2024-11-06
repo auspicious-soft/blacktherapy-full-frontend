@@ -215,7 +215,12 @@ input,
   transform: translate3d(0, 50%, 0);
   transition: 0.3s;
 }
-
+/* .sideNav.collapsed ul.navList li span {
+  display: none;
+} */
+.filter-select select {
+  background-image: url(../../assets/images/blue-select.svg);
+}
 @media screen and (max-width: 1023px) {
   h2 {
     font-size: 26px;

@@ -1,9 +1,8 @@
 import { ButtonArrow } from '@/utils/svgicons';
-import React, { useState, useTransition } from 'react';
+import React, { useState, useTransition, useEffect } from 'react';
 import Modal from "react-modal";
 import CustomSelect from './CustomSelect';
-import { GetTherapistsData, updateAssignments } from '@/services/admin/admin-service';
-import useSWR from 'swr';
+import { updateAssignments } from '@/services/admin/admin-service';
 import { toast } from 'sonner';
 import useTherapists from '@/utils/useTherapists';
 
@@ -15,9 +14,10 @@ interface AssignmentProps {
 }
 
 const UpdateAssignments: React.FC<AssignmentProps> = ({ isOpen, onRequestClose, row, mutate }) => {
+    console.log('row:', row);
 
     const { therapistData, isLoading, error } = useTherapists();
-    
+
     const [selectedClinician, setSelectedClinician] = useState<any>(null);
     const [selectedPeers, setSelectedPeers] = useState<any>([]);
     const [formData, setFormData] = useState({
@@ -26,6 +26,23 @@ const UpdateAssignments: React.FC<AssignmentProps> = ({ isOpen, onRequestClose, 
         video: ''
     });
     const [isPending, startTransition] = useTransition();
+
+    useEffect(() => {
+        if (row) {
+            setSelectedClinician(row?.therapistId?.firstName && row?.therapistId?.lastName ? 
+                { label: `${row?.therapistId?.firstName} ${row?.therapistId?.lastName}` } : null);
+
+            setSelectedPeers(row?.peerSupportIds?.map((peer: any) => ({
+                label: `${peer?.firstName} ${peer?.lastName}`
+            })) || []);
+
+            setFormData({
+                message: row?.message !== undefined ? row?.message.toString() : '',
+                workshop: row?.workshop || '',
+                video: row?.video !== undefined ? row?.video.toString() : ''
+            });
+        }
+    }, [row]);
 
     const handleSelectChange = (selected: any) => {
         setSelectedClinician(selected);
@@ -38,7 +55,6 @@ const UpdateAssignments: React.FC<AssignmentProps> = ({ isOpen, onRequestClose, 
             [name]: value
         }));
     };
-    
     const handleFormSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -118,6 +134,7 @@ const UpdateAssignments: React.FC<AssignmentProps> = ({ isOpen, onRequestClose, 
                             name="workshop"
                             value={formData.workshop}
                             onChange={handleInputChange}
+                            placeholder="Enter workshop details"
                             className="w-full p-2 border rounded-[10px] border-[#CDE3F1]"
                         />
                     </div>
