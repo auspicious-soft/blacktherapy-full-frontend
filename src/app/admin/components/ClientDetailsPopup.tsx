@@ -16,16 +16,18 @@ interface ClientDetailsPopupProps {
   onRequestClose: () => void;  
   row: any;
   mutate: any
+  role: string;
 }
 
 const ClientDetailsPopup = (props: ClientDetailsPopupProps) => {
   const {row} = props;
   const {mutate} = props;
+  const {role} = props;
   const [activeTab, setActiveTab] = useState("tab1");
   const handleTabClick = (tab: string) => {
     setActiveTab(tab);
   };
-
+  
   return (
     <Modal
       isOpen={props.isOpen}
@@ -126,8 +128,8 @@ const ClientDetailsPopup = (props: ClientDetailsPopupProps) => {
           {activeTab==="tab3" && <ClientsInsurenceTab row={row} mutate={mutate} />}
           {activeTab==="tab4" && <BillingInformationTab rowId={row?._id} /> }
           {activeTab==="tab5" && <ServiceAssignmentTab rowId={row?._id}/> }
-          {activeTab==="tab6" && <AttachmentsTabs rowId={row?._id}/> }
-          {activeTab==="tab7" && <ClientNotesTab rowId={row?._id}/> }
+          {activeTab==="tab6" && <AttachmentsTabs role={role} rowId={row?._id}/> }
+          {activeTab==="tab7" && <ClientNotesTab role={role} rowId={row?._id}/> }
         </div>
       </div>
     </Modal>

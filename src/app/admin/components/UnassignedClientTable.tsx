@@ -51,8 +51,6 @@ const UnassignedClientTable: React.FC<UnassignedPageProps> = ({ setQuery, appoin
     setQuery(`page=${selectedItem.selected + 1}&limit=${rowsPerPage}`)
   }
 
-
-
   const openAssignmentsPopup = (row: any) => {
     setAssignmentDetails(row);
     setAssignmentClientsPopup(true);
@@ -60,15 +58,13 @@ const UnassignedClientTable: React.FC<UnassignedPageProps> = ({ setQuery, appoin
 
   const closeAssignmentsPopup = () => {
     setAssignmentClientsPopup(false);
-    setAssignmentDetails(null); // Clear the selected client details
+    setAssignmentDetails(null); 
   };
 
   const openModal = (row: any) => {
     setCurrentRow(row);
     setUpdateAssignment(true);
   };
-
-
 
 
   return (

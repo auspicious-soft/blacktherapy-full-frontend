@@ -9,34 +9,24 @@ import ClientDetailsPopup from './ClientDetailsPopup';
 import { deleteClientData, updateClientsDetails } from '@/services/admin/admin-service';
 import { toast } from 'sonner';
 
-interface TableData {
-  id: string;
-  status: string;
-  clientName: string; 
-  contact: string;
-  memberSince: string;
-  assignments: number;
-  actionss: string;
-  accountStatus: boolean;
-  action: boolean;
-}
 interface ClientsDataProps { 
   clientsData: any;
   setQuery: any;
   error: any;
   isLoading: any;
   mutate: any;
+  role: string;
 }
-const ClientTable: React.FC<ClientsDataProps> = ({ clientsData, setQuery, error, isLoading, mutate }) => {
+const ClientTable: React.FC<ClientsDataProps> = ({ clientsData, setQuery, error, isLoading, mutate, role }) => {
   const total = clientsData?.total ?? 0;
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState(clientsData);
   const [clientDetailsPopup, setClientDetailsPopup] = useState(false);
   const [clientDetails, setClientDetails] = useState<{ id: string; clientName: string } | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
-
+  
   const ClientsArray = clientsData?.data;
-
+  
   const rowsPerPage = 10;
   const handlePageClick = (selectedItem: { selected: number }) => {
     setQuery(`page=${selectedItem.selected + 1}&limit=${rowsPerPage}`)
@@ -229,6 +219,7 @@ const ClientTable: React.FC<ClientsDataProps> = ({ clientsData, setQuery, error,
     onRequestClose={closeClientPopup}
     row={clientDetails}
     mutate={mutate}
+    role={role}
   /> 
 )}
 

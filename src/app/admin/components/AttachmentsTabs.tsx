@@ -7,6 +7,7 @@ import useSWR from "swr";
 
 interface AttachmentsTabsProps {
   rowId: string;
+  role: string;
 }
 
 const initialData = [
@@ -17,10 +18,9 @@ const initialData = [
   },
 ];
 
-const AttachmentsTabs: React.FC<AttachmentsTabsProps> = ({ rowId }) => {
+const AttachmentsTabs: React.FC<AttachmentsTabsProps> = ({ rowId, role }) => {
   const { data, error, isLoading , mutate} = useSWR(`/admin/client/attachments/${rowId}`, GetClientAttachments);
   const attachmentsInfo = data?.data?.data;
-  console.log('attachmentsInfo:', attachmentsInfo);
 
   const [dataa, setData] = useState(initialData);
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -66,11 +66,11 @@ const AttachmentsTabs: React.FC<AttachmentsTabsProps> = ({ rowId }) => {
     const attachmentData = {
       title: formData.title,
       attachments: formData.viewAttachments.map((attachment) => attachment.name), 
+      assignedBy: role, 
     };
     console.log('attachments:', attachmentData);
     try {
       const response = await addClientAttachments(`/admin/client/attachments/${rowId}`, attachmentData);
-      console.log('response:', response);
   
       if (response.status === 201) {
         toast.success("Attachment added successfully");
@@ -79,7 +79,7 @@ const AttachmentsTabs: React.FC<AttachmentsTabsProps> = ({ rowId }) => {
         setFormData({
           title: '',
           viewAttachments: [{ name: "", url: "" }],
-          userRole: 'Admin',
+          userRole: role,
         });
         mutate(); 
         setModalIsOpen(false);
@@ -125,7 +125,7 @@ const AttachmentsTabs: React.FC<AttachmentsTabsProps> = ({ rowId }) => {
           </div>
         ))}
       </td>
-      <td>Admin</td>
+      <td className="capitalize">{role}</td>
     </tr>
   ))}
 </tbody>
@@ -201,7 +201,7 @@ const AttachmentsTabs: React.FC<AttachmentsTabsProps> = ({ rowId }) => {
           </div>
           <div className="mt-5 md:mt-10 flex justify-end">
             <button type="submit" className="button">
-              Update
+              Add New
             </button>
           </div>
         </form>

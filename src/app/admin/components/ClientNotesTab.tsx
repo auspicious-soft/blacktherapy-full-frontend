@@ -7,8 +7,9 @@ import useSWR from "swr";
  
 interface NotesProps {
   rowId: string;
+  role: string;
 }
-const ClientNotesTab: React.FC<NotesProps> = ({rowId}) => {
+const ClientNotesTab: React.FC<NotesProps> = ({rowId, role}) => {
   const [modalIsOpen, setModalIsOpen] = useState(false); 
   const [newNote, setNewNote] = useState("");
   const { data, error, isLoading, mutate } = useSWR(`/admin/client/notes/${rowId}`, GetClientNotes);
@@ -28,8 +29,7 @@ const ClientNotesTab: React.FC<NotesProps> = ({rowId}) => {
   const handleAddNote = async () => {
      startTransition(async () => {
       try {
-        const response = await AddClientNotesData(`/admin/client/notes/${rowId}`, { note: newNote });
-        console.log('response:', response);
+        const response = await AddClientNotesData(`/admin/client/notes/${rowId}`, { note: newNote ,assignedBy: role, });
         if (response?.status === 201) {
           mutate(); 
           toast.success("Note added successfully");
@@ -60,6 +60,7 @@ const ClientNotesTab: React.FC<NotesProps> = ({rowId}) => {
             <tr>
               <th>Note</th>
               <th>Time</th>
+              <th>User Role</th>
             </tr>
           </thead>
           <tbody>
@@ -67,6 +68,7 @@ const ClientNotesTab: React.FC<NotesProps> = ({rowId}) => {
               <tr key={row?._id}>
                 <td>{row?.note}</td>
                 <td>{row?.createdAt}</td>
+                <td className="capitalize">{role}</td>
               </tr>
             ))}
           </tbody>

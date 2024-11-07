@@ -7,10 +7,7 @@ import SearchBar from "../components/SearchBar";
 
 const Page: React.FC = () => {
   const [query, setQuery] = useState("");
-  const { data, error, isLoading, mutate } = useSWR(
-    `/admin/therapists?${query}`,
-    GetTherapistsData
-  );
+  const { data, error, isLoading, mutate } = useSWR(`/admin/therapists?${query}`,GetTherapistsData);
   const therapistsData: any = data?.data;
 
   return (
