@@ -13,7 +13,7 @@ const Page: React.FC = () => {
 
   const handlefilters = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setQuery(e.target.value);
-    
+
   };
 
 
@@ -30,7 +30,7 @@ const Page: React.FC = () => {
             onChange={handlefilters}
             //onChange={(event) => handleInputChange(event, row?._id)}
             className="w-auto border border-[#26395E] text-[#26395E] text-sm h-[46px] px-5 bg-transparent p-0"
-          >tus
+          >
             <option value="">Status</option>
             <option value="Applicant Reviewed">Applicant Reviewed</option>
             <option value="Interview Pending">Interview Pending</option>

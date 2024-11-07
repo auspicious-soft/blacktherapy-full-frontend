@@ -8,6 +8,7 @@ import deleteCross from "@/assets/images/deleteCross.png";
 import ClientDetailsPopup from './ClientDetailsPopup';
 import { deleteClientData, updateClientsDetails } from '@/services/admin/admin-service';
 import { toast } from 'sonner';
+import { useSession } from 'next-auth/react';
 
 interface ClientsDataProps { 
   clientsData: any;
@@ -16,7 +17,6 @@ interface ClientsDataProps {
   isLoading: any;
   mutate: any;
   role: string;
-  userRole: string;
 }
 const ClientTable: React.FC<ClientsDataProps> = ({ clientsData, setQuery, error, isLoading, mutate, role }) => {
   const total = clientsData?.total ?? 0;
@@ -25,6 +25,10 @@ const ClientTable: React.FC<ClientsDataProps> = ({ clientsData, setQuery, error,
   const [clientDetailsPopup, setClientDetailsPopup] = useState(false);
   const [clientDetails, setClientDetails] = useState<{ id: string; clientName: string } | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const { data: session } = useSession();
+  //const isAdmin = (session as any)?.user?.role === 'admin';
+  
+
   
   const ClientsArray = clientsData?.data;
   
@@ -179,6 +183,7 @@ const ClientTable: React.FC<ClientsDataProps> = ({ clientsData, setQuery, error,
                  <div className='text-center '>
                  {/* <button onClick={() => openClientPopup(row)}> <ViewIcon /> </button> */}
                   <button
+                   disabled={(session as any)?.user?.role !== 'admin'}
                     onClick={() => handleDelete(row?._id)} >
                     <DeleteIcon />
                   </button>
