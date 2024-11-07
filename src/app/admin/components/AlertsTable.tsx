@@ -56,9 +56,9 @@ const AlertsTable = () => {
             value={query} 
             className='border border-[#26395E] text-[#26395E] text-sm h-[46px] px-5 bg-transparent p-0'
           >
-            <option value="" disabled>Status</option>
+            <option value="">Status</option>
             <option value="true">Read</option> 
-            <option value="false">Unread</option> 
+            <option value="false">Unread</option>  
           </select>
         </div>
       </div>

@@ -133,6 +133,8 @@ const ServiceAssignmentTab: React.FC<ServiceAssignmentProps> = ({ rowId }) => {
               <th>Assigned Peer</th>
               <th>PCP Completed By</th>
               <th>Authorization Completed By</th>
+              <th>Expiry Date</th>
+              <th>No. of Units</th>
               <th>Action</th>
             </tr>
           </thead>
@@ -154,6 +156,8 @@ const ServiceAssignmentTab: React.FC<ServiceAssignmentProps> = ({ rowId }) => {
                 ))}</td>
                 <td>{row?.pcpCompletedBy}</td>
                 <td>{row?.authorizationCompletedBy ?? ''}</td>
+                <td>{row?.expirationDate} </td>
+                <td>{row?.noOfUnits} </td>
                 <td>
                   <button onClick={() => openModal(row)} className='hover:underline font-bold'>Update</button>
                 </td>

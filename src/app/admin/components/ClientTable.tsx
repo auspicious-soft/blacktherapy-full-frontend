@@ -16,6 +16,7 @@ interface ClientsDataProps {
   isLoading: any;
   mutate: any;
   role: string;
+  userRole: string;
 }
 const ClientTable: React.FC<ClientsDataProps> = ({ clientsData, setQuery, error, isLoading, mutate, role }) => {
   const total = clientsData?.total ?? 0;
