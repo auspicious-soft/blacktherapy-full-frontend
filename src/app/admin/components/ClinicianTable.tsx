@@ -10,10 +10,12 @@ import Image from "next/image";
 import ClinicianDetailsPopup from "./ClinicianDetailsPopup";
 import {
   DeleteClinician,
+  GetEmployeeRecordsData,
   UpdateTherapistData,
 } from "@/services/admin/admin-service";
 import { toast } from "sonner";
 import { useSession } from "next-auth/react";
+import { Tooltip } from "react-tooltip";
 
 interface TherapistsDataProps {
   therapistsData: any;
@@ -44,6 +46,7 @@ const ClinicianTable: React.FC<TherapistsDataProps> = ({
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const { data: session } = useSession();
+  const [tooltipContent, setTooltipContent] = useState<string | null>(null);
 
   const therapistsDataArray = therapistsData?.data;
 
@@ -130,7 +133,10 @@ const ClinicianTable: React.FC<TherapistsDataProps> = ({
       });
       (async () => {
         try {
-          const response = await UpdateTherapistData(`/admin/therapists/${id}`,actionData); 
+          const response = await UpdateTherapistData(
+            `/admin/therapists/${id}`,
+            actionData
+          );
           if (response.status === 200) {
             toast.success("Client status updated successfully");
             mutate();
@@ -145,6 +151,26 @@ const ClinicianTable: React.FC<TherapistsDataProps> = ({
       })();
     }
   };
+
+  const fetchPositionData = async (id: string) => {
+    try {
+      const response = await GetEmployeeRecordsData(
+        `/admin/therapists/employee-records/${id}`
+      );
+
+      if (response.status === 200) {
+        const position = response?.data?.data[0].position;
+        console.log("position:", position);
+        setTooltipContent(position);
+      } else {
+        setTooltipContent("Position data unavailable");
+      }
+    } catch (error) {
+      console.error("Error fetching position data", error);
+      setTooltipContent("Error loading data");
+    }
+  };
+
   return (
     <div>
       <div className="table-common overflo-custom">
@@ -183,7 +209,8 @@ const ClinicianTable: React.FC<TherapistsDataProps> = ({
                   <td>{row?._id}</td>
                   <td>
                     <p className=" inline-block font-gothamMedium text-center leading-[normal] rounded-3xl py-[3px] px-[10px] text-[#26395E] bg-[#CCDDFF] text-[10px] ">
-                      {row?.otherDetailsOfTherapist?.status ?? 'Background Check Pending'}
+                      {row?.otherDetailsOfTherapist?.status ??
+                        "Background Check Pending"}
                     </p>
                   </td>
                   <td>
@@ -191,9 +218,18 @@ const ClinicianTable: React.FC<TherapistsDataProps> = ({
                       {row?.training}
                     </p>
                   </td>
-                  <td>
-                    {row?.firstName} {row?.lastName}
-                  </td>
+
+                    <td
+                      data-tip
+                      data-for={`tooltip-${row?._id}`}
+                      onMouseEnter={() => fetchPositionData(row?._id)}
+                    >
+                      {row?.firstName} {row?.lastName}
+                    </td>
+                  {/* <Tooltip id={`tooltip-${row?._id}`} place="bottom">
+                    {tooltipContent}
+                  </Tooltip> */}
+
                   <td>{row?.phoneNumber}</td>
                   <td>
                     {row?.otherDetailsOfTherapist?.addressLine1}
@@ -211,9 +247,10 @@ const ClinicianTable: React.FC<TherapistsDataProps> = ({
                         {" "}
                         <EditIcon />
                       </button>
-                      <button 
-                       disabled={(session as any)?.user?.role !== 'admin'}
-                      onClick={() => handleDelete(row?._id)}>
+                      <button
+                        disabled={(session as any)?.user?.role !== "admin"}
+                        onClick={() => handleDelete(row?._id)}
+                      >
                         {" "}
                         <DeleteIcon />
                       </button>
