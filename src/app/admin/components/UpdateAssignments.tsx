@@ -26,14 +26,16 @@ const UpdateAssignments: React.FC<AssignmentProps> = ({ isOpen, onRequestClose, 
         video: ''
     });
     const [isPending, startTransition] = useTransition();
-
+    const nameState = row?.clientId?.state;
+    
     useEffect(() => {
         if (row) {
             setSelectedClinician(row?.therapistId?.firstName && row?.therapistId?.lastName ? 
                 { label: `${row?.therapistId?.firstName} ${row?.therapistId?.lastName}` } : null);
 
             setSelectedPeers(row?.peerSupportIds?.map((peer: any) => ({
-                label: `${peer?.firstName} ${peer?.lastName}`
+                label: `${peer?.firstName} ${peer?.lastName}`,
+                state: peer?.state
             })) || []);
 
             setFormData({
@@ -44,9 +46,28 @@ const UpdateAssignments: React.FC<AssignmentProps> = ({ isOpen, onRequestClose, 
         }
     }, [row]);
 
+    const checkStateMatch = (state: string) => {
+        if (state === nameState) {
+            toast.warning('The Client state matches with the client.');
+        }
+    };
+
     const handleSelectChange = (selected: any) => {
         setSelectedClinician(selected);
+        if (selected?.state) {
+            checkStateMatch(selected.state);
+        }
     };
+
+    const handlePeerSelectChange = (selected: any) => {
+        setSelectedPeers(selected);
+        selected.forEach((peer: any) => {
+            if (peer?.state) {
+                checkStateMatch(peer.state);    
+            }
+        });
+    };
+
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -109,7 +130,7 @@ const UpdateAssignments: React.FC<AssignmentProps> = ({ isOpen, onRequestClose, 
                             name="Assign Peer Support"
                             value={selectedPeers}
                             options={therapistData}
-                            onChange={setSelectedPeers} 
+                            onChange={handlePeerSelectChange} 
                             placeholder="Select"
                             isMulti={true}
                         />
