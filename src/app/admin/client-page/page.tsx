@@ -65,7 +65,7 @@ const Page: React.FC = () => {
         </select>
         </div>
         </div>
-        <ClientTable userRole={userRole} clientsData={clientsData} mutate={mutate}  error={error} isLoading={isLoading} setQuery = {setQuery} role={userRole}  />
+        <ClientTable clientsData={clientsData} mutate={mutate}  error={error} isLoading={isLoading} setQuery = {setQuery} role={userRole}  />
         </>
     );
 }; 

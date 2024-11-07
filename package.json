@@ -24,6 +24,7 @@
     "react-player": "^2.16.0",
     "react-select": "^5.8.1",
     "react-signature-canvas": "^1.0.6",
+    "react-tooltip": "^5.28.0",
     "sharp": "^0.33.4",
     "sonner": "^1.5.0",
     "swiper": "^11.1.5",

@@ -13,6 +13,7 @@ import {
   UpdateTherapistData,
 } from "@/services/admin/admin-service";
 import { toast } from "sonner";
+import { useSession } from "next-auth/react";
 
 interface TherapistsDataProps {
   therapistsData: any;
@@ -42,6 +43,7 @@ const ClinicianTable: React.FC<TherapistsDataProps> = ({
   } | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+  const { data: session } = useSession();
 
   const therapistsDataArray = therapistsData?.data;
 
@@ -190,12 +192,12 @@ const ClinicianTable: React.FC<TherapistsDataProps> = ({
                     </p>
                   </td>
                   <td>
-                    {row?.firstName} {row?.lastName}{" "}
+                    {row?.firstName} {row?.lastName}
                   </td>
                   <td>{row?.phoneNumber}</td>
                   <td>
-                    {row?.otherDetailsOfTherapist?.addressLine1}{" "}
-                    {row?.otherDetailsOfTherapist?.addressLine2},{" "}
+                    {row?.otherDetailsOfTherapist?.addressLine1}
+                    {row?.otherDetailsOfTherapist?.addressLine2},
                     {row?.otherDetailsOfTherapist?.state}
                   </td>
                   <td>{row?.createdAt}</td>
@@ -209,7 +211,9 @@ const ClinicianTable: React.FC<TherapistsDataProps> = ({
                         {" "}
                         <EditIcon />
                       </button>
-                      <button onClick={() => handleDelete(row?._id)}>
+                      <button 
+                       disabled={(session as any)?.user?.role !== 'admin'}
+                      onClick={() => handleDelete(row?._id)}>
                         {" "}
                         <DeleteIcon />
                       </button>

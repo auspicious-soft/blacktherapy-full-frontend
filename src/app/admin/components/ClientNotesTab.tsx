@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import useSWR from "swr";
  
 interface NotesProps {
-  rowId: string;
+  rowId: string; 
   role: string;
 }
 const ClientNotesTab: React.FC<NotesProps> = ({rowId, role}) => {

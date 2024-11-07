@@ -1,8 +1,9 @@
 import { AddEmployeeNotesData, GetEmployeeNotesData } from "@/services/admin/admin-service";
 import { CloseIcon } from "@/utils/svgicons";
+import { useSession } from "next-auth/react";
 import React, { ChangeEvent, useState, useTransition } from "react";
 import Modal from "react-modal";
-import { toast } from "sonner";
+import { toast } from "sonner"; 
 import useSWR from "swr";
 
 interface NotesProps {
@@ -14,7 +15,8 @@ const ClinicianNotesTab: React.FC<NotesProps> = ({ rowId }) => {
   const [newNote, setNewNote] = useState("");
   const { data, error, isLoading, mutate } = useSWR(`/admin/thrapists/notes/${rowId}`, GetEmployeeNotesData);
   const notesInfo = data?.data?.data;
-
+  const { data: session } = useSession();
+  const userRole = (session as any)?.user?.role;
   const openModal = () => setModalIsOpen(true);
   const closeModal = () => setModalIsOpen(false);
 
@@ -60,6 +62,7 @@ const ClinicianNotesTab: React.FC<NotesProps> = ({ rowId }) => {
             <tr>
               <th>Note</th>
               <th>Time</th>
+              <th>User Role</th>
             </tr>
           </thead>
           <tbody>
@@ -67,6 +70,7 @@ const ClinicianNotesTab: React.FC<NotesProps> = ({ rowId }) => {
               <tr key={row?._id}>
                 <td>{row?.note}</td>
                 <td>{row?.createdAt}</td>
+                <td className="capitalize">{userRole}</td>
               </tr>
             ))}
           </tbody>

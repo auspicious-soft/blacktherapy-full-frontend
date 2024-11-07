@@ -39,6 +39,8 @@ const ServiceAssignmentTab: React.FC<ServiceAssignmentProps> = ({ rowId }) => {
     authorizationCompleted: false,
     authorizationCompletedBy: '',
     authorizationStatus: '',
+    noOfUnits: 0,
+    expirationDate: '',
   });
 
   const openModal = (row: any) => {
@@ -58,6 +60,8 @@ const ServiceAssignmentTab: React.FC<ServiceAssignmentProps> = ({ rowId }) => {
         authorizationCompleted: row.authorizationCompleted,
         authorizationCompletedBy: row.authorizationCompletedBy,
         authorizationStatus: row.authorizationStatus,
+        noOfUnits: row?.noOfUnits,
+        expirationDate: row?.expirationDate,
       });
 
       // Set selected peers for the multi-select
@@ -321,6 +325,26 @@ const ServiceAssignmentTab: React.FC<ServiceAssignmentProps> = ({ rowId }) => {
                 type="text"
                 name="authorizationCompletedBy"
                 value={formData.authorizationCompletedBy}
+                onChange={handleInputChange}
+                className="border border-gray-300 rounded w-full p-2"
+              />
+            </div>
+            <div>
+              <label className="block mb-2">No. Of Units</label>
+              <input
+                type="number"
+                name="noOfUnits"
+                value={formData.noOfUnits}
+                onChange={handleInputChange}
+                className="border border-gray-300 rounded w-full p-2"
+              />
+            </div>
+            <div>
+              <label className="block mb-2">Expiration Date</label>
+              <input
+                type="date"
+                name="expirationDate"
+                value={formatDate(formData.expirationDate)}
                 onChange={handleInputChange}
                 className="border border-gray-300 rounded w-full p-2"
               />
