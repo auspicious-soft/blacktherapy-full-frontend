@@ -9,17 +9,6 @@ import ClientDetailsPopup from './ClientDetailsPopup';
 import { deleteClientData, updateClientsDetails } from '@/services/admin/admin-service';
 import { toast } from 'sonner';
 
-interface TableData {
-  id: string;
-  status: string;
-  clientName: string; 
-  contact: string;
-  memberSince: string;
-  assignments: number;
-  actionss: string;
-  accountStatus: boolean;
-  action: boolean;
-}
 interface ClientsDataProps { 
   clientsData: any;
   setQuery: any;

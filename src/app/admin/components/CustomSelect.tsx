@@ -17,6 +17,7 @@ interface CustomSelectProps<OptionType> {
 interface OptionType {
   value: string;
   label: string;
+  state: string;
 }
 const customStyles: StylesConfig<any, true> = {
   control: (styles: any) => ({

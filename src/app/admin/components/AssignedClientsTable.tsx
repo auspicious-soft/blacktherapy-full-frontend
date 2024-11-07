@@ -15,7 +15,7 @@ export interface TableData {
   message?: string;
   workshop?: string;
   video?: string;
-  dateAssigned?: string; // Added field for assigned date
+  dateAssigned?: string;
 }
 
 interface AssignedClientsTableProps {
@@ -29,7 +29,6 @@ const AssignedClientsTable: React.FC<AssignedClientsTableProps> = ({ appointment
   const router = useRouter();
   const total = appointmentsData?.total ?? 0;
   const appointments = appointmentsData?.data ?? [];
-  const [currentPage, setCurrentPage] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentRow, setCurrentRow] = useState<TableData | null>(null);
   const [assignmentClientsPopup, setAssignmentClientsPopup] = useState(false);
@@ -71,10 +70,6 @@ const AssignedClientsTable: React.FC<AssignedClientsTableProps> = ({ appointment
     setIsModalOpen(false);
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
 
 
 

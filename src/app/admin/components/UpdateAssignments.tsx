@@ -14,7 +14,7 @@ interface AssignmentProps {
 }
 
 const UpdateAssignments: React.FC<AssignmentProps> = ({ isOpen, onRequestClose, row, mutate }) => {
-    console.log('row:', row);
+
 
     const { therapistData, isLoading, error } = useTherapists();
 

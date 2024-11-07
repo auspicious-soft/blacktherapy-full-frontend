@@ -14,6 +14,7 @@ import {
 import { useSession } from "next-auth/react";
 import useSWR from "swr";
 import ReactLoading from 'react-loading';
+import AlertsTable from "../components/AlertsTable";
 
 const Home = () => {
   const session = useSession()
@@ -86,6 +87,7 @@ const Home = () => {
           />
         ))}
       </div>
+      <AlertsTable/>
     </>
   );
 }

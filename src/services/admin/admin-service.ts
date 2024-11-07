@@ -63,12 +63,22 @@ export const addClientBilling = async (route:string, payload: any) =>{
   return axiosInstance.post(route, payload)
 }
 
-
 //------Add New Client------------
 export const AddNewClient = async (payload: any) => {
   const axiosInstance = await getAxiosInstance()
   return axiosInstance.post('/admin/clients', payload)
 }
+
+//---------get Alerts-- Dashboard Page--Update Alerts---
+export const getAlertsData = async (route: string) => {
+  const axiosInstance = await getAxiosInstance()
+  return axiosInstance.get(route)
+}
+export const updateAlerts = async (route: string, payload: any) => {
+  const axiosInstance = await getAxiosInstance();
+  return axiosInstance.patch(route, payload);
+};
+
 //-----Get Payments Data------------
 export const GetPaymentsData = async (route: string) => {
   const axiosInstance = await getAxiosInstance()
