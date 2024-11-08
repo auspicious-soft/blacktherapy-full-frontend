@@ -30,6 +30,10 @@ export const ServiceAssignmentStats = async (route: string) => {
   const axiosInstance = await getAxiosInstance()
   return axiosInstance.get(route)
 }
+export const addServiceAssignments = async (route:string, payload: any) =>{
+  const axiosInstance = await getAxiosInstance()
+  return axiosInstance.post(route, payload)
+}
 export const updateServiceAgreements = async (route:string, payload: any) =>{
   const axiosInstance = await getAxiosInstance()
   return axiosInstance.put(route, payload)

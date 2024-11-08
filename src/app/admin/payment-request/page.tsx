@@ -7,19 +7,8 @@ import useSWR from "swr";
 import ReactPaginate from 'react-paginate';
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { useSession } from "next-auth/react";
 
-interface PaymentData {
-  id: string;
-  therapistName: string;
-  requestType: string;
-  serviceProvider: string; 
-  clientName: string;
-  serviceDate: string;
-  durationHours: number;
-  paymentStatus: string;
-  submissionDate: string;
-  note?: string; 
-}
 interface PaymentApproveData {
   progressNotes: string,
   status: string,
@@ -42,8 +31,11 @@ const Page: React.FC = () => {
   const paymentsData = data?.data?.data;
   const total = data?.data?.total ?? 0;
 
-  const [selectedPaymentID, setSelectedPaymentID] = useState<string | null>(null);
+  const { data: session } = useSession();
+  const userRole = (session as any)?.user?.role;
 
+  
+  const [selectedPaymentID, setSelectedPaymentID] = useState<string | null>(null);
   const [showApproveModal, setShowApproveModal] = useState(false);
   const [showRejectModal, setShowRejectModal] = useState(false);
   const [approveDetails, setApproveDetails] = useState<PaymentApproveData>({
@@ -92,7 +84,7 @@ const Page: React.FC = () => {
     const approvedData: PaymentApproveData = {
       ...approveDetails,
       status: "approved",
-      statusChangedBy: "admin", 
+      statusChangedBy: userRole, 
     };
   
     try {
@@ -175,7 +167,7 @@ const Page: React.FC = () => {
               <th>Payment Status</th>
               <th>Submission Date</th>
               {activeTab === "rejected" && <th>Note</th>}
-              {(activeTab === "pending" || activeTab === "rejected") && <th>Action</th>}
+              {(activeTab === "pending" || activeTab === "rejected" || activeTab === "approved") && <th>Action</th>}
             </tr>
           </thead>
           <tbody>
@@ -201,7 +193,7 @@ const Page: React.FC = () => {
                 <td>{payment?.clientId?.firstName} {payment?.clientId?.lastName}</td>
                 <td>{payment?.serviceDate}</td>
                 <td>{payment?.duration}</td>
-                <td className="text-center">
+                <td className="text-center capitalize">
                   <p
                     className={
                       payment?.status === "pending"
@@ -211,12 +203,14 @@ const Page: React.FC = () => {
                         : "bg-[#FFD9D9] text-[#C00] rounded-3xl py-[2px] px-[10px] text-[10px]"
                     }
                   >
-                    {payment?.status}
+                   {payment?.status === "approved"
+                    ? `approved by ${userRole}`
+                    : payment?.status}
                   </p>
                 </td>
                 <td>{payment?.createdAt}</td>
                 {activeTab === "rejected" && <td>{payment?.rejectNote}</td>}
-                {activeTab === "pending" && (
+                {(activeTab === "pending" || activeTab === "approved") && (
                   <td>
                     <select
                       className="border-none bg-transparent p-0 h-auto"
@@ -235,6 +229,7 @@ const Page: React.FC = () => {
                     </select>
                   </td>
                 )}
+
                 {activeTab === "rejected" && (
                   <td>
                     <button onClick={() => handleApprove(payment?._id)}>
@@ -342,6 +337,14 @@ const Page: React.FC = () => {
               type="text"
               name="detailsAboutPayment"
               value={approveDetails.detailsAboutPayment}
+              onChange={approvePaymentInput}  />
+          </div>
+          <div className="mb-4">
+            <label className="block mb-2">User Role</label>
+            <input
+              type="text"
+              name="role"
+              value={userRole}
               onChange={approvePaymentInput}  />
           </div>
           <div className="flex gap-5 justify-end">

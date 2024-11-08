@@ -10,6 +10,9 @@ import { AddNewWellness, DeleteWellness, GetClientWellness } from "@/services/ad
 import deleteCross from "@/assets/images/deleteCross.png";
 import { toast } from "sonner";
 import Notification from "../components/Notification";
+import useClients from "@/utils/useClients";
+import CustomSelect from "../components/CustomSelect";
+import useTherapists from "@/utils/useTherapists";
 interface FormData {
   title: string;
   assignTo: string; 
@@ -36,12 +39,15 @@ const Page = () => {
   const total = data?.data?.total ?? 0;
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deleteItemId, setDeleteItemId] = useState<string | null>(null);
-
+  const [selectedClientOrClinician, setSelectedClientOrClinician] = useState<any>(null);
+  const {clientsData } = useClients();
+  const { therapistData} = useTherapists();
   const rowsPerPage = 10;
 
   const handlePageClick = (selectedItem: { selected: number }) => {
     setQuery(`page=${selectedItem.selected + 1}&limit=${rowsPerPage}`)
   }
+
 
   const handleInputChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -102,13 +108,20 @@ const Page = () => {
       mutate()
     };
     
-
-  
   const handleModalClose = () => {
     setIsDeleteModalOpen(false);
     setDeleteItemId(null);
   };
 
+  const handleSelectChange = (selected: any) => {
+    setSelectedClientOrClinician(selected);
+  };
+// const handleClient = (selected: any) => {
+//     setSelectedClients(selected);
+// };
+// const handleClinician = (selected: any) => {
+//   setSelectedClinician(selected);
+// };
 
 
   return (
@@ -139,11 +152,34 @@ const Page = () => {
                 value={formData.assignTo}
                 onChange={handleInputChange}
               >
+                <option value="">Select</option>
                 <option value="client">Client</option>
                 <option value="therapist">Clinician</option>
               </select>
             </div>
-            <div className="md:w-[calc(33.33%-30px)]">
+            {formData.assignTo === "client" && (
+              <div className="md:w-[calc(33.33%-30px)]">
+                <CustomSelect
+                  name="Clients"
+                  value={selectedClientOrClinician}
+                  options={clientsData}
+                  onChange={handleSelectChange}
+                  placeholder="Select Client"
+                />
+              </div>
+            )}
+            {formData.assignTo === "therapist" && (
+              <div className="md:w-[calc(33.33%-30px)]">
+                <CustomSelect
+                  name="Clinician"
+                  value={selectedClientOrClinician}
+                  options={therapistData}
+                  onChange={handleSelectChange}
+                  placeholder="Select Clinician"
+                />
+              </div>
+            )}
+            <div className="md:w-[calc(33.33%-30px)]"> 
               <label className="block mb-2">Upload Link</label>
               <input
                 type="text"
