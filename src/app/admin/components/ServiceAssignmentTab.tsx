@@ -173,8 +173,8 @@ const ServiceAssignmentTab: React.FC<ServiceAssignmentProps> = ({ rowId }) => {
       Add New
     </button>
   )}
-      <button onClick={handleReview}
-        className='!text-sm !h-[40px] button'>Review</button>
+      <button onClick={handleReview} disabled = {serviceInfo?.[0]?.reviewedDate < new Date().toISOString()}
+        className='!text-sm !h-[40px] button'>Mark as Reviewed</button>
       </div>
       <div className='table-common overflo-custom'>
         <table>

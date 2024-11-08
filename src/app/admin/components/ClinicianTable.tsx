@@ -8,14 +8,11 @@ import deleteCross from "@/assets/images/deleteCross.png";
 import Modal from "react-modal";
 import Image from "next/image";
 import ClinicianDetailsPopup from "./ClinicianDetailsPopup";
-import {
-  DeleteClinician,
-  GetEmployeeRecordsData,
-  UpdateTherapistData,
-} from "@/services/admin/admin-service";
+import { DeleteClinician, GetEmployeeRecordsData, UpdateTherapistData, } from "@/services/admin/admin-service";
 import { toast } from "sonner";
 import { useSession } from "next-auth/react";
-import ReactTooltip from 'react-tooltip';
+import { Tooltip } from 'react-tippy';
+
 
 
 interface TherapistsDataProps {
@@ -48,7 +45,7 @@ const ClinicianTable: React.FC<TherapistsDataProps> = ({
   const [isPending, startTransition] = useTransition();
   const { data: session } = useSession();
   const [tooltipContent, setTooltipContent] = useState<string | null>(null);
-
+  const [hoveredRow, setHoveredRow] = useState<any>(null);
   const therapistsDataArray = therapistsData?.data;
 
   const rowsPerPage = 5;
@@ -166,35 +163,7 @@ const ClinicianTable: React.FC<TherapistsDataProps> = ({
       console.error("Error fetching position data", error);
       setTooltipContent("Error loading data");
     }
-  };
-  // const fetchPositionData = async (id: string) => {
-  //   // if (tooltipContent[id]) return;
-  //   try {
-  //     const response = await GetEmployeeRecordsData(
-  //       `/admin/therapists/employee-records/${id}`
-  //     );
-
-  //     if (response.status === 200) {
-  //       const position = response?.data?.data[0].position;
-  //       setTooltipContent((prev: any) => ({
-  //         ...prev,
-  //         [id]: position,
-  //       }));
-  //     } else {
-  //       setTooltipContent((prev: any) => ({
-  //         ...prev,
-  //         [id]: "Position data unavailable",
-  //       }));
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching position data", error);
-  //     setTooltipContent((prev: any) => ({
-  //       ...prev,
-  //       [id]: "Error loading data",
-  //     }));
-  //   }
-  // };
-
+  }
   return (
     <div>
       <div className="table-common overflo-custom">
@@ -204,7 +173,7 @@ const ClinicianTable: React.FC<TherapistsDataProps> = ({
               <th>ID</th>
               <th>Status</th>
               <th>Training</th>
-              <th>Name</th>
+              <th title={(tooltipContent && tooltipContent as string) ?? ''}>Name</th>
               <th>Contact</th>
               <th>Address</th>
               <th>Member Since</th>
@@ -243,16 +212,34 @@ const ClinicianTable: React.FC<TherapistsDataProps> = ({
                     </p>
                   </td>
 
-                    <td className="relative"
-                      data-tip
-                      data-for={`tooltip-${row?._id}`}
-                      onMouseEnter={() => fetchPositionData(row?._id)}
+                  <td className="relative"
+                    data-tip
+                    title={(tooltipContent && tooltipContent as string) ?? ''}
+                    data-for={`tooltip-${row?._id}`}
+                    onMouseEnter={() => {
+                      setHoveredRow(row._id)
+                      fetchPositionData(row?._id)
+                    }}
+                    onMouseLeave={() => {
+                      setHoveredRow(null)
+                      setTooltipContent(null)
+                    }}
+                  >
+                    <p className={`cursor-pointer`}
+                    >{row?.firstName} {row?.lastName}</p>
+                    {(tooltipContent && tooltipContent as string)  && (
+                      <Tooltip
+                        title="Welcome to React"
+                        position="bottom"
+                        trigger="focus"
                       >
-                      {row?.firstName} {row?.lastName}
-                        {/* <ReactTooltip id={`tooltip-${row._id}`} place="bottom">
-                        {tooltipContent[row?._id] || "Loading..."}
-                      </ReactTooltip> */}
-                    </td>
+                        {/* <p>
+                          Click here to show popup
+                        </p> */}
+                      </Tooltip>
+                    )}
+
+                  </td>
 
 
                   <td>{row?.phoneNumber}</td>

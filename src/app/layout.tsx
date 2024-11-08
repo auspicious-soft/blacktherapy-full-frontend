@@ -1,3 +1,4 @@
+import 'react-tippy/dist/tippy.css';
 import { Toaster } from "sonner";
 import "./globals.css";
 import { SessionProvider } from "next-auth/react";
