@@ -135,6 +135,15 @@ export const GetEmployeeRecordsData = async (route: string) => {
   const axiosInstance = await getAxiosInstance()
   return axiosInstance.get(route)
 }
+//--attachments---
+export const getClinicianAttachments = async (route: string) =>{
+  const axiosInstance = await getAxiosInstance()
+  return axiosInstance.get(route)
+}
+export const addClinicianAttachments = async (route:string, payload: any) =>{
+  const axiosInstance = await getAxiosInstance()
+  return axiosInstance.post(route, payload)
+}
 
 export const GetEmployeeNotesData = async (route: string) => {
   const axiosInstance = await getAxiosInstance()

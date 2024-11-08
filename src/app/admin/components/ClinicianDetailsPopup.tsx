@@ -8,6 +8,7 @@ import ClinicianPersonalinfo from "./ClinicianPersonalinfo";
 import ClinicianOtherInfo from "./ClinicianOtherInfo";
 import ClinicianRecord from "./ClinicianRecord";
 import ClinicianNotesTab from "./ClinicianNotesTab";
+import ClinicianAttachments from "./ClinicianAttachments";
   interface ClinicianDetailsPopupProps {
   isOpen: boolean;
   onRequestClose: () => void;
@@ -83,6 +84,16 @@ const handleTabClick = (tab: string) => {
             } text-[#969696]`}
             onClick={() => handleTabClick("tab4")}
           >
+            Attachments
+          </button>
+          <button
+            className={`font-gothamMedium w-[25%] text-center pb-[15px] px-[5px] text-sm  ${
+              activeTab === "tab5"
+                ? "active !text-[#283c63]  border-b-2 border-[#283c63]"
+                : ""
+            } text-[#969696]`}
+            onClick={() => handleTabClick("tab5")}
+          >
             Notes
           </button>
         </div>
@@ -90,7 +101,8 @@ const handleTabClick = (tab: string) => {
           {activeTab === "tab1" && <ClinicianPersonalinfo row={row} />}
           {activeTab === "tab2" && <ClinicianOtherInfo row={row} />}
           {activeTab==="tab3" && <ClinicianRecord rowId={row?._id}/>}
-          {activeTab==="tab4" && <ClinicianNotesTab rowId={row?._id} /> }
+          {activeTab==="tab4" && <ClinicianAttachments rowId={row?._id}/>}
+          {activeTab==="tab5" && <ClinicianNotesTab rowId={row?._id} /> }
         </div>
       </div>
     </Modal>
