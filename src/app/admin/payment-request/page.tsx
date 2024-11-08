@@ -202,7 +202,9 @@ const Page: React.FC = () => {
                     }
                   >
                    {payment?.status === "approved"
-                    ? `approved by ${userRole}`
+                    ? `approved by (${
+                      payment.statusChangedBy?.map((str:any, _)=> str).join(', ')
+                    })`
                     : payment?.status}
                   </p>
                 </td>
