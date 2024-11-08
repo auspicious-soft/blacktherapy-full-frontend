@@ -86,7 +86,6 @@ const Page: React.FC = () => {
   
     try {
       const response = await UpdatePaymentRequest(`/admin/payment-requests/${id}`, approvedData);
-      console.log('response:', response);
   
       if (response?.status === 200) {
         toast.success("Payment data updated successfully");
@@ -203,7 +202,7 @@ const Page: React.FC = () => {
                   >
                    {payment?.status === "approved"
                     ? `approved by (${
-                      payment.statusChangedBy?.map((str:any, _)=> str).join(', ')
+                      payment.statusChangedBy?.map((str:any, _:any)=> str).join(', ')
                     })`
                     : payment?.status}
                   </p>
