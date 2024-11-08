@@ -6,7 +6,7 @@ import { updateAssignments } from '@/services/admin/admin-service';
 import { toast } from 'sonner';
 import useTherapists from '@/utils/useTherapists';
 
-interface AssignmentProps {
+interface AssignmentProps { 
     isOpen: boolean;
     onRequestClose: () => void;
     row: any;

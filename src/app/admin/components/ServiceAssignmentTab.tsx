@@ -1,7 +1,7 @@
-import { GetTherapistsData, ServiceAssignmentStats, updateServiceAgreements } from '@/services/admin/admin-service';
+import { addServiceAssignments, GetTherapistsData, ServiceAssignmentStats, updateServiceAgreements } from '@/services/admin/admin-service';
 import { CloseIcon } from '@/utils/svgicons';
 import useTherapists from '@/utils/useTherapists';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Modal from 'react-modal';
 import { toast } from 'sonner';
 import useSWR from 'swr';
@@ -13,7 +13,7 @@ interface ServiceAssignmentProps {
 const formatDate = (date: Date) => {
   if (!date) return '';
   const d = new Date(date);
-  return d.toISOString().split('T')[0]; // Format as 'YYYY-MM-DD'
+  return d.toISOString().split('T')[0];
 };
 
 const ServiceAssignmentTab: React.FC<ServiceAssignmentProps> = ({ rowId }) => {
@@ -21,6 +21,7 @@ const ServiceAssignmentTab: React.FC<ServiceAssignmentProps> = ({ rowId }) => {
   const serviceInfo = data?.data?.data;
   const { therapistData } = useTherapists();
 
+  const [isCreating, setIsCreating] = useState(serviceInfo?.length === 0);
   const [selectedPeers, setSelectedPeers] = useState<any>([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [isUpdateMode, setIsUpdateMode] = useState(false);
@@ -43,6 +44,11 @@ const ServiceAssignmentTab: React.FC<ServiceAssignmentProps> = ({ rowId }) => {
     expirationDate: '',
   });
 
+  useEffect(() => {
+    setIsCreating(serviceInfo?.length === 0);
+  }, [serviceInfo]);
+
+
   const openModal = (row: any) => {
     if (row) {
       setFormData({
@@ -64,7 +70,6 @@ const ServiceAssignmentTab: React.FC<ServiceAssignmentProps> = ({ rowId }) => {
         expirationDate: row?.expirationDate,
       });
 
-      // Set selected peers for the multi-select
       const selectedPeerOptions = row.peerSupportTherapist?.map((peer: any) => ({
         value: peer._id,
         label: `${peer.firstName} ${peer.lastName}`,
@@ -101,7 +106,7 @@ const ServiceAssignmentTab: React.FC<ServiceAssignmentProps> = ({ rowId }) => {
     });
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       const response = await updateServiceAgreements(`/admin/client-service-assignment/${rowId}`, formData);
@@ -118,8 +123,59 @@ const ServiceAssignmentTab: React.FC<ServiceAssignmentProps> = ({ rowId }) => {
     }
   };
 
+  const handleCreate = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      const response = await addServiceAssignments(`/admin/client-service-assignment/${rowId}`, formData);
+      if (response.status === 201) {
+        toast.success('Service Assignment details added successfully');
+        mutate();
+        closeModal();
+      } else {
+        toast.error('Failed to add Service Assignment details');
+      }
+    } catch (error) {
+      console.error('Error adding Service Assignment details:', error);
+      toast.error('Error adding Service Assignment details');
+    }
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (isCreating) {
+      handleCreate(e);
+    } else {
+      handleUpdate(e);
+    }
+  };
+
+  const handleReview = async () => {
+    const reviewedDate = new Date(); 
+    try {
+      const response = await updateServiceAgreements(`/admin/client-service-assignment/${rowId}`, { createdreviewedDateAt });
+      if (response.status === 200) {
+        toast.success('Service Assignment details updated successfully');
+        mutate(); ;
+      } else {
+        toast.error('Failed to update Service Assignment details');
+      }
+    } catch (error) {
+      console.error('Error updating Service Assignment details:', error);
+      toast.error('Error updating Service Assignment details');
+    }
+  };
+
   return (
     <div>
+      <div className='flex justify-end gap-5 mb-5'>
+      {(!serviceInfo || serviceInfo.length === 0) && (
+    <button onClick={openModal} className="!text-sm !h-[40px] !px-[30px] button">
+      Add New
+    </button>
+  )}
+      <button onClick={handleReview}
+        className='!text-sm !h-[40px] button'>Review</button>
+      </div>
       <div className='table-common overflo-custom'>
         <table>
           <thead>
@@ -182,25 +238,15 @@ const ServiceAssignmentTab: React.FC<ServiceAssignmentProps> = ({ rowId }) => {
       >
         <div className="flex items-center justify-between rounded-t-[20px] p-5 md:py-[25px] md:px-[35px] bg-[#283C63]">
           <h2 className="font-gothamMedium !text-white">
-            {isUpdateMode ? "Update Service Assignment" : "Add New"}
+            {isCreating ? "Update Service Assignment" : "Add New"}
           </h2>
           <button onClick={closeModal}>
-            <CloseIcon />
+            <CloseIcon /> 
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="bg-white p-5 md:px-[35px] md:py-10">
           <div className="grid md:grid-cols-2 gap-4 md:gap-[30px] ">
-            {/* <div>
-                      <label className="block mb-2">Client ID</label>
-                      <input
-                        type="text"
-                        name="clientId"
-                        value={formData.clientId}
-                        onChange={handleInputChange}
-                        className="border border-gray-300 rounded w-full p-2"
-                      />
-                    </div> */}
             <div>
               <label className="block mb-2">CCA in EHR</label>
               <input
@@ -361,7 +407,9 @@ const ServiceAssignmentTab: React.FC<ServiceAssignmentProps> = ({ rowId }) => {
             </div>
           </div>
           <div className="mt-6 flex justify-end">
-            <button type="submit" className="bg-[#283c63] text-white px-4 py-2 rounded">Update</button>
+          <button type="submit" className="bg-[#283c63] text-white px-4 py-2 rounded">
+            {isCreating ? "Update" : "Create"}
+          </button>
           </div>
         </form>
       </Modal>

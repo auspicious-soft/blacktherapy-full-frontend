@@ -15,7 +15,8 @@ import {
 } from "@/services/admin/admin-service";
 import { toast } from "sonner";
 import { useSession } from "next-auth/react";
-import { Tooltip } from "react-tooltip";
+import ReactTooltip from 'react-tooltip';
+
 
 interface TherapistsDataProps {
   therapistsData: any;
@@ -46,7 +47,7 @@ const ClinicianTable: React.FC<TherapistsDataProps> = ({
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const { data: session } = useSession();
-  const [tooltipContent, setTooltipContent] = useState<string | null>(null);
+  const [tooltipContent, setTooltipContent] = useState<{ [key: string]: string }>({});
 
   const therapistsDataArray = therapistsData?.data;
 
@@ -153,6 +154,7 @@ const ClinicianTable: React.FC<TherapistsDataProps> = ({
   };
 
   const fetchPositionData = async (id: string) => {
+    if (tooltipContent[id]) return;
     try {
       const response = await GetEmployeeRecordsData(
         `/admin/therapists/employee-records/${id}`
@@ -160,14 +162,22 @@ const ClinicianTable: React.FC<TherapistsDataProps> = ({
 
       if (response.status === 200) {
         const position = response?.data?.data[0].position;
-        console.log("position:", position);
-        setTooltipContent(position);
+        setTooltipContent((prev: any) => ({
+          ...prev,
+          [id]: position,
+        }));
       } else {
-        setTooltipContent("Position data unavailable");
+        setTooltipContent((prev: any) => ({
+          ...prev,
+          [id]: "Position data unavailable",
+        }));
       }
     } catch (error) {
       console.error("Error fetching position data", error);
-      setTooltipContent("Error loading data");
+      setTooltipContent((prev: any) => ({
+        ...prev,
+        [id]: "Error loading data",
+      }));
     }
   };
 
@@ -219,16 +229,17 @@ const ClinicianTable: React.FC<TherapistsDataProps> = ({
                     </p>
                   </td>
 
-                    <td
+                    <td className="relative"
                       data-tip
                       data-for={`tooltip-${row?._id}`}
                       onMouseEnter={() => fetchPositionData(row?._id)}
-                    >
+                      >
                       {row?.firstName} {row?.lastName}
+                        {/* <ReactTooltip id={`tooltip-${row._id}`} place="bottom">
+                        {tooltipContent[row?._id] || "Loading..."}
+                      </ReactTooltip> */}
                     </td>
-                  {/* <Tooltip id={`tooltip-${row?._id}`} place="bottom">
-                    {tooltipContent}
-                  </Tooltip> */}
+
 
                   <td>{row?.phoneNumber}</td>
                   <td>

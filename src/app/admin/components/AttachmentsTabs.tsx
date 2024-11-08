@@ -133,7 +133,7 @@ const AttachmentsTabs: React.FC<AttachmentsTabsProps> = ({ rowId, role }) => {
 
 
 
-        </table>
+        </table> 
       </div>
 
       <Modal

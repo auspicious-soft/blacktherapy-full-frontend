@@ -9,7 +9,7 @@ const useTherapists = () => {
         label: `${user?.firstName} ${user?.lastName}`,
         value: user._id,
         state: user?.otherDetailsOfTherapist?.state
-    })) || [];
+    })) || []; 
 
     return {
         therapistData,
