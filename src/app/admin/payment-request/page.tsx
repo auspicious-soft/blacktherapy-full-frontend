@@ -23,11 +23,9 @@ interface PaymentApproveData {
 const Page: React.FC = () => { 
   
   const [activeTab, setActiveTab] = useState("pending");
-  const [isPending, startTransition] = useTransition();
   
   const [query, setQuery] = useState('')
   const {data , error, isLoading, mutate} =  useSWR(`/admin/payment-requests?status=${activeTab === 'pending' ? 'pending' : activeTab === 'approved' ? 'approved' : 'rejected'}&${query}`, GetPaymentsData)
-  const router = useRouter();
   const paymentsData = data?.data?.data;
   const total = data?.data?.total ?? 0;
 
@@ -64,7 +62,6 @@ const Page: React.FC = () => {
   };
 
   const handleReject = (id: string) => {
-
     setSelectedPaymentID(id);
     setShowRejectModal(true);
   }; 
@@ -104,12 +101,13 @@ const Page: React.FC = () => {
     }
   };
   
-  const rejectPayment = async (e: FormEvent<HTMLFormElement>, id: string) => {
+  const rejectPayment = async (e:any, id: string) => {
     e.preventDefault();
   
     const rejectNoteData = {
       rejectNote,
       status: "rejected",
+      statusChangedBy: userRole,
     };
     try {
       const response = await UpdatePaymentRequest(`/admin/payment-requests/${id}`, rejectNoteData);
@@ -373,7 +371,7 @@ const Page: React.FC = () => {
         <div className="">
         <h2 className="text-white bg-[#283C63] py-8 font-gothamMedium px-[50px]  ">Reject Note</h2>
           <div className="py-[40px] px-[60px] ">
-          <form onSubmit={(e) => rejectPayment(e, selectedPaymentID as string)}>
+          <form >
           <div className="mb-4">
             <label className="block mb-2 text-[#707070]">Note</label>
             <textarea
@@ -390,6 +388,7 @@ const Page: React.FC = () => {
           </button>
           <button
             type="submit"
+            onClick={(e) => rejectPayment(e, selectedPaymentID as string)}
             className="button"
           > Submit <ButtonArrow/>
           </button>
