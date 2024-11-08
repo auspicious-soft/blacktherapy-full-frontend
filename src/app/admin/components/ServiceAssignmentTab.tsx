@@ -152,7 +152,7 @@ const ServiceAssignmentTab: React.FC<ServiceAssignmentProps> = ({ rowId }) => {
   const handleReview = async () => {
     const reviewedDate = new Date(); 
     try {
-      const response = await updateServiceAgreements(`/admin/client-service-assignment/${rowId}`, { createdreviewedDateAt });
+      const response = await updateServiceAgreements(`/admin/client-service-assignment/${rowId}`, { reviewedDate });
       if (response.status === 200) {
         toast.success('Service Assignment details updated successfully');
         mutate(); ;
