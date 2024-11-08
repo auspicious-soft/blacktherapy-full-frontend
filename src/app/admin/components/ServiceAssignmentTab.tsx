@@ -155,7 +155,7 @@ const ServiceAssignmentTab: React.FC<ServiceAssignmentProps> = ({ rowId }) => {
       const response = await updateServiceAgreements(`/admin/client-service-assignment/${rowId}`, { reviewedDate });
       if (response.status === 200) {
         toast.success('Service Assignment details updated successfully');
-        mutate(); ;
+        mutate();
       } else {
         toast.error('Failed to update Service Assignment details');
       }
