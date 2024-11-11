@@ -52,7 +52,6 @@ const DeclarationStep: React.FC<BackgroundProps> = ({
   }, [validateStep]);
 
   const handleContinue = () => {
-    // Validate and proceed to next step if valid
     if (DeclarationQuestions.every((q, index) => formData[`declare_${index}`]) && formData.signature) {
       nextStep();
     }

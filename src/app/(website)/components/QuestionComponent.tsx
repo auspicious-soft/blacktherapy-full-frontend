@@ -3,17 +3,19 @@ import clsx from 'clsx';
 
 interface QuestionComponentProps {
   question: string;
-  index: string | number; // Can be a string or a number
+  index: string | number; 
+  name: string; 
   total: number;
-  type: string; // 'text', 'radio', 'select', 'file', etc.
+  type: string; 
   placeholder?: string;
-  options?: string[]; // For 'radio', 'select', and 'checkbox' types
-  formData: { [key: string]: any };
-  setFormData: React.Dispatch<React.SetStateAction<{ [key: string]: any }>>;
+  options?: string[]; 
+  formData: any;
+  setFormData: React.Dispatch<React.SetStateAction<any>>;
 }
 
 const QuestionComponent: React.FC<QuestionComponentProps> = ({
   question,
+  name,
   index,
   total,
   placeholder,
@@ -24,48 +26,27 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({
 }) => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value, type } = e.target as HTMLInputElement | HTMLSelectElement;
-  
-    if (type === 'checkbox') {
-      const checkboxTarget = e.target as HTMLInputElement;
-      setFormData(prevFormData => {
-        const currentValues = prevFormData[name] || [];
-        const newValues = checkboxTarget.checked
-          ? [...currentValues, value]
-          : currentValues.filter((val: string) => val !== value);
-        return { ...prevFormData, [name]: newValues };
-      });
-    } else if (type === 'file') {
-      const fileTarget = e.target as HTMLInputElement;
-      const selectedFile = fileTarget.files?.[0]; // Use optional chaining to safely access files
-      if (selectedFile) {
-        // Safely handle file input
-        setFormData(prevFormData => ({
-          ...prevFormData,
-          [name]: selectedFile // Store the first selected file
-        }));
-      } else {
-        console.error('No file selected.');
-      }
-    } else {
-      setFormData(prevFormData => ({ ...prevFormData, [name]: value }));
-    }
+    const { name, value, type } = e.target;
+
+    setFormData((prevFormData: any) => ({
+      ...prevFormData,
+      [name]: type === "checkbox"
+        ? (e.target as HTMLInputElement).checked
+        : value
+    }));
   };
   
-  
-  // Convert index to string
   const indexString = index.toString();
 
-  // Determine if the field is active
-  const isActive = type === 'checkbox'
-  ? Array.isArray(formData[indexString]) && formData[indexString].length > 0
-  : typeof formData[indexString] === 'string' && formData[indexString].trim() !== ''; // Updated line
+  // const isActive = type === 'checkbox'
+  // ? Array.isArray(formData[indexString]) && formData[indexString].length > 0
+  // : typeof formData[indexString] === 'string' && formData[indexString].trim() !== '';
 
-  // Calculate the question number
   const questionNumber = indexString.includes('_')
     ? parseInt(indexString.split('_')[1]) + 1 
     : parseInt(indexString) + 1;
 
+     const isActive = Boolean(formData[name]?.trim());
   return (
     <div className='questions'>
       <div className="mb-4 md:mb-8 grid md:grid-cols-2 gap-3 md:gap-5 items-center">
@@ -81,16 +62,16 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({
           <label className="w-[calc(100%-65px)] md:w-[calc(100%-115px)] text-[#283c63] text-sm">{question}</label>
         </div>
 
-        {/* Render input fields based on type */}
         {type === 'radio' && options ? (
           <div className="flex items-center gap-5 md:gap-[50px] ml-4 md:ml-0">
             {options.map(option => (
               <label key={option} className="custom-radio pl-6 flex items-center relative ">
                 <input
                   type="radio"
-                  name={indexString}
+                  name={name}
+                  // name={indexString}
                   value={option}
-                  checked={formData[indexString] === option}
+                  checked={formData[name] === option}
                   onChange={handleChange}
                   className="mr-2"
                 />
@@ -100,8 +81,8 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({
           </div>
         ) : type === 'select' && options ? (
           <select
-            name={indexString}
-            value={formData[indexString] || ''}
+            name={name}
+            value={formData[name] || ''}
             onChange={handleChange}
             className="w-full text-[#686C78] px-[18px] h-[45px] text-sm py-2 border border-[#dbe0eb] rounded-[20px] focus:outline-none focus:ring-1 focus:border-[#283C63]"
           >
@@ -116,7 +97,8 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({
               <label key={option} className="custom-checkbox relative flex items-center">
                 <input
                   type="checkbox"
-                  name={indexString}
+                  
+                  name={name}
                   value={option}
                   checked={Array.isArray(formData[indexString]) && formData[indexString].includes(option)}
                   onChange={handleChange}
@@ -129,15 +111,16 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({
         ) : type === 'file' ? (
           <input
             type="file"
-            name={indexString}
+            name={name}
+            value={formData[name] || ''}
             onChange={handleChange}
             className="text-[#686C78] w-full px-[18px] h-[45px] text-sm py-2 border border-[#dbe0eb] rounded-[20px] focus:outline-none focus:ring-1 focus:border-[#283C63]"
           />
         ) : (
           <input
             type={type}
-            name={indexString}
-            value={formData[indexString] || ''}
+            name={name}
+            value={formData[name] || ''}
             onChange={handleChange}
             placeholder={placeholder}
             className="text-[#686C78] w-full px-[18px] h-[45px] text-sm py-2 border border-[#dbe0eb] rounded-[20px] focus:outline-none focus:ring-1 focus:border-[#283C63]"

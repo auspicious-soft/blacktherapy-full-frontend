@@ -11,8 +11,8 @@ const referenceFields = [
 ];
 
 interface ReferenceFormProps {
-  formData: { [key: string]: string }[];  // Updated to array of objects
-  setFormData: React.Dispatch<React.SetStateAction<{ [key: string]: string }[]>>; // Updated type
+  formData: any;  // Updated to array of objects
+  setFormData: React.Dispatch<React.SetStateAction<any>>; // Updated type
   setIsValid: (isValid: boolean) => void;
   nextStep: () => void;
 }

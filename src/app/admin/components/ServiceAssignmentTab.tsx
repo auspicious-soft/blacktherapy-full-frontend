@@ -199,7 +199,16 @@ const ServiceAssignmentTab: React.FC<ServiceAssignmentProps> = ({ rowId }) => {
             </tr>
           </thead>
           <tbody>
-            {serviceInfo?.map((row: any) => (
+          {isLoading ? (
+      <tr>
+        <td colSpan={5} className="">Loading...</td>
+      </tr>
+    ) : error ? (
+      <tr>
+        <td colSpan={5} className="text-center text-red-500">Error loading payments data.</td>
+      </tr>
+    ) :serviceInfo?.length > 0 ? (
+            serviceInfo?.map((row: any) => (
               <tr key={row?._id}>
                 <td>{row?.ccaCompletionDate}</td>
                 <td>{row?.servicesReviewing}</td>
@@ -222,7 +231,12 @@ const ServiceAssignmentTab: React.FC<ServiceAssignmentProps> = ({ rowId }) => {
                   <button onClick={() => openModal(row)} className='hover:underline font-bold'>Update</button>
                 </td>
               </tr>
-            ))}
+            ))
+          ) : (
+            <tr>
+              <td className='w-full flex justify-center p-3 items-center' colSpan={5} >No data found</td>
+            </tr>
+          )}
           </tbody>
 
         </table>

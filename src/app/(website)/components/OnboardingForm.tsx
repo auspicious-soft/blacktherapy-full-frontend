@@ -1,5 +1,5 @@
 "use client";
-import React, { Component, useState } from "react";
+import React, { useState } from "react";
 import PersonalDetails from "@/app/(website)/components/(therapist-onboarding)/PersonalDetails";
 import ApplicationCompleted from "@/app/(website)/components/ApplicationCompleted";
 import { WelcomeProcess } from "@/app/(website)/components/(therapist-onboarding)/WelcomeProcess";
@@ -17,7 +17,7 @@ import DeclarationStep from "@/app/(website)/components/(therapist-onboarding)/D
 const steps = [
   { component: WelcomeProcess, requiresValidation: false },
   { component: ApplicationProcess, requiresValidation: false },
-  { Component: CompensationPay, requiresValidation: false },
+  { Component: CompensationPay, requiresValidation: true },
   { component: PersonalDetails, requiresValidation: true },
   { component: EmploymentStatus, requiresValidation: true },
   { component: EducationalStep, requiresValidation: true },
@@ -31,10 +31,74 @@ const steps = [
 
 const OnboardingForm = () => {
   const [currentStep, setCurrentStep] = useState(1);
-  const [formData, setFormData] = useState<{ [key: string]: string }>({
-    email: "",
-    companyEmail: "",
-    providerType: "",
+  const [formData, setFormData] = useState<any>({
+    licenceType:"",
+    firstName: "",
+    lastName: "",
+    phoneNumber: "",
+    gender: "",
+    dob: "",
+    city: "",
+    state: "",
+    country: "",
+    zipCode: "",
+    addressLine1: "",
+    addressLine2: "",
+    howLongAtPresentAddress: "",
+    salaryDesired: "",
+    currentEmploymentStatus: "",
+    currentOrPreviousEmployerName: "",
+    employementCityState: "",
+    rolePosition: "",
+    rateOfPay: "",
+    startDate: "",
+    endDate: "",
+    reasonForLeaving: "",
+    supervisorName: "",
+    jobDescription: "",
+    currentResume: "",
+    highestEducationCompleted: "",
+    schoolName: "",
+    location: "",
+    majorDegree: "",
+    licenseOrCertification: "",
+    skills: "",
+    weeklyHours: "",
+    employmentDesired: "",
+    currentAvailability: [],
+    felonyOrMisdemeanor: "",
+    ifFelonyOrMisdemeanor: "",
+    livedInNorthCarolina: "",
+    ifNotLivedInNorthCarolina: "",
+    validDriverLicense: "",
+    reliableTransportation: "",
+    legalRightToWorkInUS: "",
+    reasonableAccommodation: "",
+    driverLicenseOrStateId: "",
+    stateOfIssue: "",
+    expirationDate: "",
+    professionalReferences: [
+      {
+        name: "",
+        phone: "",
+        email: "",
+        companyPosition: "",
+    }
+    ],
+    howAreQualifiedForPosition: "",
+    additionalInformation: "",
+    consentAgreement: false,
+    consentFirstName: "",
+    consentLastName: "",
+    consentDate: "",
+    consentSignature: "",
+    superVisionAgreement: "",
+    againConsentAgreement: false,
+    againConsentFirstName: "",
+    againConsentLastName: "",
+    againConsentDate: "",
+    againConsentSignature: "",
+    backgroundCheckCompleted: false,
   });
 
   const [referenceFormData, setReferenceFormData] = useState<{ [key: string]: string }[]>([
@@ -61,6 +125,15 @@ const OnboardingForm = () => {
     }
   };
 const submitForm =() => {
+  const step = steps[currentStep - 1];
+  const requiresValidation = step.requiresValidation && !isValid;
+
+  if (!requiresValidation || isValid) {
+    setCurrentStep((prevStep) => prevStep + 1);
+  } else {
+    alert("Please fill the required fields");
+  }
+
  console.log(formData, "form submitted!");
 };
   const renderStep = () => {
@@ -70,7 +143,7 @@ const submitForm =() => {
       case 2:
         return <ApplicationProcess requiresValidation={false} nextStep={nextStep} />
       case 3:
-        return <CompensationPay requiresValidation={false} nextStep={nextStep} />
+        return <CompensationPay formData={formData} setFormData={setFormData} setIsValid={setIsValid} nextStep={nextStep} />
       case 4:
         return <PersonalDetails formData={formData} setFormData={setFormData} setIsValid={setIsValid} nextStep={nextStep} />
       case 5:
@@ -80,7 +153,7 @@ const submitForm =() => {
       case 7:
         return <FormStepSeven formData={formData} setFormData={setFormData} setIsValid={setIsValid} nextStep={nextStep}/>
       case 8:
-        return <References formData={referenceFormData} setFormData={setReferenceFormData} setIsValid={setIsValid} nextStep={nextStep}/>
+        return <References formData={formData} setFormData={setFormData} setIsValid={setIsValid} nextStep={nextStep}/>
       case 9:
         return <QualifiedStep formData={formData} setFormData={setFormData} setIsValid={setIsValid} nextStep={nextStep}/>
       case 10:
@@ -121,7 +194,7 @@ const submitForm =() => {
             Next &gt;&gt;
           </button>
         )}
-        { currentStep === 12 && (<button className="button" onClick={nextStep} style={buttonStyle}>Submit </button>)}
+        {currentStep === 12 && (<button className="button" onClick={submitForm} style={buttonStyle}>Submit </button>)}
       </div>
       {renderStep()}
     </div>

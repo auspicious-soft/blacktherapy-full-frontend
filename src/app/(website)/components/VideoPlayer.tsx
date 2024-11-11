@@ -12,6 +12,8 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ url }) => {
   return (
     <div className='player-wrapper'>
       <ReactPlayer
+        playing={true}
+        muted={true}
         className='react-player'
         url={url}
         width='100%'

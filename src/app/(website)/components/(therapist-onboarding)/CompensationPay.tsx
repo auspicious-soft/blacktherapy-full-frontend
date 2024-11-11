@@ -5,7 +5,10 @@ import form2 from "@/assets/images/formimg2.png";
 
 interface CompensationPayProps {
     nextStep: () => void;
-    requiresValidation: boolean;
+    //equiresValidation: boolean;
+    formData: { [key: string]: string };
+    setFormData: React.Dispatch<React.SetStateAction<{ [key: string]: string }>>;
+    setIsValid: (isValid: boolean) => void;
   }
 const options = [
   { value: "", label: "Please select" },
@@ -176,17 +179,23 @@ const CompensationDetails: React.FC<{ selectedOption: string }> = ({
       );
     case "LPCS":
       return <div>Lorem ipsum dolor sit amet.</div>;
-    // Add more cases for other license types as needed
     default:
       return null;
   }
 };
 
-const CompensationPay: React.FC<CompensationPayProps> = ({ nextStep, requiresValidation }) => {
+const CompensationPay: React.FC<CompensationPayProps> = ({ formData, setFormData, setIsValid, nextStep }) => {
   const [selectedOption, setSelectedOption] = useState<string>("");
 
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedOption(e.target.value);
+    const value = e.target.value;
+    setSelectedOption(value);
+    setFormData((prevData) => ({
+      ...prevData,
+      providerType: value, 
+    }));
+
+    setIsValid(true);
   };
 
   return (

@@ -55,6 +55,7 @@ const AssignedClientsTable: React.FC<AssignedClientsTableProps> = ({ appointment
 
   const openAssignmentsPopup = (row: any) => {
     setAssignmentDetails(row); 
+    setAssignmentClientsPopup(true);
   };
 
   const closeAssignmentsPopup = () => {
@@ -126,10 +127,7 @@ const AssignedClientsTable: React.FC<AssignedClientsTableProps> = ({ appointment
                   </td>
                   <td>
                     <button
-                      onClick={() => openAssignmentsPopup(row)}
-                    >
-                      <ViewIcon />{" "}
-                    </button>
+                      onClick={() => openAssignmentsPopup(row)}><ViewIcon /></button>
                   </td>
                 </tr>
               ))
