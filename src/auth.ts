@@ -15,7 +15,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             email: credentials.email,
             name: credentials.name,
             id: credentials._id,
-            role: credentials.role
+            role: credentials.role,
+            onboardingCompleted: credentials.onboardingCompleted
           }
         }
         else {
@@ -29,6 +30,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (user) {
         token.id = user.id
         token.role = (user as any).role
+        token.onboardingCompleted = (user as any).onboardingCompleted
       }
       return token
     },
@@ -36,6 +38,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (session.user) {
         session.user.id = token.id as string
         (session as any).user.role = token.role as string
+        (session as any).user.onboardingCompleted = token.onboardingCompleted as boolean
       }
       return session
     },

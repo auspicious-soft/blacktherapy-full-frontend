@@ -4,10 +4,12 @@ import { useState } from 'react';
 import { PhoneIcon, MailIcon, LogoIcon, ToggleIcon, ToggleClose } from '@/utils/svgicons';
 import Image from 'next/image';
 import logo from "@/assets/logo.png";
+import { signOut } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
 const Header = () => {
   const [isToggleOpen, setIsToggleOpen] = useState(false);
-
+  const router = useRouter();
   const handleToggleOpen = () => {
     setIsToggleOpen(!isToggleOpen);
   }; 
@@ -22,6 +24,11 @@ const Header = () => {
     gap: "10px",
     fontSize: "12px",
     color: "#fff",
+  }
+
+  const handleLogout = async () => {
+    await signOut({ redirect: false })
+    router.push('/login');
   };
 
   return (
@@ -49,9 +56,9 @@ const Header = () => {
           </div>
         </div>
         <div className="right flex items-center gap-6">
-        <Link href="/login" className="text-white text-xs">
+        <p onClick={handleLogout} className="text-white  cursor-pointer text-xs">
              Login/Sign Up
-            </Link>
+            </p>
         </div>
       </div>
       </div>
@@ -81,9 +88,9 @@ const Header = () => {
             <Link href="/contact" className="nav-menu-list lg:!inline-block lg:text-sm lg:text-white lg:bg-[#283C63] rounded-[30px] lg:!px-[30px] !py-[13px]">Contact</Link>
           </li>
           <li className="md:hidden mt-4">
-          <Link href="/login" className="text-white text-sm bg-[#283C63] rounded-[30px] px-[30px] py-[13px]">
+          <p onClick={handleLogout} className="text-white cursor-pointer text-sm bg-[#283C63] rounded-[30px] px-[30px] py-[13px]">
              Login/Sign Up
-            </Link>
+            </p>
         </li>
         </ul>
 
