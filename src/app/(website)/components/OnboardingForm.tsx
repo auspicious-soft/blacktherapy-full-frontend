@@ -106,7 +106,7 @@ const submitForm =() => {
   return (
     <div>
       <div className="navigation flex items-center justify-between mb-5 md:mb-8">
-        {currentStep >= 1 && (
+        {(currentStep >= 1 && currentStep <= 12) && (
           <button
             disabled={currentStep === 1}
             className="button"
