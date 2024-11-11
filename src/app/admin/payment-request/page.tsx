@@ -407,6 +407,7 @@ const Page: React.FC = () => {
           <div className="mb-4">
             <label className="block mb-2 text-[#707070]">Note</label>
             <textarea
+              required
               rows={4}
               value={rejectNote}
               onChange={(e) => setRejectNote(e.target.value)}
