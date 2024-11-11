@@ -163,7 +163,7 @@ export const AssignTaskToTherapist = async (route: string, payload: any) => {
 }
 
 
-//----------update/EDIT therapist---- pending
+//----------update/EDIT therapist----
 export const UpdateTherapistData = async (route: string, payload: any) => {
   const axiosInstance = await getAxiosInstance()
   return axiosInstance.put(route, payload)

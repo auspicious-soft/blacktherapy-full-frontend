@@ -43,14 +43,13 @@ const Page: React.FC = () => {
     payoutDate: "",
     payoutTime: "",
     payoutMethod: "",
-    statusChangedBy: "",
+    statusChangedBy: userRole,
     detailsAboutPayment: "",
 
   });
   const [rejectNote, setRejectNote] = useState("");
 
   const rowsPerPage = 10;
-
   const handlePageClick = (selectedItem: { selected: number }) => {
     const selectedPage = selectedItem.selected + 1; 
     setQuery(`page=${selectedPage}&limit=${rowsPerPage}`);
@@ -58,8 +57,32 @@ const Page: React.FC = () => {
   
   const handleApprove = (id: string) => {
     setSelectedPaymentID(id);
+    const selectedPayment = paymentsData?.find((payment: any) => payment._id === id);
+  
+    if (selectedPayment) {
+      const formattedDate = selectedPayment.payoutDate
+        ? new Date(selectedPayment.payoutDate).toISOString().slice(0, 10)
+        : "";
+  
+      const formattedTime = selectedPayment.payoutTime && /^[0-2]\d:[0-5]\d$/.test(selectedPayment.payoutTime)
+        ? selectedPayment.payoutTime
+        : "";
+  
+      setApproveDetails({
+        progressNotes: selectedPayment.progressNotes || "",
+        status: selectedPayment.status || "",
+        payoutAmount: selectedPayment.payoutAmount || 0,
+        payoutDate: formattedDate,
+        payoutTime: formattedTime,
+        payoutMethod: selectedPayment.payoutMethod || "",
+        statusChangedBy: selectedPayment.statusChangedBy || "",
+        detailsAboutPayment: selectedPayment.detailsAboutPayment || "",
+      });
+    }
+  
     setShowApproveModal(true);
   };
+  
 
   const handleReject = (id: string) => {
     setSelectedPaymentID(id);
@@ -281,6 +304,7 @@ const Page: React.FC = () => {
          <div className="mb-4">
             <label className="block mb-2">Progress Note/Assessment Submitted & Approved?</label>
             <input
+            required
               type="text"
               name="progressNotes"
               value={approveDetails.progressNotes}
@@ -289,6 +313,7 @@ const Page: React.FC = () => {
           <div className="mb-4">
             <label className="block mb-2">Status Of Payment Request</label>
             <input
+            required
              name="status"
               type="text"
               value={approveDetails.status}
@@ -297,6 +322,7 @@ const Page: React.FC = () => {
           <div className="mb-4">
             <label className="block mb-2">Payout Amount</label>
             <input
+            required
               type="number"
               name="payoutAmount"
               value={approveDetails.payoutAmount}
@@ -305,6 +331,7 @@ const Page: React.FC = () => {
          <div className="mb-4">
             <label className="block mb-2">Date</label>
             <input
+            required
               type="date"
               name="payoutDate"
               value={approveDetails.payoutDate}
@@ -315,6 +342,7 @@ const Page: React.FC = () => {
           <div className="mb-4">
             <label className="block mb-2">Time</label>
             <input
+            required
             type="time"
               name="payoutTime"
               value={approveDetails.payoutTime}
@@ -325,6 +353,7 @@ const Page: React.FC = () => {
           <div className="mb-4">
             <label className="block mb-2">Payout Method</label>
             <input
+            required
               type="text"
               name="payoutMethod"
               value={approveDetails.payoutMethod}
@@ -333,6 +362,7 @@ const Page: React.FC = () => {
           <div className="mb-4">
             <label className="block mb-2">Details about Payment</label>
             <input
+            required
               type="text"
               name="detailsAboutPayment"
               value={approveDetails.detailsAboutPayment}
@@ -341,6 +371,7 @@ const Page: React.FC = () => {
           <div className="mb-4">
             <label className="block mb-2">User Role</label>
             <input
+            required
               type="text"
               name="role"
               value={userRole}
