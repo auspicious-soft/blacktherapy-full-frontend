@@ -167,6 +167,7 @@ const Page = () => {
                   options={clientsData}
                   onChange={handleSelectChange}
                   placeholder="Select Client"
+                  required = {false}
                 />
               </div>
             )}
@@ -178,6 +179,7 @@ const Page = () => {
                   options={therapistData}
                   onChange={handleSelectChange}
                   placeholder="Select Clinician"
+                  required = {false}
                 />
               </div>
             )}
