@@ -44,14 +44,14 @@ const AddClientForm = () => {
     addressLine1: "",
     addressLine2: "",
   });
-  
+
   const [isPending, startTransition] = useTransition();
 
-  const handleSelectChange = (selectedOption:any) => {
+  const handleSelectChange = (selectedOption: any) => {
     const value = selectedOption ? (selectedOption as OptionType).value : '';
     setFormData((prev) => ({
       ...prev,
-      state: value, 
+      state: value,
     }));
   };
 
@@ -62,11 +62,11 @@ const AddClientForm = () => {
 
     setFormData((prevData) => ({
       ...prevData,
-      [name as keyof FormDataType]: value, 
+      [name as keyof FormDataType]: value,
     }));
   };
 
-  const handleSubmit = async (e: any) => { 
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
     const {
       firstName,
@@ -90,7 +90,7 @@ const AddClientForm = () => {
     }
 
     startTransition(async () => {
-      try { 
+      try {
         const formDataToSubmit = {
           ...restFormData,
           password,
@@ -130,7 +130,7 @@ const AddClientForm = () => {
   };
 
 
-  
+
 
   return (
     <div>
@@ -268,13 +268,13 @@ const AddClientForm = () => {
               />
             </div>
             <div className="selector">
-            <CustomSelect
-        name="state"
-        value={USStates.find(option => option.value === formData.state) || null} 
-        options={USStates}
-        onChange={handleSelectChange} 
-        placeholder="Select State"
-      />
+              <CustomSelect
+                name="state"
+                value={(USStates as any).find((option: any) => option.value === formData.state) || null}
+                options={USStates as any}
+                onChange={handleSelectChange}
+                placeholder="Select State"
+              />
             </div>
             <div className="selector">
               <label className="block mb-2">Zip Code</label>
