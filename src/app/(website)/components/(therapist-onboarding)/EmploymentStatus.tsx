@@ -6,48 +6,59 @@ import { ButtonSvg } from "@/utils/svgicons";
 const EmploymentStatusQuestions = [
   {
     question: "What is your current employment status?",
+    key: "currentEmploymentStatus",
     type: "radio",
     options: ["Employed", "Self-Employed", "Unemployed", "Student"],
   },
   {
     question: "Current or Previous Employer Name",
+    key: "currentOrPreviousEmployerName",
     type: "text",
     placeholder: "",
   },
   {
     question: "City, State",
+    key: "employementCityState",
     type: "text",
   },
   {
     question: "Role/Position",
+    key: "rolePosition",
     type: "text",
   },
   {
     question: "Rate of Pay",
+    key: "rateOfPay",
     type: "number",
   },
   {
     question: "Start Date",
+    key: "startDate",
     type: "date",
   },
   {
     question: "End Date",
+    key: "endDate",
     type: "date",
   },
   {
     question: "Reason for Leaving",
+    key: "reasonForLeaving",
     type: "text",
   },
   {
     question: "Supervisor's Name",
+    key: "supervisorName",
     type: "text",
   },
   {
     question: "Job Description",
+    key: "jobDescription",
     type: "text",
   },
   {
     question: "Current Resume",
+    key: "currentResume",
     type: "file",
   },
 ];  
@@ -59,7 +70,7 @@ interface EmploymentStatusProps {
   nextStep: () => void;
 }
 
-const EmploymentStatus: React.FC<EmploymentStatusProps> = ({
+const EmploymentStatus: React.FC<EmploymentStatusProps> = ({ 
   formData,
   setFormData,
   setIsValid,
@@ -67,11 +78,7 @@ const EmploymentStatus: React.FC<EmploymentStatusProps> = ({
 }) => {
   
   const validateStep = useCallback(() => {
-    const isValid = EmploymentStatusQuestions.every((q, index) => {
-      const value = formData[`employee_${index}`];
-      // Check if the value is a string and not empty for text fields
-      return (typeof value === 'string' && value.trim() !== '') || (q.type === 'file' && value instanceof File);
-    });
+    const isValid = EmploymentStatusQuestions.every(q => formData[q.key] && formData[q.key].trim() !== "");
     setIsValid(isValid);
   }, [formData, setIsValid]);
 
@@ -79,12 +86,13 @@ const EmploymentStatus: React.FC<EmploymentStatusProps> = ({
     validateStep();
   }, [validateStep]);
 
+  
   const handleContinue = () => {
-    // Validate and proceed to next step if valid
-    if (EmploymentStatusQuestions.every((q, index) => formData[`employee_${index}`])) {
+    if (EmploymentStatusQuestions.every(q => formData[q.key])) {
       nextStep();
     }
   };
+
 
   return (
     <div className="form-main">
@@ -95,6 +103,7 @@ const EmploymentStatus: React.FC<EmploymentStatusProps> = ({
         {EmploymentStatusQuestions.map((q, index) => (
           <QuestionComponent
             key={index}
+            name={q.key}
             question={q.question}
             index={`employee_${index}`}
             total={EmploymentStatusQuestions.length}

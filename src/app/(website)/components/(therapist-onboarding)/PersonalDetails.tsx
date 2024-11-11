@@ -3,78 +3,24 @@ import React, { useCallback, useEffect, useState } from "react";
 import QuestionComponent from "@/app/(website)/components/QuestionComponent";
 import { ButtonSvg } from "@/utils/svgicons";
 const personalDetailsQuestions = [
-  {
-    question: "First name",
-    type: "text",
-    placeholder: "John",
-  },
-  {
-    question: "Last name",
-    type: "text",
-    placeholder: "Doe",
-  },
-  {
-    question: "Phone number",
-    type: "number",
-    placeholder: "+415868135",
-  },
-  {
-    question: "Gender",
-    type: "radio",
-    options: ["Male", "Female" ,"Other"],
-  },
-  {
-    question: "Date of birth",
-    type: "date",
-    placeholder: "DD/MM/YY",
-  },
-  {
-    question: "City",
-    type: "text",
-    placeholder: "city"
-  },
-  {
-    question: "State",
-    type: "select",
-    options: ["option 1", "option 2", "option 3", "option 4" ],
-    placeholder: "State",
-  },
-  {
-    question: "Country",
-    type: "select",
-    options: ["option 1", "United States", "option 3" ],
-    placeholder: "Country",
-  },
-  {
-    question: "Zip Code",
-    type: "number",
-    placeholder: "Zip Code",
-  },
-  {
-    question: "Address Line 1",
-    type: "text",
-    placeholder: "Address Line",
-  },
-  {
-    question: "Address Line 2",
-    type: "text",
-    placeholder: "Address Line",
-  },
-  {
-    question: "How long at present address?",
-    type: "number",
-    placeholder: "value",
-  },
-  {
-    question: "Salary desired",
-    type: "number",
-    placeholder: "value",
-  }
+  { question: "First name", key: "firstName", type: "text", placeholder: "John" },
+  { question: "Last name", key: "lastName", type: "text", placeholder: "Doe" },
+  { question: "Phone number", key: "phoneNumber", type: "number", placeholder: "+415868135" },
+  { question: "Gender", key: "gender", type: "radio", options: ["Male", "Female", "Other"] },
+  { question: "Date of birth", key: "dob", type: "date", placeholder: "DD/MM/YY" },
+  { question: "City", key: "city", type: "text", placeholder: "City" },
+  { question: "State", key: "state", type: "text", placeholder: "State" },
+  { question: "Country", key: "country", type: "text", placeholder: "Country" },
+  { question: "Zip Code", key: "zipCode", type: "number", placeholder: "Zip Code" },
+  { question: "Address Line 1", key: "addressLine1", type: "text", placeholder: "Address Line" },
+  { question: "Address Line 2", key: "addressLine2", type: "text", placeholder: "Address Line" },
+  { question: "How long at present address?", key: "howLongAtPresentAddress", type: "text", placeholder: "Value" },
+  { question: "Salary desired", key: "salaryDesired", type: "number", placeholder: "Value" },
 ];
 
-interface PersonalDetailsProps {
-  formData: { [key: string]: string };
-  setFormData: React.Dispatch<React.SetStateAction<{ [key: string]: string }>>;
+interface PersonalDetailsProps { 
+  formData: any;
+  setFormData: React.Dispatch<React.SetStateAction<any>>;
   setIsValid: (isValid: boolean) => void;
   nextStep: () => void;
 }
@@ -87,9 +33,7 @@ const PersonalDetails: React.FC<PersonalDetailsProps> = ({
 }) => {
 
   const validateStep = useCallback(() => {
-    const isValid = personalDetailsQuestions.every(
-      (q, index) => formData[`personal_${index}`] && formData[`personal_${index}`].trim() !== ""
-    );
+    const isValid = personalDetailsQuestions.every(q => formData[q.key] && formData[q.key].trim() !== "");
     setIsValid(isValid);
   }, [formData, setIsValid]);
 
@@ -99,12 +43,10 @@ const PersonalDetails: React.FC<PersonalDetailsProps> = ({
 
   
   const handleContinue = () => {
-    // Validate and proceed to next step if valid
-    if (personalDetailsQuestions.every((q, index) => formData[`personal_${index}`])) {
+    if (personalDetailsQuestions.every(q => formData[q.key])) {
       nextStep();
     }
   };
-
 
   return (
     <div className="form-main">
@@ -116,6 +58,7 @@ const PersonalDetails: React.FC<PersonalDetailsProps> = ({
           <QuestionComponent
             key={index}
             question={q.question}
+            name={q.key}
             index={`personal_${index}`}
             total={personalDetailsQuestions.length}
             type={q.type}

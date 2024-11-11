@@ -63,14 +63,42 @@ const OnboardingForm = () => {
     majorDegree: "",
     licenseOrCertification: "",
     skills: "",
-
+    weeklyHours: "",
     employmentDesired: "",
-    currentAvailability: "",
-
-    email: "",
-    companyEmail: "",
-    providerType: "",
-
+    currentAvailability: [],
+    felonyOrMisdemeanor: "",
+    ifFelonyOrMisdemeanor: "",
+    livedInNorthCarolina: "",
+    ifNotLivedInNorthCarolina: "",
+    validDriverLicense: "",
+    reliableTransportation: "",
+    legalRightToWorkInUS: "",
+    reasonableAccommodation: "",
+    driverLicenseOrStateId: "",
+    stateOfIssue: "",
+    expirationDate: "",
+    professionalReferences: [
+      {
+        name: "",
+        phone: "",
+        email: "",
+        companyPosition: "",
+    }
+    ],
+    howAreQualifiedForPosition: "",
+    additionalInformation: "",
+    consentAgreement: false,
+    consentFirstName: "",
+    consentLastName: "",
+    consentDate: "",
+    consentSignature: "",
+    superVisionAgreement: "",
+    againConsentAgreement: false,
+    againConsentFirstName: "",
+    againConsentLastName: "",
+    againConsentDate: "",
+    againConsentSignature: "",
+    backgroundCheckCompleted: false,
   });
 
   const [referenceFormData, setReferenceFormData] = useState<{ [key: string]: string }[]>([
@@ -97,6 +125,15 @@ const OnboardingForm = () => {
     }
   };
 const submitForm =() => {
+  const step = steps[currentStep - 1];
+  const requiresValidation = step.requiresValidation && !isValid;
+
+  if (!requiresValidation || isValid) {
+    setCurrentStep((prevStep) => prevStep + 1);
+  } else {
+    alert("Please fill the required fields");
+  }
+
  console.log(formData, "form submitted!");
 };
   const renderStep = () => {
@@ -116,7 +153,7 @@ const submitForm =() => {
       case 7:
         return <FormStepSeven formData={formData} setFormData={setFormData} setIsValid={setIsValid} nextStep={nextStep}/>
       case 8:
-        return <References formData={referenceFormData} setFormData={setReferenceFormData} setIsValid={setIsValid} nextStep={nextStep}/>
+        return <References formData={formData} setFormData={setFormData} setIsValid={setIsValid} nextStep={nextStep}/>
       case 9:
         return <QualifiedStep formData={formData} setFormData={setFormData} setIsValid={setIsValid} nextStep={nextStep}/>
       case 10:
@@ -157,7 +194,7 @@ const submitForm =() => {
             Next &gt;&gt;
           </button>
         )}
-        { currentStep === 12 && (<button className="button" onClick={nextStep} style={buttonStyle}>Submit </button>)}
+        {currentStep === 12 && (<button className="button" onClick={submitForm} style={buttonStyle}>Submit </button>)}
       </div>
       {renderStep()}
     </div>

@@ -6,6 +6,7 @@ import { ButtonSvg, DeleteIcon } from "@/utils/svgicons";
 const EducationalQuestions = [
   {
     question: "Highest Level of Education Completed",
+    key: "highestEducationCompleted",
     type: "select",
     options: [
       "None",
@@ -17,31 +18,38 @@ const EducationalQuestions = [
   },
   {
     question: "NAME OF SCHOOL",
+    key: "schoolName",
     type: "text",
   },
   {
     question: "LOCATION (City and State)",
+    key: "location",
     type: "text",
   },
   {
     question: "MAJOR & DEGREE EARNED",
+    key: "majorDegree",
     type: "text",
     placeholder: "value",
   },
   {
     question: "Licensure & Certification",
+    key: "licenseOrCertification",
     type: "textarea",
   },
   {
     question: "Describe your skills",
+    key: "skills",
     type: "textarea",
   },
   {
     question: "How many hours can you work weekly?",
+    key: "weeklyHours",
     type: "number",
   },
   {
     question: "Employment desired",
+    key: "employmentDesired",
     type: "select",
     options: ["Full-Time Only", "Part-Time Only", "Full or Part Time"],
     placeholder: "option",
@@ -49,7 +57,7 @@ const EducationalQuestions = [
 ]; 
 
 interface EducationalProps {
-  formData: { [key: string]: any };
+  formData: { [key: string]: any }; 
   setFormData: React.Dispatch<React.SetStateAction<{ [key: string]: any }>>;
   setIsValid: (isValid: boolean) => void;
   nextStep: () => void;
