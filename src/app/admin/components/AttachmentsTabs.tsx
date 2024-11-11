@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Modal from "react-modal";
 import { toast } from "sonner";
 import useSWR from "swr";
-
+ 
 interface AttachmentsTabsProps {
   rowId: string;
   role: string;
