@@ -22,7 +22,8 @@ const Page: React.FC = () => {
     if (session) {
       if ((session as any)?.user?.role === 'therapist') {
         const isOnboarded = (session as any)?.user?.onboardingCompleted
-        if (isOnboarded) router.push('/therapist/dashboard')
+        const verified = (session as any)?.user?.status
+        if (isOnboarded && verified === 'Active') router.push('/therapist/dashboard')
         else router.push('/onboarding')
       }
       else if ((session as any)?.user?.role === 'client') {
@@ -45,7 +46,8 @@ const Page: React.FC = () => {
       }
       else if (resss?.data?.role === 'therapist') {
         const isOnboarded = resss?.data?.onboardingCompleted
-        if(isOnboarded) window.location.href = '/therapist/dashboard'
+        const verified = resss?.data?.onboardingApplication?.status
+        if (isOnboarded && verified === 'Active') window.location.href = '/therapist/dashboard'
         else window.location.href = '/onboarding'
       }
       else {

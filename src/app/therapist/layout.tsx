@@ -49,9 +49,9 @@ export default async function RootLayout({
   if (!session) {
     redirect('/login')
   }
-  
+
   else if ((session as any)?.user?.role === 'therapist') {
-    if ((session as any)?.user?.onboardingCompleted === 'true') {
+    if ((session as any)?.user?.onboardingCompleted === 'true' && (session as any)?.user?.status === 'Active') {
       return (
         <html lang="en">
           <body className={`${gothamPro.variable} ${anticDidone.variable} ${GothamProBlack.variable} ${GothamProBold.variable} ${GothamProMedium.variable}`}>

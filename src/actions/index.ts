@@ -14,6 +14,7 @@ export const loginAction = async (payload: any) => {
                 _id: res?.data?.data?.id,
                 role: res?.data?.data?.role,
                 onboardingCompleted: res?.data?.data?.onboardingCompleted,
+                status: res?.data?.data?.onboardingApplication?.status,
                 redirect: false,
             })
         }
