@@ -65,6 +65,11 @@ const personalDetailsQuestions = [
     type: "number",
     placeholder: "value",
   },
+  {
+    question: "Salary desired",
+    type: "number",
+    placeholder: "value",
+  }
 ];
 
 interface PersonalDetailsProps {

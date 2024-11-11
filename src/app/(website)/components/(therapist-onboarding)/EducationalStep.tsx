@@ -29,11 +29,6 @@ const EducationalQuestions = [
     placeholder: "value",
   },
   {
-    question: "Do you require supervision?",
-    type: "radio",
-    options: ["Yes", "No"],
-  },
-  {
     question: "Licensure & Certification",
     type: "textarea",
   },
@@ -51,7 +46,7 @@ const EducationalQuestions = [
     options: ["Full-Time Only", "Part-Time Only", "Full or Part Time"],
     placeholder: "option",
   },
-];
+]; 
 
 interface EducationalProps {
   formData: { [key: string]: any };

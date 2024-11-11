@@ -50,7 +50,7 @@ const EmploymentStatusQuestions = [
     question: "Current Resume",
     type: "file",
   },
-];
+];  
 
 interface EmploymentStatusProps {
   formData: { [key: string]: any }; // Adjusted to support different types
