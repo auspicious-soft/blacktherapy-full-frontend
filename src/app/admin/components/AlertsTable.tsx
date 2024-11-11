@@ -10,7 +10,7 @@ const AlertsTable = () => {
 
 
   const [query, setQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState(""); 
+  const [statusFilter, setStatusFilter] = useState("");
   const filterStr = query ? `read=${query}` : ''
   const { data, error, isLoading, mutate } = useSWR(`/admin/alerts?${filterStr}`, getAlertsData);
   const alertsTable = data?.data?.data;
@@ -25,9 +25,9 @@ const AlertsTable = () => {
 
   const handleMarkStatus = async (id: string, readStatus: boolean) => {
     try {
-      const status = { read: !readStatus }; 
+      const status = { read: !readStatus };
       const response = await updateAlerts(`/admin/alerts/${id}`, status);
-  
+
       if (response.status === 200) {
         toast.success(`Alert marked as ${!readStatus ? 'read' : 'unread'} successfully`);
         mutate();
@@ -39,7 +39,7 @@ const AlertsTable = () => {
       toast.error("An error occurred while updating the alert status");
     }
   };
-  
+
 
   const handlefilters = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setQuery(e.target.value);
@@ -51,14 +51,14 @@ const AlertsTable = () => {
       <div className='flex items-center justify-between mb-5'>
         <h2 className=''>Alerts</h2>
         <div className='filter-select min-w-[190px]'>
-           <select 
-            onChange={handlefilters} 
-            value={query} 
+          <select
+            onChange={handlefilters}
+            value={query}
             className='border border-[#26395E] text-[#26395E] text-sm h-[46px] px-5 bg-transparent p-0'
           >
             <option value="">Status</option>
-            <option value="true">Read</option> 
-            <option value="false">Unread</option>  
+            <option value="true">Read</option>
+            <option value="false">Unread</option>
           </select>
         </div>
       </div>
@@ -66,6 +66,7 @@ const AlertsTable = () => {
         <table className="">
           <thead className="">
             <tr>
+              <th>ID</th>
               <th>Client</th>
               <th>Alert Message</th>
               <th>Status</th>
@@ -83,19 +84,20 @@ const AlertsTable = () => {
               </tr>
             ) : alertsData?.length > 0 ? (
               alertsData.map((row: any) => (
-                <tr key={row?._id} className="border-b">
+                <tr key={row?.userId?._id} className="border-b">
+                  <td>{row?._id}</td>
                   <td>{row?.userId?.firstName} {row?.userId?.lastName}</td>
                   <td>{row?.message}</td>
                   <td>
-                    <p className={`leading-[normal] px-2.5 py-1 inline-block rounded-[25px] text-[11px] font-semibold  ${row?.read ? "text-[#41A803] bg-[#d6ffcc]" : "text-[#A9A901] bg-[#ffffcc] "} `}>
-                    {row?.read ? "Read" : "Unread"}</p>
+                    <p className={`leading-[normal] px-2.5 py-1 inline-block rounded-[25px] text-[11px] font-semibold ${row?.read ? "text-[#41A803] bg-[#d6ffcc]" : "text-[#A9A901] bg-[#ffffcc] "} `}>
+                      {row?.read ? "Read" : "Unread"}</p>
                   </td>
                   <td>
                     <button
                       onClick={() => handleMarkStatus(row?._id, row?.read)}
                       className={`rounded-[3px] flex items-center gap-[5px] py-1 px-[6px] text-[11px] text-[#fff] ${row?.read ? "bg-[#E1E105] " : "  bg-[#029008]"}`}
                     >
-                      <TickIcon1/> {row?.read ? "Mark as unread" : "Mark as read"}
+                      <TickIcon1 /> {row?.read ? "Mark as unread" : "Mark as read"}
                     </button>
                   </td>
                 </tr>
