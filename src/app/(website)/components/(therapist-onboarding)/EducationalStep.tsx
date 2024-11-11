@@ -125,7 +125,7 @@ const EducationalStep: React.FC<EducationalProps> = ({
                     type="checkbox"
                     id={day}
                     name="currentAvailability"
-                    checked={formData.currentAvailability.includes(day)}
+                    checked={formData?.currentAvailability.includes(day)}
                     onChange={() => handleCheckboxChange(day)}
                   />
                   <label htmlFor={day} className="text-[#283c63] text-sm">
