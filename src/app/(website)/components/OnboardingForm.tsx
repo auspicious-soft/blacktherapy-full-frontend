@@ -116,6 +116,7 @@ const OnboardingForm = () => {
     } else {
       alert("Please fill the required fields");
     }
+    console.log(formData, "form submitted!");
   };
 
   const prevStep = () => {
@@ -125,15 +126,14 @@ const OnboardingForm = () => {
     }
   };
 const submitForm =() => {
-  const step = steps[currentStep - 1];
-  const requiresValidation = step.requiresValidation && !isValid;
+  // const step = steps[currentStep - 1];
+  // const requiresValidation = step.requiresValidation && !isValid;
 
-  if (!requiresValidation || isValid) {
-    setCurrentStep((prevStep) => prevStep + 1);
-  } else {
-    alert("Please fill the required fields");
-  }
-
+  // if (!requiresValidation || isValid) {
+  //   setCurrentStep((prevStep) => prevStep + 1);
+  // } else {
+  //   alert("Please fill the required fields");
+  // }
  console.log(formData, "form submitted!");
 };
   const renderStep = () => {

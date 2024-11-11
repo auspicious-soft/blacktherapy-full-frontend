@@ -6,6 +6,7 @@ import { ButtonSvg } from "@/utils/svgicons";
 const UploadDocumentQuestions = [
   {
     question: "Supervision Agreement",
+    key: "superVisionAgreement",
     type: "file",
   },
 ];
@@ -24,11 +25,7 @@ const UploadDocuments: React.FC<UploadDocumentProps> = ({
   nextStep,
 }) => {
   const validateStep = useCallback(() => {
-    const isValid = UploadDocumentQuestions.every((q, index) => {
-      const uploadedFile = formData[`uploads_${index}`];
-      // Check if the uploadedFile is a valid File object
-      return uploadedFile instanceof File;
-    });
+    const isValid = UploadDocumentQuestions.every(q => formData[q.key] && formData[q.key].trim() !== "");
     setIsValid(isValid);
   }, [formData, setIsValid]);
 
@@ -36,9 +33,11 @@ const UploadDocuments: React.FC<UploadDocumentProps> = ({
     validateStep();
   }, [validateStep]);
 
+  
   const handleContinue = () => {
-    // Additional validation if needed
-    nextStep();
+    if (UploadDocumentQuestions.every(q => formData[q.key])) {
+      nextStep();
+    }
   };
 
   return (
@@ -50,6 +49,7 @@ const UploadDocuments: React.FC<UploadDocumentProps> = ({
         {UploadDocumentQuestions.map((q, index) => (
           <QuestionComponent
             key={index}
+            name={q.key}
             question={q.question}
             index={`uploads_${index}`}
             total={UploadDocumentQuestions.length}
