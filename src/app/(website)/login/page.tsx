@@ -16,22 +16,23 @@ const Page: React.FC = () => {
   const { data: session } = useSession();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  // const [role, setRole] = useState("client");
   const router = useRouter();
 
   useEffect(() => {
     if (session) {
       if ((session as any)?.user?.role === 'therapist') {
-        router.push('/therapist/dashboard')
+        const isOnboarded = (session as any)?.user?.onboardingCompleted
+        if (isOnboarded) router.push('/therapist/dashboard')
+        else router.push('/onboarding')
       }
       else if ((session as any)?.user?.role === 'client') {
         router.push('/customer/dashboard')
       }
-      else  {
+      else {
         router.push('/admin/dashboard')
       }
     }
-  }, [router, (session as any)?.user?.role])
+  }, [router, session])
 
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault();
@@ -43,7 +44,9 @@ const Page: React.FC = () => {
         window.location.href = '/customer/dashboard'
       }
       else if (resss?.data?.role === 'therapist') {
-        window.location.href = '/therapist/dashboard'
+        const isOnboarded = resss?.data?.onboardingCompleted
+        if(isOnboarded) window.location.href = '/therapist/dashboard'
+        else window.location.href = '/onboarding'
       }
       else {
         window.location.href = '/admin/dashboard'

@@ -13,6 +13,7 @@ export const loginAction = async (payload: any) => {
                 name: res?.data?.data.firstName + ' ' + res?.data?.data.lastName,
                 _id: res?.data?.data?.id,
                 role: res?.data?.data?.role,
+                onboardingCompleted: res?.data?.data?.onboardingCompleted,
                 redirect: false,
             })
         }

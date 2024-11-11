@@ -49,24 +49,30 @@ export default async function RootLayout({
   if (!session) {
     redirect('/login')
   }
+  
   else if ((session as any)?.user?.role === 'therapist') {
-    return (
-      <html lang="en">
-        <body className={`${gothamPro.variable} ${anticDidone.variable} ${GothamProBlack.variable} ${GothamProBold.variable} ${GothamProMedium.variable}`}>
-          <div className="flex h-screen flex-col lg:flex-row lg:overflow-hidden">
-            <div className="flex-none hidden h-[100vh] lg:block">
-              <SideNav />
+    if ((session as any)?.user?.onboardingCompleted === 'true') {
+      return (
+        <html lang="en">
+          <body className={`${gothamPro.variable} ${anticDidone.variable} ${GothamProBlack.variable} ${GothamProBold.variable} ${GothamProMedium.variable}`}>
+            <div className="flex h-screen flex-col lg:flex-row lg:overflow-hidden">
+              <div className="flex-none hidden h-[100vh] lg:block">
+                <SideNav />
+              </div>
+              <div className="w-full lg:hidden">
+                <MobileHeader />
+              </div>
+              <main className="flex-grow p-[15px] md:overflow-y-auto lg:p-[50px]">
+                {children}
+              </main>
             </div>
-            <div className="w-full lg:hidden">
-              <MobileHeader />
-            </div>
-            <main className="flex-grow p-[15px] md:overflow-y-auto lg:p-[50px]">
-              {children}
-            </main>
-          </div>
-        </body>
-      </html>
-    );
+          </body>
+        </html>
+      )
+    }
+    else {
+      redirect('/onboarding')
+    }
   }
   else {
     return (
