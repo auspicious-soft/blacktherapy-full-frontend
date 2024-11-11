@@ -4,10 +4,11 @@ interface InputFieldProps {
   type: string;
   value: string;
   placeholder: string;
-  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void
+  required?: boolean;
 }
 
-const InputField: FC<InputFieldProps> = ({ type, value, placeholder, onChange  }) => {
+const InputField: FC<InputFieldProps> = ({ type, value, placeholder, onChange , required }) => {
   return (
     <div className='mb-[15px]'>
       <input
@@ -16,6 +17,7 @@ const InputField: FC<InputFieldProps> = ({ type, value, placeholder, onChange  }
       value={value}
       placeholder={placeholder}
       onChange={onChange}
+      required={required}
     />
     </div>
 
