@@ -121,8 +121,8 @@ const PersonalInformationTab: React.FC<PersonalInformationTabProps> = ({ row, mu
           <div className='selector custom-select'>
           <CustomSelect
         name="state"
-        value={USStates.find(option => option.value === formData.state) || null} 
-        options={USStates}
+        value={(USStates as any).find((option:any) => option.value === formData.state) || null} 
+        options={(USStates as any)}
         onChange={handleSelectChange} 
         placeholder="Select State"
       />
