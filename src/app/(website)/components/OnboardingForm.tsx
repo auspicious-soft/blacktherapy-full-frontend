@@ -23,16 +23,18 @@ const steps = [
   { component: EducationalStep, requiresValidation: true },
   { component: FormStepSeven, requiresValidation: true },
   { component: References, requiresValidation: true },
-  { component: QualifiedStep, requiresValidation: true},
+  { component: QualifiedStep, requiresValidation: true },
   { component: BackgroundChecks, requiresValidation: true },
   { component: UploadDocuments, requiresValidation: true },
-  { component: ApplicationCompleted, requiresValidation: false},
+  { component: ApplicationCompleted, requiresValidation: false },
 ];
 
-const OnboardingForm = () => {
-  const [currentStep, setCurrentStep] = useState(1);
+const OnboardingForm = (props: any) => {
+  const { session } = props
+  const currentStepDefault = session?.user?.onboardingCompleted === 'true' ? 13 : 1
+  const [currentStep, setCurrentStep] = useState(currentStepDefault)
   const [formData, setFormData] = useState<any>({
-    licenceType:"",
+    licenceType: "",
     firstName: "",
     lastName: "",
     phoneNumber: "",
@@ -83,7 +85,7 @@ const OnboardingForm = () => {
         phone: "",
         email: "",
         companyPosition: "",
-    }
+      }
     ],
     howAreQualifiedForPosition: "",
     additionalInformation: "",
@@ -124,20 +126,20 @@ const OnboardingForm = () => {
       setCurrentStep((prevStep) => prevStep - 1);
     }
   };
-const submitForm =() => {
-  const step = steps[currentStep - 1];
-  const requiresValidation = step.requiresValidation && !isValid;
+  const submitForm = () => {
+    const step = steps[currentStep - 1];
+    const requiresValidation = step.requiresValidation && !isValid;
 
-  if (!requiresValidation || isValid) {
-    setCurrentStep((prevStep) => prevStep + 1);
-  } else {
-    alert("Please fill the required fields");
-  }
+    if (!requiresValidation || isValid) {
+      setCurrentStep((prevStep) => prevStep + 1);
+    } else {
+      alert("Please fill the required fields");
+    }
 
- console.log(formData, "form submitted!");
-};
+    console.log(formData, "form submitted!");
+  };
   const renderStep = () => {
-  switch (currentStep) {
+    switch (currentStep) {
       case 1:
         return <WelcomeProcess requiresValidation={false} nextStep={nextStep} />
       case 2:
@@ -151,19 +153,19 @@ const submitForm =() => {
       case 6:
         return <EducationalStep formData={formData} setFormData={setFormData} setIsValid={setIsValid} nextStep={nextStep} />
       case 7:
-        return <FormStepSeven formData={formData} setFormData={setFormData} setIsValid={setIsValid} nextStep={nextStep}/>
+        return <FormStepSeven formData={formData} setFormData={setFormData} setIsValid={setIsValid} nextStep={nextStep} />
       case 8:
-        return <References formData={formData} setFormData={setFormData} setIsValid={setIsValid} nextStep={nextStep}/>
+        return <References formData={formData} setFormData={setFormData} setIsValid={setIsValid} nextStep={nextStep} />
       case 9:
-        return <QualifiedStep formData={formData} setFormData={setFormData} setIsValid={setIsValid} nextStep={nextStep}/>
+        return <QualifiedStep formData={formData} setFormData={setFormData} setIsValid={setIsValid} nextStep={nextStep} />
       case 10:
-        return <BackgroundChecks formData={formData} setFormData={setFormData} setIsValid={setIsValid} nextStep={nextStep}/>
+        return <BackgroundChecks formData={formData} setFormData={setFormData} setIsValid={setIsValid} nextStep={nextStep} />
       case 11:
-        return <UploadDocuments formData={formData} setFormData={setFormData} setIsValid={setIsValid} nextStep={nextStep}/>
+        return <UploadDocuments formData={formData} setFormData={setFormData} setIsValid={setIsValid} nextStep={nextStep} />
       case 12:
         return <DeclarationStep formData={formData} setFormData={setFormData} setIsValid={setIsValid} nextStep={nextStep} />;
-      case 13 :
-        return <ApplicationCompleted/>
+      case 13:
+        return <ApplicationCompleted />
       default:
         return null;
     }

@@ -11,7 +11,7 @@ export const loginAction = async (payload: any) => {
             await signIn('credentials', {
                 email: payload.email,
                 name: res?.data?.data.firstName + ' ' + res?.data?.data.lastName,
-                _id: res?.data?.data?.id,
+                _id: res?.data?.data?._id,
                 role: res?.data?.data?.role,
                 onboardingCompleted: res?.data?.data?.onboardingCompleted,
                 status: res?.data?.data?.onboardingApplication?.status,

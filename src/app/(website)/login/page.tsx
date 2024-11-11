@@ -14,7 +14,6 @@ import { loginAction } from "@/actions";
 
 const Page: React.FC = () => {
   const { data: session } = useSession();
-  console.log('session: ', session);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
