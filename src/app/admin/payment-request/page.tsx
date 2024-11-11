@@ -235,7 +235,8 @@ const Page: React.FC = () => {
                 {(activeTab === "pending" || activeTab === "approved") && (
                   <td>
                     <select
-                      className="border-none bg-transparent p-0 h-auto"
+                      className="border-none bg-transparent p-0 h-auto w-auto pr-3"
+                       value=""
                       onChange={(e) =>
                         e.target.value === "Approve"
                           ? handleApprove(payment?._id)

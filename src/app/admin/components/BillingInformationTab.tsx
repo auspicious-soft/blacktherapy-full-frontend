@@ -22,7 +22,7 @@ const BillingInformationTab: React.FC<BillingInformationTabProps> = ({ rowId }) 
     revalidateOnFocus: false,
   });
 
-  const billingInfo = data?.data?.data;
+  const billingInfo = data?.data?.data; 
   const [isPending, startTransition] = useTransition();
 
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -97,7 +97,16 @@ const BillingInformationTab: React.FC<BillingInformationTabProps> = ({ rowId }) 
             </tr>
           </thead>
           <tbody>
-            {billingInfo?.map((row: any) => (
+          {isLoading ? (
+      <tr>
+        <td colSpan={5} className="">Loading...</td>
+      </tr>
+    ) : error ? (
+      <tr>
+        <td colSpan={5} className="text-center text-red-500">Error loading payments data.</td>
+      </tr>
+    ) :billingInfo?.length > 0 ? (
+            billingInfo?.map((row: any) => (
               <tr key={row?._id}>
                 <td>{row?.insuranceVerified ? 'Yes' : 'No'}</td>
                 <td>{row?.scaleDisount || 'N/A'}</td>
@@ -107,7 +116,12 @@ const BillingInformationTab: React.FC<BillingInformationTabProps> = ({ rowId }) 
                 <td>{row?.simplePractice ? 'Yes' : 'No'}</td>
                 <td>{new Date(row?.createdAt).toLocaleDateString()}</td>
               </tr>
-            ))}
+            ))
+          ) : (
+            <tr>
+              <td className='w-full flex justify-center p-3 items-center' colSpan={5} >No data found</td>
+            </tr>
+          )}
           </tbody>
         </table>
       </div>

@@ -1,5 +1,5 @@
 "use client";
-import React, { Component, useState } from "react";
+import React, { useState } from "react";
 import PersonalDetails from "@/app/(website)/components/(therapist-onboarding)/PersonalDetails";
 import ApplicationCompleted from "@/app/(website)/components/ApplicationCompleted";
 import { WelcomeProcess } from "@/app/(website)/components/(therapist-onboarding)/WelcomeProcess";
@@ -17,7 +17,7 @@ import DeclarationStep from "@/app/(website)/components/(therapist-onboarding)/D
 const steps = [
   { component: WelcomeProcess, requiresValidation: false },
   { component: ApplicationProcess, requiresValidation: false },
-  { Component: CompensationPay, requiresValidation: false },
+  { Component: CompensationPay, requiresValidation: true },
   { component: PersonalDetails, requiresValidation: true },
   { component: EmploymentStatus, requiresValidation: true },
   { component: EducationalStep, requiresValidation: true },
@@ -31,10 +31,23 @@ const steps = [
 
 const OnboardingForm = () => {
   const [currentStep, setCurrentStep] = useState(1);
-  const [formData, setFormData] = useState<{ [key: string]: string }>({
+  const [formData, setFormData] = useState<any>({
+    licenceType:"",
+    firstName: "",
+    lastName: "",
+    phoneNumber: "",
+    gender: "",
+    dob: "",
+    city: "",
+    state: "",
+    country: "",
+    zipCode: "",
+    addressLine1: "",
+    addressLine2: "",
     email: "",
     companyEmail: "",
     providerType: "",
+
   });
 
   const [referenceFormData, setReferenceFormData] = useState<{ [key: string]: string }[]>([
@@ -70,7 +83,7 @@ const submitForm =() => {
       case 2:
         return <ApplicationProcess requiresValidation={false} nextStep={nextStep} />
       case 3:
-        return <CompensationPay requiresValidation={false} nextStep={nextStep} />
+        return <CompensationPay formData={formData} setFormData={setFormData} setIsValid={setIsValid} nextStep={nextStep} />
       case 4:
         return <PersonalDetails formData={formData} setFormData={setFormData} setIsValid={setIsValid} nextStep={nextStep} />
       case 5:

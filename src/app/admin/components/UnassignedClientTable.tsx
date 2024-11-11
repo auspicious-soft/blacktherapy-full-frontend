@@ -116,7 +116,7 @@ const UnassignedClientTable: React.FC<UnassignedPageProps> = ({ setQuery, appoin
             )}
           </tbody>
         </table>
-      </div>
+      </div> 
       <div className="text-right">
         <ReactPaginate
           previousLabel={'<'}

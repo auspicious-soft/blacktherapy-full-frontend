@@ -29,10 +29,15 @@ const personalDetailsQuestions = [
     placeholder: "DD/MM/YY",
   },
   {
+    question: "City",
+    type: "text",
+    placeholder: "city"
+  },
+  {
     question: "State",
     type: "select",
     options: ["option 1", "option 2", "option 3", "option 4" ],
-    placeholder: "City",
+    placeholder: "State",
   },
   {
     question: "Country",
