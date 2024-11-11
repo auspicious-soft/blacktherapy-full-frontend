@@ -3,13 +3,15 @@ import React, { useCallback, useEffect, useState } from "react";
 import QuestionComponent from "@/app/(website)/components/QuestionComponent";
 import { ButtonSvg } from "@/utils/svgicons";
 
-const QualifiedStepQuestions = [
+const QualifiedStepQuestions = [ 
   {
     question: "How are you qualified for this Position?",
+    key: "howAreQualifiedForPosition",
     type: "text",
   },
   {
     question: "An application form sometimes makes it difficult for an individual to adequately summarize a complete background. Use the space below to summarize any additional information necessary to describe your full qualifications for the specific position for which you are applying.",
+    key: "additionalInformation",
     type: "text",
     placeholder: "",
   },
@@ -30,9 +32,7 @@ const QualifiedStep: React.FC<QualifiedStepProps> = ({
 }) => {
 
   const validateStep = useCallback(() => {
-    const isValid = QualifiedStepQuestions.every(
-      (q, index) => formData[`qualify_${index}`] && formData[`qualify_${index}`].trim() !== ""
-    );
+    const isValid = QualifiedStepQuestions.every(q => formData[q.key] && formData[q.key].trim() !== "");
     setIsValid(isValid);
   }, [formData, setIsValid]);
 
@@ -42,8 +42,7 @@ const QualifiedStep: React.FC<QualifiedStepProps> = ({
 
   
   const handleContinue = () => {
-    // Validate and proceed to next step if valid
-    if (QualifiedStepQuestions.every((q, index) => formData[`qualify_${index}`])) {
+    if (QualifiedStepQuestions.every(q => formData[q.key])) {
       nextStep();
     }
   };
@@ -58,6 +57,7 @@ const QualifiedStep: React.FC<QualifiedStepProps> = ({
         {QualifiedStepQuestions.map((q, index) => (
           <QuestionComponent
             key={index}
+            name={q.key}
             question={q.question}
             index={`qualify_${index}`}
             total={QualifiedStepQuestions.length}

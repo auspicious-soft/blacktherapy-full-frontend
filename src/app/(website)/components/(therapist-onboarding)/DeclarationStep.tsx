@@ -7,23 +7,27 @@ import SignatureCanvas from "react-signature-canvas";
 const DeclarationQuestions = [
   {
     question: "I agree and understand that by signing my electronic signature, it is the legal equivalent of my manual/handwritten signature and I consent to be legally bound to this agreement.",
+    key: "againConsentAgreement",
     type: "radio",
     options: ["I Agree", "No"],
   },
   {
     question: "First Name",
+    key: "againConsentFirstName",
     type: "text",
     placeholder: "",
   },
   {
     question: "Last Name",
+    key: "againConsentLastName",
     type: "text",
   },
   {
     question: "Date",
+    key: "againConsentDate",
     type: "date",
   },
-];
+]; 
 
 interface BackgroundProps {
   formData: { [key: string]: string };
@@ -41,9 +45,7 @@ const DeclarationStep: React.FC<BackgroundProps> = ({
   const sigCanvasRef = useRef<SignatureCanvas | null>(null);
 
   const validateStep = useCallback(() => {
-    const isValid = DeclarationQuestions.every(
-      (q, index) => formData[`declare_${index}`] && formData[`declare_${index}`].trim() !== ""
-    ) && !!formData.signature; // Check if signature exists
+    const isValid = DeclarationQuestions.every(q => formData[q.key] && formData[q.key].trim() !== "");
     setIsValid(isValid);
   }, [formData, setIsValid]);
 
@@ -51,8 +53,9 @@ const DeclarationStep: React.FC<BackgroundProps> = ({
     validateStep();
   }, [validateStep]);
 
+  
   const handleContinue = () => {
-    if (DeclarationQuestions.every((q, index) => formData[`declare_${index}`]) && formData.signature) {
+    if (DeclarationQuestions.every(q => formData[q.key])) {
       nextStep();
     }
   };
@@ -111,6 +114,7 @@ I also understand that all offers of employment are conditioned on receipt of sa
         {DeclarationQuestions.map((q, index) => (
           <QuestionComponent
             key={index}
+            name={q.key}
             question={q.question}
             index={`declare_${index}`}
             total={DeclarationQuestions.length}

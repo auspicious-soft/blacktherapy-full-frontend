@@ -7,25 +7,28 @@ import SignatureCanvas from "react-signature-canvas";
 const BackgroundQuestions = [
   {
     question: "I agree and understand that by signing my electronic signature, it is the legal equivalent of my manual/handwritten signature and I consent to be legally bound to this agreement.",
+    key: "consentAgreement",
     type: "radio",
     options: ["I Agree", "No"],
   },
   {
     question: "First Name",
+    key: "consentFirstName",
     type: "text",
     placeholder: "",
   },
   {
     question: "Last Name",
+    key: "consentLastName",
     type: "text",
   },
   {
     question: "Date",
+    key: "consentDate",
     type: "date",
   },
 ];
-
-interface BackgroundProps {
+ interface BackgroundProps {
   formData: { [key: string]: string };
   setFormData: React.Dispatch<React.SetStateAction<{ [key: string]: string }>>;
   setIsValid: (isValid: boolean) => void;
@@ -41,9 +44,7 @@ const BackgroundChecks: React.FC<BackgroundProps> = ({
   const sigCanvasRef = useRef<SignatureCanvas | null>(null);
 
   const validateStep = useCallback(() => {
-    const isValid = BackgroundQuestions.every(
-      (q, index) => formData[`background_${index}`] && formData[`background_${index}`].trim() !== ""
-    ) && !!formData.signature; // Check if signature exists
+    const isValid = BackgroundQuestions.every(q => formData[q.key] && formData[q.key].trim() !== "");
     setIsValid(isValid);
   }, [formData, setIsValid]);
 
@@ -51,9 +52,9 @@ const BackgroundChecks: React.FC<BackgroundProps> = ({
     validateStep();
   }, [validateStep]);
 
+  
   const handleContinue = () => {
-    // Validate and proceed to next step if valid
-    if (BackgroundQuestions.every((q, index) => formData[`background_${index}`]) && formData.signature) {
+    if (BackgroundQuestions.every(q => formData[q.key])) {
       nextStep();
     }
   };
@@ -94,6 +95,7 @@ const BackgroundChecks: React.FC<BackgroundProps> = ({
         {BackgroundQuestions.map((q, index) => (
           <QuestionComponent
             key={index}
+            name={q.key}
             question={q.question}
             index={`background_${index}`}
             total={BackgroundQuestions.length}

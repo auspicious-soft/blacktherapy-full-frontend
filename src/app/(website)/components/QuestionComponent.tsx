@@ -24,7 +24,7 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({
   formData,
   setFormData
 }) => {
-
+  
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
 
@@ -38,15 +38,15 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({
   
   const indexString = index.toString();
 
-  // const isActive = type === 'checkbox'
-  // ? Array.isArray(formData[indexString]) && formData[indexString].length > 0
-  // : typeof formData[indexString] === 'string' && formData[indexString].trim() !== '';
 
-  const questionNumber = indexString.includes('_')
+  const questionNumber = indexString.includes('_') 
     ? parseInt(indexString.split('_')[1]) + 1 
     : parseInt(indexString) + 1;
 
-     const isActive = Boolean(formData[name]?.trim());
+    const isActive = typeof formData[name] === 'boolean' 
+    ? formData[name] 
+    : Boolean(formData[name]?.trim());
+  
   return (
     <div className='questions'>
       <div className="mb-4 md:mb-8 grid md:grid-cols-2 gap-3 md:gap-5 items-center">
@@ -112,7 +112,7 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({
           <input
             type="file"
             name={name}
-            value={formData[name] || ''}
+            //value={formData[name] || ''}
             onChange={handleChange}
             className="text-[#686C78] w-full px-[18px] h-[45px] text-sm py-2 border border-[#dbe0eb] rounded-[20px] focus:outline-none focus:ring-1 focus:border-[#283C63]"
           />

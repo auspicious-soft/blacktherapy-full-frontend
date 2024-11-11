@@ -7,12 +7,19 @@ const referenceFields = [
   { label: "Name", key: "name", type: "text", placeholder: "Enter name" },
   { label: "Phone", key: "phone", type: "tel", placeholder: "Enter phone number" },
   { label: "Email", key: "email", type: "email", placeholder: "Enter email" },
-  { label: "Company/Position", key: "company", type: "text", placeholder: "Enter company/position" },
+  { label: "Company/Position", key: "companyPosition", type: "text", placeholder: "Enter company/position" },
 ];
 
 interface ReferenceFormProps {
-  formData: any;  // Updated to array of objects
-  setFormData: React.Dispatch<React.SetStateAction<any>>; // Updated type
+  formData: {
+    professionalReferences: Array<{
+      name: string;
+      phone: string;
+      email: string;
+      companyPosition: string;
+    }>;
+  };
+  setFormData: React.Dispatch<React.SetStateAction<any>>;
   setIsValid: (isValid: boolean) => void;
   nextStep: () => void;
 }
@@ -27,44 +34,58 @@ const References: React.FC<ReferenceFormProps> = ({
 
   // Initialize with 3 rows if not already
   useEffect(() => {
-    if (formData.length < 3) {
-      setFormData([
-        { name: "", phone: "", email: "", company: "" },
-        { name: "", phone: "", email: "", company: "" },
-        { name: "", phone: "", email: "", company: "" },
-      ]);
+    if (formData.professionalReferences.length < 3) {
+      setFormData((prevData: any) => ({
+        ...prevData,
+        professionalReferences: [
+          ...prevData.professionalReferences,
+          { name: "", phone: "", email: "", companyPosition: "" },
+          { name: "", phone: "", email: "", companyPosition: "" },
+          { name: "", phone: "", email: "", companyPosition: "" },
+        ].slice(0, 3), // Ensure only 3 rows are initialized
+      }));
     }
   }, [formData, setFormData]);
 
   // Handle input change for each field
   const handleInputChange = (index: number, field: string, value: string) => {
-    const newFormData = [...formData];
-    newFormData[index] = {
-      ...newFormData[index],
-      [field]: value,
-    };
-    setFormData(newFormData);
+    const updatedReferences = formData.professionalReferences.map((ref, i) =>
+      i === index ? { ...ref, [field]: value } : ref
+    );
+    setFormData((prevData: any) => ({
+      ...prevData,
+      professionalReferences: updatedReferences,
+    }));
   };
 
   // Add more reference fields
   const addMoreFields = () => {
-    setFormData([...formData, { name: "", phone: "", email: "", company: "" }]);
+    setFormData((prevData: any) => ({
+      ...prevData,
+      professionalReferences: [
+        ...prevData.professionalReferences,
+        { name: "", phone: "", email: "", companyPosition: "" },
+      ],
+    }));
   };
 
   // Delete a specific field set
   const deleteField = (index: number) => {
-    const newFormData = formData.filter((_, i) => i !== index);
-    setFormData(newFormData);
+    const updatedReferences = formData.professionalReferences.filter((_, i) => i !== index);
+    setFormData((prevData: any) => ({
+      ...prevData,
+      professionalReferences: updatedReferences,
+    }));
   };
 
   // Validate the form
   const validateForm = useCallback(() => {
-    const valid = formData.every(
-      (entry) => entry.name && entry.phone && entry.email && entry.company
+    const valid = formData.professionalReferences.every(
+      (entry) => entry.name && entry.phone && entry.email && entry.companyPosition
     );
     setIsValidState(valid);
     setIsValid(valid); // Also setting the parent validation state
-  }, [formData, setIsValid]);
+  }, [formData.professionalReferences, setIsValid]);
 
   // Trigger validation whenever form data changes
   useEffect(() => {
@@ -77,9 +98,7 @@ const References: React.FC<ReferenceFormProps> = ({
       nextStep();
     }
   };
-  const handleContinue = () => {
-     nextStep();
-  };
+
   return (
     <div className="form-main">
       <h2 className="section-title mb-7 md:m-0 text-center md:absolute top-[45px] left-[50%] md:translate-x-[-50%]">
@@ -89,7 +108,7 @@ const References: React.FC<ReferenceFormProps> = ({
         <p className="text-gray-500 md:text-base text-sm mb-5">
           Please list three professional references other than relatives or previous employers
         </p>
-        {formData.map((data, index) => (
+        {formData.professionalReferences.map((data, index) => (
           <div key={index} className="reference-item relative grid lg:grid-cols-4 gap-4 my-4">
             {referenceFields.map((field) => (
               <div key={field.key} className="mb-4">
@@ -106,18 +125,17 @@ const References: React.FC<ReferenceFormProps> = ({
                 />
               </div>
             ))}
-            {/* Show delete button only for rows after the 3rd */}
             {index >= 3 && (
               <button
                 type="button"
                 onClick={() => deleteField(index)}
-                className="delete-btn delete-btn absolute top-0 right-0 "
-              > <ToggleClose/>
+                className="delete-btn absolute top-0 right-0"
+              >
+                <ToggleClose />
               </button>
             )}
           </div>
         ))}
-
         <button
           type="button"
           onClick={addMoreFields}
@@ -126,9 +144,8 @@ const References: React.FC<ReferenceFormProps> = ({
           Add more
         </button>
 
-        
         <div className="flex justify-end mt-[50px]">
-          <button onClick={handleContinue} className="button">
+          <button onClick={handleNext} className="button">
             Continue <ButtonSvg />
           </button>
         </div>
