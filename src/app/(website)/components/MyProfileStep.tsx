@@ -118,6 +118,7 @@ const MyProfileStep: React.FC<MyProfileStepProps> = ({
     return questions.map((q, index) => (
       <QuestionComponent
         key={index}
+        name={q.key}
         question={q.question}
         index={`${prefix}_${index}`}
         total={questions.length}

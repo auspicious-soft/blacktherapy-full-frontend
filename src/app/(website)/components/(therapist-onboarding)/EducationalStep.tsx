@@ -54,6 +54,22 @@ const EducationalQuestions = [
     options: ["Full-Time Only", "Part-Time Only", "Full or Part Time"],
     placeholder: "option",
   },
+  {
+    question: "Start Time",
+    key: "startTime",
+    type: "time",
+  },
+  {
+    question: "End Time",
+    key: "endTime",
+    type: "time",
+  },
+  {
+    question: "Current Availability",
+    key: "currentAvailability",
+    type: "checkbox",
+    options: ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"],
+  },
 ]; 
 
 interface EducationalProps {
@@ -62,79 +78,91 @@ interface EducationalProps {
   setIsValid: (isValid: boolean) => void;
   nextStep: () => void;
 }
-
 const EducationalStep: React.FC<EducationalProps> = ({
   formData,
   setFormData,
-  setIsValid, 
+  setIsValid,
   nextStep,
 }) => {
+  // Initialize currentAvailability if not already an array
+  useEffect(() => {
+    if (!Array.isArray(formData.currentAvailability)) {
+      setFormData((prevData) => ({
+        ...prevData,
+        currentAvailability: [],
+      }));
+    }
+  }, [setFormData, formData.currentAvailability]);
 
+  // Handle changes for the availability checkboxes
+  const handleCheckboxChange = (day: string) => {
+    setFormData((prevData) => {
+      const currentAvailability = prevData.currentAvailability || [];
+      const updatedAvailability = currentAvailability.includes(day)
+        ? currentAvailability.filter((d: string) => d !== day)
+        : [...currentAvailability, day];
+      return { ...prevData, currentAvailability: updatedAvailability };
+    });
+  };
+
+  // Validation function to check required fields
   const validateStep = useCallback(() => {
-    const isValid = EducationalQuestions.every(q => formData[q.key] && formData[q.key].trim() !== "");
+    const isValid = EducationalQuestions.every(
+      (q) =>
+        formData[q.key] &&
+        (Array.isArray(formData[q.key]) ? formData[q.key].length > 0 : formData[q.key].trim() !== "")
+    );
     setIsValid(isValid);
   }, [formData, setIsValid]);
 
   useEffect(() => {
     validateStep();
-  }, [validateStep]);
+  }, [validateStep, formData]);
 
-  
   const handleContinue = () => {
     if (EducationalQuestions.every(q => formData[q.key])) {
       nextStep();
     }
   };
 
-  const handleCheckboxChange = (day: string) => {
-    setFormData((prevData) => {
-      const updatedDays = prevData.currentAvailability.includes(day)
-        ? prevData.currentAvailability.filter((d: any) => d !== day)
-        : [...prevData.currentAvailability, day];
-      return { ...prevData, currentAvailability: updatedDays };
-    });
-  };
 
   return (
     <div className="form-main">
-      <h2 className="section-title mb-7 md:m-0 text-center md:absolute top-[45px] left-[50%] md:translate-x-[-50%]">
-        Educational Details
-      </h2>
-      <div className="bg-white rounded-[20px] p-5 md:p-[50px]">
-        {EducationalQuestions.map((q, index) => (
-          <QuestionComponent
-            key={index}
-            name={q.key}
-            question={q.question}
-            index={`education_${index}`}
-            total={EducationalQuestions.length}
-            type={q.type}
-            placeholder={q.placeholder}
-            options={q.options}
-            formData={formData}
-            setFormData={setFormData}
-          />
-        ))}
-
-        <div className="pt-10 grid gap-[10px] md:gap-7 md:grid-cols-[minmax(0,_5.5fr)_minmax(0,_6.5fr)] items-center md:mb-[35px]">
-          <p className=" text-[#283c63]">Current Availability</p>
-            <div className="grid grid-cols-[repeat(7,_minmax(0,_1fr))]">
-              {["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"].map((day) => (
-                <div key={day} className="custom-checkbox relative flex items-center">
+      <h2 className="section-title mb-7 text-center">Educational Details</h2>
+      <div className="bg-white rounded-[20px] p-5">
+        {EducationalQuestions.map((q, index) =>
+          q.key === "currentAvailability" ? (
+            <div key={q.key} className="mb-4 md:mb-8 grid md:grid-cols-2 gap-3 md:gap-5 items-center">
+              <p className="text-[#283c63]">Current Availability</p>
+          <div className="flex flex-wrap gap-2 justify-between">
+          {q.options?.map((day) => (
+                <label key={day} className="custom-checkbox relative flex items-center">
                   <input
                     type="checkbox"
-                    id={day}
-                    name="currentAvailability"
-                    checked={formData?.currentAvailability.includes(day)}
+                    checked={formData.currentAvailability.includes(day)}
                     onChange={() => handleCheckboxChange(day)}
+                    className="mr-2"
                   />
-                  <label htmlFor={day} className="text-[#283c63] text-sm">
-                    {day}
-                  </label>
-                </div>
+                  <span className="text-sm text-[#283c63]">{day}</span>
+                </label>
               ))}
-            </div>
           </div>
+            </div>
+          ) : (
+            <QuestionComponent
+              key={index}
+              name={q.key}
+              question={q.question}
+              index={`education_${index}`}
+              total={EducationalQuestions.length}
+              type={q.type}
+              placeholder={q.placeholder}
+              options={q.options}
+              formData={formData}
+              setFormData={setFormData}
+            />
+          )
+        )}
 
         <div className="flex justify-end mt-[50px]">
           <button onClick={handleContinue} className="button">

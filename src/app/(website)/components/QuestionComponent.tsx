@@ -3,10 +3,10 @@ import clsx from 'clsx';
 
 interface QuestionComponentProps {
   question: string;
-  index: string | number; 
+  index: string | number;  
   name: string; 
   total: number;
-  type: string; 
+  type: string;  
   placeholder?: string;
   options?: string[]; 
   formData: any;
@@ -86,7 +86,7 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({
             onChange={handleChange}
             className="w-full text-[#686C78] px-[18px] h-[45px] text-sm py-2 border border-[#dbe0eb] rounded-[20px] focus:outline-none focus:ring-1 focus:border-[#283C63]"
           >
-            <option value="" disabled>{placeholder}</option>
+            <option value="" >{placeholder}</option>
             {options.map(option => (
               <option key={option} value={option}>{option}</option>
             ))}

@@ -8,7 +8,8 @@ const FormStepSevenQuestions = [
     question: "HAVE YOU EVER BEEN CONVICTED OF A FELONY OR MISDEMEANOR?", 
     key: "felonyOrMisdemeanor",
     type: "select",
-    options: ["Please select", "NO", "FELONY", "MISDEMEANOR"],
+    options: [ "NO", "FELONY", "MISDEMEANOR"],
+    placeholder: "Select",
   },
   {
     question: "If yes, explain number of conviction(s), nature of offense(s) leading to conviction(s), how recently such offense(s) was/were committed, sentence(s) imposed, and type(s) of rehabilitation.",
@@ -19,7 +20,8 @@ const FormStepSevenQuestions = [
     question: "Have you lived in the state of North Carolina for the past five (5) years?",
     key: "livedInNorthCarolina",
     type: "select",
-    options: ["Please select", "No", "Yes"]
+    options: ["No", "Yes"],
+    placeholder: "Select",
   },
   {
     question: "If no, please list the states that you have resided",
@@ -31,25 +33,29 @@ const FormStepSevenQuestions = [
     question: "Do you have Driver License?",
      key: "validDriverLicense",
     type: "select",
-    options: ["Please select", "No", "Yes"]
+    options: ["No", "Yes"],
+    placeholder: "Select",
   },
   {
     question: "Do you have Reliable Transportation?",
      key: "reliableTransportation",
     type: "select",
-    options: ["Please select", "No", "Yes"]
+    placeholder: "Select",
+    options: ["No", "Yes"]
   },
   {
     question: "Can you submit verification of your legal right to work in the United States?",
      key: "legalRightToWorkInUS",
     type: "select",
-    options: ["Please select", "No", "Yes"]
+    placeholder: "Select",
+    options: ["No", "Yes"]
   },
   {
     question: "Are you able to perform the essential functions of the position for which you are applying either with or without reasonable accommodations?",
     key: "reasonableAccommodation",
     type: "select",
-    options: ["Please select", "No", "Yes"]
+    placeholder: "Select",
+    options: ["No", "Yes"]
   },
   {
     question: "Driver’s license or State ID Number",
