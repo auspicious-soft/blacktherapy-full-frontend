@@ -43,37 +43,43 @@ const MobileHeader = () => {
 
       <ul className="navList">
           <li className={isActive('/')}>
-            <Link href="/">
+            <Link href="/therapist/dashboard">
               <DashboardIcon />
               <span>Dashboard</span>
             </Link>
           </li>
           <li className={isActive('/assignments')}>
-            <Link href="/assignments">
+            <Link href="/therapist/assignments">
            <AssignIcon />
              <span>Assignments  </span>
             </Link>
           </li>
+          <li className={isActive('/therapist/training')}>
+            <Link href="/therapist/training">
+              <DashboardIcon />
+              <span>Training</span>
+            </Link>
+          </li>
           <li className={isActive('/payment-request')}>
-            <Link href="/payment-request">
+            <Link href="/therapist/payment-request">
            <PayRequestIcon />
           <span>Payment Requests</span>
             </Link>
           </li>
           <li className={isActive('/payment-history')}>
-            <Link href="/payment-history">
+            <Link href="/therapist/payment-history">
             <PaymentHistoryIcon />
           <span>Payment History</span>
             </Link>
           </li>
           <li className={isActive('/profile')}>
-            <Link href="/profile">
+            <Link href="/therapist/profile">
             <PasswordIcon />
             <span>Profile </span>
             </Link>
           </li>
           <li className={isActive('/view-task')}>
-            <Link href="/view-task">
+            <Link href="/therapist/view-task">
               <BillingIcon />
               <span>View Task</span>
             </Link>

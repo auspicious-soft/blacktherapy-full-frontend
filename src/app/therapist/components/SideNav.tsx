@@ -1,24 +1,24 @@
 "use client";
 import { useState } from "react";
-import { usePathname } from 'next/navigation'; 
-import { DashboardIcon, Humbruger, Logo, LogOut, BillingIcon, PasswordIcon, PaymentHistoryIcon, PayRequestIcon, AssignIcon } from "@/utils/svgicons";
+import { usePathname } from 'next/navigation';
+import { DashboardIcon, Humbruger, Logo, LogOut, BillingIcon, PasswordIcon, PaymentHistoryIcon, PayRequestIcon, AssignIcon, OverviewIcon5, OverviewIcon9 } from "@/utils/svgicons";
 
 import Link from "next/link";
-import './SideNav.css';  
+import './SideNav.css';
 import { useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
 
 const SideNav = () => {
   const router = useRouter();
 
-  const handleLogout = async() => {
+  const handleLogout = async () => {
     await signOut({ redirect: false })
     router.push('/');
   };
 
   const [isCollapsed, setIsCollapsed] = useState(false);
 
-  const pathname = usePathname(); 
+  const pathname = usePathname();
 
   const toggleSidebar = () => {
     setIsCollapsed(!isCollapsed);
@@ -33,13 +33,13 @@ const SideNav = () => {
             <div className="logoContainer">
               <Link href="/therapist/dashboard">
                 <Logo />
-              </Link> 
+              </Link>
             </div>
           )}
           <button onClick={toggleSidebar} className="hamburgerButton">
             <Humbruger />
           </button>
-        </div> 
+        </div>
         <ul className="navList">
           <li className={isActive('/therapist/dashboard')}>
             <Link href="/therapist/dashboard">
@@ -47,33 +47,39 @@ const SideNav = () => {
               {!isCollapsed && <span>Dashboard</span>}
             </Link>
           </li>
+          <li className={isActive('/therapist/training')}>
+            <Link href="/therapist/training">
+              <DashboardIcon />
+              {!isCollapsed && <span>Training</span>}
+            </Link>
+          </li>
           <li className={isActive('/therapist/assignments')}>
-          <Link href="/therapist/assignments">
-              <AssignIcon/>
+            <Link href="/therapist/assignments">
+              <AssignIcon />
               {!isCollapsed && <span>Assignments</span>}
             </Link>
           </li>
           <li className={isActive('/therapist/payment-request')}>
             <Link href="/therapist/payment-request">
-              <PayRequestIcon/>
+              <PayRequestIcon />
               {!isCollapsed && <span>Payment Requests</span>}
             </Link>
           </li>
           <li className={isActive('/therapist/payment-history')}>
             <Link href="/therapist/payment-history">
-            <PaymentHistoryIcon />
+              <PaymentHistoryIcon />
               {!isCollapsed && <span>Payment History</span>}
             </Link>
           </li>
           <li className={isActive('/therapist/profile')}>
             <Link href="/therapist/profile">
-            <PasswordIcon/>
+              <PasswordIcon />
               {!isCollapsed && <span>Profile</span>}
             </Link>
           </li>
           <li className={isActive('/therapist/view-task')}>
             <Link href="/therapist/view-task">
-            <BillingIcon />
+              <BillingIcon />
               {!isCollapsed && <span>View Task</span>}
             </Link>
           </li>

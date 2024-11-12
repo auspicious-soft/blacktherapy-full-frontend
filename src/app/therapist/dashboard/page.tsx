@@ -42,7 +42,8 @@ const OverviewData = [
     icon: <OverviewIcon5 />,
     title: "Training & Orientation",
     value: "Employee Training Videos and Resources",
-    
+    link: "/therapist/training",
+    target: '_self'
   },
   {
     id: "6",

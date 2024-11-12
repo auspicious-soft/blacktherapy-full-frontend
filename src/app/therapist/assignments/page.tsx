@@ -15,27 +15,7 @@ const Page = () => {
   const page = data?.data?.page
   const total = data?.data?.total
   const rowsPerPage = data?.data?.limit
-  const [currentPage, setCurrentPage] = useState(0);
-  const peerSupportData = [
-    { id: 1, client: 'Sandra Norton', date: '26 July 2023', phone: '7044431549', email: 'allisoncook58.ac@gmail.com', chat: 'Start Chat', videoChat: '', status: 'Confirm' },
-    { id: 2, client: 'Andrea Gibson', date: '26 July 2023', phone: '7044431549', email: 'allisoncook58.ac@gmail.com', chat: 'No Permission', videoChat: '', status: 'Confirm' },
-    // Add more dummy data here
-  ];
-
-  const therapistData = [
-    { id: 1, client: 'John Doe', date: '24 July 2023', phone: '7011234567', email: 'johndoe@gmail.com', chat: 'No Permission', videoChat: '', status: 'Confirm' },
-    { id: 2, client: 'Jane Smith', date: '25 July 2023', phone: '7027654321', email: 'janesmith@gmail.com', chat: 'Start Chat', videoChat: '', status: 'Confirm' },
-    { id: 3, client: 'John Doe', date: '24 July 2023', phone: '7011234567', email: 'johndoe@gmail.com', chat: 'No Permission', videoChat: '', status: 'Confirm' },
-    { id: 4, client: 'Jane Smith', date: '25 July 2023', phone: '7027654321', email: 'janesmith@gmail.com', chat: 'Start Chat', videoChat: '', status: 'Confirm' },
-
-    // Add more dummy data here
-  ];
-
-  // const handleTabClick = (tab: string) => {
-  //   setActiveTab(tab);
-  //   setCurrentPage(0); // Reset to the first page when switching tabs
-  // };
-
+  
   const handlePageClick = (selectedItem: { selected: number }) => {
     setQuery(`page=${selectedItem.selected + 1}&limit=${rowsPerPage}`);
   }

@@ -32,78 +32,11 @@ const Modal = ({ isOpen, onClose, children }: ModalProps) => {
   );
 };
 
-const VideosWellness = () => {
+const VideosWellness = (props: any) => {
+  const { handlePageClick, data: wholeData, total, rowsPerPage } = props;
+  const data = wholeData?.data
   const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
-  const [currentPage, setCurrentPage] = useState(0);
 
-  const images = [
-    {
-      id: 1,
-      src: Therapist1,
-      video: "https://www.youtube.com/embed/9xwazD5SyVg",
-      Title: "Name of the video here",
-      dis: "Enhance your well-being with expert-led videos on yoga, meditation.",
-    },
-    {
-      id: 2,
-      src: Therapist2,
-      video: "https://www.youtube.com/embed/D0UnqGm_miA?si=5a3doIBJI9jIGVUP",
-      Title: "Name of the video here",
-      dis: "Enhance your well-being with expert-led videos on yoga, meditation.",
-    },
-    {
-      id: 3,
-      src: Therapist1,
-      video: "https://www.youtube.com/embed/9xwazD5SyVg",
-      Title: "Name of the video here",
-      dis: "Enhance your well-being with expert-led videos on yoga, meditation.",
-    },
-    {
-      id: 4,
-      src: Therapist2,
-      video: "https://www.youtube.com/embed/D0UnqGm_miA?si=5a3doIBJI9jIGVUP",
-      Title: "Name of the video here",
-      dis: "Enhance your well-being with expert-led videos on yoga, meditation.",
-    },
-    {
-      id: 5,
-      src: Therapist1,
-      video: "https://www.youtube.com/embed/9xwazD5SyVg",
-      Title: "Name of the video here",
-      dis: "Enhance your well-being with expert-led videos on yoga, meditation.",
-    },
-    {
-      id: 6,
-      src: Therapist2,
-      video: "https://www.youtube.com/embed/D0UnqGm_miA?si=5a3doIBJI9jIGVUP",
-      Title: "Name of the video here",
-      dis: "Enhance your well-being with expert-led videos on yoga, meditation.",
-    },
-    {
-      id: 7,
-      src: Therapist1,
-      video: "https://www.youtube.com/embed/9xwazD5SyVg",
-      Title: "Name of the video here",
-      dis: "Enhance your well-being with expert-led videos on yoga, meditation.",
-    },
-    {
-      id: 8,
-      src: Therapist2,
-      video: "https://www.youtube.com/embed/D0UnqGm_miA?si=5a3doIBJI9jIGVUP",
-      Title: "Name of the video here",
-      dis: "Enhance your well-being with expert-led videos on yoga, meditation.",
-    },
-    {
-      id: 9,
-      src: Therapist1,
-      video: "https://www.youtube.com/embed/9xwazD5SyVg",
-      Title: "Name of the video here",
-      dis: "Enhance your well-being with expert-led videos on yoga, meditation.",
-    },
-  ];
-
-  // Populate the data array with images
-  const data = images;
 
   const openVideoModal = (video: string) => {
     const autoplayVideoUrl = `${video}?autoplay=1`;
@@ -114,20 +47,10 @@ const VideosWellness = () => {
     setSelectedVideo(null);
   };
 
-  // ReactPaginate
-  const rowsPerPage = 6;
-  const indexOfLastRow = (currentPage + 1) * rowsPerPage;
-  const indexOfFirstRow = indexOfLastRow - rowsPerPage;
-  const currentRows = data.slice(indexOfFirstRow, indexOfLastRow);
-
-  const handlePageClick = (selectedItem: { selected: number }) => {
-    setCurrentPage(selectedItem.selected);
-  };
-
   return (
     <>
       <div className="grid md:grid-cols-3 gap-[15px] lg:gap-[24px]">
-        {currentRows.map((image, index) => (
+        {data?.map((image:any, index:any) => (
           <div key={index}>
             <div
               className="cursor-pointer relative"
@@ -142,9 +65,9 @@ const VideosWellness = () => {
                 <YoutubeIcon />
               </div>
             </div>
-            <div> 
+            <div>
               <h5 className="mt-[14px] mb-[5px]">{image.Title}</h5>
-              <p>{image.dis}</p>
+              <p>{image.description}</p>
             </div>
           </div>
         ))}
@@ -156,7 +79,7 @@ const VideosWellness = () => {
           nextLabel={<Image src={NextIcon} alt="NextIcon" />}
           breakLabel={"..."}
           breakClassName={"break-me"}
-          pageCount={Math.ceil(data.length / rowsPerPage)}
+          pageCount={Math.ceil(total / rowsPerPage)}
           marginPagesDisplayed={2}
           pageRangeDisplayed={5}
           onPageChange={handlePageClick}
