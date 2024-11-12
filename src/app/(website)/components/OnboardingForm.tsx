@@ -33,9 +33,11 @@ const steps = [
 const OnboardingForm = (props: any) => {
   const { session } = props
   const currentStepDefault = session?.user?.onboardingCompleted === 'true' ? 13 : 1
+  const userEmail= session?.user?.email;
   const [currentStep, setCurrentStep] = useState(currentStepDefault)
   const [formData, setFormData] = useState<any>({
     licenceType: "",
+    email: userEmail,
     firstName: "",
     lastName: "",
     phoneNumber: "",
@@ -51,7 +53,7 @@ const OnboardingForm = (props: any) => {
     salaryDesired: "",
     currentEmploymentStatus: "",
     currentOrPreviousEmployerName: "",
-    employementCityState: "",
+    employmentCityState: "",
     rolePosition: "",
     rateOfPay: "",
     startDate: "",
@@ -68,6 +70,8 @@ const OnboardingForm = (props: any) => {
     skills: "",
     weeklyHours: "",
     employmentDesired: "",
+    startTime: "",
+    endTime: "",
     currentAvailability: [],
     felonyOrMisdemeanor: "",
     ifFelonyOrMisdemeanor: "",

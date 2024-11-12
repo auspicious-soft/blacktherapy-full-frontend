@@ -79,7 +79,7 @@ const DeclarationStep: React.FC<BackgroundProps> = ({
       const signatureData = sigCanvasRef.current.getTrimmedCanvas().toDataURL("image/png");
       setFormData((prev) => ({
         ...prev,
-        signature: signatureData,
+        againConsentSignature: signatureData,
       }));
     }
   };
