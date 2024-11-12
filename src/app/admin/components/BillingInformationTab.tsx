@@ -114,7 +114,7 @@ const BillingInformationTab: React.FC<BillingInformationTabProps> = ({ rowId }) 
                 <td>{row?.scaleTermsNote || 'N/A'}</td>
                 <td>{row?.lastInsuranceCheck ? 'Yes' : 'No'}</td>
                 <td>{row?.simplePractice ? 'Yes' : 'No'}</td>
-                <td>{new Date(row?.createdAt).toLocaleDateString()}</td>
+                <td>{new Date(row?.createdAt).toLocaleDateString('en-US')}</td>
               </tr>
             ))
           ) : (
