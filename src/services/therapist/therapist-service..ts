@@ -7,7 +7,7 @@ export const getTherapistDashboardStats = async (route: string) => {
     const axiosInstance = await getAxiosInstance()
     return axiosInstance.get(route)
 }
-
+ 
 export const getTherapistAssignments = async (route: string) => {
     const axiosInstance = await getAxiosInstance()
     return axiosInstance.get(route)

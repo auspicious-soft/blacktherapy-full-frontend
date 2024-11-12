@@ -27,7 +27,7 @@ const Modal = ({ isOpen, onClose, children }: ModalProps) => {
           &#x2715;
         </button>
         {children}
-      </div>
+      </div> 
     </div>
   );
 };
