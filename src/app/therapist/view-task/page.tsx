@@ -1,45 +1,42 @@
 "use client"
 import SearchBar from '@/app/therapist/components/SearchBar';
+import { getAllTasksData } from '@/services/therapist/therapist-service.';
 import { ProcessIcon, TickIcon } from '@/utils/svgicons';
+import { useSession } from 'next-auth/react';
 import React, { useState } from 'react';
 import ReactPaginate from 'react-paginate';
+import useSWR from 'swr';
 
-type Task = {
-  id: string;
-  status: string;
-  from: string;
-  to: string;
-  title: string;
-  dueDate: string;
-  priority: string;
-  attachment: string;
-  note: string;
-};
 
 const Page: React.FC = () => {
-  const [tasks, setTasks] = useState<Task[]>([
-    { id: '#001', status: 'In processing', from: 'Wehabi ( Admin )', to: 'Sandra Lew', title: 'Repeat this availability', dueDate: '21/10/2023', priority: 'Normal', attachment: 'No Attachment', note: '' },
-    { id: '#002', status: 'Done', from: 'Wehabi ( Admin )', to: 'Sandra Lew', title: 'Repeat this availability', dueDate: '21/10/2023', priority: 'Normal', attachment: 'No Attachment', note: '' },
-    { id: '#003', status: 'In processing', from: 'Wehabi ( Admin )', to: 'Sandra Lew', title: 'Repeat this availability', dueDate: '21/10/2023', priority: 'Normal', attachment: 'No Attachment', note: '' },
-    { id: '#004', status: 'Done', from: 'Wehabi ( Admin )', to: 'Sandra Lew', title: 'Repeat this availability', dueDate: '21/10/2023', priority: 'Normal', attachment: 'No Attachment', note: '' },
-    // Add more tasks as needed for testing pagination
-  ]);
+  // const [tasks, setTasks] = useState<any>([
+  //   id,
+  //   status,
+  //   from,
+  //   to,
+  //   title,
+  //   dueDate,
+  //   priority,
+  //   attachment,
+  //   note,
+  // ]);
 
-  const [currentPage, setCurrentPage] = useState<number>(0);
-  const rowsPerPage = 2;
+  const session = useSession()
+  const [query, setQuery] = useState('')
+  const { data, error, isLoading, mutate } = useSWR(`/therapist/payment-requests/${session?.data?.user?.id}?${query}`, getAllTasksData);
+  const tasksData: any = data?.data?.data
+  const page = data?.data?.page
+  const total = data?.data?.total
+  const rowsPerPage = data?.data?.limit
 
+  const handlePageClick = (selectedItem: { selected: number }) => {
+    setQuery(`page=${selectedItem.selected + 1}&limit=${rowsPerPage}`);
+  }
   const handleStatusChange = (id: string, newStatus: string) => {
-    setTasks(tasks.map(task => 
-      task.id === id ? { ...task, status: newStatus } : task
-    ));
+    // setTasks(tasks.map(task => 
+    //   task.id === id ? { ...task, status: newStatus } : task
+    // ));
   };
-
-  const handlePageClick = (data: { selected: number }) => {
-    setCurrentPage(data.selected);
-  };
-
-  const offset = currentPage * rowsPerPage;
-  const paginatedTasks = tasks.slice(offset, offset + rowsPerPage);
 
   return (
    <div>
@@ -64,9 +61,9 @@ const Page: React.FC = () => {
           </tr>
         </thead>
         <tbody>
-          {paginatedTasks.map(task => (
-            <tr key={task.id}>
-              <td>{task.id}</td>
+          {tasksData?.map((task: any) => (
+            <tr key={task?._id}>
+              <td>{task?._id}</td>
              <td>
              <p 
                 className={`font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px] ${
@@ -113,7 +110,7 @@ const Page: React.FC = () => {
         nextLabel={'>'}
         breakLabel={'...'}
         breakClassName={'break-me'}
-        pageCount={Math.ceil(tasks.length / rowsPerPage)}
+        pageCount={Math.ceil(total / rowsPerPage)}
         marginPagesDisplayed={2}
         pageRangeDisplayed={5}
         onPageChange={handlePageClick}

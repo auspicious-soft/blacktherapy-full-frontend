@@ -2,27 +2,26 @@
 import React, { useState } from 'react';
 import ReactPaginate from 'react-paginate';
 import SearchBar from '@/app/therapist/components/SearchBar';
-
+import useSWR from 'swr';
+import { useSession } from 'next-auth/react';
+import { getPaymentsData } from '@/services/therapist/therapist-service.';
+import ReactLoading from 'react-loading';
+ 
 const Page = () => {
-  const [currentPage, setCurrentPage] = useState(0);
-  const rowsPerPage = 4;
+  const session = useSession()
+  const [query, setQuery] = useState('')
+  const { data, error, isLoading, mutate } = useSWR(`/therapist/payment-requests/${session?.data?.user?.id}?${query}`, getPaymentsData);
+  const paymentsData: any = data?.data?.data
+  console.log('paymentsData:', paymentsData);
+  const page = data?.data?.page
+  const total = data?.data?.total
+  const rowsPerPage = data?.data?.limit
 
-  const data = [
-    { id: '#001', requester: 'Sandra Lew', type: 'Payment', provider: 'Nurse (RN) Assessment', client: 'Bernard Katelyn', dateTime: '21/07/2023, 10:00 PM', notes: 'Yes-Approved & Entered into the System', submissionDate: '21/07/2023', status: 'Approved (QP, OD)', notesStatus: 'No Note' },
-    { id: '#002', requester: 'Sandra Lew', type: 'Reimbursement', provider: 'Peer Support Service', client: 'Cooper Talon', dateTime: '21/07/2023, 10:00 PM', notes: 'Yes-Approved & Entered into the System', submissionDate: '21/07/2023', status: 'Reject (Admin)', notesStatus: 'No Note' },
-    { id: '#003', requester: 'Sandra Lew', type: 'Payment', provider: 'Nurse (RN) Assessment', client: 'Bernard Katelyn', dateTime: '21/07/2023, 10:00 PM', notes: 'Yes-Approved & Entered into the System', submissionDate: '21/07/2023', status: 'Approved (QP, OD)', notesStatus: 'No Note' },
-    { id: '#004', requester: 'Sandra Lew', type: 'Reimbursement', provider: 'Peer Support Service', client: 'Cooper Talon', dateTime: '21/07/2023, 10:00 PM', notes: 'Yes-Approved & Entered into the System', submissionDate: '21/07/2023', status: 'Reject (Admin)', notesStatus: 'No Note' },
-    { id: '#005', requester: 'Sandra Lew', type: 'Payment', provider: 'Nurse (RN) Assessment', client: 'Bernard Katelyn', dateTime: '21/07/2023, 10:00 PM', notes: 'Yes-Approved & Entered into the System', submissionDate: '21/07/2023', status: 'Approved (QP, OD)', notesStatus: 'No Note' },
-    { id: '#006', requester: 'Sandra Lew', type: 'Reimbursement', provider: 'Peer Support Service', client: 'Cooper Talon', dateTime: '21/07/2023, 10:00 PM', notes: 'Yes-Approved & Entered into the System', submissionDate: '21/07/2023', status: 'Reject (Admin)', notesStatus: 'No Note' },
-    // Add more dummy data as needed
-  ];
 
-  const handlePageClick = ({ selected }: { selected: number }) => {
-    setCurrentPage(selected);
-  };
-
-  const filteredData = data.slice(currentPage * rowsPerPage, (currentPage + 1) * rowsPerPage);
-
+  const handlePageClick = (selectedItem: { selected: number }) => {
+    setQuery(`page=${selectedItem.selected + 1}&limit=${rowsPerPage}`);
+  }
+  
   return (
     <div>
       <h1 className=' mb-[20px] md:mb-[50px]'>Payment History</h1>
@@ -46,23 +45,38 @@ const Page = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredData.map((item) => (
-              <tr key={item.id}>
-                <td>{item.id}</td>
-                <td>{item.requester}</td>
-                <td>{item.type}</td>
-                <td>{item.provider}</td>
-                <td>{item.client}</td>
-                <td>{item.dateTime}</td>
-                <td>{item.notes}</td>
-                <td>{item.notesStatus}</td>
-                <td>{item.submissionDate}</td>
-                {/* <td className={`py-2 px-4 border ${item.status.startsWith('Approved') ? 'text-green-500' : 'text-red-500'}`}>{item.status}</td> */}
+          {isLoading ? (
+              <tr>
+                <td colSpan={7} className='text-center'>
+                  <ReactLoading type={'spin'} color={'#26395e'} height={'20px'} width={'20px'} />
+                </td>
+              </tr>
+            ) : (
+              paymentsData?.length > 0 ? (
+            paymentsData?.map((item: any) => (
+              <tr key={item?._id}>
+                <td>{item?._id}</td>
+                <td>{session?.data?.user?.name}</td>
+                <td>{item?.requestType}</td>
+                <td>{item?.servicesProvided}</td>
+                <td>{item?.clientId?.firstName} {item?.clientId?.lastName}</td>  
+                {/* .toLocaleDateString('en-US') */}
+                <td>{item?.serviceDate} {item?.serviceTime} </td>
+                <td>{item?.progressNotes}</td>
+                <td>{item?.rejectedNote ? (item.detailsAboutPayment ? item.detailsAboutPayment : item.rejectedNote) : "No Note"}</td>
+
+                <td>{item?.serviceDate}</td>
                 <td>
-                <p className='font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px]  text-[#42A803] bg-[#CBFFB2]'>{item.status}</p> 
+                <p className='font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px]  text-[#42A803] bg-[#CBFFB2]'>{item?.status}</p> 
               </td>
               </tr>
-            ))}
+            ))
+          ) : (
+            <tr>
+              <td colSpan={7} className='text-center'>No data found</td>
+            </tr>
+          )
+        )}
           </tbody>
         </table>
       </div>
@@ -72,7 +86,7 @@ const Page = () => {
         nextLabel={'>'}
         breakLabel={'...'}
         breakClassName={'break-me'}
-        pageCount={Math.ceil(data.length / rowsPerPage)}
+        pageCount={Math.ceil(total / rowsPerPage)}
         marginPagesDisplayed={2}
         pageRangeDisplayed={5}
         onPageChange={handlePageClick}

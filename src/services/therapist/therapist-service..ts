@@ -20,4 +20,17 @@ export const getTherapistWellness = async (route: string) => {
 export const addOnboardingFormData = async (route:string, payload: any) =>{
     const axiosInstance = await getAxiosInstance()
     return axiosInstance.post(route, payload)
-  }
+}
+export const getPaymentsData = async (route: string) => {
+    const axiosInstance = await getAxiosInstance()
+    return axiosInstance.get(route)
+}
+export const addPaymentsData = async (route:string, payload: any) =>{
+    const axiosInstance = await getAxiosInstance()
+    return axiosInstance.post(route, payload)
+}
+
+export const getAllTasksData = async (route: string) => {
+    const axiosInstance = await getAxiosInstance()
+    return axiosInstance.get(route)
+}
