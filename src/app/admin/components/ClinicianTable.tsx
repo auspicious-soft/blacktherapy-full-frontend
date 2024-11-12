@@ -48,7 +48,7 @@ const ClinicianTable: React.FC<TherapistsDataProps> = ({
   const [hoveredRow, setHoveredRow] = useState<any>(null);
   const therapistsDataArray = therapistsData?.data;
 
-  const rowsPerPage = 5;
+  const rowsPerPage = 10;
   const handlePageClick = (selectedItem: { selected: number }) => {
     setQuery(`page=${selectedItem.selected + 1}&limit=${rowsPerPage}`);
   };
@@ -333,7 +333,7 @@ const ClinicianTable: React.FC<TherapistsDataProps> = ({
           </tbody>
         </table>
       </div>
-      <div className="text-right">
+      {Math.ceil(total / rowsPerPage) > 0 &&  <div className="text-right">
         <ReactPaginate
           previousLabel={"<"}
           nextLabel={">"}
@@ -353,7 +353,7 @@ const ClinicianTable: React.FC<TherapistsDataProps> = ({
           nextLinkClassName={"py-2 px-4 inline-block"}
           disabledClassName={"opacity-50 cursor-not-allowed"}
         />
-      </div>
+      </div>}
       <Modal
         isOpen={isDeleteModalOpen}
         onRequestClose={handleModalClose}
