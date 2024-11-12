@@ -14,11 +14,10 @@ import { loginAction } from "@/actions";
 
 const Page: React.FC = () => {
   const { data: session } = useSession();
-  console.log('session: ', session);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
-
+  const [isPending, startTransition] = React.useTransition();
   useEffect(() => {
     if (session) {
       if ((session as any)?.user?.role === 'therapist') {
@@ -39,24 +38,26 @@ const Page: React.FC = () => {
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault();
     if (!email || !password) return toast.error('All fields are required')
-    const resss = await loginAction({ email, password })
-    if (resss?.success) {
-      toast.success('Logged in successfully')
-      if (resss?.data?.role === 'client') {
-        window.location.href = '/customer/dashboard'
+    startTransition(async() => {
+      const resss = await loginAction({ email, password })
+      if (resss?.success) {
+        toast.success('Logged in successfully')
+        if (resss?.data?.role === 'client') {
+          window.location.href = '/customer/dashboard'
+        }
+        else if (resss?.data?.role === 'therapist') {
+          const isOnboarded = resss?.data?.onboardingCompleted
+          const verified = resss?.data?.onboardingApplication?.status
+          if (isOnboarded && verified === 'Active') router.push('/therapist/dashboard')
+          else router.push('/onboarding')
+        }
+        else {
+          window.location.href = '/admin/dashboard'
+        }
+      } else {
+        toast.error(Array.isArray(resss?.message) ? resss?.message[0].message : resss?.message);
       }
-      else if (resss?.data?.role === 'therapist') {
-        const isOnboarded = resss?.data?.onboardingCompleted
-        const verified = resss?.data?.onboardingApplication?.status
-        if (isOnboarded && verified === 'Active') window.location.href = '/therapist/dashboard'
-        else window.location.href = '/onboarding'
-      }
-      else {
-        window.location.href = '/admin/dashboard'
-      }
-    } else {
-      toast.error(Array.isArray(resss?.message) ? resss?.message[0].message : resss?.message);
-    }
+    })
   }
 
   return (
@@ -113,7 +114,7 @@ const Page: React.FC = () => {
                   </label>
                 </div> */}
                 <Link href="/forgotpassword" className="text-[#686c78] text-sm text-right inline-block w-full mb-4 md:mb-[30px]">Forgot Password</Link>
-                <button type="submit" className="button w-full">Submit <ButtonSvg /></button>
+                <button type="submit" className="button w-full">{!isPending ? 'Submit' : 'Submitting...'} </button>
               </form>
             </div>
           </div>

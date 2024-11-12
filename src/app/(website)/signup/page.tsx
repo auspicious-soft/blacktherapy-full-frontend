@@ -6,8 +6,12 @@ import { ButtonSvg, LogoIcon } from "@/utils/svgicons";
 import InputField from "@/app/(website)/components/InputField";
 import Image from "next/image";
 import animate from "@/assets/images/loginslide.png"
+import { toast } from "sonner";
+import { signUpTherapistService } from "@/services/therapist/therapist-service.";
+import { useRouter } from "next/navigation";
 
 const Page: React.FC = () => {
+  const router = useRouter();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -16,7 +20,16 @@ const Page: React.FC = () => {
   const [isPending, startTransition] = useTransition()
   const handleSignup = async () => {
     startTransition(async () => {
-
+      try {
+        const response = await signUpTherapistService({ firstName, lastName, phoneNumber, email, password })
+        if(response?.data?.success) {
+          toast.success("Signup Successful")
+          router.push('/accountcreated')
+        }
+      } catch (error: any) {
+        const err = error?.response?.data
+        toast.error(Array.isArray(err?.message) ? err?.message[0].message : err.message)
+      }
     })
   }
   return (
@@ -38,33 +51,38 @@ const Page: React.FC = () => {
                   type="text"
                   value={firstName}
                   placeholder="First Name"
+                  required
                   onChange={(e) => setFirstName(e.target.value)}
                 />
                 <InputField
                   type="text"
                   value={lastName}
                   placeholder="Last Name"
+                  required
                   onChange={(e) => setLastName(e.target.value)}
                 />
                 <InputField
                   type="number"
                   value={phoneNumber}
                   placeholder="Mobile Number"
+                  required
                   onChange={(e) => setPhoneNumber(e.target.value)}
                 />
                 <InputField
                   type="email"
                   value={email}
                   placeholder="Email Address"
+                  required
                   onChange={(e) => setEmail(e.target.value)}
                 />
                 <InputField
                   type="password"
                   value={password}
                   placeholder="Password"
+                  required
                   onChange={(e) => setPassword(e.target.value)}
                 />
-                <Link href="/accountcreated" className="button w-full">Submit <ButtonSvg /></Link>
+                <p className="button w-full cursor-pointer" onClick={handleSignup}>Submit <ButtonSvg /></p>
               </div>
             </div>
           </div>

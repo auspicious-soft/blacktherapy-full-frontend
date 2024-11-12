@@ -5,6 +5,7 @@ import localFont from "next/font/local";
 import MobileHeader from "@/app/therapist/components/MobileHeader";
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
+import OnboardingForm from "../(website)/components/OnboardingForm";
 // import MobileHeader from "@/components/MobileHeader";
 
 const gothamPro = localFont({
@@ -40,11 +41,7 @@ export const metadata: Metadata = {
   description: "",
 };
 
-export default async function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const session = await auth()
   if (!session) {
     redirect('/login')
