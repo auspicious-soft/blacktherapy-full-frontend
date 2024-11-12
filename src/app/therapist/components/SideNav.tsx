@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { usePathname } from 'next/navigation';
-import { DashboardIcon, Humbruger, Logo, LogOut, BillingIcon, PasswordIcon, PaymentHistoryIcon, PayRequestIcon, AssignIcon, OverviewIcon5, OverviewIcon9 } from "@/utils/svgicons";
+import { DashboardIcon, Humbruger, Logo, LogOut, BillingIcon, PasswordIcon, PaymentHistoryIcon, PayRequestIcon, AssignIcon, OverviewIcon5, OverviewIcon9, TrainingIcon } from "@/utils/svgicons";
 
 import Link from "next/link";
 import './SideNav.css';
@@ -49,7 +49,7 @@ const SideNav = () => {
           </li>
           <li className={isActive('/therapist/training')}>
             <Link href="/therapist/training">
-              <DashboardIcon />
+              <TrainingIcon/>
               {!isCollapsed && <span>Training</span>}
             </Link>
           </li>

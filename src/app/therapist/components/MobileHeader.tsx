@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { usePathname } from 'next/navigation'; 
-import { DashboardIcon, Humbruger, Logo, LogOut, BillingIcon, PasswordIcon, PaymentHistoryIcon, PayRequestIcon, AssignIcon } from "@/utils/svgicons";
+import { DashboardIcon, Humbruger, Logo, LogOut, BillingIcon, PasswordIcon, PaymentHistoryIcon, PayRequestIcon, AssignIcon, TrainingIcon } from "@/utils/svgicons";
 
 import Link from "next/link";
 import './SideNav.css'; 
@@ -56,7 +56,7 @@ const MobileHeader = () => {
           </li>
           <li className={isActive('/therapist/training')}>
             <Link href="/therapist/training">
-              <DashboardIcon />
+              <TrainingIcon/>
               <span>Training</span>
             </Link>
           </li>

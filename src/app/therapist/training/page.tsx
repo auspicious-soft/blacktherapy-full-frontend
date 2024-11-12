@@ -6,9 +6,10 @@ import { getTherapistWellness } from "@/services/therapist/therapist-service.";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 import useSWR from "swr";
+import SearchBar from '@/app/admin/components/SearchBar';
 
 export default function Home() {
-    const [query, setQuery] = useState("")
+    const [query, setQuery] = useState('')
     const [activeTab, setActiveTab] = useState('Videos')
     const session = useSession()
 
@@ -36,8 +37,9 @@ export default function Home() {
             <h1 className="font-antic text-[#283C63] text-[30px] leading-[1.2em] mb-[25px] lg:text-[40px] lg:mb-[50px]">
                 Wellness Portal
             </h1>
-            <div>
-                <div className='flex items-center justify-between mb-5 '>
+            <div className="">
+            <div className="mb-5 flex items-center justify-between">
+                <div className='flex items-center justify-between  '>
                     <div className="tabs flex flex-wrap gap-[5px] lg:gap-[20px]">
                         {['Videos', 'Attachments'].map((tab) => (
                             <button
@@ -50,6 +52,9 @@ export default function Home() {
                         ))}
                     </div>
                 </div>
+              
+        <SearchBar setQuery={setQuery} />
+      </div>
                 <div className="tab-content">
                     {renderTabContent()}
                 </div>
