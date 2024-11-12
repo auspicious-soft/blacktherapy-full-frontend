@@ -7,7 +7,7 @@ import Therapist1 from "@/assets/images/therapist1.jpg";
 import Therapist2 from "@/assets/images/therapist2.jpg";
 import React, { useState, ReactNode } from "react";
 import { YoutubeIcon } from "@/utils/svgicons";
-
+import ReactLoading from "react-loading";
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -33,47 +33,67 @@ const Modal = ({ isOpen, onClose, children }: ModalProps) => {
 };
 
 const VideosWellness = (props: any) => {
-  const { handlePageClick, data: wholeData, total, rowsPerPage } = props;
+  const { handlePageClick, data: wholeData, total, rowsPerPage, isLoading } = props;
   const data = wholeData?.data
   const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
 
-
   const openVideoModal = (video: string) => {
-    const autoplayVideoUrl = `${video}?autoplay=1`;
-    setSelectedVideo(autoplayVideoUrl);
+    const videoId = video.split('v=')[1]
+    const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`
+    setSelectedVideo(embedUrl);
   };
 
   const closeVideoModal = () => {
     setSelectedVideo(null);
   };
-
+  const getYouTubeVideoId = (url: string) => {
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/
+    const match = url.match(regExp)
+    return match && match[2].length === 11 ? match[2] : null
+  }
   return (
     <>
       <div className="grid md:grid-cols-3 gap-[15px] lg:gap-[24px]">
-        {data?.map((image:any, index:any) => (
-          <div key={index}>
-            <div
-              className="cursor-pointer relative"
-              onClick={() => openVideoModal(image.video)}
-            >
-              <Image
-                src={image.src}
-                alt=""
-                className="w-full rounded-[20px] aspect-[1/0.8] object-cover"
-              />
-              <div className="absolute inset-0 flex items-center justify-center">
-                <YoutubeIcon />
+        {isLoading ? (
+          <ReactLoading type={'spin'} color={'#26395e'} height={'20px'} width={'20px'} />
+        ) :
+          data?.length > 0 ?
+            data?.map((image: any, index: any) => {
+              const videoId = getYouTubeVideoId(image.link)
+              const thumbnailUrl = videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : image.link
+              return (
+                <div key={index}>
+                  <div
+                    className="cursor-pointer relative"
+                    onClick={() => openVideoModal(image.link)}
+                  >
+                    <Image
+                      src={thumbnailUrl}
+                      alt=""
+                      width={500}
+                      height={400}
+                      className="w-full rounded-[20px] aspect-[1/0.8] object-cover"
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <YoutubeIcon />
+                    </div>
+                  </div>
+                  <div>
+                    <h5 className="mt-[14px] mb-[5px]">{image.title}</h5>
+                    <p>{image.description}</p>
+                  </div>
+                </div>
+              )
+            })
+            : (
+              <div className="text-center">
+                <p>No videos available</p>
               </div>
-            </div>
-            <div>
-              <h5 className="mt-[14px] mb-[5px]">{image.Title}</h5>
-              <p>{image.description}</p>
-            </div>
-          </div>
-        ))}
+            )
+        }
       </div>
 
-      <div className="text-right reactpaginate">
+    { data?.length > 0 &&  <div className="text-right reactpaginate">
         <ReactPaginate
           previousLabel={<Image src={PervIcon} alt="PervIcon" />}
           nextLabel={<Image src={NextIcon} alt="NextIcon" />}
@@ -93,7 +113,7 @@ const VideosWellness = (props: any) => {
           nextLinkClassName={"py-2 px-4 inline-block"}
           disabledClassName={"opacity-50 cursor-not-allowed"}
         />
-      </div>
+      </div>}
 
       <Modal isOpen={selectedVideo !== null} onClose={closeVideoModal}>
         {selectedVideo && (
@@ -103,7 +123,6 @@ const VideosWellness = (props: any) => {
               height="500px"
               src={selectedVideo}
               title="YouTube video player"
-              frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
             ></iframe>
@@ -111,7 +130,7 @@ const VideosWellness = (props: any) => {
         )}
       </Modal>
     </>
-  );
+  )
 };
 
 export default VideosWellness;

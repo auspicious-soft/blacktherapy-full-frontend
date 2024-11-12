@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useRef } from "react";
 import QuestionComponent from "@/app/(website)/components/QuestionComponent";
 import { ButtonSvg } from "@/utils/svgicons";
 import SignatureCanvas from "react-signature-canvas";
+import { submitForm } from "@/utils/onboarding-submit";
 
 const DeclarationQuestions = [
   {
@@ -54,10 +55,13 @@ const DeclarationStep: React.FC<BackgroundProps> = ({
   }, [validateStep]);
 
   
-  const handleContinue = () => {
-    if (DeclarationQuestions.every(q => formData[q.key])) {
-      nextStep();
-    }
+  // const handleContinue = () => {
+  //   if (DeclarationQuestions.every(q => formData[q.key])) {
+  //     nextStep();
+  //   }
+  // };
+  const handleSubmit = async () => {
+    await submitForm(formData, setFormData);
   };
 
   const clearSignature = () => {
@@ -75,7 +79,7 @@ const DeclarationStep: React.FC<BackgroundProps> = ({
       const signatureData = sigCanvasRef.current.getTrimmedCanvas().toDataURL("image/png");
       setFormData((prev) => ({
         ...prev,
-        signature: signatureData,
+        againConsentSignature: signatureData,
       }));
     }
   };
@@ -143,7 +147,7 @@ I also understand that all offers of employment are conditioned on receipt of sa
         </div>
 
         <div className="flex justify-end mt-[50px]">
-          <button onClick={handleContinue} className="button">Continue <ButtonSvg /></button>
+          <button onClick={handleSubmit} className="button">Submit <ButtonSvg /></button>
         </div>
       </div>
     </div>

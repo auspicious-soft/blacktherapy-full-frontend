@@ -13,6 +13,7 @@ import QualifiedStep from "@/app/(website)/components/(therapist-onboarding)/Qua
 import BackgroundChecks from "@/app/(website)/components/(therapist-onboarding)/BackgroundChecks";
 import UploadDocuments from "@/app/(website)/components/(therapist-onboarding)/UploadDocuments";
 import DeclarationStep from "@/app/(website)/components/(therapist-onboarding)/DeclarationStep";
+import { submitForm } from "@/utils/onboarding-submit";
 
 const steps = [
   { component: WelcomeProcess, requiresValidation: false },
@@ -32,9 +33,11 @@ const steps = [
 const OnboardingForm = (props: any) => {
   const { session } = props
   const currentStepDefault = session?.user?.onboardingCompleted === 'true' ? 13 : 1
+  const userEmail= session?.user?.email;
   const [currentStep, setCurrentStep] = useState(currentStepDefault)
   const [formData, setFormData] = useState<any>({
     licenceType: "",
+    email: userEmail,
     firstName: "",
     lastName: "",
     phoneNumber: "",
@@ -50,7 +53,7 @@ const OnboardingForm = (props: any) => {
     salaryDesired: "",
     currentEmploymentStatus: "",
     currentOrPreviousEmployerName: "",
-    employementCityState: "",
+    employmentCityState: "",
     rolePosition: "",
     rateOfPay: "",
     startDate: "",
@@ -67,6 +70,8 @@ const OnboardingForm = (props: any) => {
     skills: "",
     weeklyHours: "",
     employmentDesired: "",
+    startTime: "",
+    endTime: "",
     currentAvailability: [],
     felonyOrMisdemeanor: "",
     ifFelonyOrMisdemeanor: "",
@@ -100,14 +105,9 @@ const OnboardingForm = (props: any) => {
     againConsentLastName: "",
     againConsentDate: "",
     againConsentSignature: "",
-    backgroundCheckCompleted: false,
   });
 
-  const [referenceFormData, setReferenceFormData] = useState<{ [key: string]: string }[]>([
-    { name: "", phone: "", email: "", company: "" },
-  ]);
-
-  const [isValid, setIsValid] = useState(false);
+   const [isValid, setIsValid] = useState(false);
 
   const nextStep = () => {
     const step = steps[currentStep - 1];
@@ -118,7 +118,7 @@ const OnboardingForm = (props: any) => {
     } else {
       alert("Please fill the required fields");
     }
-    console.log(formData, "form submitted!");
+    //console.log(formData, "form submitted!");
   };
 
   const prevStep = () => {
@@ -127,17 +127,10 @@ const OnboardingForm = (props: any) => {
       setCurrentStep((prevStep) => prevStep - 1);
     }
   };
-const submitForm =() => {
-  // const step = steps[currentStep - 1];
-  // const requiresValidation = step.requiresValidation && !isValid;
+  const handleSubmit = async () => {
+    await submitForm(formData, setFormData);
+  };
 
-  // if (!requiresValidation || isValid) {
-  //   setCurrentStep((prevStep) => prevStep + 1);
-  // } else {
-  //   alert("Please fill the required fields");
-  // }
- console.log(formData, "form submitted!");
-};
   const renderStep = () => {
     switch (currentStep) {
       case 1:
@@ -196,7 +189,7 @@ const submitForm =() => {
             Next &gt;&gt;
           </button>
         )}
-        {currentStep === 12 && (<button className="button" onClick={submitForm} style={buttonStyle}>Submit </button>)}
+        {currentStep === 12 && (<button className="button" onClick={handleSubmit} style={buttonStyle}>Submit </button>)}
       </div>
       {renderStep()}
     </div>

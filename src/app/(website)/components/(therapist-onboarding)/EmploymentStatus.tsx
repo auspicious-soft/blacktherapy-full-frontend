@@ -18,7 +18,7 @@ const EmploymentStatusQuestions = [
   },
   {
     question: "City, State",
-    key: "employementCityState",
+    key: "employmentCityState",
     type: "text",
   },
   {
@@ -64,8 +64,8 @@ const EmploymentStatusQuestions = [
 ];  
 
 interface EmploymentStatusProps {
-  formData: { [key: string]: any }; // Adjusted to support different types
-  setFormData: React.Dispatch<React.SetStateAction<{ [key: string]: any }>>;
+  formData: any; // Adjusted to support different types
+  setFormData: React.Dispatch<React.SetStateAction<any>>;
   setIsValid: (isValid: boolean) => void;
   nextStep: () => void;
 }
@@ -78,9 +78,21 @@ const EmploymentStatus: React.FC<EmploymentStatusProps> = ({
 }) => {
   
   const validateStep = useCallback(() => {
-    const isValid = EmploymentStatusQuestions.every(q => formData[q.key] && formData[q.key].trim() !== "");
+    const isValid = EmploymentStatusQuestions.every(q => {
+      const value = formData[q.key];
+      
+      // Check if value is a string and if it's not empty after trimming
+      if (typeof value === 'string') {
+        return value.trim() !== "";
+      }
+  
+      // For other types (like number, boolean), just check if they're not falsy
+      return value !== undefined && value !== null && value !== "";
+    });
+  
     setIsValid(isValid);
   }, [formData, setIsValid]);
+  
 
   useEffect(() => {
     validateStep();

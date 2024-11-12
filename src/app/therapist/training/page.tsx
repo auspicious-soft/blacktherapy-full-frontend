@@ -12,20 +12,21 @@ export default function Home() {
     const [activeTab, setActiveTab] = useState('Videos')
     const session = useSession()
 
-    const { data, isLoading } = useSWR(`/therapist/${session?.data?.user?.id}/videos`, getTherapistWellness)
+    const { data, isLoading } = useSWR(`/therapist/${session?.data?.user?.id}/videos?${query}`, getTherapistWellness)
     const wellnessData = data?.data
 
     const total = data?.data?.total
     const rowsPerPage = data?.data?.limit
     const handlePageClick = (selectedItem: { selected: number }) => {
+        console.log('selectedItem: ', selectedItem);
         setQuery(`page=${selectedItem.selected + 1}&limit=${rowsPerPage}`)
     }
     const renderTabContent = () => {
         switch (activeTab) {
             case 'Videos':
-                return <div><VideosWellness handlePageClick = {handlePageClick} data={wellnessData} total={total} rowsPerPage={rowsPerPage} /></div>;
+                return <VideosWellness isLoading={isLoading} handlePageClick={handlePageClick} data={wellnessData} total={total} rowsPerPage={rowsPerPage} />
             case 'Attachments':
-                return <div><AttachmentsWellness /></div>;
+                return <AttachmentsWellness isLoading={isLoading} handlePageClick={handlePageClick} data={wellnessData} total={total} rowsPerPage={rowsPerPage}/>
             default:
                 return null;
         }
@@ -47,9 +48,6 @@ export default function Home() {
                                 {tab}
                             </button>
                         ))}
-                    </div>
-                    <div>
-                        <button className='button !mt-0'>Request Appointment</button>
                     </div>
                 </div>
                 <div className="tab-content">

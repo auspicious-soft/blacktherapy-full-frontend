@@ -40,7 +40,7 @@ const ApplicationCompleted = () => {
                     <li>Login to EHR System (Used to manage and see clients).</li>
                 </ol>
                 <p className='text-center text-[#686C78] text-base my-8' >If you have any questions email the Support Team at <a href="admin@tsgcs.org" className='text-[#283C63] font-bold'>admin@tsgcs.org</a> or call the office and press extension 800 for the Employee Support Line. The support team is available from 10:30 AM to 5:00 PM, Eastern Time.</p>
-                <p onClick={handleLogout} className='cursor-pointer button mx-auto'>Go To Login <ButtonSvg /></p>
+                {/* <p onClick={handleLogout} className='cursor-pointer button mx-auto'>Go To Login <ButtonSvg /></p> */}
             </div>
         </div>
     );

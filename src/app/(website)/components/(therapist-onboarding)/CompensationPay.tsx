@@ -6,8 +6,8 @@ import form2 from "@/assets/images/formimg2.png";
 interface CompensationPayProps {
     nextStep: () => void;
     //equiresValidation: boolean;
-    formData: { [key: string]: string };
-    setFormData: React.Dispatch<React.SetStateAction<{ [key: string]: string }>>;
+    formData: any;
+    setFormData: React.Dispatch<React.SetStateAction<any>>;
     setIsValid: (isValid: boolean) => void;
   }
 const options = [
@@ -185,17 +185,16 @@ const CompensationDetails: React.FC<{ selectedOption: string }> = ({
 };
 
 const CompensationPay: React.FC<CompensationPayProps> = ({ formData, setFormData, setIsValid, nextStep }) => {
-  const [selectedOption, setSelectedOption] = useState<string>("");
-
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value;
-    setSelectedOption(value);
-    setFormData((prevData) => ({
+
+    // Update formData directly with licenceType
+    setFormData((prevData: any) => ({
       ...prevData,
-      providerType: value, 
+      licenceType: value,
     }));
 
-    setIsValid(true);
+    setIsValid(value !== ""); // Optionally mark as valid if an option is selected
   };
 
   return (
@@ -277,7 +276,7 @@ const CompensationPay: React.FC<CompensationPayProps> = ({ formData, setFormData
         </label>
         <select
           id="licensure-type"
-          value={selectedOption}
+          value={formData.licenceType || ""}
           onChange={handleSelectChange}
           className="bg-transparent text-[#686C78] w-full px-[18px] h-[45px] py-2 border border-[#dbe0eb] rounded-[20px]  "
         >
@@ -289,13 +288,8 @@ const CompensationPay: React.FC<CompensationPayProps> = ({ formData, setFormData
         </select>
       </div>
 
-      <CompensationDetails selectedOption={selectedOption} />
-      {/* {(selectedOption === "LPC" || selectedOption === "LCSW") && (
-        <div>
-          <Image src={form1} width={100} height={100} alt="Image 1" />
-          <Image src={form1} width={100} height={100} alt="Image 2" />
-        </div>
-      )} */}
+      <CompensationDetails selectedOption={formData.licenceType}  />
+      
     </div>
   );
 };

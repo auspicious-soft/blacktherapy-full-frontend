@@ -7,6 +7,8 @@ import Therapist1 from "@/assets/images/therapist1.jpg";
 import Therapist2 from "@/assets/images/therapist2.jpg";
 import React, { useState, ReactNode } from "react";
 import { YoutubeIcon } from "@/utils/svgicons";
+import ReactLoading from "react-loading";
+import Link from "next/link";
 
 interface ModalProps {
   isOpen: boolean;
@@ -32,115 +34,56 @@ const Modal = ({ isOpen, onClose, children }: ModalProps) => {
   );
 };
 
-const AttachmentsWellness = () => {
-  const [selectedVideo, setSelectedVideo] = useState<typeof Therapist1 | null>(null);
-  const [currentPage, setCurrentPage] = useState(0);
+const AttachmentsWellness = (props: any) => {
+  const { handlePageClick, data: wholeData, total, rowsPerPage, isLoading } = props;
+  const data = wholeData?.data
+  const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
 
-  const images = [
-    {
-      id: 1,
-      src: Therapist1,
-      Title: "Name of the video here",
-      dis: "Enhance your well-being with expert-led videos on yoga, meditation.",
-    },
-    {
-      id: 2,
-      src: Therapist2,
-      Title: "Name of the video here",
-      dis: "Enhance your well-being with expert-led videos on yoga, meditation.",
-    },
-    {
-      id: 3,
-      src: Therapist1,
-      Title: "Name of the video here",
-      dis: "Enhance your well-being with expert-led videos on yoga, meditation.",
-    },
-    {
-      id: 4,
-      src: Therapist2,
-      Title: "Name of the video here",
-      dis: "Enhance your well-being with expert-led videos on yoga, meditation.",
-    },
-    {
-      id: 5,
-      src: Therapist1,
-      Title: "Name of the video here",
-      dis: "Enhance your well-being with expert-led videos on yoga, meditation.",
-    },
-    {
-      id: 6,
-      src: Therapist2,
-      Title: "Name of the video here",
-      dis: "Enhance your well-being with expert-led videos on yoga, meditation.",
-    },
-    {
-      id: 7,
-      src: Therapist1,
-      Title: "Name of the video here",
-      dis: "Enhance your well-being with expert-led videos on yoga, meditation.",
-    },
-    {
-      id: 8,
-      src: Therapist2,
-      Title: "Name of the video here",
-      dis: "Enhance your well-being with expert-led videos on yoga, meditation.",
-    },
-    {
-      id: 9,
-      src: Therapist1,
-      Title: "Name of the video here",
-      dis: "Enhance your well-being with expert-led videos on yoga, meditation.",
-    },
-  ];
 
-  const openVideoModal = (image: typeof Therapist1) => {
-    setSelectedVideo(image);
+  const openVideoModal = (video: string) => {
+    const videoId = video.split('v=')[1]
+    const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`
+    setSelectedVideo(embedUrl);
   };
 
   const closeVideoModal = () => {
     setSelectedVideo(null);
   };
 
-  // ReactPaginate
-  const rowsPerPage = 6;
-  const indexOfLastRow = (currentPage + 1) * rowsPerPage;
-  const indexOfFirstRow = indexOfLastRow - rowsPerPage;
-  const currentRows = images.slice(indexOfFirstRow, indexOfLastRow);
-
-  const handlePageClick = (selectedItem: { selected: number }) => {
-    setCurrentPage(selectedItem.selected);
-  };
-
   return (
     <>
       <div className="grid md:grid-cols-3 gap-[15px] lg:gap-[24px]">
-        {currentRows.map((image, index) => (
-          <div key={index}>
-            <div
-              className="cursor-pointer relative"
-              onClick={() => openVideoModal(image.src)}
-            >
-              <Image
-                src={image.src}
-                alt={image.Title}
-                className="w-full rounded-[20px] aspect-[1/0.8] object-cover"
-              />
-            </div>
-            <div> 
-              <h5 className="mt-[14px] mb-[5px]">{image.Title}</h5>
-              <p>{image.dis}</p>
-            </div>
-          </div>
-        ))}
+        {isLoading ? (
+          <ReactLoading type={'spin'} color={'#26395e'} height={'20px'} width={'20px'} />
+        )
+          :
+          data?.map((obj: any, index: any) => {
+            console.log('image: ', obj);
+            return (
+              <div key={index}>
+                <div
+                  className="cursor-pointer relative"
+                  onClick={() => openVideoModal(obj.src)}
+                >
+                 <Link href={obj.attachment} className="text-black">Open Attachement</Link>
+                </div>
+                <div>
+                  <h5 className="mt-[14px] mb-[5px]">{obj.title}</h5>
+                  <p>{obj.description}</p>
+                </div>
+              </div>
+            )
+          }
+          )}
       </div>
 
-      <div className="text-right reactpaginate">
+      {data?.length > 0 && <div className="text-right reactpaginate">
         <ReactPaginate
           previousLabel={<Image src={PervIcon} alt="PervIcon" />}
           nextLabel={<Image src={NextIcon} alt="NextIcon" />}
           breakLabel={"..."}
           breakClassName={"break-me"}
-          pageCount={Math.ceil(images.length / rowsPerPage)}
+          pageCount={Math.ceil(total / rowsPerPage)}
           marginPagesDisplayed={2}
           pageRangeDisplayed={5}
           onPageChange={handlePageClick}
@@ -154,7 +97,7 @@ const AttachmentsWellness = () => {
           nextLinkClassName={"py-2 px-4 inline-block"}
           disabledClassName={"opacity-50 cursor-not-allowed"}
         />
-      </div>
+      </div>}
 
       <Modal isOpen={selectedVideo !== null} onClose={closeVideoModal}>
         {selectedVideo && (
