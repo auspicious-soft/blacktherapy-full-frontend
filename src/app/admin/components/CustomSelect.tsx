@@ -108,7 +108,7 @@ const CustomSelect: React.FC<CustomSelectProps<OptionType>> = ({
   return (
     <div className="state-select">
       <label htmlFor={name} className="block mb-2">
-        {name}*
+        {name}
       </label>
       <Select
         id={name}

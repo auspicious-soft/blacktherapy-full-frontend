@@ -42,7 +42,7 @@ const AttachmentsWellness = (props: any) => {
     const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
     setSelectedVideo(embedUrl);
   };
-
+ 
   const closeVideoModal = () => {
     setSelectedVideo(null);
   };
@@ -68,7 +68,7 @@ const AttachmentsWellness = (props: any) => {
           onClick={() => openVideoModal(obj.attachment)}
         >
           <Image
-            src={obj.thumbnail || "/default-video-thumbnail.png"} // Provide a default thumbnail if none is available
+            src={obj.thumbnail || "/default-video-thumbnail.png"} 
             alt="Video Thumbnail"
             width={300}
             height={200}

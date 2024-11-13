@@ -26,22 +26,28 @@ export const getPaymentsData = async (route: string) => {
     const axiosInstance = await getAxiosInstance()
     return axiosInstance.get(route)
 }
-export const addPaymentsData = async (route:string, payload: any) =>{
-    const axiosInstance = await getAxiosInstance()
-    return axiosInstance.post(route, payload)
-}
-
 export const getAllTasksData = async (route: string) => {
     const axiosInstance = await getAxiosInstance()
     return axiosInstance.get(route)
 }
-
 export const getAllClientsInTherapistPanel = async (route: string) => {
     const axiosInstance = await getAxiosInstance()
     return axiosInstance.get(route)
 }
-
 export const addOnboardingFormData = async (route: string, payload: any) => {
     const axiosInstance = await getAxiosInstance()
     return axiosInstance.post(route, payload)
 }
+export const updateTherapistsTask = async (route: string, payload: any) => {
+    const axiosInstance = await getAxiosInstance()
+    return axiosInstance.patch(route, payload)
+}
+export const getTherapistsProfileData = async (route: string) => {
+    const axiosInstance = await getAxiosInstance()
+    return axiosInstance.get(route)
+}
+export const updateTherapistsProfile = async (route: string, payload: any) => {
+    const axiosInstance = await getAxiosInstance()
+    return axiosInstance.put(route, payload)
+}
+

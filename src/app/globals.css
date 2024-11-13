@@ -299,6 +299,9 @@ button:disabled {
 .left-icons p {
   color: #fff;
 }
+.profile-state label {
+  margin: 0;
+}
 @media (min-width: 768px) {
   .card-wrapper:hover .text-button {
     bottom: 19px;

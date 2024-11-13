@@ -89,5 +89,7 @@
     width: 300px;
     padding: 20px 20px 20px 20px;
     left: 0;
-  }
+    overflow-y: scroll;
+    height: calc(100% - 66px);
+}
   }

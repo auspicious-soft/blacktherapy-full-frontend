@@ -6,8 +6,14 @@ import useSWR from 'swr';
 import { useSession } from 'next-auth/react';
 import { getPaymentsData } from '@/services/therapist/therapist-service.';
 import ReactLoading from 'react-loading';
+import Modal from "react-modal";
+import { CloseIcon } from '@/utils/svgicons';
+
  
 const Page = () => {
+  const [showModal, setShowModal] = useState(false);
+  const [selectedProgressNotes, setSelectedProgressNotes] = useState<string | null>(null);
+
   const session = useSession()
   const [query, setQuery] = useState('')
   const { data, error, isLoading, mutate } = useSWR(`/therapist/payment-requests/${session?.data?.user?.id}?${query}`, getPaymentsData);
@@ -16,12 +22,17 @@ const Page = () => {
   const page = data?.data?.page
   const total = data?.data?.total
   const rowsPerPage = data?.data?.limit
-
+ 
 
   const handlePageClick = (selectedItem: { selected: number }) => {
     setQuery(`page=${selectedItem.selected + 1}&limit=${rowsPerPage}`);
   }
   
+  const openModal = (progressNotes: string) => {
+    setSelectedProgressNotes(progressNotes);
+    setShowModal(true);
+  };
+
   return (
     <div>
       <h1 className=' mb-[20px] md:mb-[50px]'>Payment History</h1>
@@ -60,14 +71,15 @@ const Page = () => {
                 <td>{item?.requestType}</td>
                 <td>{item?.servicesProvided}</td>
                 <td>{item?.clientId?.firstName} {item?.clientId?.lastName}</td>  
-                {/* .toLocaleDateString('en-US') */}
-                <td>{item?.serviceDate} {item?.serviceTime} </td>
-                <td>{item?.progressNotes}</td>
+                {/* .toLocaleDateString('en-US')  {item?.progressNotes}*/}
+                <td>{new Date(item?.serviceDate).toLocaleDateString('en-US')} {item?.serviceTime} </td>
+                <td> <p className='cursor-pointer font-gothamMedium text-center rounded-xl text-[10px] py-[4px] text-[#fff] bg-[#26395E]' onClick={()=>openModal(item?.progressNotes)}>View</p></td>
                 <td>{item?.rejectedNote ? (item.detailsAboutPayment ? item.detailsAboutPayment : item.rejectedNote) : "No Note"}</td>
 
-                <td>{item?.serviceDate}</td>
+                <td>{new Date(item?.serviceDate).toLocaleDateString('en-US')}</td>
+
                 <td>
-                <p className='font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px]  text-[#42A803] bg-[#CBFFB2]'>{item?.status}</p> 
+                <p className='capitalize  font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px]  text-[#42A803] bg-[#CBFFB2]'>{item?.status}</p> 
               </td>
               </tr>
             ))
@@ -99,6 +111,26 @@ const Page = () => {
         disabledClassName={'opacity-50 cursor-not-allowed'}
       />
       </div>
+
+      <Modal
+        isOpen={showModal}
+        onRequestClose={() => setShowModal(false)}
+        contentLabel="Notes "
+        className=" w-[90%] max-w-[500px] max-h-[90vh]  overflow-auto overflo-custom   "
+        overlayClassName="w-full h-full fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center"
+      >
+
+          <div className='flex items-center justify-between rounded-t-[20px] p-5  bg-[#283C63]  '>
+          <h2 className="text-xl text-white font- ">Progress Notes</h2>
+          <button onClick={() => setShowModal(false)} className="">
+           <CloseIcon/>
+          </button>
+          </div>
+          <div className='bg-white p-5 rounded-b-[20px] '>
+          <p>{selectedProgressNotes || "No notes available"}</p>
+          
+        </div>
+       </Modal>
     </div>
   );
 };
