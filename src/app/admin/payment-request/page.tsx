@@ -133,7 +133,6 @@ const Page: React.FC = () => {
     };
     try {
       const response = await UpdatePaymentRequest(`/admin/payment-requests/${id}`, rejectNoteData);
-      console.log('response:', response);
   
       if (response?.status === 200) {
         toast.success("Payment data updated successfully");

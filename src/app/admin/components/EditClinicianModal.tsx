@@ -172,7 +172,6 @@ const EditClinicianModal: React.FC<EditModalProps> = ({ row, isOpen, onRequestCl
       }));
     } else if (type === "date") {
       const formattedDate = new Date(value).toISOString().split('T')[0];
-      console.log('formattedDate:', formattedDate);
       setFormData((prev: FormData) => ({
         ...prev,
         [name]: formattedDate,
@@ -202,7 +201,6 @@ const EditClinicianModal: React.FC<EditModalProps> = ({ row, isOpen, onRequestCl
   const handleFormSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    console.log('formData:', formData);
     startTransition(async () => {
       try {
         const { ...updatedFormData } = {
@@ -211,9 +209,7 @@ const EditClinicianModal: React.FC<EditModalProps> = ({ row, isOpen, onRequestCl
           licenseOrCertificationFile: "http://example.com/attachments/static-license-file.pdf",
         };
 
-        console.log('updatedFormData:', updatedFormData);
         const response = await UpdateTherapistData(`/admin/therapists/${row?._id}`, updatedFormData);
-        console.log('response:', response);
 
         if (response?.status === 200) {
           toast.success("Therapist data updated successfully");

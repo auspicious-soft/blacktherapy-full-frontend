@@ -71,10 +71,8 @@ const ClinicianAttachments: React.FC<ClinicianAttachmentsProps> = ({ rowId }) =>
       attachments: formData.viewAttachments.map((attachment) => attachment.name), 
       assignedBy: userRole, 
     };
-    console.log('attachments:', attachmentData);
     try {
       const response = await addClinicianAttachments(`/admin/therapists/attachments/${rowId}`, attachmentData);
-      console.log('response:', response);
   
       if (response.status === 201) {
         toast.success("Attachment added successfully");

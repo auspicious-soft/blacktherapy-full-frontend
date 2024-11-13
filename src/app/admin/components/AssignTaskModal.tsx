@@ -61,7 +61,6 @@ const AssignTaskModal: React.FC<AssignTaskModalProps> = ({ isOpen, onRequestClos
           attachment: "http://example.com/attachments/static-task-file.pdf",
         };
         const response = await AssignTaskToTherapist(`/admin/therapists/tasks/${row?._id}`, taskPayload);
-        console.log('response:', response);
         if (response?.status === 201) {
           toast.success("Task assigned successfully");
           onRequestClose();  

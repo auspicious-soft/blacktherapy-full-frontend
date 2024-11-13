@@ -18,7 +18,6 @@ const Page = () => {
   const [query, setQuery] = useState('')
   const { data, error, isLoading, mutate } = useSWR(`/therapist/payment-requests/${session?.data?.user?.id}?${query}`, getPaymentsData);
   const paymentsData: any = data?.data?.data
-  console.log('paymentsData:', paymentsData);
   const page = data?.data?.page
   const total = data?.data?.total
   const rowsPerPage = data?.data?.limit

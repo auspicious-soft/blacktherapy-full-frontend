@@ -15,7 +15,6 @@ const Page: React.FC = () => {
     const userRole = (session as any)?.user?.role;
  
     useEffect(() => {
-        console.log("User Role:", userRole);
     }, [userRole]);
     
     const handlefilters = (e: React.ChangeEvent<HTMLSelectElement>) => {

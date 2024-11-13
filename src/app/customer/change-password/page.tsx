@@ -31,7 +31,6 @@ const Page: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    //console.log("Form Data Submitted: ", formData);
 
     setNotification("Payment Request Submitted");
     setTimeout(() => {

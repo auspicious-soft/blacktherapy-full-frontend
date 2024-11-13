@@ -29,11 +29,9 @@ const TableComponent: React.FC = () => {
   };
 
     const confirmDeleteEntry = async (id: string) => {
-      console.log('id:', id);
       // const route = `/admin/therapists/tasks/${id}`; 
       try {
         const response = await deleteTaskData(`/admin/therapists/tasks/${id}`); 
-        //console.log('id:', id);
         if (response.status === 200) {
           setIsOpen(false);
           toast.success("User deleted successfully");

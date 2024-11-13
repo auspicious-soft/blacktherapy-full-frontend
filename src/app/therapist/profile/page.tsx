@@ -70,7 +70,6 @@ const Page = () => {
     startTime: "",
     endTime: "",
   });
-    console.log('formData:', formData);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [notification, setNotification] = useState<string | null>(null);
 
@@ -164,7 +163,6 @@ const Page = () => {
         ...formData,
         dob: formData.dob ? new Date(formData.dob).toISOString() : null
       };
-      console.log("submissionData:", submissionData);
 
       const response = await updateTherapistsProfile(`/therapist/${session?.data?.user?.id}`, submissionData)
       if (response?.status === 200) {

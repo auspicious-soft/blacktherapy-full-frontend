@@ -51,8 +51,6 @@ const BillingInformationTab: React.FC<BillingInformationTabProps> = ({ rowId }) 
     startTransition(async () => {
       try {
         const response = await addClientBilling(`/admin/client-billing/${rowId}`, formData); 
-        console.log('formData:', formData);
-        console.log('response:', response);
         if (response?.status === 201) {
           toast.success("Billing Added Successfully");
           closeModal();

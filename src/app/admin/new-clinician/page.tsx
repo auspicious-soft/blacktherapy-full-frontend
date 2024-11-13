@@ -44,8 +44,6 @@ const Page = () => {
     startTransition(async () => {
       try {
         const response = await AddNewTherapist('/admin/therapists',formData); 
-        console.log('formData:', formData);
-        console.log('response:', response);
         if (response?.status === 201) {
           setNotification("Therapist Added Successfully");
           // toast.success("Wellness entry added successfully");

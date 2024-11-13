@@ -68,7 +68,6 @@ const AttachmentsTabs: React.FC<AttachmentsTabsProps> = ({ rowId, role }) => {
       attachments: formData.viewAttachments.map((attachment) => attachment.name), 
       assignedBy: role, 
     };
-    console.log('attachments:', attachmentData);
     try {
       const response = await addClientAttachments(`/admin/client/attachments/${rowId}`, attachmentData);
   

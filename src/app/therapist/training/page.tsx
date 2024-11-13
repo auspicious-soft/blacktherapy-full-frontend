@@ -19,7 +19,6 @@ export default function Home() {
     const total = data?.data?.total
     const rowsPerPage = data?.data?.limit
     const handlePageClick = (selectedItem: { selected: number }) => {
-        console.log('selectedItem: ', selectedItem);
         setQuery(`page=${selectedItem.selected + 1}&limit=${rowsPerPage}`)
     }
     const renderTabContent = () => {

@@ -25,7 +25,6 @@ export const submitForm = async (
   formData: any,
   setFormData: React.Dispatch<React.SetStateAction<any>>
 ) => {
-  console.log('formData:', formData);
   try {
     // Create a new object for formatted data
     const formattedData = { ...formData };
@@ -43,7 +42,6 @@ export const submitForm = async (
     formattedData.superVisionAgreement = "sample-supervision-agreement.pdf";
     delete formattedData.signature
     const response = await addOnboardingFormData('/therapist/onboarding', formattedData);
-    console.log('response:', response);
 
     if (response?.status === 201) {
       toast.success("Therapist data added successfully");

@@ -28,7 +28,6 @@ const ClinicianNotesTab: React.FC<NotesProps> = ({ rowId }) => {
      startTransition(async () => {
       try {
         const response = await AddEmployeeNotesData(`/admin/thrapists/notes/${rowId}`, { note: newNote });
-        console.log('response:', response);
         if (response?.status === 201) {
           mutate(); 
           toast.success("Note added successfully");

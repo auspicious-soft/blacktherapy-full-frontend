@@ -84,11 +84,9 @@ const UpdateAssignments: React.FC<AssignmentProps> = ({ isOpen, onRequestClose, 
             peerSupportIds: selectedPeers.map((peer: any) => peer.value),
             ...formData
         };
-        console.log('assignData:', assignData);
         startTransition(async () => {
             try {
                 const response = await updateAssignments(`/admin/appointments/${row._id}`, assignData);
-                console.log('response:', response);
 
                 if (response.status === 200 ) { 
                     toast.success("Assignment updated successfully");

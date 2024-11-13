@@ -118,12 +118,10 @@ const OnboardingForm = (props: any) => {
     } else {
       alert("Please fill the required fields");
     }
-    //console.log(formData, "form submitted!");
   };
 
   const prevStep = () => {
     if (currentStep > 1) {
-      console.log("Going back a step");
       setCurrentStep((prevStep) => prevStep - 1);
     }
   };
