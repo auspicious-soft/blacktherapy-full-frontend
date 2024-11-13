@@ -115,7 +115,7 @@ const AssignedClientsTable: React.FC<AssignedClientsTableProps> = ({ appointment
                       'No peer supports assigned'
                     )}
                   </td>
-                  <td>{new Date(row?.createdAt).toLocaleDateString()}</td>
+                  <td>{new Date(row?.createdAt).toLocaleDateString('en-US')}</td>
                   {/* <td className="">{row.assignedDate ? new Date(row.assignedDate).toLocaleDateString() : 'N/A'}</td> Display date */}
                   <td className="">
                     <button

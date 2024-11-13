@@ -67,6 +67,9 @@ const customStyles: StylesConfig<any, true> = {
           : "#283C63"
         : undefined,
     },
+    ":hover": {
+      color: "white",
+    }
   }),
   multiValue: (styles: any) => ({
     ...styles,
@@ -116,6 +119,7 @@ const CustomSelect: React.FC<CustomSelectProps<OptionType>> = ({
         placeholder={placeholder}
         isMulti={isMulti}
         isSearchable={isSearchable}
+        isClearable={true}
         required={required}
       />
     </div>
