@@ -4,6 +4,7 @@ import { ButtonArrow } from "@/utils/svgicons";
 import Image from 'next/image';
 import success from "@/assets/images/succes.png";
 import { addPaymentsData } from "@/services/therapist/therapist-service.";
+import { toast } from "sonner";
 
 const Page = () => {
   const [notification, setNotification] = useState<string | null>(null);
@@ -32,17 +33,19 @@ const Page = () => {
   
       startTransition(async () => {
         try {
-          if (selectedClientOrClinician) (formData as any).assignedToId = selectedClientOrClinician?.value
-          formData.attachment = 'http://example.com/attachments/yoga-session.pdf'
           const response = await addPaymentsData('/therapist/payment-requests', formData);
           if (response?.status === 201) {
             setNotification("Payment Request Submitted");
             setFormData({
-              title: "",
-              assignTo: "",
-              link: "",
-              attachment: "",
-              description: "",
+              requesterName: "",
+              email: "",
+              requestType: "",
+              servicesProvided: "",
+              clientName: "",
+              serviceDate: "",
+              serviceTime: "",
+              duration: "",
+              progressNotes: "",
             });
           } else {
             toast.error("Failed to add wellness entry");
