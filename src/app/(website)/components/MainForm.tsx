@@ -5,8 +5,8 @@ import OutOfPocketForm from "@/app/(website)/components/OutOfPocketForm";
 import EmployerForm from "@/app/(website)/components/EmployerForm";
 
 const MainForm: React.FC = () => {
-  const [formType, setFormType] = useState<string | null>(null);
-
+  const [formType, setFormType] = useState<any>(null);
+ 
   const handleChoice = (choice: string) => {
     setFormType(choice);
   };
