@@ -1,7 +1,7 @@
 "use client"
 import React, { useState } from 'react';
 import ReactPaginate from 'react-paginate';
-import SearchBar from '@/app/therapist/components/SearchBar';
+import SearchBar from '@/app/admin/components/SearchBar';
 import useSWR from 'swr';
 import { useSession } from 'next-auth/react';
 import { getPaymentsData } from '@/services/therapist/therapist-service.';
@@ -26,7 +26,7 @@ const Page = () => {
     <div>
       <h1 className=' mb-[20px] md:mb-[50px]'>Payment History</h1>
       <div className='flex justify-end mb-[30px]'>
-        <SearchBar />
+        <SearchBar setQuery={setQuery}/>
       </div>
       <div className="table-common overflo-custom">
         <table>
