@@ -167,8 +167,6 @@ const Page = () => {
       console.log("submissionData:", submissionData);
 
       const response = await updateTherapistsProfile(`/therapist/${session?.data?.user?.id}`, submissionData)
-      console.log("response:", response);
-
       if (response?.status === 200) {
         toast.success("Profile updated successfully");
         await mutate();
