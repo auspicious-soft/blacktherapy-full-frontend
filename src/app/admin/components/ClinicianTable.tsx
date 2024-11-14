@@ -212,7 +212,7 @@ const ClinicianTable: React.FC<TherapistsDataProps> = ({
                     </p>
                   </td>
 
-                  <td className="relative"
+                  <td onClick={() => openClinicianPopup(row)} className="hover:underline hover:font-bold relative"
                     data-tip
                     title={(tooltipContent && tooltipContent as string) ?? ''}
                     data-for={`tooltip-${row?._id}`}
@@ -225,7 +225,7 @@ const ClinicianTable: React.FC<TherapistsDataProps> = ({
                       setTooltipContent(null)
                     }}
                   >
-                    <p onClick={() => openClinicianPopup(row)} className={`cursor-pointer`}
+                    <p className={`cursor-pointer`}
                     >{row?.firstName} {row?.lastName}</p>
                     {(tooltipContent && tooltipContent as string)  && (
                       <Tooltip
