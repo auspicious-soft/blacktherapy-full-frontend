@@ -28,12 +28,12 @@ const Page = () => {
     }
 
     if (activeTab === 'Previous Appointments' || activeTab === 'Upcoming Appointments') {
+      setQuery(`appointmentType=${activeTab === 'Previous Appointments' ? 'past' : 'upcoming'}&page=1&limit=10`);
       setShouldFetchAppointments(true);
     } else {
       setShouldFetchAppointments(false);
     }
   }, [activeTab]);
-
   const { data: appointmentsData, isLoading: appointmentsIsLoading, mutate: appointmentsMutate, error: appointmentsError } = useSWR(shouldFetchAppointments ? `/client/appointment/${session?.data?.user?.id}?${query}` : null, getClientAppointments)
   const { data, isLoading, mutate, error } = useSWR(shouldFetchWellness ? `/client/${session?.data?.user?.id}/wellness?${query}` : null, getClientWellness);
 
