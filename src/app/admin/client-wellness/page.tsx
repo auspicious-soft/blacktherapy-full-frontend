@@ -52,7 +52,7 @@ const Page = () => {
   const handleInputChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
-    setSelectedClientOrClinician(null)
+    if (e.target.name == 'assignTo') setSelectedClientOrClinician(null)
     const { name, value, files } = e.target as HTMLInputElement & { files: FileList };
     setFormData({
       ...formData,
@@ -61,8 +61,7 @@ const Page = () => {
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
+    e.preventDefault();    
     startTransition(async () => {
       try {
         if (selectedClientOrClinician) (formData as any).assignedToId = selectedClientOrClinician?.value
@@ -70,14 +69,14 @@ const Page = () => {
         const response = await AddNewWellness(formData);
         if (response?.status === 201) {
           setNotification("Therapist Registeration Successful");
-          // toast.success("Wellness entry added successfully");
           setFormData({
             title: "",
             assignTo: "",
             link: "",
             attachment: "",
             description: "",
-          });
+          })
+          mutate()
         } else {
           toast.error("Failed to add wellness entry");
         }
