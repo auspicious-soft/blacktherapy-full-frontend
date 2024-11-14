@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import PersonalInfoForm from "@/app/(website)/components/PersonalInfoForm";
 import IntroSection from "@/app/(website)/components/IntroSection";
+import { submitClientForm } from "@/utils/client-signup";
 
 
 interface OutOfPocketFormProps {
@@ -76,7 +77,7 @@ const outOfPocketQuestions = [
 const questionDistribution = [ 1, 1, 1, 1, 1, 1];
 const OutOfPocketForm: React.FC<OutOfPocketFormProps> = ({ onBack, formData, setFormData }) => {
   const [currentStep, setCurrentStep] = useState(0);
-
+  const totalSteps = questionDistribution.length + 2; 
   const handleAnswerChange = (name: string, value: string) => {
     setFormData((prevData: any) => ({
       ...prevData,
@@ -92,9 +93,6 @@ const OutOfPocketForm: React.FC<OutOfPocketFormProps> = ({ onBack, formData, set
     }
   };
 
-  const handleNext =() => {
-    setCurrentStep(currentStep + 1);
-  };
 
   const handleBack = () => {
     if (currentStep > 0) {
@@ -129,6 +127,7 @@ const validateCurrentStep = () => {
       <label className="text-[15px] md:text-lg text-[#283C63] mb-2">{question.question}</label>
       {question.type === "textarea" ? (
         <textarea
+        required
           name={question.key}
           placeholder={question.placeholder}
           className="py-[10px] px-4 border border-[#dbe0eb] rounded-[20px]"
@@ -139,6 +138,7 @@ const validateCurrentStep = () => {
         />
       ) : question.type === "select" ? (
         <select
+        required
           name={question.key}
           className="text-[#686C78] border border-[#dbe0eb] rounded-[20px] px-4 py-3"
           value={formData[question.key] || ""}
@@ -158,6 +158,7 @@ const validateCurrentStep = () => {
           {question.options?.map((option, i) => (
             <label key={i} className="text-[15px] md:text-lg custom-radio step-form-radio relative flex items-center mb-2">
               <input
+                required
                 type="radio"
                 name={question.key}
                 value={option}
@@ -175,6 +176,7 @@ const validateCurrentStep = () => {
         </div>
       ) : (
         <input
+        required
           type={question.type}
           name={question.key}
           placeholder={question.placeholder}
@@ -187,6 +189,10 @@ const validateCurrentStep = () => {
       )}
     </div>
     ));
+  };
+
+  const clientFormSubmit = async () => {
+    await submitClientForm(formData, setFormData);
   };
 
   return (
@@ -203,11 +209,15 @@ const validateCurrentStep = () => {
         <button onClick={handleBack} className="button">
           Back
         </button>
-        {currentStep < questionDistribution.length && (
-          <button onClick={handleContinue} className="button">
-            Continue
-          </button>
-        )}
+        {currentStep < totalSteps - 1 ? (
+        <button onClick={handleContinue} className="button">
+          Continue
+        </button>
+      ) : (
+        <button onClick={clientFormSubmit} className="button">
+          Submit
+        </button>
+      )}
       </div>
     </div>
   );

@@ -86,7 +86,7 @@ const Page = () => {
       [name]: value,
     }));
   };
-
+  
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     delete (formData as any).email
