@@ -99,7 +99,7 @@ const MobileHeader = () => {
             <li className={isActive('/admin/view-task')}>
               <Link href="/admin/view-task" onClick={() => handleLinkClick("/admin/view-task")}>
                 <TaskIcon />
-                <span>View Task</span>
+                <span>View Tasks</span>
               </Link>
             </li>
           </ul>

@@ -102,7 +102,7 @@ const SideNav = () => {
           <li className={isActive('/admin/view-task')}>
             <Link href="/admin/view-task">
               <TaskIcon />
-              {!isCollapsed && <span>View Task</span>}
+              {!isCollapsed && <span>View Tasks</span>}
             </Link>
           </li>
           {/* <li className={isActive('/call-logs')}>
