@@ -59,9 +59,9 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
               <div className="w-full lg:hidden">
                 <MobileHeader />
               </div>
-              <main className="flex-grow p-[15px] md:overflow-y-auto lg:p-[50px]">
+              <div className="flex-grow p-[15px] md:overflow-y-auto lg:p-[50px]">
                 {children}
-              </main>
+              </div>
             </div>
           </body>
         </html>
@@ -69,6 +69,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
     }
     else {
       redirect('/onboarding')
+      return null
     }
   }
   else {

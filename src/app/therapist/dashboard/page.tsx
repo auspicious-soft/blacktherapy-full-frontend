@@ -81,7 +81,7 @@ export default async function Home() {
   ]
   return (
     <div>
-      <h1 className=" ">Welcome</h1>
+      <h1 className="text-[40px]">Welcome</h1>
       <div className="grid md:grid-cols-3 gap-[25px] my-[50px]">
         {CardData.map((cards) => (
           <WelcomeCard
