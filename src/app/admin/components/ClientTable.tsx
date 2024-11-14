@@ -29,7 +29,7 @@ const ClientTable: React.FC<ClientsDataProps> = ({ clientsData, setQuery, error,
   //const isAdmin = (session as any)?.user?.role === 'admin';
   
 
-  
+   
   const ClientsArray = clientsData?.data;
   
   const rowsPerPage = 10;
