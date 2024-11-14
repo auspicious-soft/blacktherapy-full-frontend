@@ -3,6 +3,9 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { ButtonArrow } from "@/utils/svgicons";
 import success from "@/assets/images/succes.png";
+import { toast } from "sonner";
+import { changePasswordService } from "@/services/client/client-service";
+import { useSession } from "next-auth/react";
 
 type FormData = {
   oldPassword: string;
@@ -15,13 +18,11 @@ const Page: React.FC = () => {
     oldPassword: "",
     newPassword: "",
     confirmPassword: "",
-  });
+  })
+  const session = useSession()
+  const [isPending, startTransition] = React.useTransition();
   const [notification, setNotification] = useState<string | null>(null);
-  const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
@@ -31,17 +32,36 @@ const Page: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (formData.newPassword !== formData.confirmPassword) {
+      toast.error('New Password does not match');
+      return
+    }
+    if (formData.newPassword === formData.oldPassword) {
+      toast.error('New Password cannot be same as old password');
+      return
+    }
+    startTransition(async () => {
+      try {
+        const resss = await changePasswordService(`/client/update-password/${session?.data?.user?.id}`, { currentPassword: formData.oldPassword, newPassword: formData.newPassword })
+        if (resss?.data?.success) {
+          setNotification("Password changed successfully");
+          setTimeout(() => {
+            setNotification(null);
+            window.location.href = '/customer/dashboard'
+          }, 3000)
+        }
+      } catch (error) {
+        const { response: { data: { message } } } = error as any
+        toast.error(message ? message : 'An error occurred');
+      }
 
-    setNotification("Payment Request Submitted");
-    setTimeout(() => {
-      setNotification(null);
-    }, 3000);
+    })
   };
 
   return (
     <div>
       <h1 className="font-antic text-[#283C63] text-[30px] leading-[1.2em] mb-[25px] lg:text-[40px] lg:mb-[50px]">
-       Change Password
+        Change Password
       </h1>
       <form onSubmit={handleSubmit}>
         <div className="bg-white rounded-[20px] p-5 md:p-[30px]">
@@ -49,7 +69,7 @@ const Page: React.FC = () => {
             <div className="">
               <input
                 type="text"
-                name="firstName"
+                name="oldPassword"
                 placeholder="Old Password"
                 value={formData.oldPassword}
                 onChange={handleChange}
@@ -58,7 +78,7 @@ const Page: React.FC = () => {
             <div className="">
               <input
                 type="text"
-                name="lastName"
+                name="newPassword"
                 placeholder="New Password"
                 value={formData.newPassword}
                 onChange={handleChange}
@@ -67,7 +87,7 @@ const Page: React.FC = () => {
             <div className="">
               <input
                 type="text"
-                name="email"
+                name="confirmPassword"
                 placeholder="Confirm Password"
                 value={formData.confirmPassword}
                 onChange={handleChange}
@@ -76,7 +96,7 @@ const Page: React.FC = () => {
           </div>
           <div className="mt-[30px] ">
             <button type="submit" className="button px-[30px]">
-              Save <ButtonArrow />{" "}
+              {!isPending ? 'Save' : 'Saving...'} <ButtonArrow />
             </button>
           </div>
         </div>

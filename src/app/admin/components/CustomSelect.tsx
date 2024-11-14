@@ -11,7 +11,7 @@ interface CustomSelectProps<OptionType> {
   isMulti?: true; 
   placeholder?: string; 
   isSearchable?: boolean; 
-  name: string; 
+  name?: string; 
   required?: boolean;
 }
 interface OptionType {
@@ -107,9 +107,9 @@ const CustomSelect: React.FC<CustomSelectProps<OptionType>> = ({
 
   return (
     <div className="state-select">
-      <label htmlFor={name} className="block mb-2">
+    { name && <label htmlFor={name} className="block mb-2">
         {name}
-      </label>
+      </label>}
       <Select
         id={name}
         value={value}

@@ -1,33 +1,57 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import previmg2 from "@/assets/images/previmg.png";
 import { ButtonArrow, EditImgIcon } from "@/utils/svgicons";
 import success from "@/assets/images/succes.png";
+import { useSession } from "next-auth/react";
+import useSWR, { mutate } from "swr";
+import { getProfileService, updateProfileService } from "@/services/client/client-service";
+import { toast } from "sonner";
+import { USStates } from '@/data/UsStatesData';
+import CustomSelect from "@/app/admin/components/CustomSelect";
 
 type FormData = {
   firstName: string;
   lastName: string;
   email: string;
-  dob: string;
+  dob: any;
   phoneNumber: string;
   state: string;
   city: string;
-  address: string; // Explicitly define repeatDays as an array of strings
+  address1: string; // Explicitly define repeatDays as an array of strings
 };
 
 const Page = () => {
+  const session = useSession()
+  const { data, error, mutate } = useSWR(`/client/${session?.data?.user?.id}`, getProfileService)
+  const profileData = data?.data?.data
+  const [isPending, startTransition] = React.useTransition();
   const [formData, setFormData] = useState<FormData>({
     firstName: "",
     lastName: "",
-    email: "",
+    email: session?.data?.user?.email || "",
     dob: "",
     phoneNumber: "",
     state: "",
     city: "",
-    address: "", // Initialize as an empty array
-  });
-
+    address1: "",
+  })
+  useEffect(() => {
+    if (profileData) {
+      setFormData((prevData) => ({
+        ...prevData,
+        firstName: profileData?.firstName,
+        lastName: profileData?.lastName,
+        email: profileData?.email,
+        dob: profileData?.dob.split('T')[0],
+        phoneNumber: profileData?.phoneNumber,
+        state: profileData?.state,
+        city: profileData?.city,
+        address1: profileData?.addressLine1,
+      }))
+    }
+  }, [profileData])
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [notification, setNotification] = useState<string | null>(null);
 
@@ -55,11 +79,7 @@ const Page = () => {
     }
   };
 
-  const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
@@ -68,14 +88,34 @@ const Page = () => {
   };
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
+    e.preventDefault()
+    delete (formData as any).email
+    startTransition(async () => {
+      try {
+        const resss = await updateProfileService(`/client/${session?.data?.user?.id}`, formData)
+        if (resss?.data?.success) {
+          mutate()
+          setNotification("Profile updated successfully");
+          setTimeout(() => {
+            setNotification(null);
+          }, 3000)
+        }
+      }
+      catch (error) {
+        if ((error as any).code == "ERR_NETWORK") toast.error("Network Error")
+        else {
+          const { response: { data: { message } } } = error as any
+          toast.error(message ? message : 'An error occurred');
+        }
+      }
+    })
     setNotification("Payment Request Submitted");
     setTimeout(() => {
       setNotification(null);
     }, 3000);
   };
 
+  if (error) return <div className="text-red-500">Error: {error.message}</div>
   return (
     <div>
       <h1 className="font-antic text-[#283C63] text-[30px] leading-[1.2em] mb-[25px] lg:text-[40px] lg:mb-[50px]">
@@ -147,6 +187,7 @@ const Page = () => {
               <input
                 type="email"
                 name="email"
+                disabled
                 placeholder="Email Address"
                 value={formData.email}
                 onChange={handleChange}
@@ -163,7 +204,7 @@ const Page = () => {
             </div>
             <div className="md:w-[calc(30%-20px)]">
               <input
-                type="number"
+                type="text"
                 name="phoneNumber"
                 placeholder="Phone Number"
                 value={formData.phoneNumber}
@@ -175,7 +216,7 @@ const Page = () => {
                 type="text"
                 name="address"
                 placeholder="Home Address"
-                value={formData.address}
+                value={formData.address1}
                 onChange={handleChange}
               />
             </div>
@@ -189,21 +230,22 @@ const Page = () => {
               />
             </div>
             <div className="md:w-[calc(20%-20px)]">
-              <select
-                name="state"
-                value={formData.state}
-                onChange={handleChange}
-              >
-                <option value="">State</option>
-                <option value="option1">Option 1</option>
-                <option value="option2">Option 2</option>
-                <option value="option3">Option 3</option>
-              </select>
+              <CustomSelect
+                value={(USStates as any).find((option: any) => option.value === formData.state) || null} // Find the selected state or fallback to null
+                options={(USStates as any)}
+                onChange={(selectedOption: any) => {
+                  setFormData((prevData) => ({
+                    ...prevData,
+                    state: selectedOption.value,
+                  }))
+                }}
+                placeholder="Select State"
+              />
             </div>
           </div>
           <div className="mt-[30px] ">
             <button type="submit" className="button px-[30px]">
-              Update <ButtonArrow />{" "}
+              {!isPending ? 'Update' : 'Updating...'} <ButtonArrow />{" "}
             </button>
           </div>
         </div>

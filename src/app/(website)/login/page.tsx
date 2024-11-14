@@ -49,7 +49,7 @@ const Page: React.FC = () => {
           const isOnboarded = resss?.data?.onboardingCompleted
           const verified = resss?.data?.onboardingApplication?.status
           if (isOnboarded && verified === 'Active') window.location.href = '/therapist/dashboard'
-          else router.push('/onboarding')
+          else window.location.href = '/onboarding'
         }
         else {
           window.location.href = '/admin/dashboard'
