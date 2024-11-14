@@ -5,44 +5,47 @@ import PervIcon from "@/assets/images/pervicon.png";
 import NextIcon from "@/assets/images/nexticon.png";
 
 const UpcomingAppointments = (props:any) => {
+  const {data} = props; 
+  const {setQuery} = props;
+  
+  const upcomingData = data?.data;
   const { isLoading } = props
-  const [currentPage, setCurrentPage] = useState(0);
-
-  const data = [
-    {
-      id: 1,
-      apptDate: "12 September 2024",
-      apptTime: "09:30 AM",
-      chatWithClinician: "Start Chat",
-      videoChat: "Start Chat",
-      billingAmount: "$25.00",
-    },
-    {
-      id: 2,
-      apptDate: "20 September 2024",
-      apptTime: "09:30 AM",
-      chatWithClinician: "Start Chat",
-      videoChat: "Unavailable Now",
-      billingAmount: "$25.00",
-    },
-    {
-      id: 3,
-      apptDate: "21 September 2024",
-      apptTime: "09:30 AM",
-      chatWithClinician: "Unavailable Now",
-      videoChat: "Start Chat",
-      billingAmount: "$25.00",
-    },
-    // Add more data as needed
-  ];
-  // ReactPaginate
+  const total = data?.total ?? 0;
+  console.log('total:', total);
   const rowsPerPage = 10;
-  const indexOfLastRow = (currentPage + 1) * rowsPerPage;
-  const indexOfFirstRow = indexOfLastRow - rowsPerPage;
-  const currentRows = data.slice(indexOfFirstRow, indexOfLastRow);
   const handlePageClick = (selectedItem: { selected: number }) => {
-    setCurrentPage(selectedItem.selected);
-  };
+    setQuery(`page=${selectedItem.selected + 1}&limit=${rowsPerPage}`)
+  }
+
+  // const data = [ 
+  //   {
+  //     id: 1,
+  //     apptDate: "12 September 2024",
+  //     apptTime: "09:30 AM",
+  //     chatWithClinician: "Start Chat",
+  //     videoChat: "Start Chat",
+  //     billingAmount: "$25.00",
+  //   },
+  //   {
+  //     id: 2,
+  //     apptDate: "20 September 2024",
+  //     apptTime: "09:30 AM",
+  //     chatWithClinician: "Start Chat",
+  //     videoChat: "Unavailable Now",
+  //     billingAmount: "$25.00",
+  //   },
+  //   {
+  //     id: 3,
+  //     apptDate: "21 September 2024",
+  //     apptTime: "09:30 AM",
+  //     chatWithClinician: "Unavailable Now",
+  //     videoChat: "Start Chat",
+  //     billingAmount: "$25.00",
+  //   },
+  //   // Add more data as needed
+  // ];
+  // ReactPaginate
+  
 
   const getStyle = (text: string): CSSProperties => {
     let style: CSSProperties = {
@@ -85,39 +88,17 @@ const UpcomingAppointments = (props:any) => {
             </tr>
           </thead>
           <tbody>
-            {currentRows.map((item) => (
-              <tr key={item.id}>
-                <td>{item.id}</td>
+            {upcomingData?.map((item: any) => (
+              <tr key={item?._id}>
+                <td>{item?._id}</td>
                 <td>{item.apptDate}</td>
                 <td>{item.apptTime}</td>
                 <td>
-                  {item.chatWithClinician === "Start Chat" ? (
-                    <span
-                      className="cursor-pointer"
-                      style={getStyle("Start Chat")}
-                    >
-                      {item.chatWithClinician}
-                    </span>
-                  ) : (
-                    <span style={getStyle("Unavailable Now")}>
-                      {item.chatWithClinician}
-                    </span>
-                  )}
-                </td>
-                <td>
-                 {item.videoChat === "Start Chat" ? (
-                    <span
-                      className="cursor-pointer"
-                      style={getStyle("Start Chat")}
-                    >
-                      {item.videoChat}
-                    </span>
-                  ) : (
-                    <span style={getStyle("Unavailable Now")}>
-                      {item.videoChat}
-                    </span>
-                  )}
-                </td>
+                      <p className={`font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px] ${item.chat === 'Start Chat' ? ' text-[#42A803] bg-[#CBFFB2] ' : ' text-[#FFA234] bg-[#FFFCEC] '}`}>
+                        {!item.message ? 'No chat' : <p className='cursor-pointer font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px]  text-[#42A803] bg-[#CBFFB2]'>Start Chat</p>}
+                      </p>
+                    </td>
+                <td>{!item.video ? 'No video' : <p className='cursor-pointer font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px]  text-[#42A803] bg-[#CBFFB2]'>Start Video</p>}</td>
                 <td>{item.billingAmount}</td>
               </tr>
             ))}
@@ -130,7 +111,7 @@ const UpcomingAppointments = (props:any) => {
           nextLabel={<Image src={NextIcon} alt="NextIcon" />}
           breakLabel={"..."}
           breakClassName={"break-me"}
-          pageCount={Math.ceil(data.length / rowsPerPage)}
+          pageCount={Math.ceil(total / rowsPerPage)}
           marginPagesDisplayed={2}
           pageRangeDisplayed={5}
           onPageChange={handlePageClick}
