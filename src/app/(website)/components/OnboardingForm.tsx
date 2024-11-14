@@ -122,7 +122,7 @@ const OnboardingForm = (props: any) => {
 
   const prevStep = () => {
     if (currentStep > 1) {
-      setCurrentStep((prevStep) => prevStep - 1);
+      setCurrentStep((prevStep) => prevStep - 1); 
     }
   };
   const handleSubmit = async () => {
