@@ -5,10 +5,13 @@ import IntroSection from "@/app/(website)/components/IntroSection";
 
 interface OutOfPocketFormProps {
   onBack: () => void;
+  formData: any;
+  setFormData: React.Dispatch<React.SetStateAction<any>>;
 }
 
 const outOfPocketQuestions = [
   {
+    key: "reasonForLookingHelp",
     question: "To begin, tell us why you're looking for help today.",
     type: "radio",
     options: [
@@ -22,21 +25,24 @@ const outOfPocketQuestions = [
     ],
   },
   {
+    key: "rateSleepingHabits",
     question: "How would you rate your sleeping habits?",
     type: "radio",
     options: ["Excellent", "Good", "Fair", "Poor"],
   },
   {
+    key: "rateCurrentPhysicalHealth",
     question: "How would you rate your current physical health?",
     type: "radio",
     options: ["Excellent", "Good", "Fair", "Poor"],
   },
   {
-    question: "How did you here about us?",
+    key: "howYouKnewUs",
+    question: "How did you hear about us?",
     type: "radio",
     options: [
       "My doctor",
-      "Serach Engine/Online",
+      "Search Engine/Online",
       "Insurance provider",
       "Previous therapist",
       "Court",
@@ -46,6 +52,7 @@ const outOfPocketQuestions = [
     ],
   },
   {
+    key: "gender",
     question: "What gender do you identify with?",
     type: "radio",
     options: [
@@ -55,33 +62,33 @@ const outOfPocketQuestions = [
       "Transgender male",
       "Gender queer",
       "Gender variant",
-      "other",
+      "Other",
       "Non Binary",
     ],
   },
   {
+    key: "mainIssueBrief",
     question: "Briefly describe the main issues or concerns that bring you to therapy?",
     type: "textarea",
     placeholder: "",
   },
-  // Add more questions as needed
 ];
-
-const OutOfPocketForm: React.FC<OutOfPocketFormProps> = ({ onBack }) => {
+const questionDistribution = [ 1, 1, 1, 1, 1, 1];
+const OutOfPocketForm: React.FC<OutOfPocketFormProps> = ({ onBack, formData, setFormData }) => {
   const [currentStep, setCurrentStep] = useState(0);
-  const [answers, setAnswers] = useState<string[]>([]);
 
-  const handleAnswerChange = (answer: string, index: number) => {
-    const updatedAnswers = [...answers];
-    updatedAnswers[index] = answer;
-    setAnswers(updatedAnswers);
+  const handleAnswerChange = (name: string, value: string) => {
+    setFormData((prevData: any) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
   const handleContinue = () => {
-    if (validateStep(currentStep)) {
+    if (validateCurrentStep()) {
       setCurrentStep(currentStep + 1);
     } else {
-      alert("Please answer all questions before continuing.");
+      alert("Please fill in all required fields before continuing.");
     }
   };
 
@@ -97,32 +104,18 @@ const OutOfPocketForm: React.FC<OutOfPocketFormProps> = ({ onBack }) => {
     }
   };
 
-  const validateStep = (step: number) => {
-    let startIndex = 0;
-    let endIndex = 0;
+  const getQuestionIndicesForStep = (step: number) => {
+    const startIndex = questionDistribution.slice(0, step).reduce((sum, count) => sum + count, 0);
+    const endIndex = startIndex + questionDistribution[step];
+    return { startIndex, endIndex };
+  };
 
-    if (currentStep === 0) {
-      startIndex = 0;
-      endIndex = 1;
-    } else if (currentStep === 1) {
-      startIndex = 1;
-      endIndex = 2;
-    } else if (currentStep === 2) {
-      startIndex = 2;
-      endIndex = 3;
-    } else if (currentStep === 3) {
-      startIndex = 3;
-      endIndex = 4;
-    } else if (currentStep === 4) {
-      startIndex = 4;
-      endIndex = 5;
-    }  else if (currentStep === 5) {
-      startIndex = 5;
-      endIndex = outOfPocketQuestions.length;
-    }
+const validateCurrentStep = () => {
+    const { startIndex, endIndex } = getQuestionIndicesForStep(currentStep);
 
     for (let i = startIndex; i < endIndex; i++) {
-      if (!answers[i] || answers[i].trim() === "") {
+      const questionKey = outOfPocketQuestions[i].key;
+      if (!formData[questionKey]) {
         return false;
       }
     }
@@ -130,92 +123,90 @@ const OutOfPocketForm: React.FC<OutOfPocketFormProps> = ({ onBack }) => {
   };
 
   const renderQuestions = () => {
-    let startIndex = 0;
-    let endIndex = 0;
-
-    if (currentStep === 0) {
-      startIndex = 0;
-      endIndex = 1;
-    } else if (currentStep === 1) {
-      startIndex = 1;
-      endIndex = 2;
-    } else if (currentStep === 2) {
-      startIndex = 2;
-      endIndex = 3;
-    } else if (currentStep === 3) {
-      startIndex = 3;
-      endIndex = 4;
-    } else if (currentStep === 4) {
-      startIndex = 4;
-      endIndex = 5;
-    }  else if (currentStep === 5) {
-      startIndex = 5;
-      endIndex = outOfPocketQuestions.length;
-    }
-
+    const { startIndex, endIndex } = getQuestionIndicesForStep(currentStep);
     return outOfPocketQuestions.slice(startIndex, endIndex).map((question, index) => (
-      <div key={index + startIndex} className="grid mb-4">
-        <label className="text-[15px] md:text-lg text-[#283C63] mb-2">{question.question}</label>
-        {question.type === "textarea" ? (
-          <textarea
-            placeholder={question.placeholder}
-            className="text-sm md:text-base py-[10px] px-4 border border-[#dbe0eb] rounded-[20px]"
-            value={answers[index + startIndex] || ""}
-            onChange={(e) => handleAnswerChange(e.target.value, index + startIndex)}
-          />
-        ) : question.type === "select" ? (
-          <select
-            className="text-[#686C78] border border-[#dbe0eb] rounded-[20px] px-4 py-[10px]"
-            value={answers[index + startIndex] || ""}
-            onChange={(e) => handleAnswerChange(e.target.value, index + startIndex)}
-          >
-            <option value="">Select an option</option>
-            {question.options?.map((option, i) => (
-              <option key={i} value={option}>{option}</option>
-            ))}
-          </select>
-        ) : question.type === "radio" ? (
-          <div className="flex flex-col">
-            {question.options?.map((option, i) => (
-              <label key={i} className="text-[15px] md:text-lg custom-radio step-form-radio relative flex items-center mb-2">
-                <input
-                  type="radio"
-                  name={`radio_${index + startIndex}`}
-                  value={option}
-                  checked={answers[index + startIndex] === option}
-                  onChange={() => handleAnswerChange(option, index + startIndex)}
-                  className="mr-2"
-                />
-                <span className="text-sm md:text-base w-full text-[#283C63] py-[10px] px-4 border border-[#dbe0eb] rounded-[20px]">{option}</span>
-              </label>
-            ))}
-          </div>
-        ) : (
-          <input
-            type={question.type}
-            placeholder={question.placeholder}
-            className="text-sm md:text-base py-[10px] px-4 border border-[#dbe0eb] rounded-[20px]"
-            value={answers[index + startIndex] || ""}
-            onChange={(e) => handleAnswerChange(e.target.value, index + startIndex)}
-          />
-        )}
-      </div>
+      <div key={question.key} className="grid mb-4">
+      <label className="text-[15px] md:text-lg text-[#283C63] mb-2">{question.question}</label>
+      {question.type === "textarea" ? (
+        <textarea
+          name={question.key}
+          placeholder={question.placeholder}
+          className="py-[10px] px-4 border border-[#dbe0eb] rounded-[20px]"
+          value={formData[question.key] || ""}
+          onChange={(e) =>
+            handleAnswerChange(question.key, e.target.value)
+          }
+        />
+      ) : question.type === "select" ? (
+        <select
+          name={question.key}
+          className="text-[#686C78] border border-[#dbe0eb] rounded-[20px] px-4 py-3"
+          value={formData[question.key] || ""}
+          onChange={(e) =>
+            handleAnswerChange(question.key, e.target.value)
+          }
+        >
+          <option value="">Select an option</option>
+          {question.options?.map((option, i) => (
+            <option key={i} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
+      ) : question.type === "radio" ? (
+        <div className="flex flex-col">
+          {question.options?.map((option, i) => (
+            <label key={i} className="text-[15px] md:text-lg custom-radio step-form-radio relative flex items-center mb-2">
+              <input
+                type="radio"
+                name={question.key}
+                value={option}
+                checked={formData[question.key] === option}
+                onChange={() =>
+                  handleAnswerChange(question.key, option)
+                }
+                className="mr-2"
+              />
+              <span className="text-sm md:text-base w-full text-[#283C63] py-[10px] px-4 border border-[#dbe0eb] rounded-[20px]">
+                {option}
+              </span>
+            </label>
+          ))}
+        </div>
+      ) : (
+        <input
+          type={question.type}
+          name={question.key}
+          placeholder={question.placeholder}
+          className="text-sm md:text-base py-[10px] px-4 border border-[#dbe0eb] rounded-[20px] text-[#686C78]"
+          value={formData[question.key] || ""}
+          onChange={(e) =>
+            handleAnswerChange(question.key, e.target.value)
+          }
+        />
+      )}
+    </div>
     ));
   };
 
   return (
     <div className="max-w-[800px] mx-auto rounded-[20px] bg-white p-5 md:p-[40px]">
-      {currentStep < Math.ceil(outOfPocketQuestions.length / 2) 
-        ? renderQuestions() 
-        : (currentStep === Math.ceil(outOfPocketQuestions.length / 2) 
-            ? <IntroSection onContinue={handleNext}/> 
-            : <PersonalInfoForm />
+      {/* Render questions for steps within questionDistribution */}
+      {currentStep < questionDistribution.length
+        ? renderQuestions()
+        : (currentStep === questionDistribution.length
+            ? <IntroSection onContinue={handleContinue} />
+            : <PersonalInfoForm formData={formData} setFormData={setFormData} />
           )
       }
-      <div className="flex justify-between">
-        <button onClick={handleBack} className="button">Back</button>
-        {currentStep < Math.ceil(outOfPocketQuestions.length / 2) && (
-          <button onClick={handleContinue} className="button">Continue</button>
+      <div className="flex justify-between mt-4">
+        <button onClick={handleBack} className="button">
+          Back
+        </button>
+        {currentStep < questionDistribution.length && (
+          <button onClick={handleContinue} className="button">
+            Continue
+          </button>
         )}
       </div>
     </div>

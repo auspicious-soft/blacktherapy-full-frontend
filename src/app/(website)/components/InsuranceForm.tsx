@@ -2,12 +2,15 @@ import React, { useState } from "react";
 import PersonalInfoForm from "@/app/(website)/components/PersonalInfoForm";
 import IntroSection from "@/app/(website)/components/IntroSection";
 
-interface InsuranceFormProps {
+interface InsuranceFormProps { 
   onBack: () => void;
+  formData: any;
+  setFormData: React.Dispatch<React.SetStateAction<any>>;
 }
 
 const insuranceQuestions = [
   {
+    key: "insuranceCompany.insuranceCompanyName",
     question: "Find your insurance",
     type: "select",
     options: [
@@ -193,27 +196,32 @@ const insuranceQuestions = [
     ],
   },
   {
+    key: "insuranceCompany.memberOrSubscriberId",
     question: "Member / Subscriber ID",
     type: "text",
     placeholder: "Enter value",
   },
   {
+    key: "insuranceCompany.firstName",
     question: "Subscriber first name",
     type: "text",
     placeholder: "Enter value",
   },
   {
+    key: "insuranceCompany.lastName",
     question: "Subscriber last name",
     type: "text",
     placeholder: "Enter value",
   },
   {
+    key: "insuranceCompany.dateOfBirth",
     question: "Date of Birth",
     type: "date",
     placeholder: "Enter any additional notes",
   },
   // mainform-----------
   {
+    key: "reasonForLookingHelp",
     question: "To begin, tell us why you're looking for help today.",
     type: "radio",
     options: [
@@ -227,16 +235,19 @@ const insuranceQuestions = [
     ],
   },
   {
+    key: "rateSleepingHabits",
     question: "How would you rate your sleeping habits?",
     type: "radio",
     options: ["Excellent", "Good", "Fair", "Poor"],
   },
   {
+    key: "rateCurrentPhysicalHealth",
     question: "How would you rate your current physical health?",
     type: "radio",
     options: ["Excellent", "Good", "Fair", "Poor"],
   },
   {
+    key: "howYouKnewUs",
     question: "How did you hear about us?",
     type: "radio",
     options: [
@@ -251,6 +262,7 @@ const insuranceQuestions = [
     ],
   },
   {
+    key: "gender",
     question: "What gender do you identify with?",
     type: "radio",
     options: [
@@ -265,53 +277,57 @@ const insuranceQuestions = [
     ],
   },
   {
+    key: "mainIssueBrief",
     question: "Briefly describe the main issues or concerns that bring you to therapy?",
     type: "textarea",
     placeholder: "",
   },
-  // Add more questions as needed
 ];
 
-const InsuranceForm: React.FC<InsuranceFormProps> = ({ onBack }) => {
-  const [currentStep, setCurrentStep] = useState(0);
-  const [answers, setAnswers] = useState<string[]>([]);
-  const [isValid, setIsValid] = useState(false);
+const questionDistribution = [1, 4, 1, 1, 1, 1, 1, 1];
 
-  const handleAnswerChange = (answer: string, index: number) => {
-    const updatedAnswers = [...answers];
-    updatedAnswers[index] = answer;
-    setAnswers(updatedAnswers);
+const InsuranceForm: React.FC<InsuranceFormProps> = ({ onBack, formData, setFormData }) => {
+  const [currentStep, setCurrentStep] = useState(0);
+
+  const getQuestionIndicesForStep = (step: number) => {
+    const startIndex = questionDistribution.slice(0, step).reduce((sum, count) => sum + count, 0);
+    const endIndex = startIndex + questionDistribution[step];
+    return { startIndex, endIndex };
   };
 
+  const handleAnswerChange = (key: string, value: string) => {
+    setFormData((prevData: any) => {
+      // Check if the key contains a dot (.) indicating nested object
+      if (key.includes('.')) {
+        const [parentKey, childKey] = key.split('.');
+        return {
+          ...prevData,
+          [parentKey]: {
+            ...prevData[parentKey],
+            [childKey]: value
+          }
+        };
+      }
+      // Handle non-nested fields
+      return {
+        ...prevData,
+        [key]: value
+      };
+    });
+  };
+
+
   const validateCurrentStep = () => {
-    let startIndex = 0;
-    let endIndex = 0;
-    if (currentStep === 0) {
-      startIndex = 0;
-      endIndex = 1;
-    } else if (currentStep === 1) {
-      startIndex = 1;
-      endIndex = 5;
-    } else if (currentStep === 2) {
-      startIndex = 5;
-      endIndex = 6;
-    } else if (currentStep === 3) {
-      startIndex = 6;
-      endIndex = 7;
-    } else if (currentStep === 4) {
-      startIndex = 7;
-      endIndex = 8;
-    } else if (currentStep === 5) {
-      startIndex = 8;
-      endIndex = 9;
-    } else if (currentStep === 6) {
-      startIndex = 9;
-      endIndex = insuranceQuestions.length;
-    }
-  
+    const { startIndex, endIndex } = getQuestionIndicesForStep(currentStep);
 
     for (let i = startIndex; i < endIndex; i++) {
-      if (!answers[i]) {
+      const questionKey = insuranceQuestions[i].key;
+      if (questionKey.includes('.')) {
+        const [parentKey, childKey] = questionKey.split('.');
+        if (!formData[parentKey]?.[childKey]) {
+          return false;
+        }
+      } else if (!formData[questionKey]) {
         return false;
       }
     }
@@ -326,9 +342,6 @@ const InsuranceForm: React.FC<InsuranceFormProps> = ({ onBack }) => {
     }
   };
 
-  const handleNext =() => {
-    setCurrentStep(currentStep + 1);
-  };
   const handleBack = () => {
     if (currentStep > 0) {
       setCurrentStep(currentStep - 1);
@@ -337,54 +350,39 @@ const InsuranceForm: React.FC<InsuranceFormProps> = ({ onBack }) => {
     }
   };
 
-  const renderQuestions = () => {
-    let startIndex = 0;
-    let endIndex = 0;
-
-    if (currentStep === 0) {
-      startIndex = 0;
-      endIndex = 1;
-    } else if (currentStep === 1) {
-      startIndex = 1;
-      endIndex = 5;
-    } else if (currentStep === 2) {
-      startIndex = 5;
-      endIndex = 6;
-    } else if (currentStep === 3) {
-      startIndex = 6;
-      endIndex = 7;
-    } else if (currentStep === 4) {
-      startIndex = 7;
-      endIndex = 8;
-    } else if (currentStep === 5) {
-      startIndex = 8;
-      endIndex = 9;
-    } else if (currentStep === 6) {
-      startIndex = 9;
-      endIndex = insuranceQuestions.length;
+  const getValue = (key: string) => {
+    if (key.includes('.')) {
+      const [parentKey, childKey] = key.split('.');
+      return formData[parentKey]?.[childKey] || '';
     }
+    return formData[key] || '';
+  };
 
 
+  const renderQuestions = () => {
+    const { startIndex, endIndex } = getQuestionIndicesForStep(currentStep);
     return insuranceQuestions
       .slice(startIndex, endIndex)
       .map((question, index) => (
-        <div key={index + startIndex} className="grid mb-4">
+        <div key={question.key} className="grid mb-4">
           <label className="text-[15px] md:text-lg text-[#283C63] mb-2">{question.question}</label>
           {question.type === "textarea" ? (
             <textarea
+              name={question.key}
               placeholder={question.placeholder}
               className="py-[10px] px-4 border border-[#dbe0eb] rounded-[20px]"
-              value={answers[index + startIndex] || ""}
+              value={getValue(question.key)}
               onChange={(e) =>
-                handleAnswerChange(e.target.value, index + startIndex)
+                handleAnswerChange(question.key, e.target.value)
               }
             />
           ) : question.type === "select" ? (
             <select
+              name={question.key}
               className="text-[#686C78] border border-[#dbe0eb] rounded-[20px] px-4 py-3"
-              value={answers[index + startIndex] || ""}
+              value={getValue(question.key)}  
               onChange={(e) =>
-                handleAnswerChange(e.target.value, index + startIndex)
+                handleAnswerChange(question.key, e.target.value)
               }
             >
               <option value="">Select an option</option>
@@ -400,11 +398,11 @@ const InsuranceForm: React.FC<InsuranceFormProps> = ({ onBack }) => {
                 <label key={i} className="text-[15px] md:text-lg custom-radio step-form-radio relative flex items-center mb-2">
                   <input
                     type="radio"
-                    name={`radio_${index + startIndex}`}
+                    name={question.key}
                     value={option}
-                    checked={answers[index + startIndex] === option}
+                    checked={formData[question.key] === option}
                     onChange={() =>
-                      handleAnswerChange(option, index + startIndex)
+                      handleAnswerChange(question.key, option)
                     }
                     className="mr-2"
                   />
@@ -417,11 +415,12 @@ const InsuranceForm: React.FC<InsuranceFormProps> = ({ onBack }) => {
           ) : (
             <input
               type={question.type}
+              name={question.key}
               placeholder={question.placeholder}
               className="text-sm md:text-base py-[10px] px-4 border border-[#dbe0eb] rounded-[20px] text-[#686C78]"
-              value={answers[index + startIndex] || ""}
+              value={getValue(question.key)}
               onChange={(e) =>
-                handleAnswerChange(e.target.value, index + startIndex)
+                handleAnswerChange(question.key, e.target.value)
               }
             />
           )}
@@ -431,18 +430,19 @@ const InsuranceForm: React.FC<InsuranceFormProps> = ({ onBack }) => {
 
   return (
     <div className="max-w-[800px] mx-auto rounded-[20px] bg-white p-5 md:p-[40px]">
-      {currentStep < Math.ceil(insuranceQuestions.length / 2) 
-        ? renderQuestions() 
-        : (currentStep === Math.ceil(insuranceQuestions.length / 2) 
-            ? <IntroSection onContinue={handleNext}/> 
-            : <PersonalInfoForm />
+      {/* Render questions for steps within questionDistribution */}
+      {currentStep < questionDistribution.length
+        ? renderQuestions()
+        : (currentStep === questionDistribution.length
+            ? <IntroSection onContinue={handleContinue} />
+            : <PersonalInfoForm formData={formData} setFormData={setFormData} />
           )
       }
-      <div className="flex justify-between">
+      <div className="flex justify-between mt-4">
         <button onClick={handleBack} className="button">
           Back
         </button>
-        {currentStep < Math.ceil(insuranceQuestions.length / 2) && (
+        {currentStep < questionDistribution.length && (
           <button onClick={handleContinue} className="button">
             Continue
           </button>
@@ -450,6 +450,6 @@ const InsuranceForm: React.FC<InsuranceFormProps> = ({ onBack }) => {
       </div>
     </div>
   );
-};
+}  
 
 export default InsuranceForm;
