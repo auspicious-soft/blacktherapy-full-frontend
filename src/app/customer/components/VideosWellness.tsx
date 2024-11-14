@@ -57,8 +57,7 @@ const VideosWellness = (props: any) => {
         {isLoading ? (
           <ReactLoading type={'spin'} color={'#26395e'} height={'20px'} width={'20px'} />
         ) :
-          data?.length > 0 ?
-            data?.map((image: any, index: any) => {
+          data?.length > 0 ? data?.map((image: any, index: any) => {
               const videoId = getYouTubeVideoId(image.link)
               const thumbnailUrl = videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : image.link
               return (

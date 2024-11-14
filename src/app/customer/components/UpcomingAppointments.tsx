@@ -4,7 +4,8 @@ import ReactPaginate from "react-paginate";
 import PervIcon from "@/assets/images/pervicon.png";
 import NextIcon from "@/assets/images/nexticon.png";
 
-const UpcomingAppointments = () => {
+const UpcomingAppointments = (props:any) => {
+  const { isLoading } = props
   const [currentPage, setCurrentPage] = useState(0);
 
   const data = [

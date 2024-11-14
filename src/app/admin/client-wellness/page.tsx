@@ -49,9 +49,7 @@ const Page = () => {
   }
 
 
-  const handleInputChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-  ) => {
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     if (e.target.name == 'assignTo') setSelectedClientOrClinician(null)
     const { name, value, files } = e.target as HTMLInputElement & { files: FileList };
     setFormData({

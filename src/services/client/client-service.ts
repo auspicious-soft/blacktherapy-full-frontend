@@ -15,3 +15,14 @@ export const updateProfileService  = async (route: string, payload: any) => {
     const axiosInstance = await getAxiosInstance()
     return axiosInstance.put(route, payload)
 }
+
+
+export const getClientWellness  = async (route: string) => {
+    const axiosInstance = await getAxiosInstance()
+    return axiosInstance.get(route)
+}
+
+export const getClientAppointments  = async (route: string) => {
+    const axiosInstance = await getAxiosInstance()
+    return axiosInstance.get(route)
+}
