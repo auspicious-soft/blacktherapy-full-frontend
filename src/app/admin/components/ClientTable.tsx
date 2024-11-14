@@ -127,7 +127,7 @@ const ClientTable: React.FC<ClientsDataProps> = ({ clientsData, setQuery, error,
       </tr>
     ) : error ? (
       <tr>
-        <td colSpan={5} className="text-center text-red-500">Error loading payments data.</td>
+        <td colSpan={5} className="text-center text-red-500">Error loading clients data.</td>
       </tr>
     ) :ClientsArray?.length > 0 ? (
           ClientsArray?.map((row: any) => (
