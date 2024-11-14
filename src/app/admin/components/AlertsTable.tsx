@@ -5,6 +5,8 @@ import React, { useState } from 'react';
 import ReactPaginate from 'react-paginate';
 import { toast } from 'sonner';
 import useSWR from 'swr';
+import ClientDetailsPopup from './ClientDetailsPopup';
+import { useSession } from 'next-auth/react';
 
 const AlertsTable = () => {
 
@@ -13,8 +15,12 @@ const AlertsTable = () => {
   const [statusFilter, setStatusFilter] = useState("");
   const filterStr = query ? `read=${query}` : ''
   const { data, error, isLoading, mutate } = useSWR(`/admin/alerts?${filterStr}`, getAlertsData);
+  const [clientDetailsPopup, setClientDetailsPopup] = useState(false);
+  const [clientDetails, setClientDetails] = useState<{ id: string; clientName: string } | null>(null);
   const alertsTable = data?.data?.data;
   const alertsData = alertsTable?.data;
+  const { data: session } = useSession();
+  const userRole = (session as any)?.user?.role 
 
   const total = alertsTable?.total ?? 0;
   const rowsPerPage = 10;
@@ -23,6 +29,15 @@ const AlertsTable = () => {
     setQuery(`page=${selectedItem.selected + 1}&limit=${rowsPerPage}`);
   };
 
+  const openClientPopup = (row:any) => {
+    console.log('row:', row);
+    setClientDetails(row);
+    setClientDetailsPopup(true);
+  };
+  const closeClientPopup = () => {
+    setClientDetailsPopup(false);
+    setClientDetails(null); 
+  };
   const handleMarkStatus = async (id: string, readStatus: boolean) => {
     try {
       const status = { read: !readStatus };
@@ -39,8 +54,6 @@ const AlertsTable = () => {
       toast.error("An error occurred while updating the alert status");
     }
   };
-
-
   const handlefilters = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setQuery(e.target.value);
 
@@ -86,7 +99,8 @@ const AlertsTable = () => {
               alertsData.map((row: any) => (
                 <tr key={row?.userId?._id} className="border-b">
                   <td>{row?._id}</td>
-                  <td>{row?.userId?.firstName} {row?.userId?.lastName}</td>
+                  <td onClick={() => openClientPopup(row?.userId)} className='hover:underline hover:font-bold cursor-pointer'>
+                    {row?.userId?.firstName} {row?.userId?.lastName}</td>
                   <td>{row?.message}</td>
                   <td>
                     <p className={`leading-[normal] px-2.5 py-1 inline-block rounded-[25px] text-[11px] font-semibold ${row?.read ? "text-[#41A803] bg-[#d6ffcc]" : "text-[#A9A901] bg-[#ffffcc] "} `}>
@@ -109,7 +123,7 @@ const AlertsTable = () => {
             )}
           </tbody>
         </table>
-      </div>
+      </div> 
 
       <div className="text-right mt-4">
         <ReactPaginate
@@ -129,6 +143,15 @@ const AlertsTable = () => {
           disabledClassName={'opacity-50 cursor-not-allowed'}
         />
       </div>
+      {clientDetails && ( 
+  <ClientDetailsPopup
+    isOpen={clientDetailsPopup}
+    onRequestClose={closeClientPopup}
+    row={clientDetails}
+    mutate={mutate}
+    role={userRole}
+  /> 
+)}
     </div>
   );
 };

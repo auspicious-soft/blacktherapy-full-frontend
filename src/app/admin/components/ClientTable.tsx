@@ -139,7 +139,7 @@ const ClientTable: React.FC<ClientsDataProps> = ({ clientsData, setQuery, error,
         >
             {row?.status === 'Active Client' ? 'Active Client' : row?.status}
             </p>
-
+ 
                 </td>
                 <td className='hover:underline hover:font-bold cursor-pointer'
                 onClick={() => openClientPopup(row)}>{row?.firstName} {row?.lastName}</td>
