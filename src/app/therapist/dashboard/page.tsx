@@ -1,9 +1,9 @@
 import ResourceCards from "@/app/therapist/components/ResourceCards";
-import Image from "next/image";
 import { OverviewIcon1, OverviewIcon2, OverviewIcon3, OverviewIcon4, OverviewIcon5, OverviewIcon6 } from "@/utils/svgicons";
 import WelcomeCard from "@/app/therapist/components/WelcomeCard";
 import { auth } from "@/auth";
 import { getTherapistDashboardStats } from "@/services/therapist/therapist-service.";
+
 const OverviewData = [
   {
     id: "1",
