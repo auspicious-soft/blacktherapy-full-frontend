@@ -118,7 +118,7 @@ const References: React.FC<ReferenceFormProps> = ({
                 <input
                   type={field.type}
                   placeholder={field.placeholder}
-                  value={data[field.key]}
+                  value={data[field.key as keyof typeof data]}
                   onChange={(e) => handleInputChange(index, field.key, e.target.value)}
                   className="text-[#686C78] w-full px-[18px] h-[45px] text-sm py-2 border border-[#dbe0eb] rounded-[20px] focus:outline-none focus:ring-1 focus:border-[#283C63]"
                   required
