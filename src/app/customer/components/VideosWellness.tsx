@@ -27,7 +27,7 @@ const Modal = ({ isOpen, onClose, children }: ModalProps) => {
           &#x2715;
         </button>
         {children}
-      </div> 
+      </div>
     </div>
   );
 };
@@ -58,32 +58,32 @@ const VideosWellness = (props: any) => {
           <ReactLoading type={'spin'} color={'#26395e'} height={'20px'} width={'20px'} />
         ) :
           data?.length > 0 ? data?.map((image: any, index: any) => {
-              const videoId = getYouTubeVideoId(image.link)
-              const thumbnailUrl = videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : image.link
-              return (
-                <div key={index}>
-                  <div
-                    className="cursor-pointer relative"
-                    onClick={() => openVideoModal(image.link)}
-                  >
-                    <Image
-                      src={thumbnailUrl}
-                      alt=""
-                      width={500}
-                      height={400}
-                      className="w-full rounded-[20px] aspect-[1/0.8] object-cover"
-                    />
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <YoutubeIcon />
-                    </div>
-                  </div>
-                  <div>
-                    <h5 className="mt-[14px] mb-[5px]">{image.title}</h5>
-                    <p>{image.description}</p>
+            const videoId = getYouTubeVideoId(image.link)
+            const thumbnailUrl = videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : image.link
+            return (
+              <div key={index}>
+                <div
+                  className="cursor-pointer relative"
+                  onClick={() => openVideoModal(image.link)}
+                >
+                  <Image
+                    src={thumbnailUrl}
+                    alt=""
+                    width={500}
+                    height={400}
+                    className="w-full rounded-[20px] aspect-[1/0.8] object-cover"
+                  />
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <YoutubeIcon />
                   </div>
                 </div>
-              )
-            })
+                <div>
+                  <h5 className="mt-[14px] mb-[5px]">{image.title}</h5>
+                  <p>{image.description}</p>
+                </div>
+              </div>
+            )
+          })
             : (
               <div className="text-center">
                 <p>No videos available</p>
@@ -92,7 +92,7 @@ const VideosWellness = (props: any) => {
         }
       </div>
 
-    { data?.length > 0 &&  <div className="text-right reactpaginate">
+      {<div className="text-right reactpaginate">
         <ReactPaginate
           previousLabel={<Image src={PervIcon} alt="PervIcon" />}
           nextLabel={<Image src={NextIcon} alt="NextIcon" />}
@@ -114,7 +114,7 @@ const VideosWellness = (props: any) => {
         />
       </div>}
 
-      <Modal isOpen={selectedVideo !== null} onClose={closeVideoModal}>
+      <Modal isOpen={selectedVideo !== null} onClose={closeVideoModal} >
         {selectedVideo && (
           <div>
             <iframe

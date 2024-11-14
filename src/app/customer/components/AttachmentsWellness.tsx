@@ -27,7 +27,7 @@ const Modal = ({ isOpen, onClose, children }: ModalProps) => {
           &#x2715;
         </button>
         {children}
-      </div> 
+      </div>
     </div>
   );
 };
@@ -42,7 +42,7 @@ const AttachmentsWellness = (props: any) => {
     const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
     setSelectedVideo(embedUrl);
   };
- 
+
   const closeVideoModal = () => {
     setSelectedVideo(null);
   };
@@ -50,16 +50,16 @@ const AttachmentsWellness = (props: any) => {
   const renderAttachment = (obj: any) => {
     const fileExtension = obj.attachment.split('.').pop();
 
-    if (fileExtension === 'pdf' || fileExtension ==='docx') {
+    if (fileExtension === 'pdf' || fileExtension === 'docx') {
       return (
         <Link href={obj.attachment} className="" target="_blank">
-        <div className="grid place-items-center h-[273px] border rounded-[20px] bg-[#e0f2fc] border-[#CCE9FA] ">
-          <div className="rounded-full bg-[#26395E] w-[100px] h-[100px] flex items-center justify-center">
-            <span className="text-white text-lg font-bold uppercase">{fileExtension}</span>
+          <div className="grid place-items-center h-[273px] border rounded-[20px] bg-[#e0f2fc] border-[#CCE9FA] ">
+            <div className="rounded-full bg-[#26395E] w-[100px] h-[100px] flex items-center justify-center">
+              <span className="text-white text-lg font-bold uppercase">{fileExtension}</span>
+            </div>
+
           </div>
-        
-        </div>
-      </Link>
+        </Link>
       );
     } else if (fileExtension === 'mp4') {
       return (
@@ -68,7 +68,7 @@ const AttachmentsWellness = (props: any) => {
           onClick={() => openVideoModal(obj.attachment)}
         >
           <Image
-            src={obj.thumbnail || "/default-video-thumbnail.png"} 
+            src={obj.thumbnail || "/default-video-thumbnail.png"}
             alt="Video Thumbnail"
             width={300}
             height={200}
@@ -118,17 +118,20 @@ const AttachmentsWellness = (props: any) => {
             previousLabel={<Image src={PervIcon} alt="PervIcon" />}
             nextLabel={<Image src={NextIcon} alt="NextIcon" />}
             breakLabel={"..."}
+            breakClassName={"break-me"}
             pageCount={Math.ceil(total / rowsPerPage)}
             marginPagesDisplayed={2}
             pageRangeDisplayed={5}
             onPageChange={handlePageClick}
-            containerClassName="inline-flex mt-[34px] rounded-[5px] border border-[#d5dce9]"
-            pageClassName="text-[#26395e]"
-            pageLinkClassName="py-2 px-4 inline-block"
-            activeClassName="bg-[#26395e] rounded-[5px] text-white"
-            previousLinkClassName="py-2 px-4 inline-block"
-            nextLinkClassName="py-2 px-4 inline-block"
-            disabledClassName="opacity-50 cursor-not-allowed"
+            containerClassName={
+              "inline-flex mt-[34px] rounded-[5px] border border-[#d5dce9]"
+            }
+            pageClassName={"text-[#26395e]"} // List item
+            pageLinkClassName={"py-2 px-4 inline-block"} // Anchor tag
+            activeClassName={"bg-[#26395e] rounded-[5px] text-white"} // Active anchor
+            previousLinkClassName={"py-2 px-4 inline-block"}
+            nextLinkClassName={"py-2 px-4 inline-block"}
+            disabledClassName={"opacity-50 cursor-not-allowed"}
           />
         </div>
       )}

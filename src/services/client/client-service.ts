@@ -1,6 +1,7 @@
 import { getAxiosInstance } from "@/utils/axios";
 import { axiosInstance } from "@/utils/axios";
 
+export const addClientSignupData  = async (route: string, payload: any) =>  axiosInstance.post(route, payload)
 export const changePasswordService  = async (route: string, payload: any) => {
     const axiosInstance = await getAxiosInstance()
     return axiosInstance.patch(route, payload)
@@ -26,4 +27,8 @@ export const getClientAppointments  = async (route: string) => {
     const axiosInstance = await getAxiosInstance()
     return axiosInstance.get(route)
 }
-export const addClientSignupData  = async (route: string, payload: any) =>  axiosInstance.post(route, payload)
+
+export const postAnAppointment  = async (route: string, payload: any) => {
+    const axiosInstance = await getAxiosInstance()
+    return axiosInstance.post(route, payload)
+}
