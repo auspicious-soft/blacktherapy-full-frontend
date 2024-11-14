@@ -193,7 +193,7 @@ const ClinicianTable: React.FC<TherapistsDataProps> = ({
             ) : error ? (
               <tr>
                 <td colSpan={5} className="text-center text-red-500 ">
-                  Error loading payments data.
+                  Error loading Clinician data.
                 </td>
               </tr>
             ) : therapistsDataArray?.length > 0 ? (
@@ -225,7 +225,7 @@ const ClinicianTable: React.FC<TherapistsDataProps> = ({
                       setTooltipContent(null)
                     }}
                   >
-                    <p className={`cursor-pointer`}
+                    <p onClick={() => openClinicianPopup(row)} className={`cursor-pointer`}
                     >{row?.firstName} {row?.lastName}</p>
                     {(tooltipContent && tooltipContent as string)  && (
                       <Tooltip
@@ -252,9 +252,9 @@ const ClinicianTable: React.FC<TherapistsDataProps> = ({
                   <td>{row?.appointments.length}</td>
                   <td>
                     <div className="flex gap-2">
-                      <button onClick={() => openClinicianPopup(row)}>
+                      {/* <button onClick={() => openClinicianPopup(row)}>
                         <ViewIcon />{" "}
-                      </button>
+                      </button> */}
                       <button onClick={() => openEditModal(row)} className="">
                         {" "}
                         <EditIcon />

@@ -302,6 +302,16 @@ button:disabled {
 .profile-state label {
   margin: 0;
 }
+.personal-profile .state-select label {
+  color: #283c63;
+  font-size: 18px;
+}
+.personal-profile .state-select .css-qy22q6-control {
+  border-radius: 20px;
+  border-color: #dbe0eb;
+  height: 47px;
+}
+
 @media (min-width: 768px) {
   .card-wrapper:hover .text-button {
     bottom: 19px;

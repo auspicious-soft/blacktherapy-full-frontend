@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import PersonalInfoForm from "@/app/(website)/components/PersonalInfoForm";
 import IntroSection from "@/app/(website)/components/IntroSection";
+import { submitClientForm } from "@/utils/client-signup";
 
 interface InsuranceFormProps { 
   onBack: () => void;
@@ -288,7 +289,8 @@ const questionDistribution = [1, 4, 1, 1, 1, 1, 1, 1];
 
 const InsuranceForm: React.FC<InsuranceFormProps> = ({ onBack, formData, setFormData }) => {
   const [currentStep, setCurrentStep] = useState(0);
-
+  const totalSteps = questionDistribution.length + 2; 
+  
   const getQuestionIndicesForStep = (step: number) => {
     const startIndex = questionDistribution.slice(0, step).reduce((sum, count) => sum + count, 0);
     const endIndex = startIndex + questionDistribution[step];
@@ -357,6 +359,9 @@ const InsuranceForm: React.FC<InsuranceFormProps> = ({ onBack, formData, setForm
     }
     return formData[key] || '';
   };
+  const clientFormSubmit = async () => {
+    await submitClientForm(formData, setFormData);
+  };
 
 
   const renderQuestions = () => {
@@ -368,6 +373,7 @@ const InsuranceForm: React.FC<InsuranceFormProps> = ({ onBack, formData, setForm
           <label className="text-[15px] md:text-lg text-[#283C63] mb-2">{question.question}</label>
           {question.type === "textarea" ? (
             <textarea
+              required
               name={question.key}
               placeholder={question.placeholder}
               className="py-[10px] px-4 border border-[#dbe0eb] rounded-[20px]"
@@ -378,6 +384,7 @@ const InsuranceForm: React.FC<InsuranceFormProps> = ({ onBack, formData, setForm
             />
           ) : question.type === "select" ? (
             <select
+            required
               name={question.key}
               className="text-[#686C78] border border-[#dbe0eb] rounded-[20px] px-4 py-3"
               value={getValue(question.key)}  
@@ -397,6 +404,7 @@ const InsuranceForm: React.FC<InsuranceFormProps> = ({ onBack, formData, setForm
               {question.options?.map((option, i) => (
                 <label key={i} className="text-[15px] md:text-lg custom-radio step-form-radio relative flex items-center mb-2">
                   <input
+                    required
                     type="radio"
                     name={question.key}
                     value={option}
@@ -414,6 +422,7 @@ const InsuranceForm: React.FC<InsuranceFormProps> = ({ onBack, formData, setForm
             </div>
           ) : (
             <input
+            required
               type={question.type}
               name={question.key}
               placeholder={question.placeholder}
@@ -442,11 +451,15 @@ const InsuranceForm: React.FC<InsuranceFormProps> = ({ onBack, formData, setForm
         <button onClick={handleBack} className="button">
           Back
         </button>
-        {currentStep < questionDistribution.length && (
-          <button onClick={handleContinue} className="button">
-            Continue
-          </button>
-        )}
+        {currentStep < totalSteps - 1 ? (
+        <button onClick={handleContinue} className="button">
+          Continue
+        </button>
+      ) : (
+        <button onClick={clientFormSubmit} className="button">
+          Submit
+        </button>
+      )}
       </div>
     </div>
   );

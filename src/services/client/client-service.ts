@@ -15,3 +15,4 @@ export const updateProfileService  = async (route: string, payload: any) => {
     const axiosInstance = await getAxiosInstance()
     return axiosInstance.put(route, payload)
 }
+export const addClientSignupData  = async (route: string, payload: any) =>  axiosInstance.post(route, payload)

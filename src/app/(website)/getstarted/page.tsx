@@ -32,6 +32,7 @@ const Page = () => {
         phoneNumber: '',
         email: '',
         password: '',
+        confirmPassword: '',
         state: '',
         city: '',
         zipCode: '',

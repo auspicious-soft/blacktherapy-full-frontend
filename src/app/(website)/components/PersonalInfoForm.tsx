@@ -1,7 +1,6 @@
 "use client"
 import CustomSelect from '@/app/admin/components/CustomSelect';
 import { USStates } from '@/data/UsStatesData';
-import { submitClientForm } from '@/utils/client-signup';
 import React, { useState } from 'react';
 
 interface PerfonalInfoFormProps {
@@ -24,31 +23,27 @@ const PersonalInfoForm: React.FC<PerfonalInfoFormProps> = ({formData, setFormDat
     setFormData((prev: any) => ({ ...prev, state: value }));
   };
 
-  const clientFormSubmit = async () => {
-    await submitClientForm(formData, setFormData);
-  };
-
   return (
     <div>
       <h2 className='section-title text-center mb-4'>Fill Personal Information</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-[10px] md:gap-4">
-        <InputField name="firstName" label="First Name" value={formData.firstName} onChange={handleChange} />
-        <InputField name="lastName" label="Last Name" value={formData.lastName} onChange={handleChange} />
-        <InputField type="date" name="dob" label="Date of Birth" value={formData.dob} onChange={handleChange} />
-        <InputField name="phoneNumber" label="Phone" value={formData.phoneNumber} onChange={handleChange} />
-        <InputField type="password" name="password" label="Password" value={formData.password} onChange={handleChange} />
-        <InputField type="password" name="confirmPassword" label="Confirm Password" value={formData.confirmPassword} onChange={handleChange} />
-        <InputField type="email" name="email" label="Email" value={formData.email} onChange={handleChange} />
-        <InputField name="city" label="City" value={formData.city} onChange={handleChange} />
-        <CustomSelect name="" value={ (USStates as any).find((option: any) => option.value === formData?.state) || null }
+      <div className="personal-profile grid grid-cols-1 md:grid-cols-2 gap-[10px] md:gap-4">
+        <InputField required name="firstName" label="First Name" value={formData.firstName} onChange={handleChange} />
+        <InputField required name="lastName" label="Last Name" value={formData.lastName} onChange={handleChange} />
+        <InputField required type="date" name="dob" label="Date of Birth" value={formData.dob} onChange={handleChange} />
+        <InputField required name="phoneNumber" label="Phone" value={formData.phoneNumber} onChange={handleChange} />
+        <InputField required type="password" name="password" label="Password" value={formData.password} onChange={handleChange} />
+        <InputField required type="password" name="confirmPassword" label="Confirm Password" value={formData.confirmPassword} onChange={handleChange} />
+        <InputField required type="email" name="email" label="Email" value={formData.email} onChange={handleChange} />
+        <InputField required name="city" label="City" value={formData.city} onChange={handleChange} />
+        <CustomSelect  required name="State" value={ (USStates as any).find((option: any) => option.value === formData?.state) || null }
         options={USStates as any} onChange={handleSelectChange} placeholder="Select State" />
 
         {/* <SelectField name="location" label="Location" value={formData.location} onChange={handleChange} options={['Guam', 'Location2', 'Location3']} /> */}
-        <InputField name="zipCode" label="Zip Code" value={formData.zipCode} onChange={handleChange} />
-        <InputField name="addressLine1" label="Address Line 1" value={formData.addressLine1} onChange={handleChange} />
-        <InputField name="addressLine2" label="Address Line 2" value={formData.addressLine2} onChange={handleChange} />
+        <InputField required name="zipCode" label="Zip Code" value={formData.zipCode} onChange={handleChange} />
+        <InputField required name="addressLine1" label="Address Line 1" value={formData.addressLine1} onChange={handleChange} />
+        <InputField required name="addressLine2" label="Address Line 2" value={formData.addressLine2} onChange={handleChange} />
       </div>
-      <button onClick={clientFormSubmit} className=" button absolute right-0 bottom-[-56px] md:bottom-[-70px] ">Finish</button>
+      {/* <button onClick={clientFormSubmit} className=" button absolute right-0 bottom-[-56px] md:bottom-[-70px] ">Finish</button> */}
       </div>
   );
 };
@@ -59,9 +54,10 @@ interface InputFieldProps {
   value: string;
   type?: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  required?: boolean;
 }
 
-const InputField: React.FC<InputFieldProps> = ({ name, label, value, type = 'text', onChange }) => (
+const InputField: React.FC<InputFieldProps> = ({ name, label, value, type = 'text', onChange, required = false }) => (
   <div className='grid'>
     <label className="text-[15px] md:text-lg text-[#283C63] mb-2" htmlFor={name}>{label}</label>
     <input
@@ -69,6 +65,7 @@ const InputField: React.FC<InputFieldProps> = ({ name, label, value, type = 'tex
       name={name}
       value={value}
       onChange={onChange}
+      required={required} 
       className="text-sm md:text-base text-[#686C78] py-[10px] px-4 border border-[#dbe0eb] rounded-[20px]"
     />
   </div>
