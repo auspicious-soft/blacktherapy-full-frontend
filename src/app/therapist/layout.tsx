@@ -6,6 +6,7 @@ import MobileHeader from "@/app/therapist/components/MobileHeader";
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import OnboardingForm from "../(website)/components/OnboardingForm";
+import Link from "next/link";
 // import MobileHeader from "@/components/MobileHeader";
 
 const gothamPro = localFont({
@@ -74,8 +75,10 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   }
   else {
     return (
-      <div className="bg-black h-screen text-white">
-        You are not authorized to view this page
+      <div className="p-2 bg-black h-screen text-white">
+        You are not authorized to view this page go to login - <Link href={'/login'} className="p-3 text-black bg-white">
+          Login
+        </Link>
       </div>
     )
   }

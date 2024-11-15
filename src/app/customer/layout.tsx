@@ -5,6 +5,7 @@ import localFont from "next/font/local";
 import MobileHeader from "@/app/customer/components/MobileHeader";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 
 const gothamPro = localFont({
   src: '../../assets/fonts/GothamPro.ttf',
@@ -69,9 +70,11 @@ export default async function RootLayout({
   }
   else {
     return (
-      <div className="bg-black h-screen text-white">
-        You are not authorized to view this page
-      </div>
+      <div className="p-3 bg-black h-screen text-white">
+      You are not authorized to view this page go to login -<Link href={'/login'} className="p-3 text-black bg-white">
+          Login
+        </Link>
+    </div>
     )
   }
 }

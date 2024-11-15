@@ -5,6 +5,7 @@ import localFont from "next/font/local";
 import MobileHeader from "@/app/admin/components/MobileHeader";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 // import fontt from "../../assets/fonts"
 const gothamPro = localFont({
   src: "../../assets/fonts/GothamPro.ttf",
@@ -45,11 +46,11 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const session = await auth()
-  const notUserOrAdmin = ['therapist', 'client'] 
+  const notUserOrAdmin = ['therapist', 'client']
 
   if (!session) {
     redirect("/login")
-  } 
+  }
   else if (!notUserOrAdmin.includes((session as any)?.user?.role)) {
     return (
       <html lang="en">
@@ -72,8 +73,11 @@ export default async function RootLayout({
     );
   } else {
     return (
-      <div className="bg-black h-screen text-white">
-        You are not authorized to view this page
+      <div className="p-3 bg-black h-screen text-white">
+        You are not authorized to view this page click
+        <Link href={'/login'} className="p-3 text-black bg-white">
+          Login
+        </Link>
       </div>
     );
   }
