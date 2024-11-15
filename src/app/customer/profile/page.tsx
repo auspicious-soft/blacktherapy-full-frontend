@@ -86,9 +86,11 @@ const Page = () => {
       [name]: value,
     }));
   };
-  
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+    const addressLine = (formData as any).address1
+    delete (formData as any).address1;
+    (formData as any).addressLine1 = addressLine
     delete (formData as any).email
     startTransition(async () => {
       try {
@@ -109,11 +111,7 @@ const Page = () => {
         }
       }
     })
-    setNotification("Payment Request Submitted");
-    setTimeout(() => {
-      setNotification(null);
-    }, 3000);
-  };
+  }
 
   if (error) return <div className="text-red-500">Error: {error.message}</div>
   return (
@@ -214,7 +212,7 @@ const Page = () => {
             <div className="md:w-[calc(60%-20px)]">
               <input
                 type="text"
-                name="address"
+                name="address1"
                 placeholder="Home Address"
                 value={formData.address1}
                 onChange={handleChange}

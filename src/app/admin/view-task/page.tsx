@@ -103,7 +103,7 @@ const TableComponent: React.FC = () => {
                 <td>Admin</td>
                 <td>{row?.therapistId?.firstName} {row?.therapistId?.lastName}</td>
                 <td>{row?.title}</td>
-                <td>{row?.dueDate}</td>
+                <td>{new Date(row?.dueDate).toLocaleDateString('en-US')}</td>
                 <td>
                   <p className={`px-[10px] py-[2px] text-[10px] text-center rounded-3xl ${getPriorityColor(row?.priority)}`}>{row?.priority}</p>
                 </td>

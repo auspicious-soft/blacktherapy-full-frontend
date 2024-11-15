@@ -248,7 +248,7 @@ const ClinicianTable: React.FC<TherapistsDataProps> = ({
                     {row?.otherDetailsOfTherapist?.addressLine2},
                     {row?.otherDetailsOfTherapist?.state}
                   </td>
-                  <td>{row?.createdAt}</td>
+                  <td>{new Date(row?.createdAt).toLocaleDateString('en-US')}</td>
                   <td>{row?.appointments.length}</td>
                   <td>
                     <div className="flex gap-2">

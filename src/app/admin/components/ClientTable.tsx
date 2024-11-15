@@ -144,7 +144,7 @@ const ClientTable: React.FC<ClientsDataProps> = ({ clientsData, setQuery, error,
                 <td className='hover:underline hover:font-bold cursor-pointer'
                 onClick={() => openClientPopup(row)}>{row?.firstName} {row?.lastName}</td>
                 <td>{row?.phoneNumber}</td>
-                <td>{row?.createdAt}</td>
+                <td>{new Date(row?.createdAt).toLocaleDateString('en-US')}</td>
                 <td>{row?.appointments.length}</td>
                 <td>
                   <select

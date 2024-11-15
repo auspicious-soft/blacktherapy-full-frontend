@@ -210,7 +210,7 @@ const Page: React.FC = () => {
                 <td>{payment?.requestType}</td>
                 <td>{payment?.servicesProvided}</td>
                 <td>{payment?.clientId?.firstName} {payment?.clientId?.lastName}</td>
-                <td>{payment?.serviceDate}</td>
+                <td>{new Date(payment?.createdAt).toLocaleDateString('en-US')}</td>
                 <td>{payment?.duration}</td>
                 <td className="text-center capitalize">
                   <p
