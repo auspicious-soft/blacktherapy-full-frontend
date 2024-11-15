@@ -40,7 +40,6 @@ const PreviousAppointments = (props: any) => {
 
   const previousData = data?.data;
   const total = data?.total ?? 0;
-  console.log('total:', total);
   const rowsPerPage = 10;
   const handlePageClick = (selectedItem: { selected: number }) => {
     setQuery(`page=${selectedItem.selected + 1}&limit=${rowsPerPage}`)

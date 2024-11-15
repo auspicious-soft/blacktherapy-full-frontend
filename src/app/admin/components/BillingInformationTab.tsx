@@ -6,7 +6,7 @@ import { toast } from 'sonner';
 import useSWR from 'swr';
 
 interface BillingInformationTabProps {
-  rowId: string; 
+  rowId: string;
 }
 interface FormData {
   insuranceVerified: boolean,
@@ -22,7 +22,7 @@ const BillingInformationTab: React.FC<BillingInformationTabProps> = ({ rowId }) 
     revalidateOnFocus: false,
   });
 
-  const billingInfo = data?.data?.data; 
+  const billingInfo = data?.data?.data;
   const [isPending, startTransition] = useTransition();
 
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -50,7 +50,7 @@ const BillingInformationTab: React.FC<BillingInformationTabProps> = ({ rowId }) 
     e.preventDefault();
     startTransition(async () => {
       try {
-        const response = await addClientBilling(`/admin/client-billing/${rowId}`, formData); 
+        const response = await addClientBilling(`/admin/client-billing/${rowId}`, formData);
         if (response?.status === 201) {
           toast.success("Billing Added Successfully");
           closeModal();
@@ -95,31 +95,31 @@ const BillingInformationTab: React.FC<BillingInformationTabProps> = ({ rowId }) 
             </tr>
           </thead>
           <tbody>
-          {isLoading ? (
-      <tr>
-        <td colSpan={5} className="">Loading...</td>
-      </tr>
-    ) : error ? (
-      <tr>
-        <td colSpan={5} className="text-center text-red-500">Error loading payments data.</td>
-      </tr>
-    ) :billingInfo?.length > 0 ? (
-            billingInfo?.map((row: any) => (
-              <tr key={row?._id}>
-                <td>{row?.insuranceVerified ? 'Yes' : 'No'}</td>
-                <td>{row?.scaleDisount || 'N/A'}</td>
-                <td>{row?.billingStatus}</td>
-                <td>{row?.scaleTermsNote || 'N/A'}</td>
-                <td>{row?.lastInsuranceCheck ? 'Yes' : 'No'}</td>
-                <td>{row?.simplePractice ? 'Yes' : 'No'}</td>
-                <td>{new Date(row?.createdAt).toLocaleDateString('en-US')}</td>
+            {isLoading ? (
+              <tr>
+                <td colSpan={5} className="">Loading...</td>
               </tr>
-            ))
-          ) : (
-            <tr>
-              <td className='w-full flex justify-center p-3 items-center' colSpan={5} >No data found</td>
-            </tr>
-          )}
+            ) : error ? (
+              <tr>
+                <td colSpan={5} className="text-center text-red-500">Error loading payments data.</td>
+              </tr>
+            ) : billingInfo?.length > 0 ? (
+              billingInfo?.map((row: any) => (
+                <tr key={row?._id}>
+                  <td>{row?.insuranceVerified ? 'Yes' : 'No'}</td>
+                  <td>{row?.scaleDisount || 'N/A'}</td>
+                  <td>{row?.billingStatus}</td>
+                  <td>{row?.scaleTermsNote || 'N/A'}</td>
+                  <td>{row?.lastInsuranceCheck ? 'Yes' : 'No'}</td>
+                  <td>{row?.simplePractice ? 'Yes' : 'No'}</td>
+                  <td>{new Date(row?.createdAt).toLocaleDateString('en-US')}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td className='w-full flex justify-center p-3 items-center' colSpan={5} >No data found</td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
@@ -144,10 +144,10 @@ const BillingInformationTab: React.FC<BillingInformationTabProps> = ({ rowId }) 
               <select name="insuranceVerified"
                 value={formData.insuranceVerified ? 'true' : 'false'}
                 onChange={handleInputChange}>
-                  <option value="" disabled>--Select-</option>
-                  <option value="true">Yes</option>
-                  <option value="false">No</option>
-                </select>
+                <option value="" disabled>--Select-</option>
+                <option value="true">Yes</option>
+                <option value="false">No</option>
+              </select>
             </div>
             <div>
               <label className="block mb-2">Scale/Discount</label>
@@ -160,7 +160,7 @@ const BillingInformationTab: React.FC<BillingInformationTabProps> = ({ rowId }) 
             </div>
             <div>
               <label className="block mb-2">Billing Status</label>
-             <select
+              <select
                 name="billingStatus"
                 value={formData.billingStatus}
                 onChange={handleInputChange}
@@ -191,13 +191,13 @@ const BillingInformationTab: React.FC<BillingInformationTabProps> = ({ rowId }) 
             </div>
             <div>
               <label className="block mb-2">Entered into Simple Practice</label>
-              <select  name="simplePractice"
+              <select name="simplePractice"
                 value={formData.simplePractice ? 'true' : 'false'}
                 onChange={handleInputChange}>
-                  <option value="" disabled>--Select--</option>
-                  <option value="true">Yes</option>
-                  <option value="false">No</option>
-                </select>
+                <option value="" disabled>--Select--</option>
+                <option value="true">Yes</option>
+                <option value="false">No</option>
+              </select>
             </div>
           </div>
           <div className='mt-10 flex justify-end'>

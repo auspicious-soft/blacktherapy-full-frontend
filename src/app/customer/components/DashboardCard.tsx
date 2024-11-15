@@ -2,8 +2,8 @@ import React from 'react';
 
 type Appointment = {
   date: string;
-  chat: boolean;
-  videoChat: boolean;
+  chat: string | null;
+  videoChat: string | null;
 };
 
 type Billed = {
@@ -26,11 +26,11 @@ const DashboardCard: React.FC<DashboardCardProps> = ({ nextAppointment, previous
             <h2>{nextAppointment.date}</h2>
             <div className="flex justify-between items-center gap-10 mt-[10px]">
               <p className="font-gothamMedium">Chat</p>
-              <h5>{nextAppointment.chat ? 'yes' : 'No'}</h5>
+              <h5>{nextAppointment.chat }</h5>
             </div>
             <div className="flex justify-between items-center gap-10 mt-[10px]">
               <p className="font-gothamMedium">Video Chat</p>
-              <h5>{nextAppointment.videoChat ? 'yes' : 'No'}</h5>
+              <h5>{nextAppointment.videoChat}</h5>
             </div>
           </div>
           <div className="bg-[#FFBBCD]  bg-[top_right] bg-no-repeat bg-cover rounded-[10px] py-6 px-[15px] lg:px-[30px]">
@@ -38,11 +38,12 @@ const DashboardCard: React.FC<DashboardCardProps> = ({ nextAppointment, previous
             <h2>{previousAppointment.date}</h2>
             <div className="flex justify-between items-center gap-10 mt-[10px]">
               <p className="font-gothamMedium">Chat</p>
-              <h5>{previousAppointment.chat ? 'Start' : 'No'}</h5>
+
+              <h5>{previousAppointment.chat}</h5>
             </div>
             <div className="flex justify-between items-center gap-10 mt-[10px]">
               <p className="font-gothamMedium">Video Chat</p>
-              <h5>{previousAppointment.videoChat ? 'Start' : 'No'}</h5>
+              <h5>{previousAppointment.videoChat }</h5>
             </div>
           </div>
           <div className="bg-[#FFD899]  bg-[top_right] bg-no-repeat bg-cover rounded-[10px] py-6 px-[15px] lg:px-[30px]">

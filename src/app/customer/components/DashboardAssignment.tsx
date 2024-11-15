@@ -8,7 +8,7 @@ import { ViewIcon, ButtonArrow } from "@/utils/svgicons";
 import Therapist1 from "@/assets/images/therapist1.jpg";
 import Therapist2 from "@/assets/images/therapist2.jpg";
 import Therapist3 from "@/assets/images/therapist3.jpg";
-
+import ReactLoading from "react-loading";
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -33,54 +33,14 @@ const Modal = ({ isOpen, onClose, children }: ModalProps) => {
   );
 };
 
-const DashboardAssignment = () => {
-  const [currentPage, setCurrentPage] = useState(0);
+const DashboardAssignment = (props: any) => {
+  const { total, data, rowsPerPage, isLoading, error, setQuery } = props;
   const [renewPopupOpen, setRenewPopupOpen] = useState(false);
   const [teamPopupOpen, setTeamPopupOpen] = useState(false);
+  const [selectedAppointment, setSelectedAppointment] = useState<any>(null);
 
-  const therapists = [
-    { id: 1, name: "Therapist One", imageUrl: Therapist1 },
-    { id: 2, name: "Therapist Two", imageUrl: Therapist2 },
-    { id: 3, name: "Therapist Three", imageUrl: Therapist3 },
-    { id: 4, name: "Therapist Three", imageUrl: Therapist3 },
-    // Add more therapists here
-  ];
-
-  const data = [
-    {
-      id: 1,
-      apptDate: "26 July 2023",
-      renewalDate: "04 Jan 2025",
-      chatWithClinician: "Start Chat",
-      videoChat: "Start Video Call",
-      billingAmount: "$25.00",
-    },
-    {
-      id: 2,
-      apptDate: "26 July 2023",
-      renewalDate: "04 Jan 2022",
-      chatWithClinician: "Renew Subscription",
-      videoChat: "Renew Subscription",
-      billingAmount: "$25.00",
-    },
-    {
-      id: 3,
-      apptDate: "26 July 2023",
-      renewalDate: "04 Jan 2025",
-      chatWithClinician: "Not Available",
-      videoChat: "Wait for approval",
-      billingAmount: "$25.00",
-    },
-    // Add more data as needed
-  ];
-
-  // ReactPaginate
-  const rowsPerPage = 10;
-  const indexOfLastRow = (currentPage + 1) * rowsPerPage;
-  const indexOfFirstRow = indexOfLastRow - rowsPerPage;
-  const currentRows = data.slice(indexOfFirstRow, indexOfLastRow);
   const handlePageClick = (selectedItem: { selected: number }) => {
-    setCurrentPage(selectedItem.selected);
+    setQuery(`page=${selectedItem.selected + 1}&limit=${rowsPerPage}`)
   };
 
   function isPastDate(dateString: string) {
@@ -128,7 +88,8 @@ const DashboardAssignment = () => {
   const renewClosePopup = () => {
     setRenewPopupOpen(false);
   };
-  const handleViewTeam = () => {
+  const handleViewTeam = (row: any) => {
+    setSelectedAppointment(row.peerSupportIds);
     setTeamPopupOpen(true);
   };
   const handleCloseTeam = () => {
@@ -149,83 +110,44 @@ const DashboardAssignment = () => {
               <th>Video Chat</th>
               <th>Billing Amount</th>
               <th>Care Team</th>
+              <th>Created At</th>
             </tr>
           </thead>
           <tbody>
-            {currentRows.map((item) => (
-              <tr key={item.id}>
-                <td>{item.id}</td>
-                <td>{item.apptDate}</td>
-                <td>
-                  {isPastDate(item.renewalDate) ? (
-                    <span
-                      className="cursor-pointer"
-                      style={getStyle("Renew Subscription")}
-                      onClick={handleRenewClick}
-                    >
-                      Renew Subscription
-                    </span>
-                  ) : (
-                    item.renewalDate
-                  )}
-                </td>
-                <td>
-                  {item.chatWithClinician === "Start Chat" ? (
-                    <span
-                      className="cursor-pointer"
-                      style={getStyle("Start Chat")}
-                    >
-                      {item.chatWithClinician}
-                    </span>
-                  ) : isPastDate(item.renewalDate) ||
-                    item.chatWithClinician === "Renew Subscription" ? (
-                    <span
-                      className="cursor-pointer"
-                      style={getStyle("Renew Subscription")}
-                      onClick={handleRenewClick}
-                    >
-                      Renew Subscription
-                    </span>
-                  ) : (
-                    <span style={getStyle(item.chatWithClinician)}>
-                      {item.chatWithClinician}
-                    </span>
-                  )}
-                </td>
-                <td>
-                  {item.videoChat === "Start Video Call" ? (
-                    <span
-                      className="cursor-pointer"
-                      style={getStyle("Start Video Call")}
-                    >
-                      {item.videoChat}
-                    </span>
-                  ) : isPastDate(item.renewalDate) ||
-                    item.videoChat === "Renew Subscription" ? (
-                    <span
-                      className="cursor-pointer"
-                      style={getStyle("Renew Subscription")}
-                      onClick={handleRenewClick}
-                    >
-                      Renew Subscription
-                    </span>
-                  ) : (
-                    <span style={getStyle(item.videoChat)}>
-                      {item.videoChat}
-                    </span>
-                  )}
-                </td>
-                <td>{item.billingAmount}</td>
-                <td>
-                  <span
-                    className="cursor-pointer w-[26px] flex"
-                    onClick={handleViewTeam}
-                  >
-                    <ViewIcon />
-                  </span>
-                </td>
+            {isLoading ? (
+              <tr>
+                <td colSpan={5} className=""><ReactLoading type="spin" color="#26395e" height={20} width={20} /></td>
               </tr>
-            ))}
+            ) : error ? (
+              <tr>
+                <td colSpan={5} className="text-center text-red-500">Error loading payments data.</td>
+              </tr>
+            ) : data?.length > 0 ? (
+              data?.map((row: any) => (
+                <tr key={row?._id}>
+                  <td>{row?._id}</td>
+                  <td>{new Date(row?.appointmentDate).toLocaleDateString('en-US')}</td>
+                  <td>{row.apptTime}</td>
+                  <td>
+                    <p className={`font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px] ${row.chat === 'Start Chat' ? ' text-[#42A803] bg-[#CBFFB2] ' : ' text-[#FFA234] bg-[#FFFCEC] '}`}>
+                      {!row.message ? 'No chat' : <p className='cursor-pointer font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px]  text-[#42A803] bg-[#CBFFB2]'>Start Chat</p>}
+                    </p>
+                  </td>
+                  <td>{!row.video ? 'No video' : <p className='cursor-pointer font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px]  text-[#42A803] bg-[#CBFFB2]'>Start Video</p>}</td>
+                  <td>{row.billingAmount}</td>
+                  <td>
+                    <span className="cursor-pointer w-[26px] flex" onClick={() => handleViewTeam(row)}>
+                      <ViewIcon />
+                    </span>
+                  </td>
+                  <td>{new Date(row?.createdAt).toLocaleDateString('en-US')}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td className='w-full flex justify-center p-3 items-center' colSpan={5} >No data found</td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
@@ -235,7 +157,7 @@ const DashboardAssignment = () => {
           nextLabel={<Image src={NextIcon} alt="NextIcon" />}
           breakLabel={"..."}
           breakClassName={"break-me"}
-          pageCount={Math.ceil(data.length / rowsPerPage)}
+          pageCount={Math.ceil(total / rowsPerPage)}
           marginPagesDisplayed={2}
           pageRangeDisplayed={5}
           onPageChange={handlePageClick}
@@ -361,11 +283,13 @@ const DashboardAssignment = () => {
           Care Team
         </h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-[20px] gap-y-[20px] lg:gap-y-[40px]">
-          {therapists.map((therapist) => (
+          {selectedAppointment?.map((therapist: any) => (
             <div key={therapist.id} className="">
               <Image
-                src={therapist.imageUrl}
-                alt={therapist.name}
+                src={therapist.profilePic}
+                alt={therapist.firstName}
+                width={200}
+                height={200}
                 className="rounded-[20px] w-full aspect-square cover"
               />
               <h4 className="mt-4 font-gotham">{therapist.name}</h4>
