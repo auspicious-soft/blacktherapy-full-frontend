@@ -9,9 +9,9 @@ export const submitClientForm = async (
 ) => {
   try {
     const formattedData = { ...formData };
-    if(formattedData.password.length < 6){
+    if (formattedData.password.length < 6) {
       toast.error("Password must be at least 6 characters long");
-      return false; 
+      return false;
     }
     if (formData.password !== formData.confirmPassword) {
       toast.error("Passwords do not match");
@@ -20,7 +20,7 @@ export const submitClientForm = async (
     delete formattedData.confirmPassword;
 
     switch (formattedData.insuranceCoverage) {
-      case "yes": 
+      case "yes":
         delete formattedData.organisationEmail;
         delete formattedData.organisationName;
         break;
@@ -31,7 +31,7 @@ export const submitClientForm = async (
         delete formattedData.organisationName;
         break;
 
-      case "through EAP": 
+      case "through EAP":
         delete formattedData.insuranceCompany;
         break;
     }
@@ -40,14 +40,16 @@ export const submitClientForm = async (
     //     delete formattedData[key];
     //   }
     // }
-  //);
-  console.log('formattedData:', formattedData);
+    //);
+    console.log('formattedData:', formattedData);
 
     const response = await addClientSignupData('/client/signup', formattedData);
     if (response?.status === 201) {
       toast.success("Client data added successfully");
       setFormData({});
-      window.location.href = "/login"; 
+      setTimeout(() => {
+        window.location.href = "/login";
+      }, 2000);
       return true;
     } else {
       toast.error("Failed to add client data");
@@ -58,5 +60,5 @@ export const submitClientForm = async (
     toast.error("An error occurred while adding the client data");
     return false;
   }
-}; 
+};
 
