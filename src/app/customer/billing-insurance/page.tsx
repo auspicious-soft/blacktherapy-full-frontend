@@ -1,9 +1,8 @@
 'use client'
 import { ButtonArrow } from "@/utils/svgicons";
 import BillingDetails from "../components/BillingDetails";
-import CheckoutForm from "../components/upgrade-plan/CheckoutForm";
+import CheckoutForm from "@/app/customer/components/upgrade-plan/CheckoutForm";
 import { Elements } from "@stripe/react-stripe-js";
-import { loadStripe, Stripe } from "@stripe/stripe-js";
 import { getStripePk } from "@/actions";
 import { useEffect, useState } from "react";
 import { get } from "http";
@@ -11,34 +10,7 @@ import { getClientSecretService } from "@/services/client/client-service";
 
 
 const Page = () => {
-  const [stripePromise, setStripePromise] = useState<Promise<Stripe | null> | null>(null);
-  const [clientSecret, setClientSecret] = useState()
-  const initializeStripe = async () => {
-    try {
-      const publishableKey = await getStripePk();
-      setStripePromise(loadStripe(publishableKey));
-    } catch (error) {
-      console.error('Error initializing Stripe:', error);
-    }
-  }
-    const sampleClientSecret = "pi_XXXXXXXXXXXXXXXX_secret_XXXXXXXXXXXXXXXX"; 
-  const getClientSecret = async () => {
-    const res = await getClientSecretService('/client/get-payment-request')
-    const data = await res?.data
-    setClientSecret(data?.clientSecret)
-  }
-  useEffect(() => {
-    initializeStripe()
-    getClientSecret()
-  }, []);
-
-  if (!stripePromise) {
-    return <p>Loading payment...</p>;
-  }
-
-  const options = {
-    clientSecret: sampleClientSecret,
-  };
+  
 
     return(
         <div>
@@ -80,9 +52,7 @@ const Page = () => {
         <p className="text-[26px] text-[#283C63] leading-7 mb-5 ">Billing details</p>
         <BillingDetails />
 
-      <Elements stripe={stripePromise as any} options={options}>
-      <CheckoutForm />
-     </Elements>
+
         </div>
     );
 };
