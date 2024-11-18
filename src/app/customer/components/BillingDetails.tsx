@@ -48,7 +48,8 @@ const BillingDetails: React.FC = () => {
           </tr>
         </thead>
         <tbody>
-          {paginatedData.map((row, index) => (
+          {
+          paginatedData.map((row, index) => (
             <tr key={index}>
               <td>{row.id}</td>
               <td>{row.apptDate}</td>
@@ -57,7 +58,8 @@ const BillingDetails: React.FC = () => {
               <td>{row.videoChat}</td>
               <td>{row.billingAmount}</td>
             </tr>
-          ))}
+          ))
+          }
         </tbody>
       </table>
       </div>

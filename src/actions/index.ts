@@ -37,3 +37,7 @@ export const getTokenCustom = async () => {
     const cookiesOfNextAuth = cookies().get(process.env.JWT_SALT as string)
     return cookiesOfNextAuth?.value!
 }
+
+export const getStripePk = async () => {
+    return process.env.STRIPE_PUBLISHABLE_KEY as string
+}

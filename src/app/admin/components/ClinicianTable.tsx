@@ -193,7 +193,7 @@ const ClinicianTable: React.FC<TherapistsDataProps> = ({
             ) : error ? (
               <tr>
                 <td colSpan={5} className="text-center text-red-500 ">
-                  Error loading Clinician data.
+                  Error loading data.
                 </td>
               </tr>
             ) : therapistsDataArray?.length > 0 ? (
@@ -222,7 +222,7 @@ const ClinicianTable: React.FC<TherapistsDataProps> = ({
                     }}
                     onMouseLeave={() => {
                       setHoveredRow(null)
-                      setTooltipContent(null)
+                      setTooltipContent(null) 
                     }}
                   >
                     <p className={`cursor-pointer`}

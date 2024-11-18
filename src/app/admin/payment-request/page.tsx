@@ -199,7 +199,7 @@ const Page: React.FC = () => {
     ) : error ? (
       <tr>
         <td colSpan={activeTab === 'rejected' ? 11 : 10} className="text-center text-red-500">
-          Error loading payments data.
+          Error loading data.
         </td>
       </tr>
     ) :paymentsData?.length > 0 ? (

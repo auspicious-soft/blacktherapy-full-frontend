@@ -120,7 +120,7 @@ const DashboardAssignment = (props: any) => {
               </tr>
             ) : error ? (
               <tr>
-                <td colSpan={5} className="text-center text-red-500">Error loading payments data.</td>
+                <td colSpan={5} className="text-center text-red-500">Error loading data.</td>
               </tr>
             ) : data?.length > 0 ? (
               data?.map((row: any) => (

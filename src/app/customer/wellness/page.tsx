@@ -45,9 +45,9 @@ const Page = () => {
   const renderTabContent = () => {
     switch (activeTab) {
       case 'Previous Appointments':
-        return <div><PreviousAppointments data={appointmentsData?.data} setQuery={setQuery} isLoading={appointmentsIsLoading} /></div>;
+        return <div><PreviousAppointments data={appointmentsData?.data} error={error} setQuery={setQuery} isLoading={appointmentsIsLoading} /></div>;
       case 'Upcoming Appointments':
-        return <div><UpcomingAppointments data={appointmentsData?.data} isLoading={appointmentsIsLoading} /></div>;
+        return <div><UpcomingAppointments data={appointmentsData?.data} error={error} isLoading={appointmentsIsLoading} /></div>;
       case 'Videos':
         return <VideosWellness data={data?.data} isLoading={isLoading} rowPerPage={rowsPerPage} total={total} handlePageClick={handlePageClick} />;
       case 'Attachments':

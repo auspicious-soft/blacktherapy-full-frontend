@@ -43,10 +43,10 @@ const Page: React.FC = () => {
         </div>
         <div className="mt-[30px]">
           {activeTab === 'tab1' &&
-            <UnassignedClientTable appointmentsData={appointmentsData} setQuery={setQuery} isLoading={isLoading} mutate={mutate} />
+            <UnassignedClientTable appointmentsData={appointmentsData} error={error} setQuery={setQuery} isLoading={isLoading} mutate={mutate} />
           }
           {activeTab === 'tab2' &&
-            <AssignedClientsTable appointmentsData={appointmentsData} isLoading={isLoading} setQuery={setQuery} mutate={mutate} />
+            <AssignedClientsTable appointmentsData={appointmentsData} error={error} isLoading={isLoading} setQuery={setQuery} mutate={mutate} />
           }
 
         </div>

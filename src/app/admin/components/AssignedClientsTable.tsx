@@ -23,9 +23,10 @@ interface AssignedClientsTableProps {
   setQuery: any;
   mutate: any;
   isLoading: boolean;
+  error: any
 }
 
-const AssignedClientsTable: React.FC<AssignedClientsTableProps> = ({ appointmentsData, setQuery, mutate, isLoading }) => {
+const AssignedClientsTable: React.FC<AssignedClientsTableProps> = ({ error,appointmentsData, setQuery, mutate, isLoading }) => {
   const router = useRouter();
   const total = appointmentsData?.total ?? 0;
   const appointments = appointmentsData?.data ?? [];
@@ -90,7 +91,20 @@ const AssignedClientsTable: React.FC<AssignedClientsTableProps> = ({ appointment
             </tr>
           </thead>
           <tbody>
-            {assignedData?.length > 0 ? (
+          {isLoading ? (
+              <tr>
+                <td colSpan={5} className="">
+                  Loading...
+                </td>
+              </tr>
+            ) : error ? (
+              <tr>
+                <td colSpan={5} className="text-center text-red-500 ">
+                  Error loading Clinician data.
+                </td>
+              </tr>
+            ) : assignedData?.length > 0 ? (
+     
               assignedData?.map((row: any) => (
                 <tr key={row?._id}>
                   <td>{row?._id}</td>

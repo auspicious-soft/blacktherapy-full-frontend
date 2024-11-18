@@ -94,7 +94,20 @@ const TableComponent: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {taskData?.map((row: any) => (
+          {isLoading ? (
+              <tr>
+                <td colSpan={5} className="">
+                  Loading...
+                </td>
+              </tr>
+            ) : error ? (
+              <tr>
+                <td colSpan={5} className="text-center text-red-500 ">
+                  Error loading data.
+                </td>
+              </tr>
+            ) : taskData?.length > 0 ? (
+            taskData?.map((row: any) => (
               <tr key={row?._id}>
                 <td>{row?._id}</td>
                 <td>
@@ -118,7 +131,17 @@ const TableComponent: React.FC = () => {
                   ><DeleteIcon /></button>
                 </td>
               </tr>
-            ))}
+            ))
+          ) : (
+            <tr>
+              <td
+                className="w-full flex justify-center p-3 items-center"
+                colSpan={5}
+              >
+                No data found
+              </td>
+            </tr>
+          )}
           </tbody>
         </table>
 

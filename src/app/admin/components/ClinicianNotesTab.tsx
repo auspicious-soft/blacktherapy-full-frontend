@@ -65,13 +65,36 @@ const ClinicianNotesTab: React.FC<NotesProps> = ({ rowId }) => {
             </tr>
           </thead>
           <tbody>
-            {notesInfo?.map((row: any) => (
+          {isLoading ? (
+              <tr>
+                <td colSpan={5} className="">
+                  Loading...
+                </td>
+              </tr>
+            ) : error ? (
+              <tr>
+                <td colSpan={5} className="text-center text-red-500 ">
+                  Error loading data.
+                </td>
+              </tr>
+            ) : notesInfo?.length > 0 ? (
+            notesInfo?.map((row: any) => (
               <tr key={row?._id}>
                 <td>{row?.note}</td>
                 <td>{row?.createdAt}</td>
                 <td className="capitalize">{userRole}</td>
               </tr>
-            ))}
+            ))
+          ) : (
+            <tr>
+              <td
+                className="w-full flex justify-center p-3 items-center"
+                colSpan={5}
+              >
+                No data found
+              </td>
+            </tr>
+          )}
           </tbody>
         </table>
       </div>

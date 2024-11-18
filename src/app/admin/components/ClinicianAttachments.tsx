@@ -115,7 +115,20 @@ const ClinicianAttachments: React.FC<ClinicianAttachmentsProps> = ({ rowId }) =>
             </tr>
           </thead>
           <tbody>
-  {attachmentsInfo?.map((row: any) => (
+          {isLoading ? (
+              <tr>
+                <td colSpan={5} className="">
+                  Loading...
+                </td>
+              </tr>
+            ) : error ? (
+              <tr>
+                <td colSpan={5} className="text-center text-red-500 ">
+                  Error loading data.
+                </td>
+              </tr>
+            ) : attachmentsInfo?.length > 0 ? (
+  attachmentsInfo?.map((row: any) => (
     <tr key={row._id}>
       <td>{row.title}</td>
       <td>
@@ -129,7 +142,17 @@ const ClinicianAttachments: React.FC<ClinicianAttachmentsProps> = ({ rowId }) =>
       </td>
       <td className="capitalize">{userRole}</td>
     </tr>
-  ))}
+  ))
+) : (
+  <tr>
+    <td
+      className="w-full flex justify-center p-3 items-center"
+      colSpan={5}
+    >
+      No data found
+    </td>
+  </tr>
+)}
 </tbody>
 
 

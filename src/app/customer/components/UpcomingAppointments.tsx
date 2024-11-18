@@ -5,7 +5,7 @@ import PervIcon from "@/assets/images/pervicon.png";
 import NextIcon from "@/assets/images/nexticon.png";
 
 const UpcomingAppointments = (props:any) => {
-  const {data} = props; 
+  const {data, error} = props; 
   const {setQuery} = props;
   
   const upcomingData = data?.data;
@@ -88,7 +88,20 @@ const UpcomingAppointments = (props:any) => {
             </tr>
           </thead>
           <tbody>
-            {upcomingData?.map((item: any) => (
+          {isLoading ? (
+              <tr>
+                <td colSpan={5} className="">
+                  Loading...
+                </td>
+              </tr>
+            ) : error ? (
+              <tr>
+                <td colSpan={5} className="text-center text-red-500 ">
+                  Error loading data.
+                </td>
+              </tr>
+            ) : upcomingData?.length > 0 ? (
+            upcomingData?.map((item: any) => (
               <tr key={item?._id}>
                 <td>{item?._id}</td>
                 <td>{item.apptDate}</td>
@@ -101,7 +114,17 @@ const UpcomingAppointments = (props:any) => {
                 <td>{!item.video ? 'No video' : <p className='cursor-pointer font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px]  text-[#42A803] bg-[#CBFFB2]'>Start Video</p>}</td>
                 <td>{item.billingAmount}</td>
               </tr>
-            ))}
+            ))
+          ) : (
+            <tr>
+              <td
+                className="w-full flex justify-center p-3 items-center"
+                colSpan={5}
+              >
+                No data found
+              </td>
+            </tr>
+          )}
           </tbody>
         </table>
       </div>

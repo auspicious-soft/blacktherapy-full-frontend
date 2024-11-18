@@ -265,7 +265,7 @@ const Page = () => {
               ) : error ? (
                 <tr>
                   <td colSpan={5} className="text-center text-red-500">
-                    Error loading payments data.
+                    Error loading data.
                   </td>
                 </tr>
               ) : clientsTrainingData?.length > 0 ? (

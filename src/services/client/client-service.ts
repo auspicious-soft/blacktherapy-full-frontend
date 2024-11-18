@@ -32,3 +32,8 @@ export const postAnAppointment  = async (route: string, payload: any) => {
     const axiosInstance = await getAxiosInstance()
     return axiosInstance.post(route, payload)
 }
+
+export const getClientSecretService = async (route:string) => {
+    const axiosInstance = await getAxiosInstance()
+    return axiosInstance.get(route)
+}

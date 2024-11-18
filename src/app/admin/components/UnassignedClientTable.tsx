@@ -22,10 +22,11 @@ interface UnassignedPageProps {
   setQuery: any;
   mutate: any;
   isLoading: boolean
+  error: any;
 }
 
 
-const UnassignedClientTable: React.FC<UnassignedPageProps> = ({ setQuery, appointmentsData, mutate, isLoading }) => {
+const UnassignedClientTable: React.FC<UnassignedPageProps> = ({error, setQuery, appointmentsData, mutate, isLoading }) => {
 
   const total = appointmentsData?.total ?? 0;
   const unassignedData = appointmentsData?.data;
@@ -82,7 +83,19 @@ const UnassignedClientTable: React.FC<UnassignedPageProps> = ({ setQuery, appoin
             </tr>
           </thead>
           <tbody>
-            {unassignedData?.length > 0 ? (
+          {isLoading ? (
+              <tr>
+                <td colSpan={5} className="">
+                  Loading...
+                </td>
+              </tr>
+            ) : error ? (
+              <tr>
+                <td colSpan={5} className="text-center text-red-500 ">
+                  Error loading data.
+                </td>
+              </tr>
+            ) : unassignedData?.length > 0 ? (
               unassignedData?.map((row: any) => (
                 <tr key={row._id}>
                   <td>{row._id}</td>

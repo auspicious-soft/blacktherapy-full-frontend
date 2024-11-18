@@ -35,7 +35,7 @@ const Modal = ({ isOpen, onClose, children }: ModalProps) => {
 
 const PreviousAppointments = (props: any) => {
   const { isLoading } = props
-  const {data} = props; 
+  const {data, error} = props; 
   const {setQuery} = props;
 
   const previousData = data?.data;
@@ -106,7 +106,20 @@ const PreviousAppointments = (props: any) => {
             </tr>
           </thead>
           <tbody>
-            {previousData?.map((item: any) => (
+          {isLoading ? (
+              <tr>
+                <td colSpan={5} className="">
+                  Loading...
+                </td>
+              </tr>
+            ) : error ? (
+              <tr>
+                <td colSpan={5} className="text-center text-red-500 ">
+                  Error loading data.
+                </td>
+              </tr>
+            ) : previousData?.length > 0 ? (
+            previousData?.map((item: any) => (
               <tr key={item?._id}>
                 <td>{item?._id}</td>
                 <td>{item.apptDate}</td>
@@ -124,7 +137,17 @@ const PreviousAppointments = (props: any) => {
                   </span>
                 </td>
               </tr>
-            ))}
+            ))
+          ) : (
+            <tr>
+              <td
+                className="w-full flex justify-center p-3 items-center"
+                colSpan={5}
+              >
+                No data found
+              </td>
+            </tr>
+          )}
           </tbody>
         </table>
       </div>
