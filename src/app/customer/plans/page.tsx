@@ -9,11 +9,10 @@ import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
 import ReactLoading from 'react-loading';
 
-
 const PlansPage = () => {
   const session = useSession()
-  const [plan, setPlan] = useState('stayRooted');
-  const [interval, setInterval] = useState('week');
+  const [plan, setPlan] = useState<string>("stayRooted");
+  const [interval, setInterval] = useState<string>("week");
   const [stripePromise, setStripePromise] = useState<Promise<Stripe | null> | null>(null);
   const [clientSecret, setClientSecret] = useState<string>()
   const [subscriptionId, setSubscriptionId] = useState<string>()
@@ -94,6 +93,20 @@ const PlansPage = () => {
     }
   };
 
+  const handleRadioChange = (selectedPlan: string, selectedInterval: string) => {
+    setPlan(selectedPlan);
+    setInterval(selectedInterval);
+  };
+  const isPlanSelected = (planType: string) => {
+    if (planType === 'stayRooted') {
+      return plan === 'stayRooted' && interval === 'week';
+    }
+    if (planType === 'glowUp') {
+      return plan === 'glowUp' && (interval === 'week' || interval === 'month');
+    }
+    return false;
+  };
+
   if (error) {
     return (
       <div className="p-4 text-center">
@@ -119,9 +132,9 @@ const PlansPage = () => {
 
   return (
     <div className="">
-      <div className='flex gap-[30px]'>
+      <div className=' gap-[30px] grid grid-cols-2 '>
         {/* Stay Rooted Plan */}
-        <div className='w-1/2 max-w-[484px] bg-white rounded-[20px]'>
+        <div className=' bg-white rounded-[20px]'>
           <div className='bg-[#0A1C42] rounded-tl-[20px] rounded-br-[50px] py-[26px] px-[40px] max-w-[396px]'>
             <h3 className='text-white leading-7 text-[24px]'>Stay Rooted Plan</h3>
             <p className='text-white'>Stay Grounded, Stay strong.</p>
@@ -136,28 +149,33 @@ const PlansPage = () => {
               <li>Access to mental health resources (e.g., meditation guides and wellness Tips)</li>
             </ul>
             <h5 className='font-bold mb-2.5'>Select plan duration</h5>
-            <label className='flex items-center gap-5 text-[#686C78]'>
+            <label className='flex items-center gap-5 text-[#686C78] cursor-pointer '>
               <input 
                 type="radio" 
                 checked={plan === 'stayRooted' && interval === 'week'}
-                onChange={() => setPlan('stayRooted')}
+                onChange={() => handleRadioChange('stayRooted', 'week')}
                 className='w-[20px] h-[20px] accent-[#26395E]'
               />
               Weekly
             </label>
           </div>
           <div className='px-[18px] pb-[18px]'>
-            <button 
-              className='w-full bg-[#26395E] rounded-[10px] text-white py-4'
+          <button 
+              className={`w-full rounded-[10px] text-white py-4 ${
+                isPlanSelected('stayRooted') 
+                  ? 'bg-[#26395E]' 
+                  : 'bg-[#26395E]/50 cursor-not-allowed'
+              }`}
               onClick={() => handlePlanSelect('stayRooted', 'week')}
+              disabled={!isPlanSelected('stayRooted')}
             >
-              Select Plan
+              {isPlanSelected('stayRooted') ? 'Select Plan' : 'Choose Weekly Plan'}
             </button>
           </div>
         </div>
 
         {/* Glow Up Plan */}
-        <div className='w-1/2 max-w-[484px] bg-white rounded-[20px]'>
+        <div className=' bg-white rounded-[20px]'>
           <div className='bg-[#0A1C42] rounded-tl-[20px] rounded-br-[50px] py-[26px] px-[40px] max-w-[396px]'>
             <h3 className='text-white leading-7 text-[24px]'>Glow Up Plan</h3>
             <p className='text-white'>Shine Bright & Thrive in Your Greatness.</p>
@@ -173,26 +191,20 @@ const PlansPage = () => {
             </ul>
             <h5 className='font-bold mb-2.5'>Select plan duration</h5>
             <div className='flex gap-[50px] items-center'>
-              <label className='flex items-center gap-5 text-[#686C78]'>
+              <label className='flex items-center gap-5 text-[#686C78] cursor-pointer'>
                 <input 
                   type="radio" 
                   checked={plan === 'glowUp' && interval === 'week'}
-                  onChange={() => {
-                    setPlan('glowUp');
-                    setInterval('week');
-                  }}
+                  onChange={() => handleRadioChange('glowUp', 'week')}
                   className='w-[20px] h-[20px] accent-[#26395E]'
                 />
                 Weekly
               </label>
-              <label className='flex items-center gap-5 text-[#686C78]'>
+              <label className='flex items-center gap-5 text-[#686C78] cursor-pointer'>
                 <input 
                   type="radio" 
                   checked={plan === 'glowUp' && interval === 'month'}
-                  onChange={() => {
-                    setPlan('glowUp');
-                    setInterval('month');
-                  }}
+                  onChange={() => handleRadioChange('glowUp', 'month')}
                   className='w-[20px] h-[20px] accent-[#26395E]'
                 />
                 Monthly
@@ -200,11 +212,16 @@ const PlansPage = () => {
             </div>
           </div>
           <div className='px-[18px] pb-[18px]'>
-            <button 
-              className='w-full bg-[#26395E] rounded-[10px] text-white py-4'
-              onClick={() => handlePlanSelect('glowUp', interval)}
+          <button 
+              className={`w-full rounded-[10px] text-white py-4 ${
+                isPlanSelected('glowUp') 
+                  ? 'bg-[#26395E]' 
+                  : 'bg-[#26395E]/50 cursor-not-allowed'
+              }`}
+              onClick={() => handlePlanSelect('glowUp', interval!)}
+              disabled={!isPlanSelected('glowUp')}
             >
-              Select Plan
+              {isPlanSelected('glowUp') ? 'Select Plan' : 'Choose Plan Duration'}
             </button>
           </div>
         </div>
