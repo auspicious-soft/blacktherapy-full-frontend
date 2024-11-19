@@ -311,7 +311,22 @@ button:disabled {
   border-color: #dbe0eb;
   height: 47px;
 }
-
+ul.plan-lists li:before {
+  content: "";
+  background: url(../assets/images/plans.png);
+  position: absolute;
+  left: 0;
+  top: 2px;
+  width: 24px;
+  height: 21px;
+  display: inline-block;
+}
+ul.plan-lists li {
+  position: relative;
+  padding-left: 34px;
+  font-size: 14px;
+  color: #686C78;
+}
 @media (min-width: 768px) {
   .card-wrapper:hover .text-button {
     bottom: 19px;
