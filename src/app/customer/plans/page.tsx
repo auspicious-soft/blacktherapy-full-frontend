@@ -11,22 +11,14 @@ import ReactLoading from 'react-loading';
 
 const PlansPage = () => {
   const session = useSession()
-  const [plan, setPlan] = useState<string>("stayRooted");
-  const [interval, setInterval] = useState<string>("week");
+  const [plan, setPlan] = useState<string>("");
+  const [interval, setInterval] = useState<string>("");
   const [stripePromise, setStripePromise] = useState<Promise<Stripe | null> | null>(null);
   const [clientSecret, setClientSecret] = useState<string>()
   const [subscriptionId, setSubscriptionId] = useState<string>()
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showCheckout, setShowCheckout] = useState(false);
-
-  const appearance = {
-    theme: 'flat',
-    variables: {
-      colorPrimary: '#283c63',
-      colorBackground: '#ffffff',
-    },
-  };
 
   const initializeStripe = async () => {
     try {
@@ -45,9 +37,9 @@ const PlansPage = () => {
   }
 
   useEffect(() => {
-    initializeStripe();
-  }, []);
-
+    initializeStripe()
+  }, [])
+  
   const handlePlanSelect = async (selectedPlan: string, selectedInterval: string) => {
     setPlan(selectedPlan);
     setInterval(selectedInterval);
@@ -94,17 +86,7 @@ const PlansPage = () => {
   };
 
   const handleRadioChange = (selectedPlan: string, selectedInterval: string) => {
-    setPlan(selectedPlan);
-    setInterval(selectedInterval);
-  };
-  const isPlanSelected = (planType: string) => {
-    if (planType === 'stayRooted') {
-      return plan === 'stayRooted' && interval === 'week';
-    }
-    if (planType === 'glowUp') {
-      return plan === 'glowUp' && (interval === 'week' || interval === 'month');
-    }
-    return false;
+    handlePlanSelect(selectedPlan, selectedInterval);
   };
 
   if (error) {
@@ -159,19 +141,6 @@ const PlansPage = () => {
              <span> Weekly <span className='font-bold text-[#26395E] '>(Billed $85)</span></span>
             </label>
           </div>
-          <div className='px-[18px] pb-[18px]'>
-          <button 
-              className={`w-full rounded-[10px] text-white py-4 ${
-                isPlanSelected('stayRooted') 
-                  ? 'bg-[#26395E]' 
-                  : 'bg-[#26395E]/50 cursor-not-allowed'
-              }`}
-              onClick={() => handlePlanSelect('stayRooted', 'week')}
-              disabled={!isPlanSelected('stayRooted')}
-            >
-              {isPlanSelected('stayRooted') ? 'Select Plan' : 'Choose Weekly Plan'}
-            </button>
-          </div>
         </div>
 
         {/* Glow Up Plan */}
@@ -193,9 +162,9 @@ const PlansPage = () => {
             <div className='flex gap-[50px] items-center'>
               <label className='flex items-center gap-5 text-[#686C78] cursor-pointer'>
                 <input 
-                  type="radio" 
+                  type="radio"
                   checked={plan === 'glowUp' && interval === 'week'}
-                  onChange={() => handleRadioChange('glowUp', 'week')}
+                  onChange={() => handleRadioChange('glowUp', 'week')}                
                   className='w-[20px] h-[20px] accent-[#26395E]'
                 />
                 <span> Weekly <span className='font-bold text-[#26395E] '>(Billed $125)</span></span>
@@ -212,19 +181,6 @@ const PlansPage = () => {
 
               </label>
             </div>
-          </div>
-          <div className='px-[18px] pb-[18px]'>
-          <button 
-              className={`w-full rounded-[10px] text-white py-4 ${
-                isPlanSelected('glowUp') 
-                  ? 'bg-[#26395E]' 
-                  : 'bg-[#26395E]/50 cursor-not-allowed'
-              }`}
-              onClick={() => handlePlanSelect('glowUp', interval!)}
-              disabled={!isPlanSelected('glowUp')}
-            >
-              {isPlanSelected('glowUp') ? 'Select Plan' : 'Choose Plan Duration'}
-            </button>
           </div>
         </div>
       </div>
@@ -250,6 +206,7 @@ const PlansPage = () => {
               subscriptionId={subscriptionId!}
               userId={session?.data?.user?.id as string}
               planType={plan}
+              interval={interval}
             />
           </Elements>
         </div>

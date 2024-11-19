@@ -3,7 +3,7 @@ import Stripe from "stripe";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2024-10-28.acacia',
-});
+})
 
 type PlanType = 'stayRooted' | 'glowUp';
 
@@ -18,6 +18,15 @@ interface PriceIdConfig {
 }
 
 
+const priceIds: PriceIdConfig = {
+  stayRooted: {
+    week: process.env.NEXT_PUBLIC_STAY_ROOTED_PLAN as string,
+  },
+  glowUp: {
+    week: process.env.NEXT_PUBLIC_GLOW_UP_PLAN as string,
+    month: process.env.NEXT_PUBLIC_GLOW_UP_MONTHLY_PLAN as string,
+  },
+}
 
 export async function POST(req: Request) {
   try {
@@ -25,42 +34,21 @@ export async function POST(req: Request) {
     const { planType, userId, interval = 'week', email, name } = body;
 
     if (!planType || !userId) {
-      return NextResponse.json(
-        { error: "Missing required fields" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
-    const priceIds: PriceIdConfig = {
-      stayRooted: {
-        week: process.env.NEXT_PUBLIC_STAY_ROOTED_PLAN as string,
-      },
-      glowUp: {
-        week: process.env.NEXT_PUBLIC_GLOW_UP_PLAN as string,
-        month: process.env.NEXT_PUBLIC_GLOW_UP_MONTHLY_PLAN as string,
-      },
-    };
 
     if (!isPlanType(planType)) {
-      return NextResponse.json(
-        { error: "Invalid plan type" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Invalid plan type" }, { status: 400 });
     }
 
     // Get the price configuration for the selected plan
     const planPrices = priceIds[planType];
-    console.log('planPrices:', planPrices);
-    
+
     // Get the specific price for the interval
     const priceId = (planPrices as any)[interval as any];
-    console.log('priceId:', priceId);
-
     if (!priceId) {
-      return NextResponse.json(
-        { error: "Invalid plan type or interval" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Invalid plan type or interval" }, { status: 400 });
     }
 
     const customer = await stripe.customers.create({
@@ -68,7 +56,7 @@ export async function POST(req: Request) {
         userId,
       },
       email: email,
-      name: name 
+      name: name
     });
 
     const subscription = await stripe.subscriptions.create({
@@ -77,7 +65,7 @@ export async function POST(req: Request) {
         price: priceId,
       }],
       payment_behavior: 'default_incomplete',
-      payment_settings: { 
+      payment_settings: {
         save_default_payment_method: 'on_subscription',
       },
       metadata: {
@@ -89,27 +77,19 @@ export async function POST(req: Request) {
       },
       expand: ['latest_invoice.payment_intent'],
     });
-    
+
     const invoice = subscription.latest_invoice as Stripe.Invoice;
-    console.log('invoice:', invoice);
     const paymentIntent = invoice.payment_intent as Stripe.PaymentIntent;
-    console.log('paymentIntent:', paymentIntent);
-    // const paymentIntent = await stripe.paymentIntents.create({
+    // const paymentIntent = await stripe.paymentIntents.create({  //not using as we are now subscribing to a plan and not creating a payment intent
     //           amount: await getPriceAmountByPriceId(priceId),
     //           currency: 'eur',
     //           payment_method_types: ['card'],
     //})
 
-    return NextResponse.json({
-      subscriptionId: subscription.id,
-      clientSecret: paymentIntent.client_secret,
-    });
+    return NextResponse.json({ subscriptionId: subscription.id, clientSecret: paymentIntent.client_secret });
   } catch (error) {
     console.error("Error creating subscription:", error);
-    return NextResponse.json(
-      { error: "Error creating subscription" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Error creating subscription" }, { status: 500 });
   }
 }
 

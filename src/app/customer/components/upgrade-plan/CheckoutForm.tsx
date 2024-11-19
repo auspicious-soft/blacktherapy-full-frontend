@@ -7,14 +7,10 @@ interface CheckoutFormProps {
   planType: string;
   clientSecret: string;
   subscriptionId: string;
+  interval: string;
 }
 
-const CheckoutForm = ({
-  userId,
-  planType,
-  clientSecret,
-  subscriptionId,
-}: CheckoutFormProps) => {
+const CheckoutForm = ({ userId, planType, clientSecret, subscriptionId, interval }: CheckoutFormProps) => {
   const stripe = useStripe();
   const elements = useElements();
   const [isProcessing, setIsProcessing] = useState(false);
@@ -44,7 +40,7 @@ const CheckoutForm = ({
       toast.error('Error processing subscription');
     } finally {
       setIsProcessing(false);
-    }
+    }     
   };
 
   return (
