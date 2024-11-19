@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { usePathname } from 'next/navigation';
-import { BillingInsuranceIcon, ChangePasswordIcon, DashboardIcon, Humbruger, Logo, LogOut, ProfileIcon, WellnessIcon } from "@/utils/svgicons";
+import { BillingInsuranceIcon, ChangePasswordIcon, DashboardIcon, Humbruger, Logo, LogOut, PlansIcon, ProfileIcon, WellnessIcon } from "@/utils/svgicons";
 import Link from "next/link";
 // import './SideNav.css'; 
 import { useRouter } from "next/navigation";
@@ -42,34 +42,40 @@ const MobileHeader = () => {
         <div className="">
 
           <ul className="navList">
-            <li onClick={toggleSidebar} className={isActive('/')}>
+            <li onClick={toggleSidebar} className={isActive('/customer/dashboard')}>
               <Link href="/customer/dashboard">
                 <DashboardIcon />
                 <span>Dashboard</span>
               </Link>
             </li>
-            <li onClick={toggleSidebar} className={isActive('/wellness')}>
+            <li onClick={toggleSidebar} className={isActive('/customer/wellness')}>
               <Link href="/customer/wellness">
                 <WellnessIcon />
                 <span>Wellness</span>
               </Link>
             </li>
-            <li onClick={toggleSidebar}  className={isActive('/profile')}>
+            <li onClick={toggleSidebar}  className={isActive('/customer/profile')}>
               <Link href="/customer/profile">
                 <ProfileIcon />
                 <span>Profile</span>
               </Link>
             </li>
-            <li onClick={toggleSidebar} className={isActive('/change-password')}>
+            <li onClick={toggleSidebar} className={isActive('/customer/change-password')}>
               <Link href="/customer/change-password">
                 <ChangePasswordIcon />
                 <span>Change Password</span>
               </Link>
             </li>
-            <li onClick={toggleSidebar} className={isActive('/billing-insurance')}>
+            <li onClick={toggleSidebar} className={isActive('/customer/billing-insurance')}>
               <Link href="/customer/billing-insurance">
                 <BillingInsuranceIcon />
                 <span>Billing & Insurance</span>
+              </Link>
+            </li>
+            <li onClick={toggleSidebar} className={isActive('/customer/plans')}>
+              <Link href="/customer/plans">
+              <PlansIcon/>
+                <span>Plans</span>
               </Link>
             </li>
           </ul>

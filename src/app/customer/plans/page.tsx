@@ -56,11 +56,13 @@ const PlansPage = () => {
 
       setLoading(true);
       try {
-       const response = await fetch('/api/create-payment-intent', {
+        const response = await fetch('/api/create-payment-intent', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             userId: session?.data?.user?.id,
+            email: session?.data?.user?.email,
+            name: session?.data?.user?.name,
             planType: plan,
             interval,
           }),
@@ -68,6 +70,7 @@ const PlansPage = () => {
 
         if (!response.ok) {
           const errorData = await response.json();
+          console.log('response:', response);
           throw new Error(errorData.error || 'Failed to create subscription');
         }
 

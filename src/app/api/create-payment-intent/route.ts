@@ -22,7 +22,7 @@ interface PriceIdConfig {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { planType, userId, interval = 'week' } = body;
+    const { planType, userId, interval = 'week', email, name } = body;
 
     if (!planType || !userId) {
       return NextResponse.json(
@@ -50,9 +50,11 @@ export async function POST(req: Request) {
 
     // Get the price configuration for the selected plan
     const planPrices = priceIds[planType];
+    console.log('planPrices:', planPrices);
     
     // Get the specific price for the interval
     const priceId = (planPrices as any)[interval as any];
+    console.log('priceId:', priceId);
 
     if (!priceId) {
       return NextResponse.json(
@@ -65,6 +67,8 @@ export async function POST(req: Request) {
       metadata: {
         userId,
       },
+      email: email,
+      name: name 
     });
 
     const subscription = await stripe.subscriptions.create({
@@ -80,17 +84,21 @@ export async function POST(req: Request) {
         userId,
         planType,
         interval,
+        name,
+        email,
       },
       expand: ['latest_invoice.payment_intent'],
     });
-
+    
     const invoice = subscription.latest_invoice as Stripe.Invoice;
+    console.log('invoice:', invoice);
     const paymentIntent = invoice.payment_intent as Stripe.PaymentIntent;
+    console.log('paymentIntent:', paymentIntent);
     // const paymentIntent = await stripe.paymentIntents.create({
     //           amount: await getPriceAmountByPriceId(priceId),
     //           currency: 'eur',
     //           payment_method_types: ['card'],
-    //       })
+    //})
 
     return NextResponse.json({
       subscriptionId: subscription.id,
