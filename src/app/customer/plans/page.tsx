@@ -156,7 +156,7 @@ const PlansPage = () => {
                 onChange={() => handleRadioChange('stayRooted', 'week')}
                 className='w-[20px] h-[20px] accent-[#26395E]'
               />
-              Weekly
+             <span> Weekly <span className='font-bold text-[#26395E] '>(Billed $85)</span></span>
             </label>
           </div>
           <div className='px-[18px] pb-[18px]'>
@@ -182,7 +182,7 @@ const PlansPage = () => {
           </div>
           <div className='px-[40px] py-7'>
             <h5 className='mb-2.5 font-bold'>Perfect for:</h5>
-            <p className='max-w-[314px]'>Clients needing more intensive and frequent support.</p>
+            <p className=''>Clients needing more intensive and frequent support.</p>
             <h5 className='mt-[23px] mb-2.5 font-bold'>What&apos;s included:</h5>
             <p>2 Video Session per week (50 minutes)</p>
             <ul className='plan-lists my-8'>
@@ -198,7 +198,8 @@ const PlansPage = () => {
                   onChange={() => handleRadioChange('glowUp', 'week')}
                   className='w-[20px] h-[20px] accent-[#26395E]'
                 />
-                Weekly
+                <span> Weekly <span className='font-bold text-[#26395E] '>(Billed $125)</span></span>
+
               </label>
               <label className='flex items-center gap-5 text-[#686C78] cursor-pointer'>
                 <input 
@@ -207,7 +208,8 @@ const PlansPage = () => {
                   onChange={() => handleRadioChange('glowUp', 'month')}
                   className='w-[20px] h-[20px] accent-[#26395E]'
                 />
-                Monthly
+              <span>Monthly  <span className='font-bold text-[#26395E] '>(Billed $500)</span></span>
+
               </label>
             </div>
           </div>
