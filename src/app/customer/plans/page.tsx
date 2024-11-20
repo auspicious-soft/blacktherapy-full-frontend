@@ -39,11 +39,11 @@ const PlansPage = () => {
   useEffect(() => {
     initializeStripe()
   }, [])
-  
+
   const handlePlanSelect = async (selectedPlan: string, selectedInterval: string) => {
     setPlan(selectedPlan);
     setInterval(selectedInterval);
-    
+
     if (!session?.data?.user?.id) {
       toast.error('Please sign in to select a plan');
       return;
@@ -51,34 +51,23 @@ const PlansPage = () => {
 
     setLoading(true);
     try {
-      const response = await fetch('/api/create-payment-intent', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userId: session?.data?.user?.id,
-          email: session?.data?.user?.email,
-          name: session?.data?.user?.name,
-          planType: selectedPlan,
-          interval: selectedInterval,
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to create subscription');
+      const response = await getClientSecretService(`/client/create-subscription/${session?.data?.user?.id}`, {
+        email: session?.data?.user?.email,
+        name: session?.data?.user?.name,
+        interval: selectedInterval,
+        planType: selectedPlan,
+      })
+      if (!response?.data?.status) {
+        toast.error('Failed to create subscription')
+        return
       }
-
-      const data = await response.json();
-      if (!data.clientSecret || !data.subscriptionId) {
-        throw new Error('Invalid response from server');
-      }
-
+      const data = response?.data
       setClientSecret(data.clientSecret);
       setSubscriptionId(data.subscriptionId);
       setShowCheckout(true);
-    } catch (error) {
-      console.error('Error creating subscription:', error);
-      setError(error instanceof Error ? error.message : 'Failed to create subscription');
+    }
+    catch (error) {
+      setError(error instanceof Error ? error.message : 'Failed to create subscription')
       toast.error('Error initializing subscription');
     } finally {
       setLoading(false);
@@ -93,7 +82,7 @@ const PlansPage = () => {
     return (
       <div className="p-4 text-center">
         <p className="text-red-500">{error}</p>
-        <button 
+        <button
           onClick={() => window.location.reload()}
           className="mt-4 px-4 py-2 bg-blue-600 text-white rounded"
         >
@@ -132,13 +121,13 @@ const PlansPage = () => {
             </ul>
             <h5 className='font-bold mb-2.5'>Select plan duration</h5>
             <label className='flex items-center gap-5 text-[#686C78] cursor-pointer '>
-              <input 
-                type="radio" 
+              <input
+                type="radio"
                 checked={plan === 'stayRooted' && interval === 'week'}
                 onChange={() => handleRadioChange('stayRooted', 'week')}
                 className='w-[20px] h-[20px] accent-[#26395E]'
               />
-             <span> Weekly <span className='font-bold text-[#26395E] '>(Billed $85)</span></span>
+              <span> Weekly <span className='font-bold text-[#26395E] '>(Billed $85)</span></span>
             </label>
           </div>
         </div>
@@ -161,23 +150,23 @@ const PlansPage = () => {
             <h5 className='font-bold mb-2.5'>Select plan duration</h5>
             <div className='flex gap-[50px] items-center'>
               <label className='flex items-center gap-5 text-[#686C78] cursor-pointer'>
-                <input 
+                <input
                   type="radio"
                   checked={plan === 'glowUp' && interval === 'week'}
-                  onChange={() => handleRadioChange('glowUp', 'week')}                
+                  onChange={() => handleRadioChange('glowUp', 'week')}
                   className='w-[20px] h-[20px] accent-[#26395E]'
                 />
                 <span> Weekly <span className='font-bold text-[#26395E] '>(Billed $125)</span></span>
 
               </label>
               <label className='flex items-center gap-5 text-[#686C78] cursor-pointer'>
-                <input 
-                  type="radio" 
+                <input
+                  type="radio"
                   checked={plan === 'glowUp' && interval === 'month'}
                   onChange={() => handleRadioChange('glowUp', 'month')}
                   className='w-[20px] h-[20px] accent-[#26395E]'
                 />
-              <span>Monthly  <span className='font-bold text-[#26395E] '>(Billed $500)</span></span>
+                <span>Monthly  <span className='font-bold text-[#26395E] '>(Billed $500)</span></span>
 
               </label>
             </div>

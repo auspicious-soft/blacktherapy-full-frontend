@@ -28,7 +28,7 @@ const CheckoutForm = ({ userId, planType, clientSecret, subscriptionId, interval
       const result = await stripe.confirmPayment({
         elements,
         confirmParams: {
-          return_url: `${window.location.origin}/customer/dashboard?subscription_id=${subscriptionId}`,
+          return_url: `${window.location.origin}/customer/dashboard`
         },
       });
 
@@ -36,7 +36,6 @@ const CheckoutForm = ({ userId, planType, clientSecret, subscriptionId, interval
         toast.error(result.error.message || 'Subscription failed');
       }
     } catch (error) {
-      console.error('Error processing subscription:', error);
       toast.error('Error processing subscription');
     } finally {
       setIsProcessing(false);

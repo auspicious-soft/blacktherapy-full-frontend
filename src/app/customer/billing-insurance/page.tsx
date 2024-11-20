@@ -3,10 +3,6 @@ import { ButtonArrow } from "@/utils/svgicons";
 import BillingDetails from "../components/BillingDetails";
 import CheckoutForm from "@/app/customer/components/upgrade-plan/CheckoutForm";
 import { Elements } from "@stripe/react-stripe-js";
-import { getStripePk } from "@/actions";
-import { useEffect, useState } from "react";
-import { get } from "http";
-import { getClientSecretService } from "@/services/client/client-service";
 
 
 const Page = () => {
