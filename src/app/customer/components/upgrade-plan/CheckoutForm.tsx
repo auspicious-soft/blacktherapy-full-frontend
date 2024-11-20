@@ -6,11 +6,11 @@ interface CheckoutFormProps {
   userId: string;
   planType: string;
   clientSecret: string;
-  subscriptionId: string;
+  // subscriptionId: string;
   interval: string;
 }
 
-const CheckoutForm = ({ userId, planType, clientSecret, subscriptionId, interval }: CheckoutFormProps) => {
+const CheckoutForm = ({ userId, planType, clientSecret, interval }: CheckoutFormProps) => {
   const stripe = useStripe();
   const elements = useElements();
   const [isProcessing, setIsProcessing] = useState(false);
@@ -28,7 +28,7 @@ const CheckoutForm = ({ userId, planType, clientSecret, subscriptionId, interval
       const result = await stripe.confirmPayment({
         elements,
         confirmParams: {
-          return_url: `${window.location.origin}/customer/dashboard`
+          return_url: `${window.location.origin}/customer/plans`
         },
       });
 

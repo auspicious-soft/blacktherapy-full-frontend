@@ -15,7 +15,7 @@ const PlansPage = () => {
   const [interval, setInterval] = useState<string>("");
   const [stripePromise, setStripePromise] = useState<Promise<Stripe | null> | null>(null);
   const [clientSecret, setClientSecret] = useState<string>()
-  const [subscriptionId, setSubscriptionId] = useState<string>()
+  // const [subscriptionId, setSubscriptionId] = useState<string>()
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showCheckout, setShowCheckout] = useState(false);
@@ -62,8 +62,8 @@ const PlansPage = () => {
         return
       }
       const data = response?.data
-      setClientSecret(data.clientSecret);
-      setSubscriptionId(data.subscriptionId);
+      setClientSecret(data?.clientSecret);
+      // setSubscriptionId(data.subscriptionId);
       setShowCheckout(true);
     }
     catch (error) {
@@ -192,7 +192,7 @@ const PlansPage = () => {
           >
             <CheckoutForm
               clientSecret={clientSecret}
-              subscriptionId={subscriptionId!}
+              // subscriptionId={subscriptionId!}
               userId={session?.data?.user?.id as string}
               planType={plan}
               interval={interval}
