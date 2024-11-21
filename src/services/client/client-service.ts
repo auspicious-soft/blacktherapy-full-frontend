@@ -51,7 +51,22 @@ export const getClientSecretToShowPaymentIntentService = async (route: string, p
 }
 
 export const getCustomerSubscriptionDetails = async (stripeCustomerId: string) => {
-    return await stripe.subscriptions.list({ 
-        customer: stripeCustomerId
-     })
+    return await stripe.subscriptions.list({
+        customer: stripeCustomerId,
+        status: "all"
+    })
+}
+
+export const getCustomersCurrentSubscription = async (planOrSubscriptionId: string) => {
+    return await stripe.subscriptions.retrieve(planOrSubscriptionId)
+}
+
+export const getCustomerSubscriptionsAllInvoices = async (subscriptionAndCustomerId: string) => {
+    const subscriptionId = subscriptionAndCustomerId.split('~')[0]
+    const customerId = subscriptionAndCustomerId.split('~')[1]
+    return await stripe.invoices.list({
+        subscription: subscriptionId,
+        customer: customerId,
+        status: 'paid'
+    } )
 }
