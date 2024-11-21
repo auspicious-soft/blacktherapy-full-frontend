@@ -41,7 +41,6 @@ export const submitClientForm = async (
     //   }
     // }
     //);
-    console.log('formattedData:', formattedData);
 
     const response = await addClientSignupData('/client/signup', formattedData);
     if (response?.status === 201) {

@@ -3,7 +3,7 @@ import { Elements } from '@stripe/react-stripe-js'
 import React, { useEffect, useState } from 'react'
 import CheckoutForm from '../components/upgrade-plan/CheckoutForm'
 import { loadStripe, Stripe } from "@stripe/stripe-js";
-import { getClientSecretService } from '@/services/client/client-service';
+import { getClientSecretToShowPaymentIntentService } from '@/services/client/client-service';
 import { getStripePk } from '@/actions';
 import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
@@ -51,7 +51,7 @@ const PlansPage = () => {
 
     setLoading(true);
     try {
-      const response = await getClientSecretService(`/client/create-subscription/${session?.data?.user?.id}`, {
+      const response = await getClientSecretToShowPaymentIntentService(`/client/create-subscription/${session?.data?.user?.id}`, {
         email: session?.data?.user?.email,
         name: session?.data?.user?.name,
         interval: selectedInterval,
