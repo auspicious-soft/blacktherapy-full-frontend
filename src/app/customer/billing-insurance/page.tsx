@@ -18,8 +18,7 @@ const Page = () => {
   const insuranceData = userData?.data?.data?.insuranceCompany
   const stripeCustomerId = userData?.data?.data?.stripeCustomerId
   const  planOrSubscriptionId  = userData?.data?.data?.planOrSubscriptionId
-  const { data, error, isLoading } = useSWR(stripeCustomerId ? `${planOrSubscriptionId}~${stripeCustomerId}` : null, getCustomerSubscriptionDetails);
-  console.log('data: ', data);
+  const { data, error, isLoading } = useSWR(stripeCustomerId ? `${stripeCustomerId}` : null, getCustomerSubscriptionDetails);
   const { data: currentSubscriptionData, error: currentSubscriptionError, isLoading: currentSubscriptionLoading } = useSWR(planOrSubscriptionId ? `${planOrSubscriptionId}` : null, getCustomersCurrentSubscription);
   if (isLoading) return <ReactLoading type={'spin'} color={'#26395e'} height={'50px'} width={'50px'} />
   if (userLoading) return <ReactLoading type={'spin'} color={'#26395e'} height={'50px'} width={'50px'} />
