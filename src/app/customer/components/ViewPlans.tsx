@@ -9,7 +9,7 @@ import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
 import ReactLoading from 'react-loading';
 
-const PlansPage = () => {
+const ViewPlans = () => {
   const session = useSession()
   const [plan, setPlan] = useState<string>("");
   const [interval, setInterval] = useState<string>("");
@@ -103,6 +103,7 @@ const PlansPage = () => {
 
   return (
     <div className="">
+        <h2 className='mb-5'>Select your Plan</h2>
       <div className=' gap-[30px] grid grid-cols-2 '>
         {/* Stay Rooted Plan */}
         <div className=' bg-white rounded-[20px]'>
@@ -204,4 +205,4 @@ const PlansPage = () => {
   );
 }
 
-export default PlansPage;
+export default ViewPlans;

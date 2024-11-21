@@ -40,10 +40,10 @@ const BillingDetails: React.FC = () => {
         <thead>
           <tr>
             <th>ID</th>
-            <th>Appt Date</th>
+            <th>Start Date</th>
+            <th>End Date</th>
             <th>Renewal Date</th>
-            <th>Chat With Clinician</th>
-            <th>Video Chat</th>
+            <th>Subscription Type</th>
             <th>Billing Amount</th>
           </tr>
         </thead>
@@ -53,9 +53,9 @@ const BillingDetails: React.FC = () => {
             <tr key={index}>
               <td>{row.id}</td>
               <td>{row.apptDate}</td>
+              <td>{row.apptDate}</td>
               <td>{row.renewalDate}</td>
               <td>{row.chatWithClinician}</td>
-              <td>{row.videoChat}</td>
               <td>{row.billingAmount}</td>
             </tr>
           ))

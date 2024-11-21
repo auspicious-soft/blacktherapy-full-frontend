@@ -1,4 +1,9 @@
 'use client'
+import { getStripePk } from "@/actions";
+import { useEffect, useState } from "react";
+import { get } from "http";
+import Modal from 'react-modal';
+import ViewPlans from "../components/ViewPlans";
 import { ButtonArrow } from "@/utils/svgicons";
 import BillingDetails from "../components/BillingDetails";
 import CheckoutForm from "@/app/customer/components/upgrade-plan/CheckoutForm";
@@ -11,6 +16,7 @@ import { toast } from "sonner";
 
 const Page = () => {
   const session = useSession()
+  const [openPlansModal, setOpenPlansModal] = useState(false);
   const id = session?.data?.user?.id
   const { data: userData, error: userError, isLoading: userLoading } = useSWR(`/client/${id}`, getProfileService);
   const stripeCustomerId = userData?.data?.data?.stripeCustomerId
@@ -20,7 +26,7 @@ const Page = () => {
   if (isLoading) return <ReactLoading type={'spin'} color={'#26395e'} height={'50px'} width={'50px'} />
   if (userLoading) return <ReactLoading type={'spin'} color={'#26395e'} height={'50px'} width={'50px'} />
   if (error) return toast.error('Error loading subscription details')
-  if(userError) return toast.error('Error loading user details')
+  if (userError) return toast.error('Error loading user details')
 
 
   return (
@@ -34,33 +40,56 @@ const Page = () => {
             <p className="font-gothamMedium text-[#DEDEDE]">Member Id</p>
             <h5 className="text-[#fff] ">6549815498</h5>
           </div>
+
         </div>
-        <div className="bg-[#FFD899]   carg-bg rounded-[10px] py-6 px-[15px] lg:px-[30px]">
-          <h6 className="text-[#686868]">Plan Details</h6>
-          <div className="flex justify-between items-center gap-10 mt-[10px]">
-            <p className="font-gothamMedium">Start Date</p>
-            <h5>24 July 2024</h5>
-          </div>
-          <div className="flex justify-between items-center gap-10 mt-[10px]">
-            <p className="font-gothamMedium">Renewal Date</p>
-            <h5>24 August 2024</h5>
-          </div>
-          <button className="renew-btn flex items-center gap-[15px] text-[#263A5F] ">Renew Plan <ButtonArrow /> </button>
+      </div>
+      <div className="bg-[#FFD899]   carg-bg rounded-[10px] py-6 px-[15px] lg:px-[30px]">
+        <h6 className="text-[#686868]">Plan Details</h6>
+        <div className="flex justify-between items-center gap-10 mt-[10px]">
+          <p className="font-gothamMedium">Start Date</p>
+          <h5>24 July 2024</h5>
         </div>
-        <div className="bg-[#FFBBCD]   carg-bg rounded-[10px] py-6 px-[15px] lg:px-[30px]">
-          <h6 className="text-[#686868]">Billing & Balance</h6>
-          <div className="flex justify-between items-center gap-10 mt-[10px]">
-            <p className="font-gothamMedium">Previous Billing</p>
-            <h5>$25.36</h5>
-          </div>
-          <div className="flex justify-between items-center gap-10 mt-[10px]">
-            <p className="font-gothamMedium">Balance Amount</p>
-            <h5>$5.36</h5>
+        <div className="flex justify-between items-center gap-10 mt-[10px]">
+          <p className="font-gothamMedium">Renewal Date</p>
+          <h5>24 August 2024</h5>
+        </div>
+        <button className="renew-btn flex items-center gap-[15px] text-[#263A5F] ">Renew Plan <ButtonArrow /> </button>
+      </div>
+      <div className="bg-[#FFBBCD]   carg-bg rounded-[10px] py-6 px-[15px] lg:px-[30px]">
+        <h6 className="text-[#686868]">Billing & Balance</h6>
+        <div className="flex justify-between items-center gap-10 mt-[10px]">
+          <p className="font-gothamMedium">Previous Billing</p>
+          <h5>$25.36</h5>
+        </div>
+        <div className="flex justify-between items-center gap-10 mt-[10px]">
+          <p className="font-gothamMedium">Balance Amount</p>
+          <h5>$5.36</h5>
+          <div className="bg-[#FFBBCD]   carg-bg rounded-[10px] py-6 px-[15px] lg:px-[30px]">
+            <h6 className="text-lg font-bold">Our Plans</h6>
+            <div className="flex justify-between items-center gap-10 mt-[10px]">
+              <h5 className="text-base">Stay Rooted Plan</h5>
+              <p className="font-gothamMedium">Weekly</p>
+            </div>
+            <div className="flex justify-between items-center gap-10 mt-[10px]">
+              <h5 className="text-base">Glow Up Plan</h5>
+              <p className="font-gothamMedium">Weekly, Monthly</p>
+            </div>
+            <button onClick={() => setOpenPlansModal(true)} className="button !h-10">View Details</button>
           </div>
         </div>
       </div>
       <p className="text-[26px] text-[#283C63] leading-7 mb-5 ">Billing details</p>
       <BillingDetails />
+
+      {openPlansModal && (
+        <Modal
+          isOpen={openPlansModal}
+          className="modal bg-[#E7F8F6] max-w-[1200px] p-10 mx-auto rounded-[20px] w-full  max-h-[95vh] overflow-auto overflo-custom "
+          overlayClassName="w-full h-full p-3 fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center"
+          onRequestClose={() => setOpenPlansModal(false)} >
+          <ViewPlans />
+        </Modal>
+      )}
 
 
     </div>
