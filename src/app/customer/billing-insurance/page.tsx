@@ -5,7 +5,7 @@ import { get } from "http";
 import Modal from 'react-modal';
 import ViewPlans from "../components/ViewPlans";
 import { ButtonArrow } from "@/utils/svgicons";
-import BillingDetails from "../components/BillingDetails";
+// import BillingDetails from "../components/BillingDetails";
 import CheckoutForm from "@/app/customer/components/upgrade-plan/CheckoutForm";
 import { Elements } from "@stripe/react-stripe-js";
 import useSWR from "swr";
@@ -22,6 +22,7 @@ const Page = () => {
   const stripeCustomerId = userData?.data?.data?.stripeCustomerId
 
   const { data, error, isLoading } = useSWR(`${stripeCustomerId}`, getCustomerSubscriptionDetails);
+  console.log('data: ', data);
 
   if (isLoading) return <ReactLoading type={'spin'} color={'#26395e'} height={'50px'} width={'50px'} />
   if (userLoading) return <ReactLoading type={'spin'} color={'#26395e'} height={'50px'} width={'50px'} />
@@ -68,14 +69,9 @@ const Page = () => {
         </div>
       </div>
 
-
-
       <p className="text-[26px] text-[#283C63] leading-7 mb-5 ">Billing details</p>
 
-
-
-
-      <BillingDetails />
+      {/* <BillingDetails hasMore={data?.has_more ?? false} billingData={data?.data as any ?? []} /> */}
 
       {openPlansModal && (
         <Modal

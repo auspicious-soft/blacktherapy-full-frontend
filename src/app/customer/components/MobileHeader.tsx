@@ -78,12 +78,6 @@ const MobileHeader = () => {
                 <span>Billing & Insurance</span>
               </Link>
             </li>
-            <li onClick={toggleSidebar} className={isActive('/customer/plans')}>
-              <Link href="/customer/plans">
-              <PlansIcon/>
-                <span>Plans</span>
-              </Link>
-            </li>
           </ul>
         </div>
         <div className="">
