@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { usePathname } from 'next/navigation';
-import { BillingInsuranceIcon, ChangePasswordIcon, DashboardIcon, Humbruger, Logo, LogOut, PlansIcon, ProfileIcon, WellnessIcon } from "@/utils/svgicons";
+import { AssignmentIcon, BillingInsuranceIcon, ChangePasswordIcon, DashboardIcon, Humbruger, Logo, LogOut, PlansIcon, ProfileIcon, WellnessIcon } from "@/utils/svgicons";
 import Link from "next/link";
 import './SideNav.css';
 import { useRouter } from "next/navigation";
@@ -50,6 +50,12 @@ const SideNav = () => {
             <Link href="/customer/wellness">
               <WellnessIcon />
               {!isCollapsed && <span>Wellness</span>}
+            </Link>
+          </li>
+          <li className={isActive('/customer/appointments')}>
+            <Link href="/customer/appointments">
+              <AssignmentIcon />
+              {!isCollapsed && <span>Appointments</span>}
             </Link>
           </li>
           <li className={isActive('/customer/profile')}>
