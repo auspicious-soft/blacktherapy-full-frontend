@@ -20,12 +20,6 @@ const Page = () => {
   const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
-    if (activeTab === 'Videos' || activeTab === 'Attachments') {
-      setShouldFetchWellness(true);
-    } else {
-      setShouldFetchWellness(false);
-    }
-
     if (activeTab === 'Previous Appointments' || activeTab === 'Upcoming Appointments') {
       setQuery(`appointmentType=${activeTab === 'Previous Appointments' ? 'past' : 'upcoming'}&page=1&limit=10`);
       setShouldFetchAppointments(true);

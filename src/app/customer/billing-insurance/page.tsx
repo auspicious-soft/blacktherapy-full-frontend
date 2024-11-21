@@ -6,12 +6,16 @@ import { Elements } from "@stripe/react-stripe-js";
 import { getStripePk } from "@/actions";
 import { useEffect, useState } from "react";
 import { get } from "http";
+import Modal from 'react-modal';
 import { getClientSecretService } from "@/services/client/client-service";
+import ViewPlans from "../components/ViewPlans";
 
 
 const Page = () => {
-  
+  const [ openPlansModal, setOpenPlansModal] = useState(false);
 
+  
+ 
     return(
         <div>
             <h1 className="font-antic text-[#283C63] text-[30px] leading-[1.2em] mb-[25px] lg:text-[40px] lg:mb-[50px]">Billing & Insurance</h1>
@@ -38,22 +42,32 @@ const Page = () => {
             <button className="renew-btn flex items-center gap-[15px] text-[#263A5F] ">Renew Plan <ButtonArrow/> </button>
           </div>
           <div className="bg-[#FFBBCD]   carg-bg rounded-[10px] py-6 px-[15px] lg:px-[30px]">
-          <h6 className="text-[#686868]">Billing & Balance</h6>
+          <h6 className="text-lg font-bold">Our Plans</h6>
           <div className="flex justify-between items-center gap-10 mt-[10px]">
-              <p className="font-gothamMedium">Previous Billing</p>
-              <h5>$25.36</h5>
+              <h5 className="text-base">Stay Rooted Plan</h5>
+              <p className="font-gothamMedium">Weekly</p>
             </div>
             <div className="flex justify-between items-center gap-10 mt-[10px]">
-              <p className="font-gothamMedium">Balance Amount</p>
-              <h5>$5.36</h5>
+              <h5 className="text-base">Glow Up Plan</h5>
+            <p className="font-gothamMedium">Weekly, Monthly</p>
             </div>
+      <button onClick={()=> setOpenPlansModal(true)} className="button !h-10">View Details</button>
           </div>
         </div>
         <p className="text-[26px] text-[#283C63] leading-7 mb-5 ">Billing details</p>
         <BillingDetails />
 
+        {openPlansModal && (
+        <Modal
+          isOpen={openPlansModal}
+          className="modal bg-[#E7F8F6] max-w-[1200px] p-10 mx-auto rounded-[20px] w-full  max-h-[95vh] overflow-auto overflo-custom "
+          overlayClassName="w-full h-full p-3 fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center"
+          onRequestClose={() => setOpenPlansModal(false)} >
+          <ViewPlans/>
+        </Modal>
+      )}
 
-        </div>
+       </div>
     );
 };
 export default Page
