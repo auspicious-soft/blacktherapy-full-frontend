@@ -3,30 +3,31 @@ import useSWR from "swr";
 import { useRef, useState } from "react";
 import Modal from 'react-modal';
 import ViewPlans from "../components/ViewPlans";
-import { ButtonArrow } from "@/utils/svgicons";
 import BillingDetails from "../components/BillingDetails";
-import { getCustomersCurrentSubscription, getCustomerSubscriptionDetails, getProfileService } from "@/services/client/client-service";
+import { getCustomerSubscriptionDetails, getProfileService, getSubscriptionById } from "@/services/client/client-service";
 import ReactLoading from "react-loading";
 import { useSession } from "next-auth/react";
 import { toast } from "sonner";
+import CancelPlan from "./_components/CancelPlan";
 
 const Page = () => {
   const session = useSession()
   const modalRef = useRef<any>(null);
-  const [openPlansModal, setOpenPlansModal] = useState(false);
+  const [openPlansModal, setOpenPlansModal] = useState(false)
+  const [openCancelPlanModal, setOpenCancelPlanModal] = useState(false)
   const id = session?.data?.user?.id
   const { data: userData, error: userError, isLoading: userLoading } = useSWR(`/client/${id}`, getProfileService);
   const insuranceData = userData?.data?.data?.insuranceCompany
   const stripeCustomerId = userData?.data?.data?.stripeCustomerId
-  const  planOrSubscriptionId  = userData?.data?.data?.planOrSubscriptionId
-  const { data, error, isLoading } = useSWR(stripeCustomerId ? `${stripeCustomerId}` : null, getCustomerSubscriptionDetails);
-  const { data: currentSubscriptionData, error: currentSubscriptionError, isLoading: currentSubscriptionLoading } = useSWR(planOrSubscriptionId ? `${planOrSubscriptionId}` : null, getCustomersCurrentSubscription);
+  const planOrSubscriptionId = userData?.data?.data?.planOrSubscriptionId
+  const { data, error, isLoading } = useSWR(stripeCustomerId ? `${stripeCustomerId}` : null, getCustomerSubscriptionDetails, { revalidateOnFocus: false });
+  const { data: currentSubscriptionData, error: currentSubscriptionError, isLoading: currentSubscriptionLoading } = useSWR(planOrSubscriptionId ? `${planOrSubscriptionId}` : null, getSubscriptionById, { revalidateOnFocus: false });
   if (isLoading) return <ReactLoading type={'spin'} color={'#26395e'} height={'50px'} width={'50px'} />
   if (userLoading) return <ReactLoading type={'spin'} color={'#26395e'} height={'50px'} width={'50px'} />
   if (error) return toast.error('Error loading subscription details')
   if (userError) return toast.error('Error loading user details')
 
-    
+
   return (
     <div>
       <h1 className="font-antic text-[#283C63] text-[30px] leading-[1.2em] mb-[25px] lg:text-[40px] lg:mb-[50px]">Billing & Insurance</h1>
@@ -44,14 +45,14 @@ const Page = () => {
           <h6 className="text-[#686868]">Plan Details</h6>
           <div className="flex justify-between items-center gap-10 mt-[10px]">
             <p className="font-gothamMedium">Start Date</p>
-            <h5 className="font-bold">{currentSubscriptionData?.current_period_start ? new Date(currentSubscriptionData?.current_period_start * 1000).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : <ReactLoading type={'spin'} color={'#26395e'} height={'10px'} width={'10px'} />}</h5>
+            <h5 className="font-bold">{currentSubscriptionData?.current_period_start ? new Date(currentSubscriptionData?.current_period_start * 1000).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : 'N/A'}</h5>
           </div>
           <div className="flex justify-between items-center gap-10 mt-[10px]">
             <p className="font-gothamMedium">Renewal Date</p>
-            <h5 className="font-bold">{currentSubscriptionData?.current_period_end ? new Date(currentSubscriptionData?.current_period_end * 1000).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : <ReactLoading type={'spin'} color={'#26395e'} height={'10px'} width={'10px'} />}</h5>
-        
+            <h5 className="font-bold">{currentSubscriptionData?.current_period_end ? new Date(currentSubscriptionData?.current_period_end * 1000).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : 'N/A'}</h5>
+
           </div>
-          <button className="renew-btn flex items-center gap-[15px] text-[#263A5F] ">Renew Plan <ButtonArrow /> </button>
+          {currentSubscriptionData && <button className="renew-btn flex items-center gap-[15px] text-[#fff] font-bold mt-6 bg-red-800 p-[10px] rounded-lg" onClick={() => setOpenCancelPlanModal(true)}>Cancel Subscription</button>}
         </div>
         <div className="bg-[#FFBBCD]   carg-bg rounded-[10px] py-6 px-[15px] lg:px-[30px]">
           <h6 className="text-lg font-bold">Our Plans</h6>
@@ -69,11 +70,11 @@ const Page = () => {
 
       <p className="text-[26px] text-[#283C63] leading-7 mb-5 ">Billing details</p>
 
-      <BillingDetails hasMore={data?.has_more ?? false} billingData={data?.data as any ?? []} />
+      <BillingDetails hasMore={data?.has_more ?? false} billingData={data?.data as any ?? []} isLoading={isLoading} />
 
       {openPlansModal && (
         <Modal
-          // ref={modalRef}
+          // ref={modalRef}T
           isOpen={openPlansModal}
           className="modal bg-[#E7F8F6] max-w-[1200px] p-10 mx-auto rounded-[20px] w-full overflo-custom "
           overlayClassName="w-full h-full p-3 fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center"
@@ -82,7 +83,18 @@ const Page = () => {
         </Modal>
       )}
 
-
+      {openCancelPlanModal && (
+        <Modal
+          // ref={modalRef}
+          isOpen={openCancelPlanModal}
+          className="modal bg-[#E7F8F6] max-w-[1200px] p-10 mx-auto rounded-[20px] w-full overflo-custom "
+          overlayClassName="w-full h-full p-3 fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center"
+          onRequestClose={() => setOpenCancelPlanModal(false)} >
+          <CancelPlan
+            currentPlanOrSubscriptionId={currentSubscriptionData?.id as string}
+            userId={id as string} handleClose={() => setOpenCancelPlanModal(false)} />
+        </Modal>
+      )}
     </div>
   );
 };
