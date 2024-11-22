@@ -14,7 +14,7 @@ const Page = () => {
     const firstName = searchParams.get("firstName");
     const lastName = searchParams.get("lastName");
 
-  const {data, isLoading } = useSWR(`/admin/therapists/employee-records/${id}`, GetEmployeeRecordsData)
+  const {data, isLoading } = useSWR(`/client/therapists/employee-records/${id}`, GetEmployeeRecordsData, {revalidateOnFocus:false})
   console.log('GetEmployeeRecordsData:', data);
 
   return (

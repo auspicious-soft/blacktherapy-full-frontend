@@ -17,6 +17,7 @@ import Modal from "react-modal";
 const DashboardAssignment = (props: any) => {
   const router= useRouter();
   const { total, data, rowsPerPage, isLoading, error, setQuery } = props;
+  console.log('data:', data);
   const [renewPopupOpen, setRenewPopupOpen] = useState(false);
   const [teamPopupOpen, setTeamPopupOpen] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState<any>(null);
@@ -34,7 +35,6 @@ const DashboardAssignment = (props: any) => {
     );
   };
   const handleViewTeam = (row: any) => {
-    console.log('row:', row);
     setSelectedAppointment(row.peerSupportIds);
     setTeamPopupOpen(true);
   };
