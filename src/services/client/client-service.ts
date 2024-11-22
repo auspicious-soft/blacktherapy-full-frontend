@@ -53,7 +53,8 @@ export const getClientSecretToShowPaymentIntentService = async (route: string, p
 export const getCustomerSubscriptionDetails = async (stripeCustomerId: string) => {
     return await stripe.invoices.list({
         customer: stripeCustomerId,
-        status: 'paid'
+        status: 'paid',
+        limit: 1000
     } )
 }
 

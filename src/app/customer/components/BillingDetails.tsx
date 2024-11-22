@@ -25,11 +25,12 @@ interface BillingDetailsProps {
 
 const BillingDetails = (props: BillingDetailsProps) => {
     const { hasMore, billingData } = props;
+    const [trigger, setTrigger] = useState(false);
     const [currentPage, setCurrentPage] = useState(0);
     const rowsPerPage = 10
-
     // Pagination handler
     const handlePageClick = (selectedItem: { selected: number }) => {
+        setTrigger((prevState) => !prevState)
         setCurrentPage(selectedItem.selected);
     };
 
@@ -46,7 +47,7 @@ const BillingDetails = (props: BillingDetailsProps) => {
             setDataWithProductNameArray(dataWithProductName);
         }
         fetchData()
-    }, [])
+    }, [trigger])
 
     return (
         <div>

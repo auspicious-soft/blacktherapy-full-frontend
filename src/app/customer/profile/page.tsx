@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import Image from "next/image";
 import previmg2 from "@/assets/images/previmg.png";
 import { ButtonArrow, EditImgIcon } from "@/utils/svgicons";
@@ -10,6 +10,8 @@ import { getProfileService, updateProfileService } from "@/services/client/clien
 import { toast } from "sonner";
 import { USStates } from '@/data/UsStatesData';
 import CustomSelect from "@/app/admin/components/CustomSelect";
+import { getImageUrlOfS3 } from "@/utils";
+import { deleteImageFromS3, generateSignedUrlOfProfilePic } from "@/actions";
 
 type FormData = {
   firstName: string;
@@ -20,13 +22,15 @@ type FormData = {
   state: string;
   city: string;
   address1: string; // Explicitly define repeatDays as an array of strings
+  profilePic: File | null;
 };
 
 const Page = () => {
   const session = useSession()
   const { data, error, mutate } = useSWR(`/client/${session?.data?.user?.id}`, getProfileService)
   const profileData = data?.data?.data
-  const [isPending, startTransition] = React.useTransition();
+  const [isPending, setIsPending] = useState(false);
+  const [isPendingNot, startTransition] = React.useTransition();
   const [formData, setFormData] = useState<FormData>({
     firstName: "",
     lastName: "",
@@ -36,11 +40,11 @@ const Page = () => {
     state: "",
     city: "",
     address1: "",
+    profilePic: null
   })
   useEffect(() => {
     if (profileData) {
-      setFormData((prevData) => ({
-        ...prevData,
+      setFormData({
         firstName: profileData?.firstName,
         lastName: profileData?.lastName,
         email: profileData?.email,
@@ -49,7 +53,12 @@ const Page = () => {
         state: profileData?.state,
         city: profileData?.city,
         address1: profileData?.addressLine1,
-      }))
+        profilePic: profileData.profilePic || "",
+      })
+    }
+    if (profileData?.profilePic) {
+      const imageUrl = getImageUrlOfS3(profileData.profilePic);
+      setImagePreview(imageUrl);
     }
   }, [profileData])
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -57,23 +66,23 @@ const Page = () => {
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setFormData((prevData: any) => ({
+        ...prevData,
+        profilePic: file,
+      }));
+
       const reader = new FileReader();
       reader.onload = (e) => {
         const result = e.target?.result as string;
         setImagePreview(result);
-        setFormData((prevData) => ({
-          ...prevData,
-          image: result,
-        }));
       };
-      reader.readAsDataURL(e.target.files[0]);
+      reader.readAsDataURL(file);
     }
   };
 
   const triggerFileInputClick = () => {
-    const fileInput = document.querySelector(
-      'input[type="file"]'
-    ) as HTMLInputElement;
+    const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
     if (fileInput) {
       fileInput.click();
     }
@@ -86,15 +95,44 @@ const Page = () => {
       [name]: value,
     }));
   };
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setIsPending(true)
     const addressLine = (formData as any).address1
     delete (formData as any).address1;
     (formData as any).addressLine1 = addressLine
     delete (formData as any).email
+
+    const formDataToSend = formData
+    const imageKey = `clients/${session?.data?.user?.email}/profile/${typeof (formData as any)?.profilePic === 'string' ? (formData as any).profilePic : formData?.profilePic?.name}`
+
+    if (formData.profilePic && typeof formData.profilePic !== 'string') {
+      const signedUrl = await generateSignedUrlOfProfilePic(formData.profilePic.name, formData.profilePic.type, session?.data?.user?.email as string)
+      const uploadResponse = await fetch(signedUrl, {
+        method: 'PUT',
+        body: formData.profilePic,
+        headers: {
+          'Content-Type': formData.profilePic.type,
+        },
+        cache: 'no-store'
+      })
+      if (!uploadResponse.ok) {
+        toast.error('Something went wrong. Please try again')
+        return
+      }
+      const newImageKey = `clients/${session?.data?.user?.email}/profile/${formData.profilePic.name}`;
+      // Delete the old image from the S3 bucket
+      if (profileData?.profilePic) {
+        await deleteImageFromS3(profileData?.profilePic);
+      }
+      (formDataToSend as any).profilePic = newImageKey
+    }
+    if ((formData as any).profilePic == '' || typeof (formData as any).profilePic !== 'string' || (formData as any).profilePic === undefined || imageKey === profileData?.profilePic) {
+      delete (formDataToSend as any).profilePic
+    }
     startTransition(async () => {
       try {
-        const resss = await updateProfileService(`/client/${session?.data?.user?.id}`, formData)
+        const resss = await updateProfileService(`/client/${session?.data?.user?.id}`, formDataToSend)
         if (resss?.data?.success) {
           mutate()
           setNotification("Profile updated successfully");
@@ -109,6 +147,9 @@ const Page = () => {
           const { response: { data: { message } } } = error as any
           toast.error(message ? message : 'An error occurred');
         }
+      }
+      finally {
+        setIsPending(false)
       }
     })
   }
