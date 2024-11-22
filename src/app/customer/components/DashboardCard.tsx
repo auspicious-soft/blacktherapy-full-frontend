@@ -49,8 +49,7 @@ const DashboardCard: React.FC<DashboardCardProps> = ({ nextAppointment, previous
           <div className="bg-[#FFD899]  bg-[top_right] bg-no-repeat bg-cover rounded-[10px] py-6 px-[15px] lg:px-[30px]">
             <h6 className="text-[#686868]">Previous Billed</h6>
             <h3 className="font-gothamBold mt-[4px]">{previousBilled.amount}</h3>
-            <h6 className="text-[#686868] mt-[16px]">Balance Amount</h6> 
-            <h3 className="font-gothamBold mt-[4px]">{previousBilled.amount}</h3>
+      
           </div>
         </div>
       </>
