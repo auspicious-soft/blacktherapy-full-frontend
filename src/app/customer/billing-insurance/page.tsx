@@ -1,6 +1,6 @@
 'use client'
 import useSWR from "swr";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Modal from 'react-modal';
 import ViewPlans from "../components/ViewPlans";
 import { ButtonArrow } from "@/utils/svgicons";
@@ -12,6 +12,7 @@ import { toast } from "sonner";
 
 const Page = () => {
   const session = useSession()
+  const modalRef = useRef<any>(null);
   const [openPlansModal, setOpenPlansModal] = useState(false);
   const id = session?.data?.user?.id
   const { data: userData, error: userError, isLoading: userLoading } = useSWR(`/client/${id}`, getProfileService);
@@ -25,7 +26,7 @@ const Page = () => {
   if (error) return toast.error('Error loading subscription details')
   if (userError) return toast.error('Error loading user details')
 
-
+    
   return (
     <div>
       <h1 className="font-antic text-[#283C63] text-[30px] leading-[1.2em] mb-[25px] lg:text-[40px] lg:mb-[50px]">Billing & Insurance</h1>
@@ -72,11 +73,12 @@ const Page = () => {
 
       {openPlansModal && (
         <Modal
+          // ref={modalRef}
           isOpen={openPlansModal}
-          className="modal bg-[#E7F8F6] max-w-[1200px] p-10 mx-auto rounded-[20px] w-full  max-h-[95vh] overflow-auto overflo-custom "
+          className="modal bg-[#E7F8F6] max-w-[1200px] p-10 mx-auto rounded-[20px] w-full overflo-custom "
           overlayClassName="w-full h-full p-3 fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center"
           onRequestClose={() => setOpenPlansModal(false)} >
-          <ViewPlans />
+          <ViewPlans modalRef={modalRef} />
         </Modal>
       )}
 
