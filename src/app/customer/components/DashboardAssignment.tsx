@@ -105,6 +105,7 @@ const DashboardAssignment = (props: any) => {
             <tr>
               <th>ID</th>
               <th>Appt Date</th>
+              <th>Appt Time</th>
               <th>Chat With Clinician</th>
               <th>Video Chat</th>
               <th>Care Team</th>
@@ -124,7 +125,8 @@ const DashboardAssignment = (props: any) => {
               data?.map((row: any) => (
                 <tr key={row?._id}>
                   <td>{row?._id}</td>
-                  <td>{new Date(row?.appointmentDate).toLocaleDateString('en-US')}</td>
+                  <td>{new Date(row?.appointmentDate).toLocaleDateString('en-US') ?? 'No date Assigned'}</td>
+                  <td>{row?.appointmentTime}</td>
                   <td> {!row.message ? 'No Chat' : <p className='cursor-pointer font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px]  text-[#42A803] bg-[#CBFFB2]'>Start Chat</p>}
                    
                   </td>

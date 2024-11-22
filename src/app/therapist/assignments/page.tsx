@@ -48,6 +48,7 @@ const Page = () => {
             <tr className="">
               <th >Client</th>
               <th >Date Assigned</th>
+              <th >Time Assigned</th>
               <th >Phone Number</th>
               <th >Email Address</th>
               {/* <th >Session Notes</th> */}
@@ -64,11 +65,13 @@ const Page = () => {
                 </td>
               </tr>
             ) : (
+              // convert this time to am or pm
               clientsData?.length > 0 ? (
                 clientsData?.map((item: any) => (
                   <tr key={item._id}>
                     <td>{item.clientId.firstName} {item.clientId.lastName}</td>
                     <td>{new Date(item.appointmentDate).toLocaleDateString('en-US')}</td>
+                    <td>{item.appointmentTime}</td>
                     <td>{item.clientId.phoneNumber}</td>
                     <td>{item.clientId.email}</td>
                 {/* <td> <p className='cursor-pointer font-gothamMedium text-center rounded-xl text-[10px] py-[4px] text-[#fff] bg-[#26395E]' onClick={()=>openModal(item?.notes)}>View</p></td> */}
