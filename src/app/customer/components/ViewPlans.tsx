@@ -9,13 +9,13 @@ import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
 import ReactLoading from 'react-loading';
 
-const ViewPlans = () => {
-  const session = useSession()
+const ViewPlans = (props: any) => {
+  const { modalRef } = props;
+  const session = useSession();
   const [plan, setPlan] = useState<string>("");
   const [interval, setInterval] = useState<string>("");
   const [stripePromise, setStripePromise] = useState<Promise<Stripe | null> | null>(null);
-  const [clientSecret, setClientSecret] = useState<string>()
-  // const [subscriptionId, setSubscriptionId] = useState<string>()
+  const [clientSecret, setClientSecret] = useState<string>();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showCheckout, setShowCheckout] = useState(false);
@@ -40,6 +40,21 @@ const ViewPlans = () => {
     initializeStripe()
   }, [])
 
+  // Add this new useEffect to handle scrolling after checkout is shown
+  useEffect(() => {
+    if (showCheckout && modalRef?.current) {
+      // Add a small delay to ensure all content is rendered, including Stripe elements
+      setTimeout(() => {
+        const container = modalRef.current;
+        const scrollDistance = container.scrollHeight - container.clientHeight;
+        container.scrollTo({
+          top: scrollDistance,
+          behavior: 'smooth'
+        });
+      }, 100);
+    }
+  }, [showCheckout, modalRef]);
+
   const handlePlanSelect = async (selectedPlan: string, selectedInterval: string) => {
     setPlan(selectedPlan);
     setInterval(selectedInterval);
@@ -62,8 +77,7 @@ const ViewPlans = () => {
         return
       }
       const data = response?.data
-      setClientSecret(data?.clientSecret);
-      // setSubscriptionId(data.subscriptionId);
+      setClientSecret(data?.clientSecret)
       setShowCheckout(true);
     }
     catch (error) {
@@ -102,11 +116,11 @@ const ViewPlans = () => {
   }
 
   return (
-    <div className="">
-        <h2 className='mb-5'>Select your Plan</h2>
-      <div className=' gap-[30px] grid grid-cols-2 '>
+    <div className="max-h-[90vh] overflow-auto overflo-custom" ref={modalRef}>
+      <h2 className='mb-5'>Select your Plan</h2>
+      <div className='gap-[30px] grid grid-cols-2'>
         {/* Stay Rooted Plan */}
-        <div className=' bg-white rounded-[20px]'>
+        <div className='bg-white rounded-[20px]'>
           <div className='bg-[#0A1C42] rounded-tl-[20px] rounded-br-[50px] py-[26px] px-[40px] max-w-[396px]'>
             <h3 className='text-white leading-7 text-[24px]'>Stay Rooted Plan</h3>
             <p className='text-white'>Stay Grounded, Stay strong.</p>
@@ -121,27 +135,27 @@ const ViewPlans = () => {
               <li>Access to mental health resources (e.g., meditation guides and wellness Tips)</li>
             </ul>
             <h5 className='font-bold mb-2.5'>Select plan duration</h5>
-            <label className='flex items-center gap-5 text-[#686C78] cursor-pointer '>
+            <label className='flex items-center gap-5 text-[#686C78] cursor-pointer'>
               <input
                 type="radio"
                 checked={plan === 'stayRooted' && interval === 'week'}
                 onChange={() => handleRadioChange('stayRooted', 'week')}
                 className='w-[20px] h-[20px] accent-[#26395E]'
               />
-              <span> Weekly <span className='font-bold text-[#26395E] '>(Billed $85)</span></span>
+              <span> Weekly <span className='font-bold text-[#26395E]'>(Billed $85)</span></span>
             </label>
           </div>
         </div>
 
         {/* Glow Up Plan */}
-        <div className=' bg-white rounded-[20px]'>
+        <div className='bg-white rounded-[20px]'>
           <div className='bg-[#0A1C42] rounded-tl-[20px] rounded-br-[50px] py-[26px] px-[40px] max-w-[396px]'>
             <h3 className='text-white leading-7 text-[24px]'>Glow Up Plan</h3>
             <p className='text-white'>Shine Bright & Thrive in Your Greatness.</p>
           </div>
           <div className='px-[40px] py-7'>
             <h5 className='mb-2.5 font-bold'>Perfect for:</h5>
-            <p className=''>Clients needing more intensive and frequent support.</p>
+            <p>Clients needing more intensive and frequent support.</p>
             <h5 className='mt-[23px] mb-2.5 font-bold'>What&apos;s included:</h5>
             <p>2 Video Session per week (50 minutes)</p>
             <ul className='plan-lists my-8'>
@@ -157,8 +171,7 @@ const ViewPlans = () => {
                   onChange={() => handleRadioChange('glowUp', 'week')}
                   className='w-[20px] h-[20px] accent-[#26395E]'
                 />
-                <span> Weekly <span className='font-bold text-[#26395E] '>(Billed $125)</span></span>
-
+                <span> Weekly <span className='font-bold text-[#26395E]'>(Billed $125)</span></span>
               </label>
               <label className='flex items-center gap-5 text-[#686C78] cursor-pointer'>
                 <input
@@ -167,8 +180,7 @@ const ViewPlans = () => {
                   onChange={() => handleRadioChange('glowUp', 'month')}
                   className='w-[20px] h-[20px] accent-[#26395E]'
                 />
-                <span>Monthly  <span className='font-bold text-[#26395E] '>(Billed $500)</span></span>
-
+                <span>Monthly <span className='font-bold text-[#26395E]'>(Billed $500)</span></span>
               </label>
             </div>
           </div>
@@ -193,7 +205,6 @@ const ViewPlans = () => {
           >
             <CheckoutForm
               clientSecret={clientSecret}
-              // subscriptionId={subscriptionId!}
               userId={session?.data?.user?.id as string}
               planType={plan}
               interval={interval}

@@ -28,7 +28,7 @@ const CheckoutForm = ({ userId, planType, clientSecret, interval }: CheckoutForm
       const result = await stripe.confirmPayment({
         elements,
         confirmParams: {
-          return_url: `${window.location.origin}/customer/plans`
+          return_url: `${window.location.origin}/customer/dashboard`
         },
       });
 
