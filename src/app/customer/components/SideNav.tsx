@@ -25,7 +25,7 @@ const SideNav = () => {
   const isActive = (path: string) => pathname === path ? 'active' : '';
 
   return (
-    <div className={`sideNav ${isCollapsed ? 'collapsed' : ''} h-[100%] overflo-custom`}>
+    <div className={`sideNav ${isCollapsed ? 'collapsed' : ''} h-[100%] overflo-custom z-[200]`}>
       <div className="">
         <div className="header min-h-[46px] justify-between gap-[10px]">
           {!isCollapsed && (
@@ -52,12 +52,12 @@ const SideNav = () => {
               {!isCollapsed && <span>Wellness</span>}
             </Link>
           </li>
-          <li className={isActive('/customer/appointments')}>
-            <Link href="/customer/appointments">
-              <AssignmentIcon />
-              {!isCollapsed && <span>Appointments</span>}
-            </Link>
-          </li>
+              <li className={`${isActive('/customer/appointments')} ${pathname.startsWith('/customer/appointments/chat') ? 'active' : ''}`}>
+              <Link href="/customer/appointments">
+                <AssignmentIcon />
+                {!isCollapsed && <span>Appointments</span>}
+              </Link>
+              </li>
           <li className={isActive('/customer/profile')}>
             <Link href="/customer/profile">
               <ProfileIcon />
