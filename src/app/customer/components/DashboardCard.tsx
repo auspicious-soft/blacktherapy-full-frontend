@@ -8,7 +8,6 @@ type Appointment = {
 
 type Billed = {
   amount: string;
-  balance: string;
 };
 
 type DashboardCardProps = {
