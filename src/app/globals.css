@@ -327,6 +327,11 @@ ul.plan-lists li {
   font-size: 14px;
   color: #686C78;
 }
+.chat-open main {
+  padding-bottom: 0;
+}
+
+
 @media (min-width: 768px) {
   .card-wrapper:hover .text-button {
     bottom: 19px;
