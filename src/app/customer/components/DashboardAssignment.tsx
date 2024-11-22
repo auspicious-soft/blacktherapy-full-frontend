@@ -4,97 +4,48 @@ import ReactPaginate from "react-paginate";
 import Image from "next/image";
 import PervIcon from "@/assets/images/pervicon.png";
 import NextIcon from "@/assets/images/nexticon.png";
-import { ViewIcon, ButtonArrow } from "@/utils/svgicons";
+import { ViewIcon, ButtonArrow, CloseIcon } from "@/utils/svgicons";
 import Therapist1 from "@/assets/images/therapist1.jpg";
 import Therapist2 from "@/assets/images/therapist2.jpg";
 import Therapist3 from "@/assets/images/therapist3.jpg";
 import ReactLoading from "react-loading";
-interface ModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  children: ReactNode;
-}
+import router, { Router } from "next/router";
+import { useRouter } from "next/navigation";
+import Modal from "react-modal";
 
-const Modal = ({ isOpen, onClose, children }: ModalProps) => {
-  if (!isOpen) return null;
-
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-      <div className="bg-white w-[94%] max-w-[1200px] shadow-lg relative max-h-[90vh] overflo-custom py-[25px] px-[15px] lg:p-[40px]">
-        <button
-          onClick={onClose}
-          className="absolute top-2 right-2 text-gray-600 hover:text-gray-800"
-        >
-          &#x2715;
-        </button>
-        {children}
-      </div>
-    </div>
-  );
-};
 
 const DashboardAssignment = (props: any) => {
+  const router= useRouter();
   const { total, data, rowsPerPage, isLoading, error, setQuery } = props;
   const [renewPopupOpen, setRenewPopupOpen] = useState(false);
   const [teamPopupOpen, setTeamPopupOpen] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState<any>(null);
-
+  console.log('selectedAppointment:', selectedAppointment);
+  
+  
   const handlePageClick = (selectedItem: { selected: number }) => {
     setQuery(`page=${selectedItem.selected + 1}&limit=${rowsPerPage}`)
   };
 
-  function isPastDate(dateString: string) {
-    const date = new Date(dateString);
-    const today = new Date();
-    return date < today;
-  }
-
-  const getStyle = (text: string): CSSProperties => {
-    let style: CSSProperties = {
-      padding: "2px 10px",
-      borderRadius: "20px",
-      display: "inline-block",
-      fontSize: "10px",
-    };
-
-    switch (text) {
-      case "Renew Subscription":
-        style.backgroundColor = "#FFFCEC";
-        style.color = "#FFA234";
-        break;
-      case "Start Chat":
-      case "Start Video Call":
-        style.backgroundColor = "#CBFFB2";
-        style.color = "#42A803";
-        break;
-      case "Wait for approval":
-        style.backgroundColor = "#FFFCB2";
-        style.color = "#A85C03";
-        break;
-      case "Not Available":
-        style.backgroundColor = "#FFBBCD";
-        style.color = "#bb2b51";
-        break;
-      default:
-        break;
-    }
-
-    return style;
-  };
-
-  const handleRenewClick = () => {
-    setRenewPopupOpen(true);
-  };
-  const renewClosePopup = () => {
-    setRenewPopupOpen(false);
+  const viewProfile = (therapist: any) => {
+    console.log('therapist:', therapist);
+    router.push(
+      `/customer/dashboard/care/${therapist._id}?firstName=${therapist.firstName}&lastName=${therapist.lastName}`
+    );
   };
   const handleViewTeam = (row: any) => {
+    console.log('row:', row);
     setSelectedAppointment(row.peerSupportIds);
     setTeamPopupOpen(true);
   };
   const handleCloseTeam = () => {
     setTeamPopupOpen(false);
   };
+  const renewClosePopup = () => {
+    setRenewPopupOpen(false);
+  };
+  
+
 
   return (
     <>
@@ -168,7 +119,12 @@ const DashboardAssignment = (props: any) => {
       </div>
 
       {/* Renew Popup Component */}
-      <Modal isOpen={renewPopupOpen} onClose={renewClosePopup}>
+      <Modal 
+       isOpen={renewPopupOpen}
+       onRequestClose={renewClosePopup}
+       contentLabel="Assign Task"
+       className="modal max-w-[584px] mx-auto bg-white rounded-xl w-full p-5"
+       overlayClassName="overlay">
         <div className="popup-content">
           <h1 className="font-antic text-[#283C63] text-[30px] leading-[1.2em] mb-[25px] lg:text-[40px] lg:mb-[50px]">
             Renew Plan
@@ -271,32 +227,35 @@ const DashboardAssignment = (props: any) => {
         </div>
       </Modal>
 
-      {/* Renew Popup Component */}
-      <Modal isOpen={teamPopupOpen} onClose={handleCloseTeam}>
-        <h1 className="font-antic text-[#283C63] text-[30px] leading-[1.2em] mb-[25px] lg:text-[40px] lg:mb-[50px]">
+      <Modal 
+       isOpen={teamPopupOpen}
+       onRequestClose={handleCloseTeam}
+       contentLabel="Assign Task"
+       className="modal max-w-[1200px] mx-auto bg-white rounded-[20px] w-full "
+       overlayClassName="w-full h-full p-3 fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center"
+       >
+        <div className="p-4 bg-[#283C63] rounded-t-[20px] flex justify-between items-center mb-8 ">
+        <h1 className="font-antic text-[#fff] text-[30px] lg:text-[40px] ">
           Care Team
         </h1>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-[20px] gap-y-[20px] lg:gap-y-[40px]">
+        <button onClick={handleCloseTeam}><CloseIcon/> </button>
+        </div>
+        <div className="bg-white px-5 pb-5 rounded-b-[20px]  grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-[20px] gap-y-[20px] lg:gap-y-[40px]">
           {selectedAppointment?.map((therapist: any) => (
             <div key={therapist.id} className="">
               <Image
-                src={therapist.profilePic}
-                alt={therapist.firstName}
+              onClick={() => viewProfile(therapist)}
+                src={therapist?.profilePic}
+                alt={therapist?.firstName}
                 width={200}
                 height={200}
                 className="rounded-[20px] w-full aspect-square cover"
               />
-              <h4 className="mt-4 font-gotham">{therapist.name}</h4>
+              <h4 className="mt-4 font-gotham">{therapist?.firstName} {therapist?.lastName} </h4>
             </div>
           ))}
         </div>
-        <button
-          className="button !bg-transparent !text-[#283c63] border-[#283c63] border-[1px]"
-          type="button"
-          onClick={handleCloseTeam}
-        >
-          Close
-        </button>
+       
       </Modal>
     </>
   );

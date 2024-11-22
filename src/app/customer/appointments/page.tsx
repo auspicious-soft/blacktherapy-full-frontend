@@ -17,7 +17,7 @@ import Link from "next/link";
 const Page = () => {
   const [openModal, setOpenModal] = useState(false);
   const session = useSession();
-  const router= useRouter;
+  const router= useRouter();
   const [activeTab, setActiveTab] = useState('Previous Appointments');
   const [shouldFetchAppointments, setShouldFetchAppointments] = useState(false);
   const [query, setQuery] = useState('page=1&limit=10');
@@ -72,16 +72,17 @@ const Page = () => {
   }
   if (error) return <div className="text-red-500">Error: {error.message}</div>
 
-  
+  const handleChat = () => {
+    const id = "238974328947834";
+    router.push(`/customer/appointments/chats/${id}`);
+};
   
   return (
     <>
       <h1 className="font-antic text-[#283C63] text-[30px] leading-[1.2em] mb-[25px] lg:text-[40px] lg:mb-[50px]">
         Wellness Portal
       </h1>
-      <Link href={`/customer/appointments/chats/${id}`} passHref>
-        <button className="button">Start Chat</button>
-      </Link>
+        <button onClick={handleChat} className="button">Start Chat</button>
       <div>
         <div className='flex items-center justify-between mb-5 '>
           <div className="tabs flex flex-wrap gap-[5px] lg:gap-[20px]">

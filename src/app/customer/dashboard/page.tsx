@@ -41,7 +41,7 @@ const Home = () => {
     videoChat: null,
   };
 
-  let previousBilled = {
+  let previousBilled = { 
     amount: 'N/A',
   }
   const userPlanOrSubscriptionId = user?.data?.data?.planOrSubscriptionId
