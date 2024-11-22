@@ -29,12 +29,12 @@ const CancelPlan = (props: CancelPlanProps) => {
     }
     return (
         <div>
-            <p className="text-[#283C63] text-[20px] leading-[1.2em] mb-[25px] lg:text-[40px] lg:mb-[50px]">Are you sure you want to cancel your subscription?</p>
-            <div className='flex w-full '>
-                <button disabled={isPending} onClick={cancelSubscription} className='bg-[#FFD899] mr-4'>
+            <p className="text-[#283C63] text-[20px] text-center leading-[1.2em] mb-[25px] lg:text-[40px] lg:mb-[50px]">Are you sure you want to cancel your subscription?</p>
+            <div className='flex justify-center w-full '>
+                <button disabled={isPending} onClick={cancelSubscription} className='bg-[#CC0000] text-white mr-4 rounded-lg py-3 px-5'>
                     {isPending ? 'Canceling Subscription...' : 'Yes, I want to cancel my subscription'}
                 </button>
-                <button className='bg-[#FFBBCD] ml-4' onClick={() => handleClose(false)}>
+                <button className='bg-[#283C63] text-white ml-4 rounded-lg py-3 px-5' onClick={() => handleClose(false)}>
                     No, I want to keep my subscription
                 </button>
             </div>

@@ -87,7 +87,7 @@ const Page = () => {
         <Modal
           // ref={modalRef}
           isOpen={openCancelPlanModal}
-          className="modal bg-[#E7F8F6] max-w-[1200px] p-10 mx-auto rounded-[20px] w-full overflo-custom "
+          className="modal bg-[#fff] bg-flower max-w-[800px] p-10 mx-auto rounded-[20px] w-full overflo-custom "
           overlayClassName="w-full h-full p-3 fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center"
           onRequestClose={() => setOpenCancelPlanModal(false)} >
           <CancelPlan

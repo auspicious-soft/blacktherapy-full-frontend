@@ -105,10 +105,8 @@ const DashboardAssignment = (props: any) => {
             <tr>
               <th>ID</th>
               <th>Appt Date</th>
-              <th>Renewal Date</th>
               <th>Chat With Clinician</th>
               <th>Video Chat</th>
-              <th>Billing Amount</th>
               <th>Care Team</th>
               <th>Created At</th>
             </tr>
@@ -127,14 +125,10 @@ const DashboardAssignment = (props: any) => {
                 <tr key={row?._id}>
                   <td>{row?._id}</td>
                   <td>{new Date(row?.appointmentDate).toLocaleDateString('en-US')}</td>
-                  <td>{row.apptTime}</td>
-                  <td>
-                    <p className={`font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px] ${row.chat === 'Start Chat' ? ' text-[#42A803] bg-[#CBFFB2] ' : ' text-[#FFA234] bg-[#FFFCEC] '}`}>
-                      {!row.message ? 'No chat' : <p className='cursor-pointer font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px]  text-[#42A803] bg-[#CBFFB2]'>Start Chat</p>}
-                    </p>
+                  <td> {!row.message ? 'No Chat' : <p className='cursor-pointer font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px]  text-[#42A803] bg-[#CBFFB2]'>Start Chat</p>}
+                   
                   </td>
                   <td>{!row.video ? 'No video' : <p className='cursor-pointer font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px]  text-[#42A803] bg-[#CBFFB2]'>Start Video</p>}</td>
-                  <td>{row.billingAmount}</td>
                   <td>
                     <span className="cursor-pointer w-[26px] flex" onClick={() => handleViewTeam(row)}>
                       <ViewIcon />
