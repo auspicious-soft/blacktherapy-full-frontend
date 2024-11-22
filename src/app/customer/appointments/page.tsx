@@ -6,7 +6,7 @@ import UpcomingAppointments from '@/app/customer/components/UpcomingAppointments
 import VideosWellness from '@/app/customer/components/VideosWellness';
 import { useState, useEffect, useTransition } from 'react';
 import useSWR from 'swr';
-import { getClientWellness, getClientAppointments, postAnAppointment } from '@/services/client/client-service';
+import { getClientAppointments, postAnAppointment } from '@/services/client/client-service';
 import { useSession } from 'next-auth/react';
 import Modal from 'react-modal';
 import { ButtonArrow } from '@/utils/svgicons';

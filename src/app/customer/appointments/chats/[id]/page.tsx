@@ -1,7 +1,8 @@
 'use client'
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import imgg from "@/assets/images/banner.jpg"
+import { FileUpload, MessageSend, PhotoUpload } from "@/utils/svgicons";
 
 interface Message {
   id: number;
@@ -20,6 +21,14 @@ const Page = () => {
 
   const [inputMessage, setInputMessage] = useState("");
 
+  useEffect(() => {
+    document.body.classList.add("chat-open");
+
+    return () => {
+      document.body.classList.remove("chat-open");
+    };
+  }, []);
+  
   const sendMessage = () => {
     if (inputMessage.trim() === "") return;
 
@@ -37,15 +46,19 @@ const Page = () => {
   };
 
   return (
-    <div className="flex rel relative overflow-hidden flex-col h-screen bg-blue-50">
+    <div>
+       <h1 className="font-antic text-[#283C63] text-[30px] leading-[1.2em] mb-[25px] lg:text-[40px] lg:mb-[50px]">
+        Wellness Portal
+      </h1>
+      <div className="flex rel relative overflow-hidden flex-col h-[calc(100vh-148px)] bg-white rounded-t-[20px]">
       {/* Header */}
-      <div className="flex items-center bg-blue-600 text-white p-4">
+      <div className="flex items-center bg-[#26395E] rounded-t-[20px] text-white p-4">
         <div className="flex items-center space-x-3">
             <Image src={imgg} height={200} width={200}
             alt="User Avatar" className="w-10 h-10 rounded-full"/>
             <div>
-            <h2 className="text-lg font-semibold">Alison Kennedy</h2>
-            <p className="text-sm">Active Now</p>
+            <h2 className="text-lg font-semibold text-white">Alison Kennedy</h2>
+            <p className="text-sm text-white ">Active Now</p>
           </div>
         </div>
         <div className="ml-auto">
@@ -54,42 +67,63 @@ const Page = () => {
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4">
+      <div className="flex-1 bg-white overflow-y-auto overflo-custom p-4">
         {messages.map((message) => (
           <div
             key={message.id}
             className={`flex ${message.key === "left" ? "justify-start" : "justify-end"} mb-4`}
           >
             <div
-              className={`max-w-[70%] p-3 rounded-lg ${
+              className={`max-w-[70%]  rounded-[10px] ${
                 message.key === "left"
-                  ? "bg-white shadow-md"
-                  : "bg-blue-500 text-white shadow-md"
+                  ? ""
+                  : ""
               }`}
             >
-              <p>{message.text}</p>
-              <p className="text-xs text-gray-500 mt-2 text-right">{message.time}</p>
+              <p className={`p-3 rounded-[10px] ${
+                message.key === "left"
+                  ? "bg-[#E7F8F6] shadow-md"
+                  : "bg-[#CCE9FA]  shadow-md"
+              }`}>{message.text}</p>
+
+              <p className={`text-xs text-[#849DA8] mt-[3px] ${
+                message.key === "left"
+                  ? "text-left"
+                  : "text-right"
+              }`}>{message.time}</p>
             </div>
           </div>
         ))}
       </div>
 
       {/* Input Box */}
-      <div className="bg-white p-4 border-t border-gray-200 sticky bottom-0 w-full left-0     right-0 flex items-center space-x-3">
+      <div className="bg-white p-[10px] rounded-[10px] border border-[#AEAEAE]  m-3 w-[calc(100%-24px)] left-0  right-0 ">
         <input
           type="text"
           placeholder="Message Alison Kennedy..."
           value={inputMessage}
           onChange={(e) => setInputMessage(e.target.value)}
-          className="flex-1 p-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
+          className="w-full p-3 border-none "
         />
+       <div className="flex justify-between items-center">
+        <div className="flex gap-2">
+        <label htmlFor="" className="relative">
+          <input type="image" src="" alt="" className="file-inputs" />
+          <PhotoUpload/>
+        </label>
+        <label htmlFor="" className="relative">
+          <input type="file" name="" id=""  className="file-inputs"/>
+          <FileUpload/>
+        </label>
+        </div>
         <button
           onClick={sendMessage}
-          className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition"
-        >
-          Send
+          className=""
+        > <MessageSend/>
         </button>
+       </div>
       </div>
+    </div>
     </div>
   );
 };

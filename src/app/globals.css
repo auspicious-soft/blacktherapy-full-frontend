@@ -327,6 +327,19 @@ ul.plan-lists li {
   font-size: 14px;
   color: #686C78;
 }
+.chat-open main {
+  padding-bottom: 0;
+}
+input.file-inputs {
+  border: none;
+  opacity: 0;
+  position: absolute;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  left: 0;
+}
+
 @media (min-width: 768px) {
   .card-wrapper:hover .text-button {
     bottom: 19px;
@@ -372,6 +385,12 @@ ul.plan-lists li {
 .nav-menu.open {
   display: block;
 }
+.bg-flower {
+  background-image: url(../assets/images/card-bg.png);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  }
 .menuToggleBtn {
   display: block;
 }
