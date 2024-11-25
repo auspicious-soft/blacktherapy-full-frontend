@@ -1,9 +1,10 @@
 import React from 'react';
 import Image from 'next/image';
 import imgg from "@/assets/images/banner.jpg"
+import { FileUpload, MessageSend, PhotoUpload } from '@/utils/svgicons';
 
-const MainChat = (messages:any) => {
-
+const MainChat = (props:any) => {
+    const { prompt, setPrompt, handleSendMessage, handleTyping, handleStopTyping, messages, userId, roomId } = props;
     
     return (
         <div className="flex rel relative overflow-hidden flex-col  bg-white border rounded-[20px]">
@@ -24,7 +25,7 @@ const MainChat = (messages:any) => {
 
         {/* Messages */}
         <div className="flex-1 bg-white overflow-y-auto overflo-custom p-4">
-        {messages.map((msg, index) => (
+        {/* {messages.map((msg, index) => (
               <div
                 key={index}
                 className={`mb-4 ${msg.sender === userId ? "text-right" : "text-left"}`}
@@ -33,7 +34,7 @@ const MainChat = (messages:any) => {
                   <strong>{msg.sender}:</strong> {msg.message}
                 </p>
               </div>
-            ))}
+            ))} */}
         </div>
 
         {/* Input Box */}
