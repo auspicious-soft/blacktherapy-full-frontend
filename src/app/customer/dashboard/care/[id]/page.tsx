@@ -16,6 +16,8 @@ const Page = () => {
 
   const {data, isLoading } = useSWR(`/client/therapists/employee-records/${id}`, GetEmployeeRecordsData, {revalidateOnFocus:false})
   console.log('GetEmployeeRecordsData:', data);
+  const position = data?.data?.data[0]?.position;;
+  console.log('position:', position);
 
   return (
     <div>
@@ -23,7 +25,7 @@ const Page = () => {
         <div className="mb-5 ">
           <Image src={profileImage} alt="profile" />
         </div>
-        <p> {firstName} {lastName}
+        <p> {firstName} {lastName} <span>({position})</span>
         </p>
       </div>
     </div>
