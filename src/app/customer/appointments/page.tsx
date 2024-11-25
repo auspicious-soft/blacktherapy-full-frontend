@@ -33,9 +33,6 @@ const Page = () => {
   }, [activeTab]);
   const { data: appointmentsData, isLoading: appointmentsIsLoading, mutate: appointmentsMutate, error } = useSWR(shouldFetchAppointments ? `/client/appointment/${session?.data?.user?.id}?${query}` : null, getClientAppointments)
 
-      const id = "12345";
-
-
   const rowsPerPage = appointmentsData?.data?.limit ?? 0;
 
   const handlePageClick = (selectedItem: { selected: number }) => {
@@ -72,17 +69,14 @@ const Page = () => {
   }
   if (error) return <div className="text-red-500">Error: {error.message}</div>
 
-  const handleChat = () => {
-    const id = "238974328947834";
-    router.push(`/customer/appointments/chats/${id}`);
-};
+
   
   return (
     <>
       <h1 className="font-antic text-[#283C63] text-[30px] leading-[1.2em] mb-[25px] lg:text-[40px] lg:mb-[50px]">
         Wellness Portal
       </h1>
-        <button onClick={handleChat} className="button">Start Chat</button>
+        {/* <button onClick={handleChat} className="button">Start Chat</button> */}
       <div>
         <div className='flex items-center justify-between mb-5 '>
           <div className="tabs flex flex-wrap gap-[5px] lg:gap-[20px]">

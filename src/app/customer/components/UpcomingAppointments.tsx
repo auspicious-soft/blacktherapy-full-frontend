@@ -1,13 +1,14 @@
 import React, { useState, CSSProperties } from "react";
 import Image from "next/image";
 import ReactPaginate from "react-paginate";
+import { useRouter } from "next/navigation";
 import PervIcon from "@/assets/images/pervicon.png";
 import NextIcon from "@/assets/images/nexticon.png";
 
 const UpcomingAppointments = (props:any) => {
   const {data, error} = props; 
   const {setQuery} = props;
-  
+  const router= useRouter();
   const upcomingData = data?.data;
   const { isLoading } = props
   const total = data?.total ?? 0;
@@ -15,36 +16,9 @@ const UpcomingAppointments = (props:any) => {
   const handlePageClick = (selectedItem: { selected: number }) => {
     setQuery(`page=${selectedItem.selected + 1}&limit=${rowsPerPage}`)
   }
-
-  // const data = [ 
-  //   {
-  //     id: 1,
-  //     apptDate: "12 September 2024",
-  //     apptTime: "09:30 AM",
-  //     chatWithClinician: "Start Chat",
-  //     videoChat: "Start Chat",
-  //     billingAmount: "$25.00",
-  //   },
-  //   {
-  //     id: 2,
-  //     apptDate: "20 September 2024",
-  //     apptTime: "09:30 AM",
-  //     chatWithClinician: "Start Chat",
-  //     videoChat: "Unavailable Now",
-  //     billingAmount: "$25.00",
-  //   },
-  //   {
-  //     id: 3,
-  //     apptDate: "21 September 2024",
-  //     apptTime: "09:30 AM",
-  //     chatWithClinician: "Unavailable Now",
-  //     videoChat: "Start Chat",
-  //     billingAmount: "$25.00",
-  //   },
-  //   // Add more data as needed
-  // ];
-  // ReactPaginate
-  
+  const handleChat = (id: string) => {
+    router.push(`/customer/appointments/chats/${id}`);
+};
 
   const getStyle = (text: string): CSSProperties => {
     let style: CSSProperties = {
@@ -106,10 +80,19 @@ const UpcomingAppointments = (props:any) => {
                 <td>{new Date(item.appointmentDate).toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' })}</td>
                 <td>{item.appointmentTime}</td>
                 <td>
-                      <p className={`font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px] ${item.chat === 'Start Chat' ? ' text-[#42A803] bg-[#CBFFB2] ' : ' text-[#FFA234] bg-[#FFFCEC] '}`}>
-                        {!item.message ? 'No chat' : <p className='cursor-pointer font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px]  text-[#42A803] bg-[#CBFFB2]'>Start Chat</p>}
-                      </p>
-                    </td>
+          {item.chat === "Start Chat" ? (
+            <p
+              onClick={() => handleChat(item._id)}
+              className="cursor-pointer font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px] text-[#42A803] bg-[#CBFFB2]"
+            >
+              Start Chat
+            </p>
+          ) : (
+            <p className="font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px] text-[#FFA234] bg-[#FFFCEC]">
+              No Chat
+            </p>
+          )}
+        </td>
                 <td>{!item.video ? 'No video' : <p className='cursor-pointer font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px]  text-[#42A803] bg-[#CBFFB2]'>Start Video</p>}</td>
                 {/* <td>{item.billingAmount}</td> */}
               </tr>
