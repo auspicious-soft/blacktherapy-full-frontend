@@ -46,7 +46,7 @@ const MobileHeader = () => {
             <Humbruger />
           </button>
         </div>
-    <div className={`sideNav ${isCollapsed ? 'collapsed' : ''} h-[100%] overflo-custom`}>
+    <div className={`sideNav ${isCollapsed ? 'collapsed' : ''} h-[100%] overflo-custom z-40`}>
       <div className="">
 
       <ul className="navList">

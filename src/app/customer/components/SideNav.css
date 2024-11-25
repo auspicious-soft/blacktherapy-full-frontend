@@ -85,6 +85,7 @@
   .sideNav.collapsed {
     width: 300px;
     padding: 20px 20px 20px 20px;
+    z-index: 400;
     left: 0;
   }
 }

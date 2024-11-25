@@ -30,7 +30,6 @@ const AlertsTable = () => {
   };
 
   const openClientPopup = (row:any) => {
-    console.log('row:', row);
     setClientDetails(row);
     setClientDetailsPopup(true);
   };

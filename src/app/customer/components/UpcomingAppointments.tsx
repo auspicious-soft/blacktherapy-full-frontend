@@ -11,7 +11,6 @@ const UpcomingAppointments = (props:any) => {
   const upcomingData = data?.data;
   const { isLoading } = props
   const total = data?.total ?? 0;
-  console.log('total:', total);
   const rowsPerPage = 10;
   const handlePageClick = (selectedItem: { selected: number }) => {
     setQuery(`page=${selectedItem.selected + 1}&limit=${rowsPerPage}`)
@@ -84,7 +83,7 @@ const UpcomingAppointments = (props:any) => {
               <th>Appt Time</th>
               <th>Chat With Clinician</th>
               <th>Video Chat</th>
-              <th>Billing Amount</th>
+              {/* <th>Billing Amount</th> */}
             </tr>
           </thead>
           <tbody>
@@ -104,15 +103,15 @@ const UpcomingAppointments = (props:any) => {
             upcomingData?.map((item: any) => (
               <tr key={item?._id}>
                 <td>{item?._id}</td>
-                <td>{item.apptDate}</td>
-                <td>{item.apptTime}</td>
+                <td>{new Date(item.appointmentDate).toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' })}</td>
+                <td>{item.appointmentTime}</td>
                 <td>
                       <p className={`font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px] ${item.chat === 'Start Chat' ? ' text-[#42A803] bg-[#CBFFB2] ' : ' text-[#FFA234] bg-[#FFFCEC] '}`}>
                         {!item.message ? 'No chat' : <p className='cursor-pointer font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px]  text-[#42A803] bg-[#CBFFB2]'>Start Chat</p>}
                       </p>
                     </td>
                 <td>{!item.video ? 'No video' : <p className='cursor-pointer font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px]  text-[#42A803] bg-[#CBFFB2]'>Start Video</p>}</td>
-                <td>{item.billingAmount}</td>
+                {/* <td>{item.billingAmount}</td> */}
               </tr>
             ))
           ) : (

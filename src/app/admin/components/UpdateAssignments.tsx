@@ -6,7 +6,7 @@ import { updateAssignments } from '@/services/admin/admin-service';
 import { toast } from 'sonner';
 import useTherapists from '@/utils/useTherapists';
 
-interface AssignmentProps { 
+interface AssignmentProps {
     isOpen: boolean;
     onRequestClose: () => void;
     row: any;
@@ -16,21 +16,23 @@ interface AssignmentProps {
 const UpdateAssignments: React.FC<AssignmentProps> = ({ isOpen, onRequestClose, row, mutate }) => {
 
 
-    const { therapistData, isLoading, error } = useTherapists();
+    const { therapistData, isLoading, error } = useTherapists(true);
 
     const [selectedClinician, setSelectedClinician] = useState<any>(null);
     const [selectedPeers, setSelectedPeers] = useState<any>([]);
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState<any>({
         message: '',
         workshop: '',
-        video: ''
+        video: '',
+        appointmentDate: null,
+        appointmentTime: null
     });
     const [isPending, startTransition] = useTransition();
     const nameState = row?.clientId?.state;
-    
+
     useEffect(() => {
-        if (row) {
-            setSelectedClinician(row?.therapistId?.firstName && row?.therapistId?.lastName ? 
+        if (row) { 
+            setSelectedClinician(row?.therapistId?.firstName && row?.therapistId?.lastName ?
                 { label: `${row?.therapistId?.firstName} ${row?.therapistId?.lastName}` } : null);
 
             setSelectedPeers(row?.peerSupportIds?.map((peer: any) => ({
@@ -41,7 +43,9 @@ const UpdateAssignments: React.FC<AssignmentProps> = ({ isOpen, onRequestClose, 
             setFormData({
                 message: row?.message !== undefined ? row?.message.toString() : '',
                 workshop: row?.workshop || '',
-                video: row?.video !== undefined ? row?.video.toString() : ''
+                video: row?.video !== undefined ? row?.video.toString() : '',
+                appointmentDate: row?.appointmentDate ? new Date(row?.appointmentDate).toISOString().split('T')[0] : null,
+                appointmentTime: row?.appointmentTime ? row?.appointmentTime : null
             });
         }
     }, [row]);
@@ -63,7 +67,7 @@ const UpdateAssignments: React.FC<AssignmentProps> = ({ isOpen, onRequestClose, 
         setSelectedPeers(selected);
         selected.forEach((peer: any) => {
             if (peer?.state) {
-                checkStateMatch(peer.state);    
+                checkStateMatch(peer.state);
             }
         });
     };
@@ -71,7 +75,7 @@ const UpdateAssignments: React.FC<AssignmentProps> = ({ isOpen, onRequestClose, 
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
-        setFormData((prevData) => ({
+        setFormData((prevData: any) => ({
             ...prevData,
             [name]: value
         }));
@@ -88,7 +92,7 @@ const UpdateAssignments: React.FC<AssignmentProps> = ({ isOpen, onRequestClose, 
             try {
                 const response = await updateAssignments(`/admin/appointments/${row._id}`, assignData);
 
-                if (response.status === 200 ) { 
+                if (response.status === 200) {
                     toast.success("Assignment updated successfully");
                     onRequestClose();
                     mutate();
@@ -128,7 +132,7 @@ const UpdateAssignments: React.FC<AssignmentProps> = ({ isOpen, onRequestClose, 
                             name="Assign Peer Support"
                             value={selectedPeers}
                             options={therapistData}
-                            onChange={handlePeerSelectChange} 
+                            onChange={handlePeerSelectChange}
                             placeholder="Select"
                             isMulti={true}
                         />
@@ -169,6 +173,14 @@ const UpdateAssignments: React.FC<AssignmentProps> = ({ isOpen, onRequestClose, 
                             <option value="true">Yes</option>
                             <option value="false">No</option>
                         </select>
+                    </div>
+                    <div>
+                        <label className="label">Appointment Date</label>
+                        <input type="date" name="appointmentDate" value={formData.appointmentDate} onChange={handleInputChange} />
+                    </div>
+                    <div>
+                        <label className="label">Appointment Time</label>
+                        <input type="time" name="appointmentTime" value={formData.appointmentTime} onChange={handleInputChange} />
                     </div>
                 </div>
                 <div className='mt-[30px] flex justify-end'>
