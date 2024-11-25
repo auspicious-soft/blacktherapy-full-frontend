@@ -5,20 +5,21 @@ import { useRouter } from "next/navigation";
 import PervIcon from "@/assets/images/pervicon.png";
 import NextIcon from "@/assets/images/nexticon.png";
 
-const UpcomingAppointments = (props:any) => {
-  const {data, error} = props; 
-  const {setQuery} = props;
-  const router= useRouter();
+const UpcomingAppointments = (props: any) => {
+  const { data, error } = props;
+  const { setQuery } = props;
+  const router = useRouter();
   const upcomingData = data?.data;
-  const { isLoading } = props
+  console.log("upcomingData:", upcomingData);
+  const { isLoading } = props;
   const total = data?.total ?? 0;
   const rowsPerPage = 10;
   const handlePageClick = (selectedItem: { selected: number }) => {
-    setQuery(`page=${selectedItem.selected + 1}&limit=${rowsPerPage}`)
-  }
+    setQuery(`page=${selectedItem.selected + 1}&limit=${rowsPerPage}`);
+  };
   const handleChat = (id: string) => {
     router.push(`/customer/appointments/chats/${id}`);
-};
+  };
 
   const getStyle = (text: string): CSSProperties => {
     let style: CSSProperties = {
@@ -61,7 +62,7 @@ const UpcomingAppointments = (props:any) => {
             </tr>
           </thead>
           <tbody>
-          {isLoading ? (
+            {isLoading ? (
               <tr>
                 <td colSpan={5} className="">
                   Loading...
@@ -74,39 +75,58 @@ const UpcomingAppointments = (props:any) => {
                 </td>
               </tr>
             ) : upcomingData?.length > 0 ? (
-            upcomingData?.map((item: any) => (
-              <tr key={item?._id}>
-                <td>{item?._id}</td>
-                <td>{new Date(item.appointmentDate).toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' })}</td>
-                <td>{item.appointmentTime}</td>
-                <td>
-          {item.chat === "Start Chat" ? (
-            <p
-              onClick={() => handleChat(item._id)}
-              className="cursor-pointer font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px] text-[#42A803] bg-[#CBFFB2]"
-            >
-              Start Chat
-            </p>
-          ) : (
-            <p className="font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px] text-[#FFA234] bg-[#FFFCEC]">
-              No Chat
-            </p>
-          )}
-        </td>
-                <td>{!item.video ? 'No video' : <p className='cursor-pointer font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px]  text-[#42A803] bg-[#CBFFB2]'>Start Video</p>}</td>
-                {/* <td>{item.billingAmount}</td> */}
+              upcomingData?.map((item: any) => (
+                <tr key={item?._id}>
+                  <td>{item?._id}</td>
+                  <td>
+                    {new Date(item.appointmentDate).toLocaleDateString(
+                      "en-US",
+                      {
+                        weekday: "short",
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                      }
+                    )}
+                  </td>
+                  <td>{item.appointmentTime}</td>
+                  <td>
+                    {item?.message ? (
+                      <p
+                        onClick={() => handleChat(item._id)}
+                        className="cursor-pointer font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px] text-[#42A803] bg-[#CBFFB2]"
+                      >
+                        Start Chat
+                      </p>
+                    ) : (
+                      <p className="font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px] text-[#FFA234] bg-[#FFFCEC]">
+                        No Chat
+                      </p>
+                    )}
+                  </td>
+
+                  <td>
+                    {!item.video ? (
+                      "No video"
+                    ) : (
+                      <p className="cursor-pointer font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px]  text-[#42A803] bg-[#CBFFB2]">
+                        Start Video
+                      </p>
+                    )}
+                  </td>
+                  {/* <td>{item.billingAmount}</td> */}
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td
+                  className="w-full flex justify-center p-3 items-center"
+                  colSpan={5}
+                >
+                  No data found
+                </td>
               </tr>
-            ))
-          ) : (
-            <tr>
-              <td
-                className="w-full flex justify-center p-3 items-center"
-                colSpan={5}
-              >
-                No data found
-              </td>
-            </tr>
-          )}
+            )}
           </tbody>
         </table>
       </div>
