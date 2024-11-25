@@ -12,7 +12,10 @@ export const changePasswordService = async (route: string, payload: any) => {
 
 
 
-
+export const getTherapistProfile = async (route: string) => {
+    const axiosInstance = await getAxiosInstance()
+    return axiosInstance.get(route)
+}
 
 export const getProfileService = async (route: string) => {
     const axiosInstance = await getAxiosInstance()

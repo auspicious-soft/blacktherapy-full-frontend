@@ -6,6 +6,7 @@ import useSWR from "swr";
 import { GetEmployeeRecordsData } from "@/services/admin/admin-service";
 import { useRouter } from "next/navigation";
 import { useParams, useSearchParams } from 'next/navigation';
+import { getTherapistProfile } from "@/services/client/client-service";
 
 const Page = () => {
     const params = useParams();
@@ -13,20 +14,25 @@ const Page = () => {
     const id = params.id as string;
     const firstName = searchParams.get("firstName");
     const lastName = searchParams.get("lastName");
+    const {data, error, isLoading} = useSWR(`/client/therapists/${id}`, getTherapistProfile, {revalidateOnFocus: false});
+    const {data: positionData } = useSWR(`/client/therapists/employee-records/${id}`, GetEmployeeRecordsData, {revalidateOnFocus:false})
+    const position = positionData?.data?.data[0]?.position;;
+    const therapistData = data?.data?.data;
+    console.log('therapistData:', therapistData);
+   
 
-  const {data, isLoading } = useSWR(`/client/therapists/employee-records/${id}`, GetEmployeeRecordsData, {revalidateOnFocus:false})
-  console.log('GetEmployeeRecordsData:', data);
-  const position = data?.data?.data[0]?.position;;
-  console.log('position:', position);
 
   return (
     <div>
       <div className="text-lg">
-        <div className="mb-5 ">
+        <div className="mb-5 flex gap-3 items-center ">
           <Image src={profileImage} alt="profile" />
+        <p>{firstName} {lastName}</p>
+
         </div>
-        <p> {firstName} {lastName} <span>({position})</span>
-        </p>
+        <p className="text-[#283C63] font-bold  ">Email: <span className="text-[#686868] ">{therapistData?.email}</span></p>
+        <p className="text-[#283C63] font-bold  ">Position: <span className="text-[#686868] ">{position}</span></p>
+        <p className="text-[#283C63] font-bold  ">About: <span className="text-[#686868] ">{therapistData?.about}</span></p>
       </div>
     </div>
   );
