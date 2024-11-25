@@ -50,7 +50,7 @@ const DashboardAssignment = (props: any) => {
   return (
     <>
       <h3 className="mb-[20px]">Assignment details</h3>
-      <div className="table-common">
+      <div className="table-common overflo-custom">
         <table>
           <thead>
             <tr>

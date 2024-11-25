@@ -49,7 +49,7 @@ const UpcomingAppointments = (props: any) => {
 
   return (
     <>
-      <div className="table-common">
+      <div className="table-common overflo-custom">
         <table>
           <thead>
             <tr>
@@ -94,7 +94,7 @@ const UpcomingAppointments = (props: any) => {
                     {item?.message ? (
                       <p
                         onClick={() => handleChat(item._id)}
-                        className="cursor-pointer font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px] text-[#42A803] bg-[#CBFFB2]"
+                        className=" inline-block cursor-pointer font-bold text-center rounded-3xl py-[2px] px-[10px] text-[12px] text-[#42A803] bg-[#CBFFB2]"
                       >
                         Start Chat
                       </p>

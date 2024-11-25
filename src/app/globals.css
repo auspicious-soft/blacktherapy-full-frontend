@@ -382,6 +382,7 @@ input.file-inputs {
   z-index: 2;
   flex-direction: column;
 }
+
 .nav-menu.open {
   display: block;
 }

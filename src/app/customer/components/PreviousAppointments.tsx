@@ -92,7 +92,7 @@ const PreviousAppointments = (props: any) => {
   };
   return (
     <>
-      <div className="table-common">
+      <div className="table-common overflo-custom">
         <table>
           <thead>
             <tr>
