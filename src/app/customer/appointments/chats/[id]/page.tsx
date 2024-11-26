@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
-import React, { use, useEffect, useState } from "react";
+import React, { use, useEffect, useRef, useState } from "react";
 import io from 'socket.io-client';
 import NotificationChat from "../../_components/NotificationChat";
 import MainChat from "../../_components/MainChat";
@@ -10,6 +10,7 @@ import { useSession } from "next-auth/react";
 import { getAppointmentDetails, getChatHistory } from "@/utils";
 
 const Page = () => {
+  const containerRef = useRef<HTMLDivElement>(null);
   const session = useSession();
   const [messages, setMessages] = useState<any>([]);
   const [prompt, setPrompt] = useState("");
@@ -17,7 +18,9 @@ const Page = () => {
   const [socket, setSocket] = useState<any>(null);
   const params = useParams();
   const roomId = params.id as string
-  const [isPeerSupport, setIsPeerSupported] = useState(false);
+  const [isPeerSupport, setIsPeerSupported] = useState(false)
+  containerRef.current?.scrollTo(0, containerRef.current?.scrollHeight)
+  const [recieverDetails, setRecieverDetails] = useState<any>(null)
 
   useEffect(() => {
     const socketInstance = io(process.env.NEXT_PUBLIC_BACKEND_URL as string)
@@ -28,18 +31,16 @@ const Page = () => {
     })
 
     socketInstance.on("message", (data: any) => {
-      console.log('data: ', data);
       setMessages((prevMessages: any) => [...prevMessages, data]);
-    });
+    })
 
     socketInstance.on("typing", (userId: any) => {
       console.log(`User ${userId} is typing...`);
-    });
+    })
 
     socketInstance.on("stopTyping", (userId: any) => {
       console.log(`User ${userId} stopped typing.`);
-    });
-
+    })
     return () => {
       socketInstance.disconnect();
     }
@@ -48,7 +49,8 @@ const Page = () => {
   useEffect(() => {
     const fetchAppointmentDetails = async () => {
       const response = await getAppointmentDetails(roomId)
-      setIsPeerSupported(response?.data?.therapistId !== userId)
+      setIsPeerSupported(response?.data?.therapistId?.therapistId !== userId)
+      setRecieverDetails(response?.data?.therapistId)
     }
     const fetchChatHistory = async () => {
       const response = await getChatHistory(roomId)
@@ -56,16 +58,20 @@ const Page = () => {
     }
     fetchAppointmentDetails()
     fetchChatHistory()
-  }, [isPeerSupport])
+
+  }, [isPeerSupport, prompt])
 
   const handleSendMessage = () => {
-    console.log(prompt)
     if (socket && prompt.trim() !== '') {
       socket.emit('message', {
         sender: userId, roomId, message: prompt, attachment: null, ...(isPeerSupport && { isCareMsg: true })
       });
       setPrompt('')
+
     }
+    setTimeout(() => {
+      containerRef.current?.scrollTo(0, containerRef.current?.scrollHeight);
+    }, 1000);
   };
 
   const handleTyping = () => {
@@ -95,10 +101,11 @@ const Page = () => {
       </h1>
       <div className="h-[calc(100vh-168px)] grid grid-cols-[minmax(0,_4fr)_minmax(0,_8fr)] gap-[31px]">
         <NotificationChat />
-        <MainChat messages={messages} handleSendMessage={handleSendMessage}
+        <MainChat containerRef={containerRef} messages={messages} handleSendMessage={handleSendMessage}
           prompt={prompt} setPrompt={setPrompt}
           userId={userId} roomId={roomId}
           handleTyping={handleTyping} handleStopTyping={handleStopTyping}
+          recieverDetails = {recieverDetails}
         />
       </div>
     </div>

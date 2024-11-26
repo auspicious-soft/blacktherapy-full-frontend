@@ -4,8 +4,7 @@ import imgg from "@/assets/images/banner.jpg"
 import { FileUpload, MessageSend, PhotoUpload } from '@/utils/svgicons';
 
 const MainChat = (props: any) => {
-  const { prompt, setPrompt, handleSendMessage, handleTyping, handleStopTyping, messages, userId, roomId } = props;
-  console.log('messages: ', messages);
+  const { prompt, setPrompt, handleSendMessage, handleTyping, handleStopTyping, messages, userId, roomId, containerRef, recieverDetails } = props;
 
   return (
     <div className="flex rel relative overflow-hidden flex-col  bg-white border rounded-[20px]">
@@ -15,8 +14,8 @@ const MainChat = (props: any) => {
           <Image src={imgg} height={200} width={200}
             alt="User Avatar" className="w-10 h-10 rounded-full" />
           <div>
-            <h2 className="text-lg font-semibold text-white">Alison Kennedy</h2>
-            <p className="text-sm text-white ">Active Now</p>
+            <h2 className="text-lg font-semibold text-white">{recieverDetails?.firstName} {recieverDetails?.lastName}</h2>
+            <p className="text-sm text-white ">{recieverDetails?.isOnline ? 'Active Now' : 'Offline'}</p>
           </div>
         </div>
         <div className="ml-auto">
@@ -25,17 +24,21 @@ const MainChat = (props: any) => {
       </div>
 
       {/* Messages */}
-      <div className="flex-1 bg-white overflow-y-auto overflo-custom p-4">
-        {/* {messages.map((msg, index) => (
-              <div
-                key={index}
-                className={`mb-4 ${msg.sender === userId ? "text-right" : "text-left"}`}
-              >
-                <p className="p-3 rounded-lg shadow-md bg-[#E7F8F6] inline-block max-w-[70%]">
-                  <strong>{msg.sender}:</strong> {msg.message}
-                </p>
+      <div className="flex-1 bg-white overflow-y-auto overflo-custom p-4 relative" ref={containerRef}>
+        {messages.map((msg: any, index: number) => (
+          <div
+            key={index}
+            className={`mb-2 ${(msg.sender._id || msg.sender) === userId ? "text-right" : "text-left"}`}
+          >
+            <div className={`p-3 rounded-lg shadow-md ${(msg.sender._id || msg.sender) === userId ? "bg-[#26395e]" : "bg-[#b4deee]"} inline-block max-w-[70%]`}>
+              {msg.message}
+            </div>
+              <div className="text-black text-[11px]">
+                {new Date(msg.createdAt).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
+
               </div>
-            ))} */}
+          </div>
+        ))}
       </div>
 
       {/* Input Box */}
