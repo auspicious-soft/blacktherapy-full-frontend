@@ -8,13 +8,21 @@ import MainChat from "../../_components/MainChat";
 import { useParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { getAppointmentDetails, getChatHistory } from "@/utils";
+import { generateSignedUrlOfAppointment } from "@/actions";
+import axios from "axios";
+import { toast } from "sonner";
+import { start } from "repl";
 
 const Page = () => {
+  const session = useSession()
+  const userId = session?.data?.user?.id as string;
+  const [isPending, startTransition] = React.useTransition()
   const containerRef = useRef<HTMLDivElement>(null);
-  const session = useSession();
   const [messages, setMessages] = useState<any>([]);
   const [prompt, setPrompt] = useState("");
-  const userId = session?.data?.user?.id as string;
+  const [file, setFile] = useState<any>(null);
+  const [imagePreview, setImagePreview] = React.useState<string | null>(null)
+  const [filePreview, setFilePreview] = React.useState<string | null>(null)
   const [socket, setSocket] = useState<any>(null);
   const params = useParams();
   const roomId = params.id as string
@@ -59,19 +67,41 @@ const Page = () => {
     fetchAppointmentDetails()
     fetchChatHistory()
 
-  }, [isPeerSupport, prompt])
+  }, [isPeerSupport, prompt, file])
 
-  const handleSendMessage = () => {
-    if (socket && prompt.trim() !== '') {
-      socket.emit('message', {
-        sender: userId, roomId, message: prompt, attachment: null, ...(isPeerSupport && { isCareMsg: true })
-      });
-      setPrompt('')
-
-    }
-    setTimeout(() => {
-      containerRef.current?.scrollTo(0, containerRef.current?.scrollHeight);
-    }, 1000);
+  const handleSendMessage = async () => {
+    startTransition(async () => {
+      let fileKey = null
+      let fileType = null
+      if (socket) {
+        if (file) {
+          const signedUrl = await generateSignedUrlOfAppointment((file as File).name, file.type, session?.data?.user?.email as string)
+          const uploadResponse = await fetch(signedUrl, {
+            method: 'PUT',
+            body: file,
+            headers: {
+              'Content-Type': file.type,
+            },
+            cache: 'no-store'
+          })
+          if (!uploadResponse.ok) {
+            toast.error('Something went wrong. Please try again')
+            return
+          }
+          fileKey = `appointments/${session?.data?.user?.email}/my-appointment-files/${(file as File).name}`
+        }
+        socket.emit('message', {
+          sender: userId, roomId, message: prompt, attachment: fileKey, fileType: file?.type, fileName: file?.name, ...(isPeerSupport && { isCareMsg: true })
+        })
+        setPrompt('')
+        setFile(null)
+        setImagePreview(null)
+        setFilePreview(null)
+      }
+      setTimeout(() => {
+        containerRef.current?.scrollTo(0, containerRef.current?.scrollHeight);
+      }, 1000)
+    })
   };
 
   const handleTyping = () => {
@@ -103,9 +133,15 @@ const Page = () => {
         <NotificationChat />
         <MainChat containerRef={containerRef} messages={messages} handleSendMessage={handleSendMessage}
           prompt={prompt} setPrompt={setPrompt}
+          file={file} setFile={setFile}
           userId={userId} roomId={roomId}
           handleTyping={handleTyping} handleStopTyping={handleStopTyping}
-          recieverDetails = {recieverDetails}
+          recieverDetails={recieverDetails}
+          isPending={isPending}
+          imagePreview={imagePreview}
+          setImagePreview={setImagePreview}
+          filePreview={filePreview}
+          setFilePreview={setFilePreview}
         />
       </div>
     </div>
