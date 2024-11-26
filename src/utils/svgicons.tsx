@@ -790,8 +790,8 @@ export const TickIcon1 =() => (
 </svg>
 )
 export const MessageSend =() => (
-<svg xmlns="http://www.w3.org/2000/svg" width="22" height="18" viewBox="0 0 22 18" fill="none">
-  <path d="M11.6842 15.9319L17.2543 1.99994L3.32227 7.56995L6.5695 10.8265L14.4669 4.78727L8.42772 12.6847L11.6842 15.9319Z" fill="#AEAEAE"/>
+<svg  xmlns="http://www.w3.org/2000/svg" width="22" height="18" viewBox="0 0 22 18" fill="none">
+  <path d="M11.6842 15.9319L17.2543 1.99994L3.32227 7.56995L6.5695 10.8265L14.4669 4.78727L8.42772 12.6847L11.6842 15.9319Z" fill={"#26395e"}/>
 </svg>
 );
 export const PhotoUpload =() => (

@@ -7,7 +7,7 @@ import NotificationChat from "../../_components/NotificationChat";
 import MainChat from "../../_components/MainChat";
 import { useParams } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { getAppointmentDetails } from "@/utils";
+import { getAppointmentDetails, getChatHistory } from "@/utils";
 
 const Page = () => {
   const session = useSession();
@@ -27,23 +27,39 @@ const Page = () => {
       socketInstance.emit('joinRoom', { sender: userId, roomId });
     })
 
+    socketInstance.on("message", (data: any) => {
+      console.log('data: ', data);
+      setMessages((prevMessages: any) => [...prevMessages, data]);
+    });
+
+    socketInstance.on("typing", (userId: any) => {
+      console.log(`User ${userId} is typing...`);
+    });
+
+    socketInstance.on("stopTyping", (userId: any) => {
+      console.log(`User ${userId} stopped typing.`);
+    });
+
     return () => {
-      if (socket) {
-        socketInstance.disconnect()
-      }
+      socketInstance.disconnect();
     }
   }, [userId, roomId])
 
   useEffect(() => {
-    // Handle any asynchronous code here if needed
-    const fetchData = async () => {
+    const fetchAppointmentDetails = async () => {
       const response = await getAppointmentDetails(roomId)
       setIsPeerSupported(response?.data?.therapistId !== userId)
     }
-    fetchData()
+    const fetchChatHistory = async () => {
+      const response = await getChatHistory(roomId)
+      setMessages(response?.data)
+    }
+    fetchAppointmentDetails()
+    fetchChatHistory()
   }, [isPeerSupport])
 
   const handleSendMessage = () => {
+    console.log(prompt)
     if (socket && prompt.trim() !== '') {
       socket.emit('message', {
         sender: userId, roomId, message: prompt, attachment: null, ...(isPeerSupport && { isCareMsg: true })
@@ -63,22 +79,6 @@ const Page = () => {
       socket.emit('stopTyping', { roomId, userId });
     }
   }
-
-  useEffect(() => {
-    if (socket) {
-      socket.on("message", (data: any) => {
-        setMessages((prevMessages: any) => [...prevMessages, data]);
-      })
-
-      socket.on("typing", (userId: any) => {
-        console.log(`User ${userId} is typing...`);
-      })
-
-      socket.on("stopTyping", (userId: any) => {
-        console.log(`User ${userId} stopped typing.`);
-      })
-    }
-  }, [socket]);
 
   useEffect(() => {
     document.body.classList.add("chat-open");

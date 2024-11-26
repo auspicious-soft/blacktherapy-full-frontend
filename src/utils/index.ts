@@ -23,3 +23,12 @@ export const getAppointmentDetails = async (id: string) => {
         toast.error("Failed to fetch appointment details")
     }
 }
+
+export const getChatHistory = async (id: string) => {
+    try {
+        const axiosInstance = await getAxiosInstance()
+        return (await (await axiosInstance.get(`/chats/chat-history/${id}`))?.data)
+    } catch (error) {
+        toast.error("Failed to fetch chat history")
+    }
+}
