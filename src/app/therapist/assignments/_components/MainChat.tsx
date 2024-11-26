@@ -8,7 +8,7 @@ import { CiFileOn } from "react-icons/ci";
 
 
 const MainChat = (props: any) => {
-  const { imagePreview, setImagePreview, filePreview, setFilePreview, prompt, setPrompt, isPending, file, setFile, handleSendMessage, handleTyping, handleStopTyping, messages, userId, roomId, containerRef, recieverDetails } = props
+  const {isRecieverOnline, imagePreview, setImagePreview, filePreview, setFilePreview, prompt, setPrompt, isPending, file, setFile, handleSendMessage, handleTyping, handleStopTyping, messages, userId, roomId, containerRef, recieverDetails } = props
 
 
   useEffect(() => {
@@ -49,7 +49,7 @@ const MainChat = (props: any) => {
             alt="User Avatar" className="w-10 h-10 rounded-full" />
           <div>
             <h2 className="text-lg font-semibold text-white">{recieverDetails?.firstName} {recieverDetails?.lastName}</h2>
-            <p className="text-sm text-white ">{recieverDetails?.isOnline ? 'Active Now' : 'Offline'}</p>
+            <p className="text-sm text-white ">{isRecieverOnline ? 'Active Now' : 'Offline'}</p>
           </div>
         </div>
         <div className="ml-auto">

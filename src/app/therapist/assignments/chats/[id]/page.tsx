@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
-import React, { use, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import io from 'socket.io-client';
 import NotificationChat from "../../_components/NotificationChat";
 import MainChat from "../../_components/MainChat";
@@ -9,9 +9,7 @@ import { useParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { getAppointmentDetails, getChatHistory } from "@/utils";
 import { generateSignedUrlOfAppointment } from "@/actions";
-import axios from "axios";
 import { toast } from "sonner";
-import { start } from "repl";
 
 const Page = () => {
   const session = useSession()
@@ -29,30 +27,48 @@ const Page = () => {
   const [isPeerSupport, setIsPeerSupported] = useState(false)
   containerRef.current?.scrollTo(0, containerRef.current?.scrollHeight)
   const [recieverDetails, setRecieverDetails] = useState<any>(null)
+  const [isRecieverOnline, setIsRecieverOnline] = useState(false)
 
   useEffect(() => {
-    const socketInstance = io(process.env.NEXT_PUBLIC_BACKEND_URL as string)
-    setSocket(socketInstance)
-    socketInstance.on("connect", () => {
-      console.log("Connected to chat socket server.");
-      socketInstance.emit('joinRoom', { sender: userId, roomId });
-    })
+    if (!recieverDetails) return  // Necessary condition to prevent errors and unexpected behavior
+      const socketInstance = io(process.env.NEXT_PUBLIC_BACKEND_URL as string);
+      setSocket(socketInstance);
+  
+      socketInstance.on("connect", () => {
+        console.log("Connected to chat socket server.");
+        socketInstance.emit('joinRoom', { sender: userId, roomId })
+        socketInstance.emit('checkOnlineStatus', { userId: recieverDetails?._id })
+      })
+  
+      socketInstance.on("message", (data: any) => {
+        setMessages((prevMessages: any) => [...prevMessages, data]);
+        setTimeout(() => {
+          containerRef.current?.scrollTo(0, containerRef.current?.scrollHeight + 100);
+        }, 3000);
+      });
+  
+      socketInstance.on("typing", (userId: any) => {
+        console.log(`User ${userId} is typing...`);
+      });
+  
+      socketInstance.on("stopTyping", (userId: any) => {
+        console.log(`User ${userId} stopped typing.`);
+      });
+  
+      socketInstance.on("onlineStatus", (data: any) => {
+        setIsRecieverOnline(data.isOnline)
+      });
+  
+      return () => {
+        socketInstance.disconnect();
+      };
+  }, [userId, roomId, recieverDetails?._id])
 
-    socketInstance.on("message", (data: any) => {
-      setMessages((prevMessages: any) => [...prevMessages, data]);
-    })
-
-    socketInstance.on("typing", (userId: any) => {
-      console.log(`User ${userId} is typing...`);
-    })
-
-    socketInstance.on("stopTyping", (userId: any) => {
-      console.log(`User ${userId} stopped typing.`);
-    })
-    return () => {
-      socketInstance.disconnect();
+  useEffect(() => {
+    if (socket && recieverDetails?._id) {
+      socket.emit('checkOnlineStatus', { userId: recieverDetails?._id })
     }
-  }, [userId, roomId])
+  }, [socket])
 
   useEffect(() => {
     const fetchAppointmentDetails = async () => {
@@ -137,6 +153,7 @@ const Page = () => {
           userId={userId} roomId={roomId}
           handleTyping={handleTyping} handleStopTyping={handleStopTyping}
           recieverDetails={recieverDetails}
+          isRecieverOnline={isRecieverOnline}
           isPending={isPending}
           imagePreview={imagePreview}
           setImagePreview={setImagePreview}
