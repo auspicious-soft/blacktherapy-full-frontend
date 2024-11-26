@@ -7,12 +7,13 @@ import ReactPaginate from 'react-paginate';
 import useSWR from 'swr';
 import ReactLoading from 'react-loading';
 import Modal from "react-modal";
-
+import { useRouter } from "next/navigation";
 import { CloseIcon } from '@/utils/svgicons';
 
 const Page = () => {
   const [showModal, setShowModal] = useState(false);
   const [sessionNotes, setSessionNotes] = useState<string | null>(null);
+  const router = useRouter();
 
 
   const session = useSession()
@@ -30,6 +31,10 @@ const Page = () => {
   const openModal = (note: string) => {
     setSessionNotes(note);
     setShowModal(true);
+  };
+
+  const handleChat = (id: string) => {
+    router.push(`/therapist/assignments/chats/${id}`);
   };
 
   // const data = activeTab === 'peerSupport' ? peerSupportData : therapistData;
@@ -77,9 +82,18 @@ const Page = () => {
                 {/* <td> <p className='cursor-pointer font-gothamMedium text-center rounded-xl text-[10px] py-[4px] text-[#fff] bg-[#26395E]' onClick={()=>openModal(item?.notes)}>View</p></td> */}
 
                     <td>
-                      <p className={`font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px] ${item.chat === 'Start Chat' ? ' text-[#42A803] bg-[#CBFFB2] ' : ' text-[#FFA234] bg-[#FFFCEC] '}`}>
-                        {!item.message ? 'No chat' : <p className='cursor-pointer font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px]  text-[#42A803] bg-[#CBFFB2]'>Start Chat</p>}
+                    {item?.message ? (
+                      <p
+                        onClick={() => handleChat(item._id)}
+                        className=" inline-block cursor-pointer font-bold text-center rounded-3xl py-[2px] px-[10px] text-[12px] text-[#42A803] bg-[#CBFFB2]"
+                      >
+                        Start Chat
                       </p>
+                    ) : (
+                      <p className="font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px] text-[#FFA234] bg-[#FFFCEC]">
+                        No Chat
+                      </p>
+                    )}
                     </td>
                     <td>{!item.video ? 'No video' : <p className='cursor-pointer font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px]  text-[#42A803] bg-[#CBFFB2]'>Start Video</p>}</td>
                     <td>
