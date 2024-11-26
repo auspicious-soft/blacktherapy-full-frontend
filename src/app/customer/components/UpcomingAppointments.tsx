@@ -10,7 +10,6 @@ const UpcomingAppointments = (props: any) => {
   const { setQuery } = props;
   const router = useRouter();
   const upcomingData = data?.data;
-  console.log("upcomingData:", upcomingData);
   const { isLoading } = props;
   const total = data?.total ?? 0;
   const rowsPerPage = 10;

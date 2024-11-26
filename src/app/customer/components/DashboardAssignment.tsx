@@ -17,11 +17,9 @@ import Modal from "react-modal";
 const DashboardAssignment = (props: any) => {
   const router= useRouter();
   const { total, data, rowsPerPage, isLoading, error, setQuery } = props;
-  console.log('data:', data);
   const [renewPopupOpen, setRenewPopupOpen] = useState(false);
   const [teamPopupOpen, setTeamPopupOpen] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState<any>(null);
-  console.log('selectedAppointment:', selectedAppointment);
   
   
   const handlePageClick = (selectedItem: { selected: number }) => {
