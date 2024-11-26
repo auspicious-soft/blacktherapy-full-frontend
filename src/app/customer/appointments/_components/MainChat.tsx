@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import Image from 'next/image';
 import imgg from "@/assets/images/banner.jpg"
 import { CloseIcon, FileAttachment, FileUpload, MessageSend, PhotoUpload } from '@/utils/svgicons';
-import { getImageUrlOfS3 } from '@/utils';
+import { formatDate, getImageUrlOfS3 } from '@/utils';
 import Link from 'next/link';
 import { CiFileOn } from "react-icons/ci";
 
@@ -24,19 +24,6 @@ const MainChat = (props: any) => {
     }
   }, [file])
 
-  const formatDate = (date: Date) => {
-    const today = new Date();
-    const yesterday = new Date(today);
-    yesterday.setDate(today.getDate() - 1);
-
-    if (date.toDateString() === today.toDateString()) {
-      return 'Today';
-    } else if (date.toDateString() === yesterday.toDateString()) {
-      return 'Yesterday';
-    } else {
-      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
-    }
-  }
 
   let lastDate: string | null = null;
 
