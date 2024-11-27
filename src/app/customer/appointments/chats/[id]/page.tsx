@@ -73,8 +73,6 @@ const Page = () => {
   useEffect(() => {
     const fetchAppointmentDetails = async () => {
       const response = await getAppointmentDetails(roomId)
-      console.log('response?.data?.therapistId?.therapistId: ', response?.data?.therapistId?.therapistId);
-      console.log('userId: ', userId);
       setRecieverDetails(response?.data?.therapistId)
     }
     const fetchChatHistory = async () => {
@@ -84,7 +82,7 @@ const Page = () => {
     fetchAppointmentDetails()
     fetchChatHistory()
 
-  }, [prompt, file])
+  }, [file])
 
   const handleSendMessage = async () => {
     startTransition(async () => {
@@ -147,7 +145,7 @@ const Page = () => {
         Messages
       </h1>
       <div className="h-[calc(100vh-168px)] grid grid-cols-[minmax(0,_4fr)_minmax(0,_8fr)] gap-[31px]">
-        <NotificationChat messages={messages?.filter((msg: any) => msg.isCareMsg === true)} />
+      {messages?.filter((msg: any) => msg.isCareMsg === true).length > 0 && <NotificationChat messages={messages?.filter((msg: any) => msg.isCareMsg === true)} />}
         <MainChat containerRef={containerRef} messages={messages?.filter((msg: any) => msg.isCareMsg === false)} handleSendMessage={handleSendMessage}
           prompt={prompt} setPrompt={setPrompt}
           file={file} setFile={setFile}

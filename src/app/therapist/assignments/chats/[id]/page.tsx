@@ -3,13 +3,13 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import io from 'socket.io-client';
-import NotificationChat from "../../_components/NotificationChat";
 import MainChat from "../../_components/MainChat";
 import { useParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { getAppointmentDetails, getChatHistory } from "@/utils";
 import { generateSignedUrlOfAppointment } from "@/actions";
 import { toast } from "sonner";
+import NotificationChat from "@/app/customer/appointments/_components/NotificationChat";
 
 const Page = () => {
   const session = useSession()
@@ -25,6 +25,7 @@ const Page = () => {
   const params = useParams();
   const roomId = params.id as string
   const [isPeerSupport, setIsPeerSupported] = useState(false)
+  console.log('isPeerSupport: ', isPeerSupport);
   containerRef.current?.scrollTo(0, containerRef.current?.scrollHeight)
   const [recieverDetails, setRecieverDetails] = useState<any>(null)
   const [isRecieverOnline, setIsRecieverOnline] = useState(false)
@@ -80,7 +81,7 @@ const Page = () => {
   useEffect(() => {
     const fetchAppointmentDetails = async () => {
       const response = await getAppointmentDetails(roomId)
-      setIsPeerSupported(response?.data?.clientId?.therapistId !== userId)
+      setIsPeerSupported(response?.data?.clientId?.therapistId && response?.data?.clientId?.therapistId !== userId)
       setRecieverDetails(response?.data?.clientId)
     }
     const fetchChatHistory = async () => {
@@ -90,7 +91,7 @@ const Page = () => {
     fetchAppointmentDetails()
     fetchChatHistory()
 
-  }, [isPeerSupport, prompt, file])
+  }, [file])
 
   const handleSendMessage = async () => {
     startTransition(async () => {
@@ -153,7 +154,7 @@ const Page = () => {
         Messages
       </h1>
       <div className="h-[calc(100vh-168px)] grid grid-cols-[minmax(0,_4fr)_minmax(0,_8fr)] gap-[31px]">
-        <NotificationChat />
+        {messages?.filter((msg: any) => msg.isCareMsg === true).length > 0 && <NotificationChat messages={messages?.filter((msg: any) => msg.isCareMsg === true)} />}
         <MainChat containerRef={containerRef} messages={messages?.filter((msg: any) => msg.isCareMsg === false)} handleSendMessage={handleSendMessage}
           prompt={prompt} setPrompt={setPrompt}
           file={file} setFile={setFile}

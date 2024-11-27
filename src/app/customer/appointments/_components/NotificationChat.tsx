@@ -19,7 +19,7 @@ const NotificationChat = (props: any) => {
               <div key={msg._id} className="bg-[#EBF3F8] rounded-lg p-3 mb-3">
                 <div className="flex gap-2 border-b border-white pb-2">
                   <Image
-                    src={getImageUrlOfS3(msg.sender?.profilePic)}
+                    src={getImageUrlOfS3(msg?.sender?.profilePic)}
                     height={30}
                     width={30}
                     alt="User Avatar"
@@ -27,19 +27,19 @@ const NotificationChat = (props: any) => {
                   />
                   <div>
                     <div className="">
-                      <p className="font-bold"> {msg.sender.firstName} {msg.sender.lastName} (Peer Support Team)</p>
-                      <p><b>Available : </b> {msg.sender.currentAvailability.map((avail: any) => `${avail}`).join(', ')}  [ {msg.sender.startTime} - {msg.sender.endTime} ]</p>
+                      <p className="font-bold"> {msg?.sender?.firstName} {msg?.sender?.lastName} (Peer Support Team)</p>
+                      <p><b>Available : </b> {msg?.sender?.currentAvailability?.map((avail: any) => `${avail}`).join(', ')}  [ {msg.sender.startTime} - {msg.sender.endTime} ]</p>
                     </div>
                     <p className='p-2'> {msg.message}</p>
-                    {msg.attachment && (
+                    {msg?.attachment && (
                       <div className="flex items-center justify-center w-full">
                         {msg?.fileType?.includes('image') ? (
-                          <Link href={getImageUrlOfS3(msg.attachment)} target='_blank'>
-                            <Image width={300} height={300} src={getImageUrlOfS3(msg.attachment)} alt="Preview" className="w-full h-60 object-cover rounded" />
+                          <Link href={getImageUrlOfS3(msg?.attachment)} target='_blank'>
+                            <Image width={300} height={300} src={getImageUrlOfS3(msg?.attachment)} alt="Preview" className="w-full h-60 object-cover rounded" />
                           </Link>
                         ) : (
                           <div>
-                            <Link href={getImageUrlOfS3(msg.attachment)} target='_blank' className='flex gap-x-2'>
+                            <Link href={getImageUrlOfS3(msg?.attachment)} target='_blank' className='flex gap-x-2'>
                               {msg.fileName} <CiFileOn className='text-white w-5  h-5 items-center' />
                             </Link>
                           </div>
