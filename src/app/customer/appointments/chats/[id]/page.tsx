@@ -37,7 +37,7 @@ const Page = () => {
       reconnection: true,
       reconnectionAttempts: 5,
       reconnectionDelay: 1000,
-    }); 
+    });
     setSocket(socketInstance);
 
     socketInstance.on("connect", () => {
@@ -145,7 +145,7 @@ const Page = () => {
         Messages
       </h1>
       <div className="h-[calc(100vh-168px)] flex gap-[31px]">
-      {messages?.filter((msg: any) => msg.isCareMsg === true).length > 0 && <NotificationChat messages={messages?.filter((msg: any) => msg.isCareMsg === true)} />}
+        {messages?.filter((msg: any) => msg.isCareMsg === true).length > 0 && <NotificationChat messages={messages?.filter((msg: any) => msg.isCareMsg === true)} />}
         <MainChat containerRef={containerRef} messages={messages?.filter((msg: any) => msg.isCareMsg === false)} handleSendMessage={handleSendMessage}
           prompt={prompt} setPrompt={setPrompt}
           file={file} setFile={setFile}

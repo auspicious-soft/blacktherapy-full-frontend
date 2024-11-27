@@ -74,7 +74,7 @@ const Page = () => {
   return (
     <>
       <h1 className="font-antic text-[#283C63] text-[30px] leading-[1.2em] mb-[25px] lg:text-[40px] lg:mb-[50px]">
-        Wellness Portal
+        Appointments
       </h1>
         {/* <button onClick={handleChat} className="button">Start Chat</button> */}
       <div>
