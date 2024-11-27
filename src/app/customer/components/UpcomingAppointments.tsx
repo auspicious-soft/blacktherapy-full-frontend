@@ -26,7 +26,7 @@ const UpcomingAppointments = (props: any) => {
       borderRadius: "20px",
       display: "inline-block",
       fontSize: "10px",
-    };
+    }; 
 
     switch (text) {
       case "Unavailable Now":

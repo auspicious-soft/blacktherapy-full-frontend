@@ -42,8 +42,10 @@ const DashboardAssignment = (props: any) => {
   const renewClosePopup = () => {
     setRenewPopupOpen(false);
   };
-  
 
+  const handleChat = (id: string) => {
+    router.push(`/customer/appointments/chats/${id}`);
+  };
 
   return (
     <>
@@ -76,8 +78,19 @@ const DashboardAssignment = (props: any) => {
                   <td>{row?._id}</td>
                   <td>{new Date(row?.appointmentDate).toLocaleDateString('en-US') ?? 'No date Assigned'}</td>
                   <td>{row?.appointmentTime}</td>
-                  <td> {!row.message ? 'No Chat' : <p className='cursor-pointer font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px]  text-[#42A803] bg-[#CBFFB2]'>Start Chat</p>}
-                   
+                  <td> 
+                  {row?.message ? (
+                      <p
+                        onClick={() => handleChat(row._id)}
+                        className=" inline-block cursor-pointer font-bold text-center rounded-3xl py-[2px] px-[10px] text-[12px] text-[#42A803] bg-[#CBFFB2]"
+                      >
+                        Start Chat
+                      </p>
+                    ) : (
+                      <p className="font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px] text-[#FFA234] bg-[#FFFCEC]">
+                        No Chat
+                      </p>
+                    )}
                   </td>
                   <td>{!row.video ? 'No video' : <p className='cursor-pointer font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px]  text-[#42A803] bg-[#CBFFB2]'>Start Video</p>}</td>
                   <td>
