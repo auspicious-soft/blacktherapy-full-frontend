@@ -38,7 +38,7 @@ const Page = () => {
       reconnection: true,
       reconnectionAttempts: 5,
       reconnectionDelay: 1000,
-    });
+    }); 
     setSocket(socketInstance);
 
     socketInstance.on("connect", () => {
