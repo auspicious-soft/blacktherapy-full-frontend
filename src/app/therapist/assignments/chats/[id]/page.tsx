@@ -31,7 +31,9 @@ const Page = () => {
 
   useEffect(() => {
     if (!recieverDetails) return  // Necessary condition to prevent errors and unexpected behavior
-      const socketInstance = io(process.env.NEXT_PUBLIC_BACKEND_URL as string);
+      const socketInstance = io(process.env.NEXT_PUBLIC_BACKEND_URL as string, {
+        withCredentials: true
+      });
       setSocket(socketInstance);
   
       socketInstance.on("connect", () => {
