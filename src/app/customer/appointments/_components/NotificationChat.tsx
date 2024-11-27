@@ -42,7 +42,7 @@ const NotificationChat = (props: any) => {
   return (
     <div className="bg-white overflow-y-auto overflo-custom p-5 rounded-[20px]  ">
       <h3 className="leading-[normal] mb-5">Care Team Messages</h3>
-      {messages.map((msg: any, index: number) => {
+      {messages?.map((msg: any, index: number) => {
         const messageDate = new Date(msg.createdAt)
         const formattedDate = formatDate(messageDate)
         lastDate = formattedDate

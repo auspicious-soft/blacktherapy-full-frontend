@@ -31,39 +31,43 @@ const Page = () => {
 
   useEffect(() => {
     if (!recieverDetails) return  // Necessary condition to prevent errors and unexpected behavior
-      const socketInstance = io(process.env.NEXT_PUBLIC_BACKEND_URL as string, {
-        withCredentials: true
-      });
-      setSocket(socketInstance);
-  
-      socketInstance.on("connect", () => {
-        console.log("Connected to chat socket server.");
-        socketInstance.emit('joinRoom', { sender: userId, roomId })
-        socketInstance.emit('checkOnlineStatus', { userId: recieverDetails?._id })
-      })
-  
-      socketInstance.on("message", (data: any) => {
-        setMessages((prevMessages: any) => [...prevMessages, data]);
-        setTimeout(() => {
-          containerRef.current?.scrollTo(0, containerRef.current?.scrollHeight + 100);
-        }, 3000);
-      });
-  
-      socketInstance.on("typing", (userId: any) => {
-        console.log(`User ${userId} is typing...`);
-      });
-  
-      socketInstance.on("stopTyping", (userId: any) => {
-        console.log(`User ${userId} stopped typing.`);
-      });
-  
-      socketInstance.on("onlineStatus", (data: any) => {
-        setIsRecieverOnline(data.isOnline)
-      });
-  
-      return () => {
-        socketInstance.disconnect();
-      };
+    const socketInstance = io(process.env.NEXT_PUBLIC_BACKEND_URL as string, {
+      withCredentials: true,
+      transports: ['websocket', 'polling'], // Specify transport methods
+      reconnection: true,
+      reconnectionAttempts: 5,
+      reconnectionDelay: 1000
+    });
+    setSocket(socketInstance);
+
+    socketInstance.on("connect", () => {
+      console.log("Connected to chat socket server.");
+      socketInstance.emit('joinRoom', { sender: userId, roomId })
+      socketInstance.emit('checkOnlineStatus', { userId: recieverDetails?._id })
+    })
+
+    socketInstance.on("message", (data: any) => {
+      setMessages((prevMessages: any) => [...prevMessages, data]);
+      setTimeout(() => {
+        containerRef.current?.scrollTo(0, containerRef.current?.scrollHeight + 100);
+      }, 3000);
+    });
+
+    socketInstance.on("typing", (userId: any) => {
+      console.log(`User ${userId} is typing...`);
+    });
+
+    socketInstance.on("stopTyping", (userId: any) => {
+      console.log(`User ${userId} stopped typing.`);
+    });
+
+    socketInstance.on("onlineStatus", (data: any) => {
+      setIsRecieverOnline(data.isOnline)
+    });
+
+    return () => {
+      socketInstance.disconnect();
+    };
   }, [userId, roomId, recieverDetails?._id])
 
   useEffect(() => {

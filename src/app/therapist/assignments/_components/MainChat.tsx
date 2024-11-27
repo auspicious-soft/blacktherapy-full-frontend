@@ -59,7 +59,7 @@ const MainChat = (props: any) => {
 
       {/* Messages */}
       <div className="flex-1 bg-white overflow-y-auto overflo-custom p-4 relative" ref={containerRef}>
-        {messages.map((msg: any, index: number) => {
+        {messages?.map((msg: any, index: number) => {
           const messageDate = new Date(msg.createdAt)
           const formattedDate = formatDate(messageDate)
           const showDateDivider = formattedDate !== lastDate
