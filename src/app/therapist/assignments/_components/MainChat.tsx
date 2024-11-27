@@ -41,7 +41,7 @@ const MainChat = (props: any) => {
   let lastDate: string | null = null;
 
   return (
-    <div className="flex rel relative overflow-hidden flex-col  bg-white border rounded-[20px]">
+    <div className="flex flex-grow rel relative overflow-hidden flex-col  bg-white border rounded-[20px]">
       {/* Header */}
       <div className="flex items-center bg-[#26395E] rounded-t-[20px] text-white p-4">
         <div className="flex items-center space-x-3">

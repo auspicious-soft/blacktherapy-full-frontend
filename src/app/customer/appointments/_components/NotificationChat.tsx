@@ -8,7 +8,7 @@ const NotificationChat = (props: any) => {
   const { messages } = props
 
   return (
-    <div className="bg-white overflow-y-auto overflo-custom p-5 rounded-[20px]  ">
+    <div className="bg-white w-[30%] overflow-y-auto overflo-custom p-5 rounded-[20px]  ">
       <h3 className="leading-[normal] mb-5">Care Team Messages</h3>
       {
         messages.length > 0 &&
