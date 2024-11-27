@@ -33,7 +33,7 @@ const Page = () => {
     if (!recieverDetails) return  // Necessary condition to prevent errors and unexpected behavior
     const socketInstance = io(process.env.NEXT_PUBLIC_BACKEND_URL as string, {
       withCredentials: true,
-      transports: ['websocket', 'polling'], // Specify transport methods
+      transports: ['websocket', 'polling', 'webtransport'], // Specify transport methods
       reconnection: true,
       reconnectionAttempts: 5,
       reconnectionDelay: 1000

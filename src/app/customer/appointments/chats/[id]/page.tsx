@@ -33,7 +33,7 @@ const Page = () => {
     if (!recieverDetails) return  // Necessary condition to prevent errors and unexpected behavior
     const socketInstance = io(process.env.NEXT_PUBLIC_BACKEND_URL as string, {
       withCredentials: true,
-      transports: ['websocket', 'polling'], // Specify transport methods
+      transports: ['websocket', 'polling', 'webtransport'], // Specify transport methods
       reconnection: true,
       reconnectionAttempts: 5,
       reconnectionDelay: 1000
@@ -147,7 +147,7 @@ const Page = () => {
         Messages
       </h1>
       <div className="h-[calc(100vh-168px)] grid grid-cols-[minmax(0,_4fr)_minmax(0,_8fr)] gap-[31px]">
-        <NotificationChat messages={messages.filter((msg: any) => msg.isCareMsg === true)} />
+        <NotificationChat messages={messages?.filter((msg: any) => msg.isCareMsg === true)} />
         <MainChat containerRef={containerRef} messages={messages} handleSendMessage={handleSendMessage}
           prompt={prompt} setPrompt={setPrompt}
           file={file} setFile={setFile}
