@@ -67,7 +67,9 @@ const UpcomingAppointments = (props: any) => {
                     {item?.message ? (
                       <p
                         onClick={() => handleChat(item._id)}
-                        className={`font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px] ${isChatAllowed ? 'text-[#42A803] bg-[#CBFFB2]' : 'text-[#FFA234] bg-[#FFFCEC]'}`}
+                        // inline-block cursor-pointer font-bold text-center rounded-3xl py-[2px] px-[10px] text-[12px] text-[#42A803] bg-[#CBFFB2]
+
+                        className={`font-bold inline-block text-center rounded-3xl py-[2px] px-[10px] text-[10px] ${isChatAllowed ? ' text-[#42A803] bg-[#CBFFB2]' : 'text-[#FFA234] bg-[#FFFCEC]'}`}
                       >
                       { isChatAllowed ? 'Start Chat' : 'Chat not allowed'}
                       </p>

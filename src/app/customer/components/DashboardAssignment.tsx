@@ -84,7 +84,7 @@ const DashboardAssignment = (props: any) => {
                     {row?.message ? (
                       <p
                         onClick={() => handleChat(row._id)}
-                        className={`font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px] ${isChatAllowed ? 'text-[#42A803] bg-[#CBFFB2]' : 'text-[#FFA234] bg-[#FFFCEC]'}`}
+                        className={`font-bold inline-block text-center rounded-3xl py-[2px] px-[10px] text-[10px] ${isChatAllowed ? 'text-[#42A803] bg-[#CBFFB2]' : 'text-[#FFA234] bg-[#FFFCEC]'}`}
                       >
                         {isChatAllowed ? 'Start Chat' : 'Chat not allowed'}
                       </p>
