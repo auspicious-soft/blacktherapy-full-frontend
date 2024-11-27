@@ -10,8 +10,8 @@ import useSWR from "swr";
 const Home = () => {
   const [query, setQuery] = useState('page=1&limit=10')
   const session = useSession()
-  const { data, isLoading } = useSWR(`/client/appointment/${session?.data?.user?.id}?${query}`, getClientAppointments)
-  const { data: user } = useSWR(`/client/${session?.data?.user?.id}`, getProfileService)
+  const { data, isLoading } = useSWR(`/client/appointment/${session?.data?.user?.id}?${query}`, getClientAppointments, { revalidateOnFocus: false })
+  const { data: user } = useSWR(`/client/${session?.data?.user?.id}`, getProfileService, { revalidateOnFocus: false })
   const appointmentsData = data?.data
   const apData = appointmentsData?.data
 
@@ -41,13 +41,16 @@ const Home = () => {
     videoChat: null,
   };
 
-  let previousBilled = { 
+  let previousBilled = {
     amount: 'N/A',
   }
   const userPlanOrSubscriptionId = user?.data?.data?.planOrSubscriptionId
+  const isChatAllowed = user?.data?.data?.chatAllowed
+  const isVideoCount = user?.data?.data?.videoCount
 
   const { data: subsData } = useSWR(userPlanOrSubscriptionId ? `${userPlanOrSubscriptionId}` : null, getSubscriptionById)
   previousBilled.amount = String(`$${(subsData as any)?.plan.amount / 100}`)
+  
   return (
     <>
       <h1 className="font-antic text-[#283C63] text-[30px] leading-[1.2em] mb-[25px] lg:text-[40px] lg:mb-[50px]">
@@ -64,7 +67,7 @@ const Home = () => {
         previousAppointment={previousAppointment}
         previousBilled={previousBilled}
       />
-      <DashboardAssignment total={appointmentsData?.total} data={appointmentsData?.data} rowsPerPage={appointmentsData?.limit} isLoading={isLoading} error={appointmentsData?.error} setQuery={setQuery} />
+      <DashboardAssignment isChatAllowed = {isChatAllowed} isVideoCount ={isVideoCount} total={appointmentsData?.total} data={appointmentsData?.data} rowsPerPage={appointmentsData?.limit} isLoading={isLoading} error={appointmentsData?.error} setQuery={setQuery} />
     </>
   );
 };

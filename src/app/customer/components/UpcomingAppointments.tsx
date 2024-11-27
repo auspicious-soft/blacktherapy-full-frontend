@@ -2,48 +2,22 @@ import React, { useState, CSSProperties } from "react";
 import Image from "next/image";
 import ReactPaginate from "react-paginate";
 import { useRouter } from "next/navigation";
-import PervIcon from "@/assets/images/pervicon.png"; 
+import PervIcon from "@/assets/images/pervicon.png";
 import NextIcon from "@/assets/images/nexticon.png";
+import { toast } from "sonner";
 
 const UpcomingAppointments = (props: any) => {
-  const { data, error } = props;
-  const { setQuery } = props;
+  const { data, error, setQuery, isChatAllowed, isVideoCount } = props;
   const router = useRouter();
   const upcomingData = data?.data;
   const { isLoading } = props;
   const total = data?.total ?? 0;
-  const rowsPerPage = 10; 
+  const rowsPerPage = 10;
   const handlePageClick = (selectedItem: { selected: number }) => {
     setQuery(`page=${selectedItem.selected + 1}&limit=${rowsPerPage}`);
   };
   const handleChat = (id: string) => {
-    router.push(`/customer/appointments/chats/${id}`);
-  };
-
-  const getStyle = (text: string): CSSProperties => {
-    let style: CSSProperties = {
-      padding: "2px 10px",
-      borderRadius: "20px",
-      display: "inline-block",
-      fontSize: "10px",
-    }; 
-
-    switch (text) {
-      case "Unavailable Now":
-        style.backgroundColor = "#FFFCEC";
-        style.color = "#FFA234";
-        break;
-      case "Start Chat":
-      case "Start Video Call":
-        style.backgroundColor = "#CBFFB2";
-        style.color = "#42A803";
-        break;
-
-      default:
-        break;
-    }
-
-    return style;
+    isChatAllowed ?  router.push(`/customer/appointments/chats/${id}`): toast.error('Chat not allowed');
   };
 
   return (
@@ -93,9 +67,9 @@ const UpcomingAppointments = (props: any) => {
                     {item?.message ? (
                       <p
                         onClick={() => handleChat(item._id)}
-                        className=" inline-block cursor-pointer font-bold text-center rounded-3xl py-[2px] px-[10px] text-[12px] text-[#42A803] bg-[#CBFFB2]"
+                        className={`font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px] ${isChatAllowed ? 'text-[#42A803] bg-[#CBFFB2]' : 'text-[#FFA234] bg-[#FFFCEC]'}`}
                       >
-                        Start Chat
+                      { isChatAllowed ? 'Start Chat' : 'Chat not allowed'}
                       </p>
                     ) : (
                       <p className="font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px] text-[#FFA234] bg-[#FFFCEC]">
@@ -108,8 +82,8 @@ const UpcomingAppointments = (props: any) => {
                     {!item.video ? (
                       "No video"
                     ) : (
-                      <p className="cursor-pointer font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px]  text-[#42A803] bg-[#CBFFB2]">
-                        Start Video
+                      <p className={`cursor-pointer font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px] ${isVideoCount > 0 ? 'text-[#42A803] bg-[#CBFFB2]' : 'text-[#FFA234] bg-[#FFFCEC]'}`}>
+                         {isVideoCount > 0 ? `Start Video (${isVideoCount})` : 'Video chat limit reached for current plan'}
                       </p>
                     )}
                   </td>

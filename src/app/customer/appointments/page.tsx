@@ -6,18 +6,18 @@ import UpcomingAppointments from '@/app/customer/components/UpcomingAppointments
 import VideosWellness from '@/app/customer/components/VideosWellness';
 import { useState, useEffect, useTransition } from 'react';
 import useSWR from 'swr';
-import { getClientAppointments, postAnAppointment } from '@/services/client/client-service';
+import { getClientAppointments, getProfileService, postAnAppointment } from '@/services/client/client-service';
 import { useSession } from 'next-auth/react';
 import Modal from 'react-modal';
 import { ButtonArrow } from '@/utils/svgicons';
 import { toast } from "sonner";
-import router from "next/router";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
+
 const Page = () => {
   const [openModal, setOpenModal] = useState(false);
-  const session = useSession();
-  const router= useRouter();
+  const session = useSession()
+  const { data: user } = useSWR(`/client/${session?.data?.user?.id}`, getProfileService, { revalidateOnFocus: false })
+  const isChatAllowed = user?.data?.data?.chatAllowed
+  const isVideoCount = user?.data?.data?.videoCount
   const [activeTab, setActiveTab] = useState('Previous Appointments');
   const [shouldFetchAppointments, setShouldFetchAppointments] = useState(false);
   const [query, setQuery] = useState('page=1&limit=10');
@@ -33,17 +33,14 @@ const Page = () => {
   }, [activeTab]);
   const { data: appointmentsData, isLoading: appointmentsIsLoading, mutate: appointmentsMutate, error } = useSWR(shouldFetchAppointments ? `/client/appointment/${session?.data?.user?.id}?${query}` : null, getClientAppointments)
 
-  const rowsPerPage = appointmentsData?.data?.limit ?? 0;
 
-  const handlePageClick = (selectedItem: { selected: number }) => {
-    setQuery(`page=${selectedItem.selected + 1}&limit=${rowsPerPage}`)
-  }
+
   const renderTabContent = () => {
     switch (activeTab) {
       case 'Previous Appointments':
-        return <div><PreviousAppointments data={appointmentsData?.data} error={error} setQuery={setQuery} isLoading={appointmentsIsLoading} /></div>;
+        return <div><PreviousAppointments isChatAllowed = {isChatAllowed} isVideoCount = {isVideoCount} data={appointmentsData?.data} error={error} setQuery={setQuery} isLoading={appointmentsIsLoading} /></div>;
       case 'Upcoming Appointments':
-        return <div><UpcomingAppointments data={appointmentsData?.data} error={error} isLoading={appointmentsIsLoading} /></div>;
+        return <div><UpcomingAppointments isChatAllowed = {isChatAllowed} isVideoCount = {isVideoCount} data={appointmentsData?.data} error={error} isLoading={appointmentsIsLoading} /></div>;
      default:
         return null;
     }
@@ -76,7 +73,6 @@ const Page = () => {
       <h1 className="font-antic text-[#283C63] text-[30px] leading-[1.2em] mb-[25px] lg:text-[40px] lg:mb-[50px]">
         Appointments
       </h1>
-        {/* <button onClick={handleChat} className="button">Start Chat</button> */}
       <div>
         <div className='flex items-center justify-between mb-5 '>
           <div className="tabs flex flex-wrap gap-[5px] lg:gap-[20px]">

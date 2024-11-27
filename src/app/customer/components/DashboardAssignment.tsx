@@ -13,16 +13,17 @@ import router, { Router } from "next/router";
 import { useRouter } from "next/navigation";
 import Modal from "react-modal";
 import { getImageUrlOfS3 } from "@/utils";
+import { toast } from "sonner";
 
 
 const DashboardAssignment = (props: any) => {
-  const router= useRouter();
-  const { total, data, rowsPerPage, isLoading, error, setQuery } = props;
+  const { total, data, rowsPerPage, isLoading, error, setQuery, isChatAllowed, isVideoCount } = props;
+  const router = useRouter();
   const [renewPopupOpen, setRenewPopupOpen] = useState(false);
   const [teamPopupOpen, setTeamPopupOpen] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState<any>(null);
-  
-  
+
+
   const handlePageClick = (selectedItem: { selected: number }) => {
     setQuery(`page=${selectedItem.selected + 1}&limit=${rowsPerPage}`)
   };
@@ -45,7 +46,7 @@ const DashboardAssignment = (props: any) => {
   };
 
   const handleChat = (id: string) => {
-    router.push(`/customer/appointments/chats/${id}`);
+    isChatAllowed ? router.push(`/customer/appointments/chats/${id}`) : toast.error('Chat not allowed')
   };
 
   return (
@@ -79,13 +80,13 @@ const DashboardAssignment = (props: any) => {
                   <td>{row?._id}</td>
                   <td>{new Date(row?.appointmentDate).toLocaleDateString('en-US') ?? 'No date Assigned'}</td>
                   <td>{row?.appointmentTime}</td>
-                  <td> 
-                  {row?.message ? (
+                  <td>
+                    {row?.message ? (
                       <p
                         onClick={() => handleChat(row._id)}
-                        className=" inline-block cursor-pointer font-bold text-center rounded-3xl py-[2px] px-[10px] text-[12px] text-[#42A803] bg-[#CBFFB2]"
+                        className={`font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px] ${isChatAllowed ? 'text-[#42A803] bg-[#CBFFB2]' : 'text-[#FFA234] bg-[#FFFCEC]'}`}
                       >
-                        Start Chat
+                        {isChatAllowed ? 'Start Chat' : 'Chat not allowed'}
                       </p>
                     ) : (
                       <p className="font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px] text-[#FFA234] bg-[#FFFCEC]">
@@ -93,7 +94,9 @@ const DashboardAssignment = (props: any) => {
                       </p>
                     )}
                   </td>
-                  <td>{!row.video ? 'No video' : <p className='cursor-pointer font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px]  text-[#42A803] bg-[#CBFFB2]'>Start Video</p>}</td>
+                  <td>{!row.video ? 'No video' : <p className={`cursor-pointer font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px] ${isVideoCount > 0 ? 'text-[#42A803] bg-[#CBFFB2]' : 'text-[#FFA234] bg-[#FFFCEC]'}`}>
+                    {isVideoCount > 0 ? `Start Video (${isVideoCount})` : 'Video chat limit reached for current plan'}
+                  </p>}</td>
                   <td>
                     <span className="cursor-pointer w-[26px] flex" onClick={() => handleViewTeam(row)}>
                       <ViewIcon />
@@ -133,12 +136,12 @@ const DashboardAssignment = (props: any) => {
       </div>
 
       {/* Renew Popup Component */}
-      <Modal 
-       isOpen={renewPopupOpen}
-       onRequestClose={renewClosePopup}
-       contentLabel="Assign Task"
-       className="modal max-w-[584px] mx-auto bg-white rounded-xl w-full p-5"
-       overlayClassName="overlay">
+      <Modal
+        isOpen={renewPopupOpen}
+        onRequestClose={renewClosePopup}
+        contentLabel="Assign Task"
+        className="modal max-w-[584px] mx-auto bg-white rounded-xl w-full p-5"
+        overlayClassName="overlay">
         <div className="popup-content">
           <h1 className="font-antic text-[#283C63] text-[30px] leading-[1.2em] mb-[25px] lg:text-[40px] lg:mb-[50px]">
             Renew Plan
@@ -241,24 +244,24 @@ const DashboardAssignment = (props: any) => {
         </div>
       </Modal>
 
-      <Modal 
-       isOpen={teamPopupOpen}
-       onRequestClose={handleCloseTeam}
-       contentLabel="Assign Task"
-       className="modal max-w-[1200px] mx-auto bg-white rounded-[20px] w-full "
-       overlayClassName="w-full h-full p-3 fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center"
-       >
+      <Modal
+        isOpen={teamPopupOpen}
+        onRequestClose={handleCloseTeam}
+        contentLabel="Assign Task"
+        className="modal max-w-[1200px] mx-auto bg-white rounded-[20px] w-full "
+        overlayClassName="w-full h-full p-3 fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center"
+      >
         <div className="p-4 bg-[#283C63] rounded-t-[20px] flex justify-between items-center mb-8 ">
-        <h1 className="font-antic text-[#fff] text-[30px] lg:text-[40px] ">
-          Care Team
-        </h1>
-        <button onClick={handleCloseTeam}><CloseIcon/> </button>
+          <h1 className="font-antic text-[#fff] text-[30px] lg:text-[40px] ">
+            Care Team
+          </h1>
+          <button onClick={handleCloseTeam}><CloseIcon /> </button>
         </div>
         <div className="bg-white px-5 pb-5 rounded-b-[20px]  grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-[20px] gap-y-[20px] lg:gap-y-[40px]">
           {selectedAppointment?.map((therapist: any) => (
             <div key={therapist.id} className="">
               <Image
-              onClick={() => viewProfile(therapist)}
+                onClick={() => viewProfile(therapist)}
                 src={getImageUrlOfS3(therapist?.profilePic)}
                 alt={therapist?.firstName}
                 width={200}
@@ -269,7 +272,7 @@ const DashboardAssignment = (props: any) => {
             </div>
           ))}
         </div>
-       
+
       </Modal>
     </>
   );
