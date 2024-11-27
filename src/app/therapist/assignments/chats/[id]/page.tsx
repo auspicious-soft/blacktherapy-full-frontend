@@ -31,7 +31,7 @@ const Page = () => {
 
   useEffect(() => {
     if (!recieverDetails) return  // Necessary condition to prevent errors and unexpected behavior
-    const socketInstance = io('https://18.234.10.87/api' as string, {
+    const socketInstance = io(process.env.NEXT_PUBLIC_BACKEND_URL as string, {
       path: '/api/socket.io/',
       withCredentials: true,
       transports: ['websocket'], // Specify transport methods
