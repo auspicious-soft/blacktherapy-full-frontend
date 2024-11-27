@@ -63,7 +63,6 @@ const Page = () => {
     });
 
     socketInstance.on("onlineStatus", (data: any) => {
-      console.log('data: ', data);
       setIsRecieverOnline(data.isOnline)
     });
 
