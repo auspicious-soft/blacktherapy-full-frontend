@@ -12,6 +12,7 @@ import ReactLoading from "react-loading";
 import router, { Router } from "next/router";
 import { useRouter } from "next/navigation";
 import Modal from "react-modal";
+import { getImageUrlOfS3 } from "@/utils";
 
 
 const DashboardAssignment = (props: any) => {
@@ -245,7 +246,7 @@ const DashboardAssignment = (props: any) => {
             <div key={therapist.id} className="">
               <Image
               onClick={() => viewProfile(therapist)}
-                src={therapist?.profilePic}
+                src={getImageUrlOfS3(therapist?.profilePic)}
                 alt={therapist?.firstName}
                 width={200}
                 height={200}
