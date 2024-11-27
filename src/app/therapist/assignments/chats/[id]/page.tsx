@@ -80,7 +80,7 @@ const Page = () => {
   useEffect(() => {
     const fetchAppointmentDetails = async () => {
       const response = await getAppointmentDetails(roomId)
-      setIsPeerSupported(response?.data?.clientId?._id !== userId)
+      setIsPeerSupported(response?.data?.clientId?.therapistId !== userId)
       setRecieverDetails(response?.data?.clientId)
     }
     const fetchChatHistory = async () => {
@@ -154,7 +154,7 @@ const Page = () => {
       </h1>
       <div className="h-[calc(100vh-168px)] grid grid-cols-[minmax(0,_4fr)_minmax(0,_8fr)] gap-[31px]">
         <NotificationChat />
-        <MainChat containerRef={containerRef} messages={messages} handleSendMessage={handleSendMessage}
+        <MainChat containerRef={containerRef} messages={messages?.filter((msg: any) => msg.isCareMsg === false)} handleSendMessage={handleSendMessage}
           prompt={prompt} setPrompt={setPrompt}
           file={file} setFile={setFile}
           userId={userId} roomId={roomId}

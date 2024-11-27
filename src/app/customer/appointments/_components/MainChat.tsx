@@ -39,9 +39,9 @@ const MainChat = (props: any) => {
             <p className="text-sm text-white ">{isRecieverOnline ? 'Active Now' : 'Offline'}</p>
           </div>
         </div>
-        <div className="ml-auto">
+        {/* <div className="ml-auto">
           <button className="text-white text-xl">⋮</button>
-        </div>
+        </div> */}
       </div>
 
       {/* Messages */}

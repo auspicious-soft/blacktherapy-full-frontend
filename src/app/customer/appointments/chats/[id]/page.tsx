@@ -24,7 +24,6 @@ const Page = () => {
   const [socket, setSocket] = useState<any>(null);
   const params = useParams();
   const roomId = params.id as string
-  const [isPeerSupport, setIsPeerSupported] = useState(false)
   containerRef.current?.scrollTo(0, containerRef.current?.scrollHeight)
   const [recieverDetails, setRecieverDetails] = useState<any>(null)
   const [isRecieverOnline, setIsRecieverOnline] = useState(false)
@@ -74,7 +73,8 @@ const Page = () => {
   useEffect(() => {
     const fetchAppointmentDetails = async () => {
       const response = await getAppointmentDetails(roomId)
-      setIsPeerSupported(response?.data?.therapistId?.therapistId !== userId)
+      console.log('response?.data?.therapistId?.therapistId: ', response?.data?.therapistId?.therapistId);
+      console.log('userId: ', userId);
       setRecieverDetails(response?.data?.therapistId)
     }
     const fetchChatHistory = async () => {
@@ -84,7 +84,7 @@ const Page = () => {
     fetchAppointmentDetails()
     fetchChatHistory()
 
-  }, [isPeerSupport, prompt, file])
+  }, [prompt, file])
 
   const handleSendMessage = async () => {
     startTransition(async () => {
@@ -108,7 +108,7 @@ const Page = () => {
           fileKey = `appointments/${session?.data?.user?.email}/my-appointment-files/${(file as File).name}`
         }
         socket.emit('message', {
-          sender: userId, roomId, message: prompt, attachment: fileKey, fileType: file?.type, fileName: file?.name, ...(isPeerSupport && { isCareMsg: true })
+          sender: userId, roomId, message: prompt, attachment: fileKey, fileType: file?.type, fileName: file?.name
         })
         setPrompt('')
         setFile(null)
@@ -148,7 +148,7 @@ const Page = () => {
       </h1>
       <div className="h-[calc(100vh-168px)] grid grid-cols-[minmax(0,_4fr)_minmax(0,_8fr)] gap-[31px]">
         <NotificationChat messages={messages?.filter((msg: any) => msg.isCareMsg === true)} />
-        <MainChat containerRef={containerRef} messages={messages} handleSendMessage={handleSendMessage}
+        <MainChat containerRef={containerRef} messages={messages?.filter((msg: any) => msg.isCareMsg === false)} handleSendMessage={handleSendMessage}
           prompt={prompt} setPrompt={setPrompt}
           file={file} setFile={setFile}
           userId={userId} roomId={roomId}
