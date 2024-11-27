@@ -32,11 +32,12 @@ const Page = () => {
   useEffect(() => {
     if (!recieverDetails) return  // Necessary condition to prevent errors and unexpected behavior
     const socketInstance = io(process.env.NEXT_PUBLIC_BACKEND_URL as string, {
+      path: '/api/socket.io/',
       withCredentials: true,
       transports: ['websocket', 'polling', 'webtransport'], // Specify transport methods
       reconnection: true,
       reconnectionAttempts: 5,
-      reconnectionDelay: 1000
+      reconnectionDelay: 1000,
     });
     setSocket(socketInstance);
 
