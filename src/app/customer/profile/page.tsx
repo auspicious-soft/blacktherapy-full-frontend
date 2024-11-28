@@ -94,7 +94,8 @@ const Page = () => {
       ...prevData,
       [name]: value,
     }));
-  };
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsPending(true)
@@ -283,7 +284,7 @@ const Page = () => {
             </div>
           </div>
           <div className="mt-[30px] ">
-            <button type="submit" className="button px-[30px]">
+            <button disabled={isPending} type="submit" className="button px-[30px]">
               {!isPending ? 'Update' : 'Updating...'} <ButtonArrow />{" "}
             </button>
           </div>

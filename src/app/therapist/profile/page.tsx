@@ -14,6 +14,8 @@ import CustomSelect from "@/app/admin/components/CustomSelect";
 import { USStates } from "@/data/UsStatesData";
 import { toast } from "sonner";
 import { preloadFont } from "next/dist/server/app-render/entry-base";
+import { getImageUrlOfS3 } from "@/utils";
+import { deleteImageFromS3, generateSignedUrlOfProfilePic, generateSignedUrlOfProfilePicTherapist } from "@/actions";
 
 type FormData = {
   firstName: string;
@@ -43,12 +45,9 @@ interface OptionType {
 
 const Page = () => {
   const session = useSession();
-  const { data, error, mutate } = useSWR(
-    `/therapist/${session?.data?.user?.id}`,
-    getTherapistsProfileData
-  );
+  const { data, error, mutate } = useSWR(`/therapist/${session?.data?.user?.id}`, getTherapistsProfileData);
   const profileData = data?.data?.data;
-
+  const [isPending, setIsPending] = useState(false);
   const [formData, setFormData] = useState<any>({
     firstName: "",
     lastName: "",
@@ -64,7 +63,7 @@ const Page = () => {
     preferredlanguage: "",
     availableStartTime: "",
     availableEndTime: "",
-    // image: "",
+    profilePic: null,
     currentAvailability: [],
     //i amm getting date like thsi from backend "09:35"
     startTime: "",
@@ -88,7 +87,7 @@ const Page = () => {
     // Return the time in "HH:mm" format or handle further formatting here if needed
     const [hours, minutes] = timeString.split(":");
     return `${hours}:${minutes}`;
-};
+  };
 
   useEffect(() => {
     if (profileData) {
@@ -103,34 +102,41 @@ const Page = () => {
         city: profileData?.city || "",
         addressLine1: profileData?.addressLine1 || "",
         about: profileData?.about || "",
-        preferredCommunicationMethod:
-          profileData?.preferredCommunicationMethod || "",
+        preferredCommunicationMethod: profileData?.preferredCommunicationMethod || "",
         preferredlanguage: profileData?.preferredlanguage || "",
-        // image: profileData?.image || "",
-        currentAvailability: Array.isArray(profileData?.currentAvailability)  ? profileData?.currentAvailability : [],
+        profilePic: profileData.profilePic || "",
+        currentAvailability: Array.isArray(profileData?.currentAvailability) ? profileData?.currentAvailability : [],
         startTime: formatTime(profileData?.startTime),
         endTime: formatTime(profileData?.endTime),
-      });
-      setImagePreview(profileData?.image || null);
+      })
+
+      if (profileData?.profilePic) {
+        const imageUrl = getImageUrlOfS3(profileData.profilePic);
+        setImagePreview(imageUrl);
+      }
     }
   }, [profileData]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // if (e.target.files && e.target.files[0]) {
-    //     const reader = new FileReader();
-    //     reader.onload = (e) => {
-    //         const result = e.target?.result as string;
-    //         setImagePreview(result);
-    //         setFormData(prev => ({ ...prev, image: result }));
-    //     };
-    //     reader.readAsDataURL(e.target.files[0]);
-    // }
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setFormData((prevData: any) => ({
+        ...prevData,
+        profilePic: file,
+      }));
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const result = e.target?.result as string;
+        setImagePreview(result);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
-    const triggerFileInputClick = () => {
-    const fileInput = document.querySelector(
-      'input[type="file"]'
-    ) as HTMLInputElement;
+
+  const triggerFileInputClick = () => {
+    const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
     if (fileInput) {
       fileInput.click();
     }
@@ -157,23 +163,56 @@ const Page = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsPending(true);
+    try {
+      const formDataToSend = formData
+      const imageKey = `therapists/${session?.data?.user?.email}/profile/${typeof (formData as any)?.profilePic === 'string' ? (formData as any).profilePic : formData?.profilePic?.name}`;
 
- try {
-      const submissionData = {
-        ...formData,
-        dob: formData.dob ? new Date(formData.dob).toISOString() : null
-      };
+      if (formData.profilePic && typeof formData.profilePic !== 'string') {
+        const signedUrl: string = await generateSignedUrlOfProfilePicTherapist(formData.profilePic.name, formData.profilePic.type, session?.data?.user?.email as string);
+        const uploadResponse = await fetch(signedUrl, {
+          method: 'PUT',
+          body: formData.profilePic,
+          headers: {
+            'Content-Type': formData.profilePic.type,
+          },
+          cache: 'no-store'
+        });
+        console.log('uploadResponse: ', uploadResponse);
+        if (!uploadResponse.ok) {
+          toast.error('Something went wrong. Please try again');
+          return;
+        }
+        const newImageKey = `therapists/${session?.data?.user?.email}/profile/${formData.profilePic.name}`;
+        // Delete the old image from the S3 bucket
+        if (profileData?.profilePic) {
+          await deleteImageFromS3(profileData?.profilePic);
+        }
+        (formDataToSend as any).profilePic = newImageKey;
+      }
 
-      const response = await updateTherapistsProfile(`/therapist/${session?.data?.user?.id}`, submissionData)
+      if ((formData as any).profilePic == '' || typeof (formData as any).profilePic !== 'string' || (formData as any).profilePic === undefined || imageKey === profileData?.profilePic) {
+        delete (formDataToSend as any).profilePic;
+      }
+      if(formData.dob){
+        formDataToSend.dob = new Date(formData.dob).toISOString() 
+      }
+      else{
+        delete formDataToSend.dob
+      }
+
+      console.log('formDataToSend: ', formDataToSend);
+      const response = await updateTherapistsProfile(`/therapist/${session?.data?.user?.id}`, formDataToSend);
       if (response?.status === 200) {
         toast.success("Profile updated successfully");
         await mutate();
       } else {
-        throw new Error("Failed to update profile");
+        toast.error("Failed to update profile");
       }
     } catch (error) {
-      console.error("Error updating profile:", error);
       toast.error("Failed to update profile");
+    } finally {
+      setIsPending(false);
     }
   };
 
@@ -401,8 +440,8 @@ const Page = () => {
           </div>
         </div>
         <div className="mt-[30px] flex justify-end ">
-          <button type="submit" className="button px-[30px]">
-            Confirm & Update <ButtonArrow />{" "}
+          <button disabled={isPending} type="submit" className="button px-[30px]">
+          {!isPending ? 'Update' : 'Updating...'} <ButtonArrow />{" "}
           </button>
         </div>
       </form>

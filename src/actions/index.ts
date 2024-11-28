@@ -83,7 +83,23 @@ export const generateSignedUrlOfProfilePic = async (fileName: string, fileType: 
     const uploadParams = {
         Bucket: process.env.AWS_BUCKET_NAME,
         Key: `clients/${userEmail}/profile/${fileName}`,
-        ContentType: 'image/png'
+        ContentType: fileType
+    }
+    try {
+        const command = new PutObjectCommand(uploadParams)
+        const signedUrl = await getSignedUrl(await createS3Client(), command)
+        return signedUrl
+    } catch (error) {
+        console.error("Error generating signed URL:", error);
+        throw error
+    }
+}
+
+export const generateSignedUrlOfProfilePicTherapist = async (fileName: string, fileType: string, userEmail: string) => {
+    const uploadParams = {
+        Bucket: process.env.AWS_BUCKET_NAME,
+        Key: `therapists/${userEmail}/profile/${fileName}`,
+        ContentType: fileType
     }
     try {
         const command = new PutObjectCommand(uploadParams)
