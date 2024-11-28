@@ -150,7 +150,7 @@ const Page = () => {
 
   return (
     <div>
-      <h1 className="font-antic text-[#283C63] text-[30px] leading-[1.2em] mb-[25px] lg:text-[40px] lg:mb-[50px]">
+      <h1 className="font-antic text-[#283C63] text-[30px] leading-[1.2em] mb-[25px] lg:text-[40px] lg:mb-[25px]">
         Messages
       </h1>
       <div className="h-[calc(100vh-168px)] flex gap-[31px]">

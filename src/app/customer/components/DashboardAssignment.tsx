@@ -78,8 +78,8 @@ const DashboardAssignment = (props: any) => {
               data?.map((row: any) => (
                 <tr key={row?._id}>
                   <td>{row?._id}</td>
-                  <td>{new Date(row?.appointmentDate).toLocaleDateString('en-US') ?? 'No date Assigned'}</td>
-                  <td>{row?.appointmentTime}</td>
+                  <td>{row?.appointmentDate ? new Date(row?.appointmentDate).toLocaleDateString('en-US') : 'No date Assigned'}</td>
+                  <td>{row?.appointmentTime ? (row?.appointmentTime): 'Not Assigned Yet'}</td>
                   <td>
                     {row?.message ? (
                       <p
