@@ -25,7 +25,7 @@ const Page: React.FC = () => {
   const [activeTab, setActiveTab] = useState("pending");
   
   const [query, setQuery] = useState('')
-  const {data , error, isLoading, mutate} =  useSWR(`/admin/payment-requests?status=${activeTab === 'pending' ? 'pending' : activeTab === 'approved' ? 'approved' : 'rejected'}&${query}`, GetPaymentsData)
+  const {data , error, isLoading, mutate} =  useSWR(`/admin/payment-requests?${activeTab === 'pending' ? 'status=pending' : activeTab === 'approved' ? 'status=approved' : 'status=rejected'}&page=1&limit=10${query ? `&${query}` : ''}`, GetPaymentsData)
   const paymentsData = data?.data?.data;
   const total = data?.data?.total ?? 0;
 
@@ -229,7 +229,7 @@ const Page: React.FC = () => {
                     : payment?.status}
                   </p>
                 </td>
-                <td>{payment?.createdAt}</td>
+                <td>{new Date(payment?.createdAt).toLocaleDateString('en-US')}</td>
                 {activeTab === "rejected" && <td>{payment?.rejectNote}</td>}
                 {(activeTab === "pending" || activeTab === "approved") && (
                   <td>

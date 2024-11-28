@@ -12,7 +12,7 @@ import { toast } from 'sonner';
 
 
 const TableComponent: React.FC = () => { 
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState('page=1&limit=10&');
   const { data, error, isLoading, mutate } = useSWR(`/admin/therapists/tasks?${query}`, getTasksData);
   const taskData = data?.data?.data;
   const total = data?.data?.total ?? 0;

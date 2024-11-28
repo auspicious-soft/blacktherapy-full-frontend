@@ -7,13 +7,13 @@ import SearchBar from "../components/SearchBar";
 
 const Page: React.FC = () => {
   const [query, setQuery] = useState("");
-   const filterStr = query ? `status=${query}` : ''
-  const { data, error, isLoading, mutate } = useSWR(`/admin/therapists?${filterStr}`,GetTherapistsData);
+  const [status, setStatus] = useState('');
+  const filterStr = `${query && query.includes('description') ? `${query}` : ''}${query && status ? '&' : ''}${status ? `status=${status}` : ''}&page=1&limit=10`;    
+  const { data, error, isLoading, mutate } = useSWR(`/admin/therapists${filterStr ? `?${filterStr}` : ''}`,GetTherapistsData);
   const therapistsData: any = data?.data;
 
   const handlefilters = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setQuery(e.target.value);
-
+    setStatus(e.target.value);
   };
 
 
@@ -26,7 +26,7 @@ const Page: React.FC = () => {
         <SearchBar setQuery={setQuery} />
         <div className="filter-select ">
           <select
-            value={query}
+            value={status}
             onChange={handlefilters}
             //onChange={(event) => handleInputChange(event, row?._id)}
             className="w-auto border border-[#26395E] text-[#26395E] text-sm h-[46px] px-5 bg-transparent p-0"
