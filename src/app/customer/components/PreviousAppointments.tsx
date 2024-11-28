@@ -16,7 +16,7 @@ interface ModalProps {
 
 const Modal = ({ isOpen, onClose, children }: ModalProps) => {
   if (!isOpen) return null;
-  
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
       <div className="bg-white w-[94%] max-w-[1200px] shadow-lg relative max-h-[90vh] overflo-custom py-[25px] px-[15px] lg:p-[40px]">
@@ -25,7 +25,7 @@ const Modal = ({ isOpen, onClose, children }: ModalProps) => {
           className="absolute top-2 right-2 text-gray-600 hover:text-gray-800"
         >
           &#x2715;
-        </button> 
+        </button>
         {children}
       </div>
     </div>
@@ -35,8 +35,8 @@ const Modal = ({ isOpen, onClose, children }: ModalProps) => {
 
 const PreviousAppointments = (props: any) => {
   const { isLoading } = props
-  const {data, error} = props; 
-  const {setQuery} = props;
+  const { data, error } = props;
+  const { setQuery } = props;
 
   const previousData = data?.data;
   const total = data?.total ?? 0;
@@ -53,36 +53,6 @@ const PreviousAppointments = (props: any) => {
     { id: 4, name: "Therapist Three", imageUrl: Therapist3 },
     // Add more therapists here
   ];
-
-  // const data = [
-  //   {
-  //     id: 1,
-  //     apptDate: "26 July 2023",
-  //     apptTime: "09:30 AM",
-  //     chatWithClinician: "Yes",
-  //     videoChat: "No",
-  //     billingAmount: "$25.00",
-  //   },
-  //   {
-  //     id: 2,
-  //     apptDate: "26 July 2023",
-  //     apptTime: "09:30 AM",
-  //     chatWithClinician: "No",
-  //     videoChat: "No",
-  //     billingAmount: "$25.00",
-  //   },
-  //   {
-  //     id: 3,
-  //     apptDate: "26 July 2023",
-  //     apptTime: "09:30 AM",
-  //     chatWithClinician: "Yes",
-  //     videoChat: "Yes",
-  //     billingAmount: "$25.00",
-  //   },
-  //   // Add more data as needed
-  // ];
-  // ReactPaginate
-
 
   const handleViewTeam = () => {
     setTeamPopupOpen(true);
@@ -106,7 +76,7 @@ const PreviousAppointments = (props: any) => {
             </tr>
           </thead>
           <tbody>
-          {isLoading ? (
+            {isLoading ? (
               <tr>
                 <td colSpan={5} className="">
                   Loading...
@@ -119,35 +89,35 @@ const PreviousAppointments = (props: any) => {
                 </td>
               </tr>
             ) : previousData?.length > 0 ? (
-            previousData?.map((item: any) => (
-              <tr key={item?._id}>
-                <td>{item?._id}</td>
-                <td>{item.apptDate}</td>
-                <td>{item.apptTime}</td>
-                <td>
-                      <p className={`font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px] ${item.chat === 'Start Chat' ? ' text-[#42A803] bg-[#CBFFB2] ' : ' text-[#FFA234] bg-[#FFFCEC] '}`}>
-                        {!item.message ? 'No chat' : <p className='cursor-pointer font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px]  text-[#42A803] bg-[#CBFFB2]'>Start Chat</p>}
-                      </p>
-                    </td>
-                    <td>{!item.video ? 'No video' : <p className='cursor-pointer font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px]  text-[#42A803] bg-[#CBFFB2]'>Start Video</p>}</td>
-                <td>{item.billingAmount}</td>
-                <td>
-                  <span className="cursor-pointer w-[26px] flex" onClick={handleViewTeam}>
-                    <ViewIcon />
-                  </span>
+              previousData?.map((item: any) => (
+                <tr key={item?._id}>
+                  <td>{item?._id}</td>
+                  <td>{item.apptDate}</td>
+                  <td>{item.apptTime}</td>
+                  <td>
+                    <p className={`font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px] ${item.chat === 'Start Chat' ? ' text-[#42A803] bg-[#CBFFB2] ' : ' text-[#FFA234] bg-[#FFFCEC] '}`}>
+                      {!item.message ? 'No chat' : <p className='cursor-pointer font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px]  text-[#42A803] bg-[#CBFFB2]'>Start Chat</p>}
+                    </p>
+                  </td>
+                  <td>{!item.video ? 'No video' : <p className='cursor-pointer font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px]  text-[#42A803] bg-[#CBFFB2]'>Start Video</p>}</td>
+                  <td>{item.billingAmount}</td>
+                  <td>
+                    <span className="cursor-pointer w-[26px] flex" onClick={handleViewTeam}>
+                      <ViewIcon />
+                    </span>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td
+                  className="w-full flex justify-center p-3 items-center"
+                  colSpan={5}
+                >
+                  No data found
                 </td>
               </tr>
-            ))
-          ) : (
-            <tr>
-              <td
-                className="w-full flex justify-center p-3 items-center"
-                colSpan={5}
-              >
-                No data found
-              </td>
-            </tr>
-          )}
+            )}
           </tbody>
         </table>
       </div>

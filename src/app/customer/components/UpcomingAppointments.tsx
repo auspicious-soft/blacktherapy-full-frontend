@@ -52,7 +52,7 @@ const UpcomingAppointments = (props: any) => {
                 <tr key={item?._id}>
                   <td>{item?._id}</td>
                   <td>
-                    {new Date(item.appointmentDate).toLocaleDateString(
+                    {item.appointmentDate ? new Date(item.appointmentDate).toLocaleDateString(
                       "en-US",
                       {
                         weekday: "short",
@@ -60,21 +60,21 @@ const UpcomingAppointments = (props: any) => {
                         month: "short",
                         day: "numeric",
                       }
-                    )}
+                    ): 'Not Assigned Yet'}
                   </td>
-                  <td>{item.appointmentTime}</td>
-                  <td>
+                  <td>{item.appointmentTime ? item.appointmentTime : 'Not Assigned Yet'}</td> 
+                  <td >
                     {item?.message ? (
                       <p
                         onClick={() => handleChat(item._id)}
                         // inline-block cursor-pointer font-bold text-center rounded-3xl py-[2px] px-[10px] text-[12px] text-[#42A803] bg-[#CBFFB2]
 
-                        className={`font-bold inline-block text-center rounded-3xl py-[2px] px-[10px] text-[10px] ${isChatAllowed ? ' text-[#42A803] bg-[#CBFFB2]' : 'text-[#FFA234] bg-[#FFFCEC]'}`}
+                        className={`font-bold cursor-pointer inline-block text-center rounded-3xl py-[2px] px-[10px] text-[10px] ${isChatAllowed ? ' text-[#42A803] bg-[#CBFFB2]' : 'text-[#FFA234] bg-[#FFFCEC]'}`}
                       >
                       { isChatAllowed ? 'Start Chat' : 'Chat not allowed'}
                       </p>
                     ) : (
-                      <p className="font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px] text-[#FFA234] bg-[#FFFCEC]">
+                      <p className="cursor-not-allowed">
                         No Chat
                       </p>
                     )}
@@ -82,7 +82,7 @@ const UpcomingAppointments = (props: any) => {
 
                   <td>
                     {!item.video ? (
-                      "No video"
+                    <p className="cursor-not-allowed">No video</p>
                     ) : (
                       <p className={`cursor-pointer font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px] ${isVideoCount > 0 ? 'text-[#42A803] bg-[#CBFFB2]' : 'text-[#FFA234] bg-[#FFFCEC]'}`}>
                          {isVideoCount > 0 ? `Start Video (${isVideoCount})` : 'Video chat limit reached for current plan'}

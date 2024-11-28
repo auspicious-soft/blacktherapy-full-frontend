@@ -27,7 +27,7 @@ type FormData = {
 
 const Page = () => {
   const session = useSession()
-  const { data, error, mutate } = useSWR(`/client/${session?.data?.user?.id}`, getProfileService)
+  const { data, error, mutate } = useSWR(`/client/${session?.data?.user?.id}`, getProfileService, { revalidateOnFocus: false })
   const profileData = data?.data?.data
   const [isPending, setIsPending] = useState(false);
   const [isPendingNot, startTransition] = React.useTransition();
