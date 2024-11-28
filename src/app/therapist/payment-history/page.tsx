@@ -15,7 +15,7 @@ const Page = () => {
   const [selectedProgressNotes, setSelectedProgressNotes] = useState<string | null>(null);
 
   const session = useSession()
-  const [query, setQuery] = useState('')
+  const [query, setQuery] = useState('page=1&limit=10')
   const { data, error, isLoading, mutate } = useSWR(`/therapist/payment-requests/${session?.data?.user?.id}?${query}`, getPaymentsData);
   const paymentsData: any = data?.data?.data
   const page = data?.data?.page

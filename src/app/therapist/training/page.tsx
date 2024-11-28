@@ -9,7 +9,7 @@ import useSWR from "swr";
 import SearchBar from '@/app/admin/components/SearchBar';
 
 export default function Home() {
-    const [query, setQuery] = useState('')
+    const [query, setQuery] = useState('page=1&limit=10')
     const [activeTab, setActiveTab] = useState('Videos')
     const session = useSession()
 
