@@ -9,7 +9,7 @@ const SearchBar = (props: SearchBarProps) => {
     const [inputValue, setInputValue] = useState('');
     useEffect(() => {
         const handler = setTimeout(() => {
-            setQuery(`${inputValue ? 'description=' :''}${inputValue}`);
+            setQuery(`${inputValue ? 'description=' :''}${inputValue.trim()}`);
         }, 500);
 
         return () => {

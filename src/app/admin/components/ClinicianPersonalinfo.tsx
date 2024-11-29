@@ -16,7 +16,7 @@ const ClinicianPersonalinfo:React.FC<ClinicianPersonalinfoProps> = ({row}) => {
             </div>
             <div>
             <label className="block mb-2">Date of Birth</label>
-            <p className='text-[#283C63] text-sm font-gothamMedium leading-[normal] '>{row?.otherDetailsOfTherapist?.dob.split('T')[0]}</p>
+            <p className='text-[#283C63] text-sm font-gothamMedium leading-[normal] '>{row?.otherDetailsOfTherapist?.dob?.split('T')[0]}</p>
             </div>
             <div>
             <label className="block mb-2">Email ID</label>

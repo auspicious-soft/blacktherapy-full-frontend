@@ -11,7 +11,7 @@ import useSWR from 'swr';
 import { toast } from 'sonner';
 
 
-const TableComponent: React.FC = () => { 
+const TableComponent: React.FC = () => {
   const [query, setQuery] = useState('page=1&limit=10&');
   const { data, error, isLoading, mutate } = useSWR(`/admin/therapists/tasks?${query}`, getTasksData);
   const taskData = data?.data?.data;
@@ -28,23 +28,23 @@ const TableComponent: React.FC = () => {
     setIsOpen(false);
   };
 
-    const confirmDeleteEntry = async (id: string) => {
-      // const route = `/admin/therapists/tasks/${id}`; 
-      try {
-        const response = await deleteTaskData(`/admin/therapists/tasks/${id}`); 
-        if (response.status === 200) {
-          setIsOpen(false);
-          toast.success("User deleted successfully");
-        } else {
-          toast.error("Failed to delete User");
-        }
-      } catch (error) {
-        console.error("Error deleting User:", error);
-        toast.error("An error occurred while deleting the User");
+  const confirmDeleteEntry = async (id: string) => {
+    // const route = `/admin/therapists/tasks/${id}`; 
+    try {
+      const response = await deleteTaskData(`/admin/therapists/tasks/${id}`);
+      if (response.status === 200) {
+        setIsOpen(false);
+        toast.success("User deleted successfully");
+      } else {
+        toast.error("Failed to delete User");
       }
-      
-      mutate()
-    };
+    } catch (error) {
+      console.error("Error deleting User:", error);
+      toast.error("An error occurred while deleting the User");
+    }
+
+    mutate()
+  };
 
   const rowsPerPage = 10;
 
@@ -75,7 +75,7 @@ const TableComponent: React.FC = () => {
         All Tasks
       </h1>
       <div className='flex justify-end mb-5'>
-        <SearchBar setQuery={setQuery}/>
+        <SearchBar setQuery={setQuery} />
       </div>
       <div className='table-common overflo-custom'>
         <table className="">
@@ -94,7 +94,7 @@ const TableComponent: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-          {isLoading ? (
+            {isLoading ? (
               <tr>
                 <td colSpan={5} className="">
                   Loading...
@@ -107,41 +107,41 @@ const TableComponent: React.FC = () => {
                 </td>
               </tr>
             ) : taskData?.length > 0 ? (
-            taskData?.map((row: any) => (
-              <tr key={row?._id}>
-                <td>{row?._id}</td>
-                <td>
-                  <p className={`px-[10px] py-[2px] text-[10px] text-center rounded-3xl ${getStatusColor(row?.therapistId?.status)}`}>{row?.therapistId?.status}</p>
-                </td>
-                <td>Admin</td>
-                <td>{row?.therapistId?.firstName} {row?.therapistId?.lastName}</td>
-                <td>{row?.title}</td>
-                <td>{new Date(row?.dueDate).toLocaleDateString('en-US')}</td>
-                <td>
-                  <p className={`px-[10px] py-[2px] text-[10px] text-center rounded-3xl ${getPriorityColor(row?.priority)}`}>{row?.priority}</p>
-                </td>
-                <td>
-                  <a href="#" onClick={() => alert(`Opening attachment for ${row?.title}`)}>{row?.attachment}</a>
-                </td>
-                <td>{row?.note}</td>
-                <td>
-                  <button
-                    onClick={() => openModal(row?._id)}
-                    className=""
-                  ><DeleteIcon /></button>
+              taskData?.map((row: any) => (
+                <tr key={row?._id}>
+                  <td>{row?._id}</td>
+                  <td>
+                    <p className={`px-[10px] py-[2px] text-[10px] text-center rounded-3xl ${getStatusColor(row?.status)}`}>{row?.status}</p>
+                  </td>
+                  <td>Admin</td>
+                  <td>{row?.therapistId?.firstName} {row?.therapistId?.lastName}</td>
+                  <td>{row?.title}</td>
+                  <td>{new Date(row?.dueDate).toLocaleDateString('en-US')}</td>
+                  <td>
+                    <p className={`px-[10px] py-[2px] text-[10px] text-center rounded-3xl ${getPriorityColor(row?.priority)}`}>{row?.priority}</p>
+                  </td>
+                  <td>
+                    <a href="#" onClick={() => alert(`Opening attachment for ${row?.title}`)}>{row?.attachment}</a>
+                  </td>
+                  <td>{row?.note}</td>
+                  <td>
+                    <button
+                      onClick={() => openModal(row?._id)}
+                      className=""
+                    ><DeleteIcon /></button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td
+                  className="w-full flex justify-center p-3 items-center"
+                  colSpan={5}
+                >
+                  No data found
                 </td>
               </tr>
-            ))
-          ) : (
-            <tr>
-              <td
-                className="w-full flex justify-center p-3 items-center"
-                colSpan={5}
-              >
-                No data found
-              </td>
-            </tr>
-          )}
+            )}
           </tbody>
         </table>
 
@@ -151,18 +151,18 @@ const TableComponent: React.FC = () => {
           contentLabel="Confirm Deletion"
           className="modal max-w-[584px] mx-auto bg-white rounded-xl w-full p-5 bg-flower"
           overlayClassName="overlay"
-           >
+        >
           <Image src={deleteCross} alt='delete' height={174} width={174} className="mx-auto" />
           <h2 className="text-[20px] text-center leading-normal mt-[-20px]">Are you sure you want to Delete?</h2>
           <div className="flex items-center justify-center gap-6 mt-8">
-            <button 
+            <button
               type="button"
-              onClick={()=>confirmDeleteEntry(deleteId as string)}
+              onClick={() => confirmDeleteEntry(deleteId as string)}
               className="py-[10px] px-8 bg-[#CC0000] text-white rounded"
             >
               Yes, Delete
             </button>
-            <button 
+            <button
               type="button"
               onClick={closeModal}
               className='py-[10px] px-8 bg-[#283C63] text-white rounded'
@@ -196,7 +196,7 @@ const TableComponent: React.FC = () => {
 };
 
 export default TableComponent;
-  function setIsDeleteModalOpen(arg0: boolean) {
-    throw new Error('Function not implemented.');
-  }
+function setIsDeleteModalOpen(arg0: boolean) {
+  throw new Error('Function not implemented.');
+}
 

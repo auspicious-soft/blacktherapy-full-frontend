@@ -48,7 +48,7 @@ const Page = () => {
         firstName: profileData?.firstName,
         lastName: profileData?.lastName,
         email: profileData?.email,
-        dob: profileData?.dob.split('T')[0],
+        dob: profileData?.dob?.split('T')[0],
         phoneNumber: profileData?.phoneNumber,
         state: profileData?.state,
         city: profileData?.city,

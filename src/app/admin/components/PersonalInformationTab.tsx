@@ -23,7 +23,7 @@ const PersonalInformationTab: React.FC<PersonalInformationTabProps> = ({ row, mu
     insuranceCoverage: row?.insuranceCoverage || '',
     firstName: row?.firstName || '',
     lastName: row?.lastName || '',
-    dob: row?.dob ? row?.dob.split('T')[0] : '', 
+    dob: row?.dob ? row?.dob?.split('T')[0] : '', 
     phoneNumber: row?.phoneNumber || '',
     email: row?.email || '',
     password: row?.password || '',

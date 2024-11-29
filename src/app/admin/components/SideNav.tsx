@@ -27,7 +27,7 @@ const SideNav = () => {
   const isActive = (path: string) => pathname === path ? 'active' : '';
   const handleLogout = async () => {
     await signOut({ redirect: false })
-    router.push('/');
+    router.push('/login');
   }
   return (
     <div className={`sideNav ${isCollapsed ? 'collapsed' : ''} h-[100%] overflo-custom`}>

@@ -13,7 +13,7 @@ const SideNav = () => {
 
   const handleLogout = async () => {
     await signOut({ redirect: false })
-    router.push('/');
+    router.push('/login');
   };
 
   const [isCollapsed, setIsCollapsed] = useState(false);
