@@ -1,7 +1,8 @@
 'use client'
 import DashboardCard from "@/app/admin/components/DashboardCard";
-import { getAdminDashboardStats } from "@/services/admin/admin-service";
+import { getAdminAlerts, getAdminDashboardStats } from "@/services/admin/admin-service";
 import {
+  NotificationIcon,
   OverviewIcon1,
   OverviewIcon2,
   OverviewIcon3, 
@@ -15,11 +16,28 @@ import { useSession } from "next-auth/react";
 import useSWR from "swr";
 import ReactLoading from 'react-loading';
 import AlertsTable from "../components/AlertsTable";
-
+import { useState } from "react";
+import { LottieNotification } from "@/components/notification-lottie";
 const Home = () => {
   const session = useSession()
- const {data , error, isLoading} =  useSWR(`/admin/dashboard?id=${session?.data?.user?.id}`, getAdminDashboardStats)
+  const [showAlertModal, setShowAlertModal] = useState(false);
+  const {data , error, isLoading} =  useSWR(`/admin/dashboard?id=${session?.data?.user?.id}`, getAdminDashboardStats)
   const finalData:any = data?.data
+
+  const {data: alertData, error: alertError, isLoading: alertLoadig} = useSWR(`admin/alerts`, getAdminAlerts)
+  console.log('alertData:', alertData);
+  const alertsArray = Array.isArray(alertData?.data?.data) 
+  ? alertData.data.data 
+  : [];
+
+  console.log('msgs:', alertsArray);
+ 
+  const hasUnreadAlerts = alertsArray?.some((alert: any) => (alert?.read == false));
+  const alertMessages = alertsArray?.map((alert: any) => alert?.message);
+  const handleNotificationClick = () => {
+    setShowAlertModal(!showAlertModal);
+  };
+
   const OverviewData = [
     {
       id: "1",
@@ -71,11 +89,17 @@ const Home = () => {
     },
   ];
 
+
   return (
     <>
-      <h1 className="font-antic text-[#283C63] text-[30px] leading-[1.2em] mb-[25px] lg:text-[40px] lg:mb-[50px]">
+      <div className=" flex items-center justify-between mb-[25px] lg:mb-[50px]">
+      <h1 className="font-antic text-[#283C63] text-[30px] leading-[1.2em]  lg:text-[40px] ">
         Welcome
       </h1>
+       <LottieNotification/>
+    </div>
+    
+
       <h2 className="mb-[30px]">Overview</h2>
       <div className="grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-[15px] md:gap-[30px]">
         {OverviewData.map((card) => (

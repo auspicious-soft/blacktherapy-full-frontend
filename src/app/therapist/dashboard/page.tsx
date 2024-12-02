@@ -1,17 +1,30 @@
+
 import ResourceCards from "@/app/therapist/components/ResourceCards";
-import { OverviewIcon1, OverviewIcon2, OverviewIcon3, OverviewIcon4, OverviewIcon5, OverviewIcon6 } from "@/utils/svgicons";
+import {
+  OverviewIcon1,
+  OverviewIcon2,
+  OverviewIcon3,
+  OverviewIcon4,
+  OverviewIcon5,
+  OverviewIcon6,
+} from "@/utils/svgicons";
 import WelcomeCard from "@/app/therapist/components/WelcomeCard";
 import { auth } from "@/auth";
-import { getTherapistDashboardStats } from "@/services/therapist/therapist-service.";
+import { getTherapistDashboardStats, getTherapistsAlerts } from "@/services/therapist/therapist-service.";
+import { LottieNotification } from "@/components/notification-lottie";
+import useSWR from "swr";
+
+
 
 const OverviewData = [
   {
     id: "1",
     icon: <OverviewIcon1 />,
     title: "Invoice Submission/ Payment Request",
-    value: "Submit request for payment for service provided and documentation completed.",
-    link: '/therapist/payment-request',
-    target: '_self'
+    value:
+      "Submit request for payment for service provided and documentation completed.",
+    link: "/therapist/payment-request",
+    target: "_self",
   },
   {
     id: "2",
@@ -19,7 +32,7 @@ const OverviewData = [
     title: "OnPay(Payroll System)",
     value: "Link to payroll system; paystub, Direct deposit, Tax Document, Ect",
     link: "https://app.onpay.com/app/login",
-    target: '_blank'
+    target: "_blank",
   },
   {
     id: "3",
@@ -27,15 +40,16 @@ const OverviewData = [
     title: "Agency Policies & Procedures",
     value: "Employee Handbook, Policies & Procedures, and Rules",
     link: "https://drive.google.com/drive/folders/1l1hjzMSde0rcNDKVZF3yNl2DyuvYmV1R",
-    target: '_blank'
+    target: "_blank",
   },
   {
     id: "4",
     icon: <OverviewIcon4 />,
     title: "Documents & Resources",
-    value: "Submit request for payment for service provided and documentation completed.",
-    link : "https://drive.google.com/drive/folders/1kRItBD39mI3Os0CgLllztnOsvIewfFpj",
-    target: '_blank'
+    value:
+      "Submit request for payment for service provided and documentation completed.",
+    link: "https://drive.google.com/drive/folders/1kRItBD39mI3Os0CgLllztnOsvIewfFpj",
+    target: "_blank",
   },
   {
     id: "5",
@@ -43,7 +57,7 @@ const OverviewData = [
     title: "Training & Orientation",
     value: "Employee Training Videos and Resources",
     link: "/therapist/training",
-    target: '_self'
+    target: "_self",
   },
   {
     id: "6",
@@ -51,14 +65,18 @@ const OverviewData = [
     title: "Simple Practice ",
     value: "Practice forms and document",
     link: "https://secure.simplepractice.com/users/sign_in",
-    target: '_blank'
+    target: "_blank",
   },
 ];
 
 export default async function Home() {
-  const session = await auth()
-  const response = await getTherapistDashboardStats(`/therapist/dashboard/${session?.user?.id}`);
-  const CardsData = await response?.data?.data
+  const session = await auth();
+  const response = await getTherapistDashboardStats( `/therapist/dashboard/${session?.user?.id}`);
+  const CardsData = await response?.data?.data;
+  const alerts= await getTherapistsAlerts(`/therapist/notifications/${session?.user?.id}`);
+  const alertsData = await alerts.data?.data; 
+   console.log('datsddssdsa:', alertsData);
+
   const CardData = [
     {
       id: "1",
@@ -77,11 +95,14 @@ export default async function Home() {
       title: "Pending Video Chat",
       countText: CardsData?.pendingVideoChat,
       bgColor: "#FFD899",
-    }
-  ]
+    },
+  ];
   return (
     <div>
-      <h1 className="text-[40px]">Welcome</h1>
+     <div className="flex justify-between items-center ">
+     <h1 className="text-[40px]">Welcome</h1>
+     <LottieNotification data={alertsData}/>
+     </div>
       <div className="grid md:grid-cols-3 gap-[25px] my-[50px]">
         {CardData.map((cards) => (
           <WelcomeCard

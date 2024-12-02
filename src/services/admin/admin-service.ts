@@ -196,3 +196,9 @@ export const deleteTaskData = async (route: any) => {
   const axiosInstance = await getAxiosInstance();
   return axiosInstance.delete(route);
 };
+// ------*********-------Alerts-------------
+
+export const getAdminAlerts = async (route: any) => {
+  const axiosInstance = await getAxiosInstance();
+  return axiosInstance.get(route);
+}
