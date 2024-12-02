@@ -54,7 +54,7 @@ const Home = () => {
   return (
     <>
       <h1 className="font-antic text-[#283C63] text-[30px] leading-[1.2em] mb-[25px] lg:text-[40px] lg:mb-[50px]">
-        Welcome {session?.data?.user?.name} !
+        Welcome {user?.data?.data?.firstName} {user?.data?.data?.lastName}
       </h1>
       <div className="banner-client rounded-[10px]">
         <h2 className="text-[#fff] py-[50px] px-[15px] lg:py-[78px] lg:px-[110px]">
