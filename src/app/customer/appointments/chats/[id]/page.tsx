@@ -86,7 +86,7 @@ const Page = () => {
 
   const handleSendMessage = async () => {
     startTransition(async () => {
-      let fileKey = null
+      let fileKey:any = null
       let fileType = null
       if (socket) {
         if (file) {
@@ -113,6 +113,7 @@ const Page = () => {
         setImagePreview(null)
         setFilePreview(null)
       }
+      file && window.location.reload()
       setTimeout(() => {
         containerRef.current?.scrollTo(0, containerRef.current?.scrollHeight);
       }, 1000)

@@ -25,7 +25,6 @@ const Page = () => {
   const params = useParams();
   const roomId = params.id as string
   const [isPeerSupport, setIsPeerSupported] = useState(false)
-  console.log('isPeerSupport: ', isPeerSupport);
   containerRef.current?.scrollTo(0, containerRef.current?.scrollHeight)
   const [recieverDetails, setRecieverDetails] = useState<any>(null)
   const [isRecieverOnline, setIsRecieverOnline] = useState(false)
@@ -95,7 +94,7 @@ const Page = () => {
 
   const handleSendMessage = async () => {
     startTransition(async () => {
-      let fileKey = null
+      let fileKey: any = null
       let fileType = null
       if (socket) {
         if (file) {
@@ -122,6 +121,7 @@ const Page = () => {
         setImagePreview(null)
         setFilePreview(null)
       }
+      file && window.location.reload()
       setTimeout(() => {
         containerRef.current?.scrollTo(0, containerRef.current?.scrollHeight);
       }, 1000)
