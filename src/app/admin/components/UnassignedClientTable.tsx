@@ -74,7 +74,6 @@ const UnassignedClientTable: React.FC<UnassignedPageProps> = ({error, setQuery, 
         <table>
           <thead>
             <tr>
-              <th>ID</th>
               <th>Client</th>
               <th>Assigned Clinician</th>
               <th>Assigned Peer Support</th>
@@ -97,7 +96,6 @@ const UnassignedClientTable: React.FC<UnassignedPageProps> = ({error, setQuery, 
             ) : unassignedData?.length > 0 ? (
               unassignedData?.map((row: any) => (
                 <tr key={row._id}>
-                  <td>{row._id}</td>
                   <td onClick={() => openAssignmentsPopup(row)} className='hover:underline font-bold cursor-pointer'>{row.clientName}</td>
                   <td>
                     {row.therapistId && row.therapistId.firstName && row.therapistId.lastName

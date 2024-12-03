@@ -1,9 +1,6 @@
 import React, { useState } from "react";
 import ReactPaginate from "react-paginate";
-import Modal from "react-modal";
-import { ButtonArrow, ViewIcon } from "@/utils/svgicons";
 import ClientsAssignmentPopup from "./ClientsAssignmentPopup";
-import { useRouter } from 'next/navigation';
 import UpdateAssignments from "./UpdateAssignments";
 import ReactLoading from 'react-loading';
 export interface TableData {
@@ -27,9 +24,7 @@ interface AssignedClientsTableProps {
 }
 
 const AssignedClientsTable: React.FC<AssignedClientsTableProps> = ({ error,appointmentsData, setQuery, mutate, isLoading }) => {
-  const router = useRouter();
   const total = appointmentsData?.total ?? 0;
-  const appointments = appointmentsData?.data ?? [];
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentRow, setCurrentRow] = useState<TableData | null>(null);
   const [assignmentClientsPopup, setAssignmentClientsPopup] = useState(false);
@@ -81,7 +76,6 @@ const AssignedClientsTable: React.FC<AssignedClientsTableProps> = ({ error,appoi
         <table>
           <thead>
             <tr>
-              <th>ID</th>
               <th>Client</th>
               <th>Assigned Clinician</th>
               <th>Assigned Peer Support</th>
@@ -106,7 +100,6 @@ const AssignedClientsTable: React.FC<AssignedClientsTableProps> = ({ error,appoi
      
               assignedData?.map((row: any) => (
                 <tr key={row?._id}>
-                  <td>{row?._id}</td>
                   <td onClick={() => openAssignmentsPopup(row)} className='hover:underline font-bold cursor-pointer'>{row?.clientName}</td>
                   <td>{row?.therapistId?.firstName} {row?.therapistId?.lastName}</td>
                   <td>

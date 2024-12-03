@@ -16,20 +16,14 @@ const Home = () => {
   const router = useRouter();
   const { data, isLoading } = useSWR(`/client/appointment/${session?.data?.user?.id}?${query}`, getClientAppointments, { revalidateOnFocus: false })
   const { data: user } = useSWR(`/client/${session?.data?.user?.id}`, getProfileService, { revalidateOnFocus: false })
+  const {data: alertsData, isLoading: alertsLoading} = useSWR (`/client/notifications/${session?.data?.user?.id}`, getClientsAlerts)
   const appointmentsData = data?.data
   const apData = appointmentsData?.data
-
-  
   const [isPending, startTransition] = useTransition();
-  const {data: alertsData, isLoading: alertsLoading} = useSWR (`/client/notifications/${session?.data?.user?.id}`, getClientsAlerts)
-  console.log('alertsData:', alertsData);
-  const otherAlert = alertsData?.data?.data?.otherAlerts
-  console.log('otherAlert:', otherAlert);
-  const newAlert = alertsData?.data?.data?.newChatAlerts;
-  console.log('newAlert:', newAlert);
-
+  const otherAlert = Array.isArray(alertsData?.data?.data?.otherAlerts) ? alertsData?.data?.data?.otherAlerts : [];
+  const newAlert = Array.isArray(alertsData?.data?.data?.newChatAlerts) ? alertsData?.data?.data?.newChatAlerts : [];
+  
    const alertsArray =[...otherAlert, ...newAlert];
-   console.log('alertsArray:', alertsArray);
     
    const handleRead = () => {
     startTransition(async () => {
@@ -41,7 +35,7 @@ const Home = () => {
         const response = await updateClientReadStatus(`/client/notifications/${session?.data?.user?.id}` ,unreadAlertIds);
 
         if (response?.status === 200) {
-          const updatedAlerts = alertsArray.map(alert => ({
+            alertsArray.map(alert => ({
             ...alert,
             read: true
           }));
