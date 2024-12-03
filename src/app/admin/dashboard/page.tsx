@@ -39,13 +39,13 @@ const Home = () => {
     startTransition(async () => {
       try {
         const unreadAlertIds = alertsArray
-          .filter(alert => !alert.read)
-          .map(alert => alert._id);
+          .filter((alert:any) => !alert.read)
+          .map((alert:any) => alert._id);
 
         const response = await updateAdminAlerts(`/admin/notifications` ,unreadAlertIds);
 
         if (response?.status === 200) {
-          const updatedAlerts = alertsArray.map(alert => ({
+          const updatedAlerts = alertsArray.map((alert:any) => ({
             ...alert,
             read: true
           }));

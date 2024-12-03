@@ -76,7 +76,7 @@ const TableComponent: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {isLoading ? (
+            {/* {isLoading ? (
               <tr>
                 <td colSpan={5} className="">
                   Loading...
@@ -88,7 +88,8 @@ const TableComponent: React.FC = () => {
                   Error loading data.
                 </td>
               </tr>
-            ) : taskData?.length > 0 ? (
+            ) : 
+            taskData?.length > 0 ? (
               taskData?.map((row: any) => (
                 <tr key={row?._id}>
                   <td>{row?._id}</td>
@@ -118,7 +119,7 @@ const TableComponent: React.FC = () => {
                   No data found
                 </td>
               </tr>
-            )}
+            )} */}
           </tbody>
         </table>
 
