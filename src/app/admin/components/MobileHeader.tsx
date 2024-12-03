@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { usePathname } from 'next/navigation'; 
-import { AddClientIcon, AssignmentIcon, CallIcon, ClientIcon, ClientWellIcon, ClinicianIcon, DashboardIcon, Humbruger, Logo, NewClinicianIcon, PaymentIcon, TaskIcon, LogOut } from "@/utils/svgicons";
+import { AddClientIcon, AssignmentIcon, CallIcon, ClientIcon, ClientWellIcon, ClinicianIcon, DashboardIcon, Humbruger, Logo, NewClinicianIcon, PaymentIcon, TaskIcon, LogOut, TicketsIcon } from "@/utils/svgicons";
 import Link from "next/link";
 import './SideNav.css'; 
 import { useRouter } from "next/navigation";
@@ -100,6 +100,12 @@ const MobileHeader = () => {
               <Link href="/admin/view-task" onClick={() => handleLinkClick("/admin/view-task")}>
                 <TaskIcon />
                 <span>View Tasks</span>
+              </Link>
+            </li>
+            <li className={isActive('/admin/tickets-page')}>
+              <Link href="/admin/tickets-page" onClick={() => handleLinkClick("/admin/tickets-page")}>
+                <TicketsIcon />
+                <span>Tickets</span>
               </Link>
             </li>
           </ul>

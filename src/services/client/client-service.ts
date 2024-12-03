@@ -10,10 +10,6 @@ export const changePasswordService = async (route: string, payload: any) => {
     return axiosInstance.patch(route, payload)
 }
 
-
-
-
-
 export const getProfileService = async (route: string) => {
     const axiosInstance = await getAxiosInstance()
     return axiosInstance.get(route)
@@ -24,16 +20,10 @@ export const updateProfileService = async (route: string, payload: any) => {
     return axiosInstance.put(route, payload)
 }
 
-
-
-
 export const getClientWellness = async (route: string) => {
     const axiosInstance = await getAxiosInstance()
     return axiosInstance.get(route)
 }
-
-
-
 
 export const getClientAppointments = async (route: string) => {
     const axiosInstance = await getAxiosInstance()
@@ -57,13 +47,25 @@ export const getCustomerSubscriptionDetails = async (stripeCustomerId: string) =
         limit: 1000
     } )
 }
-
 export const getSubscriptionById = async (planOrSubscriptionId: string) => {
     return await stripe.subscriptions.retrieve(planOrSubscriptionId)
 }
 
-
 export const cancelSubscriptionService = async (route: string) => {
     const axiosInstance = await getAxiosInstance()
     return axiosInstance.delete(route)
+}
+
+// -----------Notification- Alerts-------------------
+export const getClientsAlerts = async (route: string) => {
+    const axiosInstance = await getAxiosInstance()
+    return axiosInstance.get(route)
+}
+export const updateClientReadStatus = async (route: string,  payload: any) => {
+    const axiosInstance = await getAxiosInstance()
+    return axiosInstance.patch(route, payload)
+}
+export const getClientsTickets = async (route: string) => {
+    const axiosInstance = await getAxiosInstance()
+    return axiosInstance.get(route)
 }

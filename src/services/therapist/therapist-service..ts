@@ -55,6 +55,9 @@ export const getTherapistsAlerts = async (route: string) => {
     const axiosInstance = await getAxiosInstance()
     return axiosInstance.get(route)
 }
-
+export const updateReadStatus = async (route: string,  payload: any) => {
+    const axiosInstance = await getAxiosInstance()
+    return axiosInstance.patch(route, payload)
+}
 
 

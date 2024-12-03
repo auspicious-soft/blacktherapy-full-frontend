@@ -75,7 +75,6 @@ export default async function Home() {
   const CardsData = await response?.data?.data;
   const alerts= await getTherapistsAlerts(`/therapist/notifications/${session?.user?.id}`);
   const alertsData = await alerts.data?.data; 
-   console.log('datsddssdsa:', alertsData);
 
   const CardData = [
     {
@@ -101,7 +100,7 @@ export default async function Home() {
     <div>
      <div className="flex justify-between items-center ">
      <h1 className="text-[40px]">Welcome</h1>
-     <LottieNotification data={alertsData}/>
+     <LottieNotification data={alertsData} id={session?.user?.id}/>
      </div>
       <div className="grid md:grid-cols-3 gap-[25px] my-[50px]">
         {CardData.map((cards) => (

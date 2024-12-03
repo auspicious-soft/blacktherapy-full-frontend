@@ -1,6 +1,6 @@
 'use client'
 import DashboardCard from "@/app/admin/components/DashboardCard";
-import { getAdminAlerts, getAdminDashboardStats } from "@/services/admin/admin-service";
+import { getAdminAlerts, getAdminDashboardStats, updateAdminAlerts } from "@/services/admin/admin-service";
 import {
   NotificationIcon,
   OverviewIcon1,
@@ -16,27 +16,53 @@ import { useSession } from "next-auth/react";
 import useSWR from "swr";
 import ReactLoading from 'react-loading';
 import AlertsTable from "../components/AlertsTable";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { LottieNotification } from "@/components/notification-lottie";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { ClientNotifications } from "@/components/ClientNotifications";
 const Home = () => {
   const session = useSession()
+  console.log('session:', session);
+  const [isPending, startTransition] = useTransition();
+  const router = useRouter();
   const [showAlertModal, setShowAlertModal] = useState(false);
   const {data , error, isLoading} =  useSWR(`/admin/dashboard?id=${session?.data?.user?.id}`, getAdminDashboardStats)
   const finalData:any = data?.data
 
-  const {data: alertData, error: alertError, isLoading: alertLoadig} = useSWR(`admin/alerts`, getAdminAlerts)
-  console.log('alertData:', alertData);
-  const alertsArray = Array.isArray(alertData?.data?.data) 
-  ? alertData.data.data 
-  : [];
+  const {data: alertsData, error: alertError, isLoading: alertLoadig} = useSWR(`/admin/notifications`, getAdminAlerts)
+  
+  const alertsArray = alertsData?.data?.data
+  console.log('alertsArray:', alertsArray);
 
-  console.log('msgs:', alertsArray);
- 
-  const hasUnreadAlerts = alertsArray?.some((alert: any) => (alert?.read == false));
-  const alertMessages = alertsArray?.map((alert: any) => alert?.message);
-  const handleNotificationClick = () => {
-    setShowAlertModal(!showAlertModal);
-  };
+  const handleRead = () => {
+    startTransition(async () => {
+      try {
+        const unreadAlertIds = alertsArray
+          .filter(alert => !alert.read)
+          .map(alert => alert._id);
+
+        const response = await updateAdminAlerts(`/admin/notifications` ,unreadAlertIds);
+
+        if (response?.status === 200) {
+          const updatedAlerts = alertsArray.map(alert => ({
+            ...alert,
+            read: true
+          }));
+          //setShowAlertModal(false);
+          router.refresh();
+          toast.success('All notifications marked as read');
+        } else {
+          toast.error('Failed to mark notifications as read');
+        }
+      } catch (error) {
+        console.error('Error marking notifications as read:', error);
+        toast.error('An error occurred while marking notifications');
+      }
+    });
+
+    console.log();
+  }
 
   const OverviewData = [
     {
@@ -96,11 +122,15 @@ const Home = () => {
       <h1 className="font-antic text-[#283C63] text-[30px] leading-[1.2em]  lg:text-[40px] ">
         Welcome
       </h1>
-       <LottieNotification/>
+      <ClientNotifications 
+      alerts={alertsArray}
+       handleRead={handleRead}
+      isLoading={isPending}
+    />
     </div>
     
 
-      <h2 className="mb-[30px]">Overview</h2>
+      <h2 className="mb-[30px] select-none">Overview</h2>
       <div className="grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-[15px] md:gap-[30px]">
         {OverviewData.map((card) => (
           <DashboardCard

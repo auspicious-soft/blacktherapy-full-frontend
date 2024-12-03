@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { usePathname } from 'next/navigation';
-import { AddClientIcon, AssignmentIcon, CallIcon, ClientIcon, ClientWellIcon, ClinicianIcon, DashboardIcon, Humbruger, Logo, NewClinicianIcon, PaymentIcon, TaskIcon, LogOut } from "@/utils/svgicons";
+import { AddClientIcon, AssignmentIcon, CallIcon, ClientIcon, ClientWellIcon, ClinicianIcon, DashboardIcon, Humbruger, Logo, NewClinicianIcon, PaymentIcon, TaskIcon, LogOut, TicketsIcon } from "@/utils/svgicons";
 
 import Link from "next/link";
 import './SideNav.css';
@@ -105,12 +105,12 @@ const SideNav = () => {
               {!isCollapsed && <span>View Tasks</span>}
             </Link>
           </li>
-          {/* <li className={isActive('/call-logs')}>
-          <Link href="/call-logs">
-              <CallIcon />
-              {!isCollapsed && <span>Call Log</span>}
+          <li className={isActive('/admin/tickets-page')}>
+          <Link href="/admin/tickets-page">
+              <TicketsIcon />
+              {!isCollapsed && <span>Tickets</span>}
             </Link>
-          </li> */}
+          </li>
         </ul>
       </div>
       <div className="">

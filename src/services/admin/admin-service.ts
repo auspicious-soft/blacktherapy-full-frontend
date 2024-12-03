@@ -202,3 +202,13 @@ export const getAdminAlerts = async (route: any) => {
   const axiosInstance = await getAxiosInstance();
   return axiosInstance.get(route);
 }
+export const updateAdminAlerts = async (route: any, payload: any) => {
+  const axiosInstance = await getAxiosInstance();
+  return axiosInstance.put(route, payload);
+}
+
+export const getAdminTicketsData = async (route: any) => {
+  const axiosInstance = await getAxiosInstance();
+  return axiosInstance.get(route);
+}
+
