@@ -102,7 +102,7 @@ const Home = () => {
       </div>
       <div className="banner-client rounded-[10px]">
         <h2 className="text-[#fff] py-[50px] px-[15px] lg:py-[78px] lg:px-[110px]">
-          Welcome to  The <br />
+          Welcome to The <br />
           Black Therapy Network
         </h2>
       </div>

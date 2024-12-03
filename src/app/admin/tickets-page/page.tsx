@@ -1,7 +1,7 @@
 "use client"
 import React, { useState } from 'react';
 import ReactPaginate from 'react-paginate';
-import { DeleteIcon } from '@/utils/svgicons';
+import { DeleteIcon, TicketTableIcon } from '@/utils/svgicons';
 import SearchBar from '@/app/admin/components/SearchBar';
 import {  getAdminTicketsData } from '@/services/admin/admin-service';
 import useSWR from 'swr';
@@ -24,7 +24,9 @@ const Page: React.FC = () => {
   const handlePageClick = (selectedItem: { selected: number }) => {
     setQuery(`page=${selectedItem.selected + 1}&limit=${rowsPerPage}`)
   }
-
+  const getStatusColor = (status: 'Pending' | 'Completed'): string => {
+    return status === 'Pending' ? 'text-[#A85C03] bg-[#FFFDD1]' : 'text-[#42A803] bg-[#CBFFB2]';
+  };
 
 
   return (
@@ -44,6 +46,7 @@ const Page: React.FC = () => {
               <th>Title</th>
               <th>Created On</th>
               <th>Status</th>
+              <th>Chat</th>
               <th>Action</th>
             </tr>
           </thead>
@@ -65,14 +68,25 @@ const Page: React.FC = () => {
                 <tr key={row?._id}>
                   <td>{row?._id}</td>
                   
-                  <td>{row?.therapistId?.firstName} {row?.therapistId?.lastName}</td>
+                  <td>{row?.sender?.firstName} {row?.sender?.lastName}</td>
                   <td>{row?.title}</td>
-                  <td>{new Date(row?.dueDate).toLocaleDateString('en-US')}</td>
+                  <td>{new Date(row?.createdAt).toLocaleDateString('en-US')}</td>
                   
-                  <td>
-                    <a href="#" onClick={() => alert(`Opening attachment for ${row?.title}`)}>{row?.attachment}</a>
+                  <td> <p className={`px-[10px] py-[2px] text-[10px] text-center rounded-3xl ${getStatusColor(row?.status)}`}>{row?.status}</p>
                   </td>
-                  <td>{row?.note}</td>
+
+                  <td><button><TicketTableIcon/> </button> </td>
+                    <td>  
+                    <select
+                    name="status"
+                    value={row?.status}
+                    onChange={(event)=>handleInputChange(event, row?._id)}
+                    className="w-auto border-none h-auto bg-transparent p-0"
+                  >
+                    <option value="Mark as Read">Mark as Read</option>
+                    <option value="Pending">Pending</option>
+                    </select>
+                    </td>
                     
                 </tr>
               ))

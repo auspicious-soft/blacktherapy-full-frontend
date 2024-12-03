@@ -54,7 +54,7 @@ const MobileHeader = () => {
                 <span>Wellness</span>
               </Link>
             </li>
-            <li className={`${isActive('/customer/appointments')} ${pathname.startsWith('/customer/appointments/chat') ? 'active' : ''}`}>
+            <li onClick={toggleSidebar} className={`${isActive('/customer/appointments')} ${pathname.startsWith('/customer/appointments/chat') ? 'active' : ''}`}>
               <Link href="/customer/appointments">
               <AssignmentIcon/>
                 <span>Appointments</span>

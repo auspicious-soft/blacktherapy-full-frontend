@@ -23,7 +23,6 @@ import { toast } from "sonner";
 import { ClientNotifications } from "@/components/ClientNotifications";
 const Home = () => {
   const session = useSession()
-  console.log('session:', session);
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
   const [showAlertModal, setShowAlertModal] = useState(false);

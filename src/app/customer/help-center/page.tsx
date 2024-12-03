@@ -4,79 +4,57 @@ import Modal from 'react-modal';
 import Image from 'next/image';
 import ReactPaginate from 'react-paginate';
 import deleteCross from "@/assets/images/deleteCross.png"
-import { DeleteIcon } from '@/utils/svgicons';
+import { DeleteIcon, TicketTableIcon } from '@/utils/svgicons';
 import SearchBar from '@/app/admin/components/SearchBar';
 import useSWR from 'swr';
 import { toast } from 'sonner';
 import { getClientsTickets } from '@/services/client/client-service';
+import { useSession } from 'next-auth/react';
 
 
 const TableComponent: React.FC = () => {
+    const session = useSession()
+    const clientId= session?.data?.user?.id;
+    console.log('clientId:', clientId);
   const [query, setQuery] = useState('page=1&limit=10&');
-  const { data, error, isLoading, mutate } = useSWR(`/client/tickets`, getClientsTickets);
-  const ticketsData = data?.data?.data;
+  const { data, error, isLoading, mutate } = useSWR(`/client/tickets/${clientId}`, getClientsTickets);
+  const ticketsData = data?.data?.data?.data;
+  console.log('ticketsData:', ticketsData);
   const total = data?.data?.total ?? 0;
-  const [modalIsOpen, setIsOpen] = useState<boolean>(false);
-  const [deleteId, setDeleteId] = useState<string | null>(null);
-
-  const openModal = (id: string) => {
-    setDeleteId(id);
-    setIsOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsOpen(false);
-  };
-
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const rowsPerPage = 10;
 
   const handlePageClick = (selectedItem: { selected: number }) => {
     setQuery(`page=${selectedItem.selected + 1}&limit=${rowsPerPage}`)
   }
 
-  const getStatusColor = (status: 'Background Check Pending' | 'Completed'): string => {
-    return status === 'Background Check Pending' ? 'text-[#A85C03] bg-[#FFFDD1]' : 'text-[#42A803] bg-[#CBFFB2]';
+  const getStatusColor = (status: 'Pending' | 'Completed'): string => {
+    return status === 'Pending' ? 'text-[#A85C03] bg-[#FFFDD1]' : 'text-[#42A803] bg-[#CBFFB2]';
   };
 
-  const getPriorityColor = (priority: 'High' | 'Medium' | 'Low'): string => {
-    switch (priority) {
-      case 'High':
-        return 'text-[#A85C03] bg-[#FFFDD1]';
-      case 'Medium':
-        return 'text-[#C00] bg-[#FFD9D9]';
-      case 'Low':
-        return 'text-[#42A803] bg-[#CBFFB2]';
-      default:
-        return '';
-    }
-  };
 
   return (
     <div>
       <h1 className="font-antic text-[#283C63] text-[30px] leading-[1.2em] mb-[25px] lg:text-[40px] lg:mb-[50px]">
-        All Tasks
+      Help Center
       </h1>
       <div className='flex justify-end mb-5'>
-        <SearchBar setQuery={setQuery} />
+        <button onClick={()=> setIsModalOpen(true)}
+        className='button mt-0'>Raise a Ticket</button>
       </div>
       <div className='table-common overflo-custom'>
         <table className="">
           <thead>
             <tr>
-              <th>ID</th>
-              <th>Status</th>
-              <th>From</th>
-              <th>To</th>
+              <th>Ticket Id</th>
               <th>Title</th>
-              <th>Due Date</th>
-              <th>Priority</th>
-              <th>Attachment</th>
-              <th>Note</th>
+              <th>Created On</th>
+              <th>Status</th>
               <th>Action</th>
             </tr>
           </thead>
           <tbody>
-            {/* {isLoading ? (
+            {isLoading ? (
               <tr>
                 <td colSpan={5} className="">
                   Loading...
@@ -88,25 +66,19 @@ const TableComponent: React.FC = () => {
                   Error loading data.
                 </td>
               </tr>
-            ) : 
-            taskData?.length > 0 ? (
-              taskData?.map((row: any) => (
+            ) : ticketsData?.length > 0 ? (
+                ticketsData?.map((row: any) => (
                 <tr key={row?._id}>
                   <td>{row?._id}</td>
+                  <td>{row?.title}</td>
+                  <td>{new Date(row?.createdAt).toLocaleDateString('en-US')}</td>
                   <td>
                     <p className={`px-[10px] py-[2px] text-[10px] text-center rounded-3xl ${getStatusColor(row?.status)}`}>{row?.status}</p>
                   </td>
-                  <td>Admin</td>
-                  <td>{row?.therapistId?.firstName} {row?.therapistId?.lastName}</td>
-                  <td>{row?.title}</td>
-                  <td>{new Date(row?.dueDate).toLocaleDateString('en-US')}</td>
+                
                   <td>
-                    <p className={`px-[10px] py-[2px] text-[10px] text-center rounded-3xl ${getPriorityColor(row?.priority)}`}>{row?.priority}</p>
+                    <button><TicketTableIcon/> </button>
                   </td>
-                  <td>
-                    <a href="#" onClick={() => alert(`Opening attachment for ${row?.title}`)}>{row?.attachment}</a>
-                  </td>
-                  <td>{row?.note}</td>
                   
                 </tr>
               ))
@@ -119,18 +91,21 @@ const TableComponent: React.FC = () => {
                   No data found
                 </td>
               </tr>
-            )} */}
+            )}
           </tbody>
         </table>
 
         <Modal
-          isOpen={modalIsOpen}
-          onRequestClose={closeModal}
+          isOpen={isModalOpen}
+          onRequestClose={()=>setIsModalOpen(false)}
           contentLabel="Confirm Deletion"
-          className="modal max-w-[584px] mx-auto bg-white rounded-xl w-full p-5 bg-flower"
-          overlayClassName="overlay"
+          className="modal max-w-[668px] mx-auto bg-white rounded-xl w-full  max-h-[90vh]  overflow-auto overflo-custom"
+          overlayClassName="w-full h-full p-3 fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center"
         >
-        
+        <h2 className='bg-[#283C63] text-[#fff] '>New Ticket</h2>
+        <div>
+dsdsdsds
+        </div>
         </Modal>
       </div>
       <div className="text-right mt-4">

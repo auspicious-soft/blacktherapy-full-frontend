@@ -1,4 +1,4 @@
-'use client'
+'use client' 
 import { useState } from 'react';
 import Lottie from 'react-lottie';
 import { NotificationIcon } from '@/utils/svgicons';
@@ -14,13 +14,13 @@ interface NotificationProps {
 }
 
 export const ClientNotifications: React.FC<NotificationProps> = ({
-  alerts = [],
-  handleRead,
-  isLoading = false
+    alerts = [], 
+    handleRead, 
+    isLoading = false
 }) => {
   const [showAlertModal, setShowAlertModal] = useState(false);
 
-  const hasUnreadAlerts = Array.isArray(alerts) ? alerts.some((alert: any) => !alert.read) : false;
+  const hasUnreadAlerts = Array.isArray(alerts)? alerts.some((alert: any) => !alert.read): false;
 
   const defaultOptions = {
     loop: true,
@@ -33,16 +33,16 @@ export const ClientNotifications: React.FC<NotificationProps> = ({
 
   return (
     <div className='relative'>
-      <div
-        onClick={() => setShowAlertModal(!showAlertModal)}
+      <div 
+        onClick={() => setShowAlertModal(!showAlertModal)} 
         className="cursor-pointer"
       >
         {hasUnreadAlerts ? (
-          <Lottie
-            options={defaultOptions}
-            height={60}
-            width={60}
-            style={{ margin: '0' }}
+          <Lottie 
+            options={defaultOptions} 
+            height={60} 
+            width={60} 
+            style={{ margin: '0' }}  
           />
         ) : (
           <NotificationIcon />
@@ -58,11 +58,11 @@ export const ClientNotifications: React.FC<NotificationProps> = ({
               {/* {unreadAlerts.length} */}
             </h5>
             {handleRead && (
-              <button
-                onClick={() => {
+              <button 
+                onClick={()=> {
                   handleRead()
                   setShowAlertModal(!showAlertModal)
-                }}
+                }} 
                 disabled={isLoading}
                 className="text-xs text-[#fff] underline disabled:opacity-50"
               >
@@ -73,24 +73,27 @@ export const ClientNotifications: React.FC<NotificationProps> = ({
 
           {/* Notifications List */}
           {Array.isArray(alerts) && alerts.length > 0 ? (
-            <ul className='my-2'>
+            <div className='my-2'>
               {alerts.map((row: any) => (
-                <li
-                  key={row._id}
+                <div key={row._id} className={`px-3 py-2${row.read ? ' ' : 'font-bold bg-[#CCE9FA] '}`}>
+                  <h4>{row?.sender?.firstName} {row?.sender?.lastName} <span>({row?.sender?.role})</span> </h4>
+                <p 
+                  
                   className={`
-                    text-xs text-[#686c78] border-b px-3 last:border-b-0 py-2
-                    ${row.read
-                      ? ' '
-                      : ' bg-[#EBF3F8] '}
+                    text-xs text-[#686c78] border-b  last:border-b-0 
+                    ${row.read 
+                      ? ' ' 
+                      : ' bg-[#CCE9FA] '}
                   `}
                 >
                   {row?.message}
                   {/* {!row.read && (
                     <span className="ml-2 text-xs text-blue-500">(New)</span>
                   )} */}
-                </li>
+                </p>
+                </div>
               ))}
-            </ul>
+            </div>
           ) : (
             <p className="text-gray-500 text-center py-4">No new alerts</p>
           )}
