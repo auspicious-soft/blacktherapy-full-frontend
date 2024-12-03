@@ -79,7 +79,6 @@ const UnassignedClientTable: React.FC<UnassignedPageProps> = ({error, setQuery, 
               <th>Assigned Clinician</th>
               <th>Assigned Peer Support</th>
               <th>Status</th>
-              <th>Action</th>
             </tr>
           </thead>
           <tbody>
@@ -99,7 +98,7 @@ const UnassignedClientTable: React.FC<UnassignedPageProps> = ({error, setQuery, 
               unassignedData?.map((row: any) => (
                 <tr key={row._id}>
                   <td>{row._id}</td>
-                  <td>{row.clientName}</td>
+                  <td onClick={() => openAssignmentsPopup(row)} className='hover:underline font-bold cursor-pointer'>{row.clientName}</td>
                   <td>
                     {row.therapistId && row.therapistId.firstName && row.therapistId.lastName
                       ? `${row.therapistId.firstName} ${row.therapistId.lastName}`
@@ -117,9 +116,9 @@ const UnassignedClientTable: React.FC<UnassignedPageProps> = ({error, setQuery, 
                       Update Assignment
                     </button>
                   </td>
-                  <td>
+                  {/* <td>
                     <button onClick={() => openAssignmentsPopup(row)}><ViewIcon /> </button>
-                  </td>
+                  </td> */}
                 </tr>
               ))
             ) : (

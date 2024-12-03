@@ -78,16 +78,15 @@ const AssignedClientsTable: React.FC<AssignedClientsTableProps> = ({ error,appoi
   return (
     <div>
       <div className="table-common overflo-custom">
-        <table className="">
+        <table>
           <thead>
             <tr>
-              <th className="">ID</th>
-              <th className="">Client</th>
-              <th className="">Assigned Clinician</th>
-              <th className="">Assigned Peer Support</th>
-              <th className="">Assigned Date</th> {/* Added column for date */}
-              <th className="">Status</th>
-              <th>Actions</th>
+              <th>ID</th>
+              <th>Client</th>
+              <th>Assigned Clinician</th>
+              <th>Assigned Peer Support</th>
+              <th>Assigned Date</th> {/* Added column for date */}
+              <th>Status</th>
             </tr>
           </thead>
           <tbody>
@@ -108,7 +107,7 @@ const AssignedClientsTable: React.FC<AssignedClientsTableProps> = ({ error,appoi
               assignedData?.map((row: any) => (
                 <tr key={row?._id}>
                   <td>{row?._id}</td>
-                  <td>{row?.clientName}</td>
+                  <td onClick={() => openAssignmentsPopup(row)} className='hover:underline font-bold cursor-pointer'>{row?.clientName}</td>
                   <td>{row?.therapistId?.firstName} {row?.therapistId?.lastName}</td>
                   <td>
                     {row?.peerSupportIds && row?.peerSupportIds.length > 0 ? (
@@ -139,10 +138,10 @@ const AssignedClientsTable: React.FC<AssignedClientsTableProps> = ({ error,appoi
                       Update Assignment
                     </button>
                   </td>
-                  <td>
+                  {/* <td>
                     <button
                       onClick={() => openAssignmentsPopup(row)}><ViewIcon /></button>
-                  </td>
+                  </td> */}
                 </tr>
               ))
             )

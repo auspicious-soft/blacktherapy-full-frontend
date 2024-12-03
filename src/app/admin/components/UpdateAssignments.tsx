@@ -125,6 +125,7 @@ const UpdateAssignments: React.FC<AssignmentProps> = ({ isOpen, onRequestClose, 
                             options={therapistData}
                             onChange={handleSelectChange}
                             placeholder="Select"
+                            required={false}
                         />
                     </div>
                     <div>
@@ -135,6 +136,7 @@ const UpdateAssignments: React.FC<AssignmentProps> = ({ isOpen, onRequestClose, 
                             onChange={handlePeerSelectChange}
                             placeholder="Select"
                             isMulti={true}
+                            required={false}
                         />
                     </div>
                     <div>

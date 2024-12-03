@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { usePathname } from 'next/navigation';
-import { AssignmentIcon, BillingInsuranceIcon, ChangePasswordIcon, DashboardIcon, Humbruger, Logo, LogOut, PlansIcon, ProfileIcon, WellnessIcon } from "@/utils/svgicons";
+import { AssignmentIcon, BillingInsuranceIcon, ChangePasswordIcon, DashboardIcon, HelpCenterIcon, Humbruger, Logo, LogOut, PlansIcon, ProfileIcon, WellnessIcon } from "@/utils/svgicons";
 import Link from "next/link";
 // import './SideNav.css'; 
 import { useRouter } from "next/navigation";
@@ -76,6 +76,12 @@ const MobileHeader = () => {
               <Link href="/customer/billing-insurance">
                 <BillingInsuranceIcon />
                 <span>Billing & Insurance</span>
+              </Link>
+            </li>
+            <li onClick={toggleSidebar} className={isActive('/customer/help-center')}>
+              <Link href="/customer/help-center">
+                <HelpCenterIcon />
+                <span>Help Center</span>
               </Link>
             </li>
           </ul>

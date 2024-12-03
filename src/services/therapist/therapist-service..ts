@@ -50,4 +50,14 @@ export const updateTherapistsProfile = async (route: string, payload: any) => {
     const axiosInstance = await getAxiosInstance()
     return axiosInstance.put(route, payload)
 }
+// -----------Notification- Alerts-------------------
+export const getTherapistsAlerts = async (route: string) => {
+    const axiosInstance = await getAxiosInstance()
+    return axiosInstance.get(route)
+}
+export const updateReadStatus = async (route: string,  payload: any) => {
+    const axiosInstance = await getAxiosInstance()
+    return axiosInstance.patch(route, payload)
+}
+
 

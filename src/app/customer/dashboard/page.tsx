@@ -1,20 +1,62 @@
 'use client'
 import DashboardAssignment from "@/app/customer/components/DashboardAssignment";
 import DashboardCard from "@/app/customer/components/DashboardCard";
-import { getClientAppointments, getProfileService, getSubscriptionById } from "@/services/client/client-service";
+import { ClientNotifications } from "@/components/ClientNotifications";
+import { getClientAppointments, getClientsAlerts, getProfileService, getSubscriptionById, updateClientReadStatus } from "@/services/client/client-service";
 import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState, useTransition } from "react";
+import { toast } from "sonner";
 import useSWR from "swr";
 
 
 const Home = () => {
   const [query, setQuery] = useState('page=1&limit=10')
   const session = useSession()
+  const router = useRouter();
   const { data, isLoading } = useSWR(`/client/appointment/${session?.data?.user?.id}?${query}`, getClientAppointments, { revalidateOnFocus: false })
   const { data: user } = useSWR(`/client/${session?.data?.user?.id}`, getProfileService, { revalidateOnFocus: false })
   const appointmentsData = data?.data
   const apData = appointmentsData?.data
 
+  
+  const [isPending, startTransition] = useTransition();
+  const {data: alertsData, isLoading: alertsLoading} = useSWR (`/client/notifications/${session?.data?.user?.id}`, getClientsAlerts)
+  console.log('alertsData:', alertsData);
+  const otherAlert = alertsData?.data?.data?.otherAlerts
+  console.log('otherAlert:', otherAlert);
+  const newAlert = alertsData?.data?.data?.newChatAlerts;
+  console.log('newAlert:', newAlert);
+
+   const alertsArray =[...otherAlert, ...newAlert];
+   console.log('alertsArray:', alertsArray);
+    
+   const handleRead = () => {
+    startTransition(async () => {
+      try {
+        const unreadAlertIds = alertsArray
+          .filter(alert => !alert?.read)
+          .map(alert => alert?._id);
+
+        const response = await updateClientReadStatus(`/client/notifications/${session?.data?.user?.id}` ,unreadAlertIds);
+
+        if (response?.status === 200) {
+          const updatedAlerts = alertsArray.map(alert => ({
+            ...alert,
+            read: true
+          }));
+          //setShowAlertModal(false);
+          router.refresh();
+          toast.success('All notifications marked as read');
+        } else {
+          toast.error('Failed to mark notifications as read');
+        }
+      } catch (error) {
+        console.error('Error marking notifications as read:', error);
+        toast.error('An error occurred while marking notifications');
+      }
+    });
+  }
   const PreviousAppointment = apData?.filter((item: any) => item?.status !== 'Pending' && (item?.updatedAt < new Date().toISOString()))
     .sort((a: any, b: any) => new Date(b.updatedAt).getDate() - new Date(a.updatedAt).getDate()) || [];
 
@@ -51,11 +93,19 @@ const Home = () => {
   const { data: subsData } = useSWR(userPlanOrSubscriptionId ? `${userPlanOrSubscriptionId}` : null, getSubscriptionById)
   previousBilled.amount = String(`$${(subsData as any)?.plan.amount / 100}`)
   
+
   return (
     <>
-      <h1 className="font-antic text-[#283C63] text-[30px] leading-[1.2em] mb-[25px] lg:text-[40px] lg:mb-[50px]">
-        Welcome {user?.data?.data?.firstName} {user?.data?.data?.lastName}
+      <div className="flex justify-between items-center mb-[25px] lg:mb-[50px]">
+      <h1 className="font-antic text-[#283C63] text-[30px] leading-[1.2em] lg:text-[40px] ">
+      Welcome {user?.data?.data?.firstName} {user?.data?.data?.lastName}
       </h1>
+      <ClientNotifications 
+      alerts={alertsArray}
+      handleRead={handleRead}
+      isLoading={isPending}
+    />
+      </div>
       <div className="banner-client rounded-[10px]">
         <h2 className="text-[#fff] py-[50px] px-[15px] lg:py-[78px] lg:px-[110px]">
           Welcome to  The <br />

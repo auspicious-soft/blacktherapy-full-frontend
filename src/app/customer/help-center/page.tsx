@@ -6,15 +6,15 @@ import ReactPaginate from 'react-paginate';
 import deleteCross from "@/assets/images/deleteCross.png"
 import { DeleteIcon } from '@/utils/svgicons';
 import SearchBar from '@/app/admin/components/SearchBar';
-import { deleteTaskData, getTasksData } from '@/services/admin/admin-service';
 import useSWR from 'swr';
 import { toast } from 'sonner';
+import { getClientsTickets } from '@/services/client/client-service';
 
 
 const TableComponent: React.FC = () => {
   const [query, setQuery] = useState('page=1&limit=10&');
-  const { data, error, isLoading, mutate } = useSWR(`/admin/therapists/tasks?${query}`, getTasksData);
-  const taskData = data?.data?.data;
+  const { data, error, isLoading, mutate } = useSWR(`/client/tickets`, getClientsTickets);
+  const ticketsData = data?.data?.data;
   const total = data?.data?.total ?? 0;
   const [modalIsOpen, setIsOpen] = useState<boolean>(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
@@ -26,24 +26,6 @@ const TableComponent: React.FC = () => {
 
   const closeModal = () => {
     setIsOpen(false);
-  };
-
-  const confirmDeleteEntry = async (id: string) => {
-    // const route = `/admin/therapists/tasks/${id}`; 
-    try {
-      const response = await deleteTaskData(`/admin/therapists/tasks/${id}`);
-      if (response.status === 200) {
-        setIsOpen(false);
-        toast.success("User deleted successfully");
-      } else {
-        toast.error("Failed to delete User");
-      }
-    } catch (error) {
-      console.error("Error deleting User:", error);
-      toast.error("An error occurred while deleting the User");
-    }
-
-    mutate()
   };
 
   const rowsPerPage = 10;
@@ -124,12 +106,7 @@ const TableComponent: React.FC = () => {
                     <a href="#" onClick={() => alert(`Opening attachment for ${row?.title}`)}>{row?.attachment}</a>
                   </td>
                   <td>{row?.note}</td>
-                  <td>
-                    <button
-                      onClick={() => openModal(row?._id)}
-                      className=""
-                    ><DeleteIcon /></button>
-                  </td>
+                  
                 </tr>
               ))
             ) : (
@@ -152,24 +129,7 @@ const TableComponent: React.FC = () => {
           className="modal max-w-[584px] mx-auto bg-white rounded-xl w-full p-5 bg-flower"
           overlayClassName="overlay"
         >
-          <Image src={deleteCross} alt='delete' height={174} width={174} className="mx-auto" />
-          <h2 className="text-[20px] text-center leading-normal mt-[-20px]">Are you sure you want to Delete?</h2>
-          <div className="flex items-center justify-center gap-6 mt-8">
-            <button
-              type="button"
-              onClick={() => confirmDeleteEntry(deleteId as string)}
-              className="py-[10px] px-8 bg-[#CC0000] text-white rounded"
-            >
-              Yes, Delete
-            </button>
-            <button
-              type="button"
-              onClick={closeModal}
-              className='py-[10px] px-8 bg-[#283C63] text-white rounded'
-            >
-              No
-            </button>
-          </div>
+        
         </Modal>
       </div>
       <div className="text-right mt-4">
