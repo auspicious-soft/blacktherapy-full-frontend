@@ -1,23 +1,20 @@
 "use client"
-import React, { useState } from 'react';
+import React, { useState, useTransition } from 'react';
 import ReactPaginate from 'react-paginate';
 import { DeleteIcon, TicketTableIcon } from '@/utils/svgicons';
 import SearchBar from '@/app/admin/components/SearchBar';
-import {  getAdminTicketsData } from '@/services/admin/admin-service';
+import {  getAdminTicketsData, updateAdminTicketsData } from '@/services/admin/admin-service';
 import useSWR from 'swr';
 import { toast } from 'sonner';
 
 
 const Page: React.FC = () => {
+  const [isPending, startTransition] = useTransition();
   const [query, setQuery] = useState('page=1&limit=10&'); //?${query}
-  const { data, error, isLoading, mutate } = useSWR(`/admin/tickets`, getAdminTicketsData);
+  const { data, error, isLoading, mutate } = useSWR(`/admin/tickets/?${query}`, getAdminTicketsData);
   const ticketsData = data?.data?.data?.data;
   console.log('ticketsData:', ticketsData);
   const total = data?.data?.total ?? 0;
-
-
-
-  
 
   const rowsPerPage = 10;
 
@@ -28,6 +25,32 @@ const Page: React.FC = () => {
     return status === 'Pending' ? 'text-[#A85C03] bg-[#FFFDD1]' : 'text-[#42A803] bg-[#CBFFB2]';
   };
 
+  const handleInputChange = (
+    event: React.ChangeEvent<HTMLSelectElement>,
+    id: string
+  ) => {
+    if (id) {
+      const { name, value } = event.target;
+      const actionData = {
+        [name]: value,
+      };
+      (async () => {
+        try {
+          const response = await updateAdminTicketsData(`/admin/tickets/${id}`, actionData);
+          if (response.status === 200) {
+            toast.success("Client status updated successfully");
+            mutate();
+          } else {
+            toast.error("Failed to update client status");
+            console.error("Unexpected response:", response);
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          toast.error("Error updating client status");
+        }
+      })();
+    }
+  };
 
   return (
     <div>
@@ -81,9 +104,9 @@ const Page: React.FC = () => {
                     name="status"
                     value={row?.status}
                     onChange={(event)=>handleInputChange(event, row?._id)}
-                    className="w-auto border-none h-auto bg-transparent p-0"
+                    className="w-auto border-none h-auto bg-transparent p-0 pr-4"
                   >
-                    <option value="Mark as Read">Mark as Read</option>
+                    <option value="Completed">Completed</option>
                     <option value="Pending">Pending</option>
                     </select>
                     </td>

@@ -211,4 +211,9 @@ export const getAdminTicketsData = async (route: any) => {
   const axiosInstance = await getAxiosInstance();
   return axiosInstance.get(route);
 }
+export const updateAdminTicketsData = async (route: any, payload: any) => {
+  const axiosInstance = await getAxiosInstance();
+  return axiosInstance.patch(route, payload);
+}
+
 

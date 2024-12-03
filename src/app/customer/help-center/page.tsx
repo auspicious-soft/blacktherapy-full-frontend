@@ -102,9 +102,16 @@ const TableComponent: React.FC = () => {
           className="modal max-w-[668px] mx-auto bg-white rounded-xl w-full  max-h-[90vh]  overflow-auto overflo-custom"
           overlayClassName="w-full h-full p-3 fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center"
         >
-        <h2 className='bg-[#283C63] text-[#fff] '>New Ticket</h2>
-        <div>
-dsdsdsds
+        <h2 className='bg-[#283C63] text-[#fff] py-6 px-8 '>New Ticket</h2>
+        <div className='py-6 px-8 '>
+        <label className="text-[#707070] block ">
+        Title
+        <input type="text" name="" id="" />
+        </label>
+        <label className="text-[#707070] block  mt-5">
+        Message
+            <textarea name="" className='w-full border border-[#CDE3F1] rounded-lg ' rows={6}></textarea>
+        </label>
         </div>
         </Modal>
       </div>

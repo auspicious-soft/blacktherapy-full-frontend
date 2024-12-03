@@ -75,12 +75,12 @@ export const ClientNotifications: React.FC<NotificationProps> = ({
           {Array.isArray(alerts) && alerts.length > 0 ? (
             <div className='my-2'>
               {alerts.map((row: any) => (
-                <div key={row._id} className={`px-3 py-2${row.read ? ' ' : 'font-bold bg-[#CCE9FA] '}`}>
+                <div key={row._id} className={`border-b border-[#D9DCE2] mb- last:border-b-0  px-3 py-2 *:${row.read ? ' ' : 'font-bold bg-[#CCE9FA] '}`}>
                   <h4>{row?.sender?.firstName} {row?.sender?.lastName} <span>({row?.sender?.role})</span> </h4>
                 <p 
                   
                   className={`
-                    text-xs text-[#686c78] border-b  last:border-b-0 
+                    text-xs text-[#686c78] 
                     ${row.read 
                       ? ' ' 
                       : ' bg-[#CCE9FA] '}
