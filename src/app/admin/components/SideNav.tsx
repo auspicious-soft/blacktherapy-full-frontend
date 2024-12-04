@@ -105,7 +105,7 @@ const SideNav = () => {
               {!isCollapsed && <span>View Tasks</span>}
             </Link>
           </li>
-          <li className={isActive('/admin/tickets-page')}>
+          <li className={`${isActive('/admin/tickets-page')} ${pathname.startsWith('/admin/tickets-page/chat') ? 'active' : ''}`}>
           <Link href="/admin/tickets-page">
               <TicketsIcon />
               {!isCollapsed && <span>Tickets</span>}

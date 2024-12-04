@@ -6,6 +6,7 @@ import useSWR from "swr";
 import { GetEmployeeRecordsData } from "@/services/admin/admin-service";
 import { useRouter } from "next/navigation";
 import { useParams, useSearchParams } from 'next/navigation';
+import { getEmployeeDetails } from "@/services/client/client-service";
 
 const Page = () => {
     const params = useParams();
@@ -15,7 +16,12 @@ const Page = () => {
     const lastName = searchParams.get("lastName");
 
   const {data, isLoading } = useSWR(`/client/therapists/employee-records/${id}`, GetEmployeeRecordsData, {revalidateOnFocus:false})
-  const position = data?.data?.data[0]?.position;;
+  const {data: employee } = useSWR(`/client/therapists/${id}`, getEmployeeDetails, {revalidateOnFocus:false})
+  const records = data?.data?.data[0];
+  console.log('records:', records);
+  const employeeDetails = employee?.data?.data
+  console.log('employeeDetails:', employeeDetails);
+
 
   return (
     <div>
@@ -23,8 +29,17 @@ const Page = () => {
         <div className="mb-5 ">
           <Image src={profileImage} alt="profile" />
         </div>
-        <p> {firstName} {lastName} <span>({position})</span>
-        </p>
+        <p> {firstName} {lastName} <span>({records?.position})</span> </p>
+        <p>Email: {records?.employeeEmail} </p>
+        <p>Weekly Hours:  {employeeDetails?.weeklyHours} </p>
+        <p>Start Time: {employeeDetails?.startTime} </p>
+        <p>End Time: {employeeDetails?.endTime } </p>
+        {employeeDetails?.currentAvailability?.map((item: any) => {
+             <div key={item}>
+              <p>Day: {item} </p>
+            </div>
+               
+})}
       </div>
     </div>
   );

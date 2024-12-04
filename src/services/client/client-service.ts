@@ -55,6 +55,11 @@ export const cancelSubscriptionService = async (route: string) => {
     const axiosInstance = await getAxiosInstance()
     return axiosInstance.delete(route)
 }
+export const getEmployeeDetails = async (route: string) => {
+    const axiosInstance = await getAxiosInstance()
+    return axiosInstance.get(route)
+}
+
 
 // -----------Notification- Alerts-------------------
 export const getClientsAlerts = async (route: string) => {
