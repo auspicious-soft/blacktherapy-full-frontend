@@ -50,7 +50,7 @@ const AssignedClientsTable: React.FC<AssignedClientsTableProps> = ({ error,appoi
   }
 
   const openAssignmentsPopup = (row: any) => {
-    setAssignmentDetails(row); 
+    setAssignmentDetails(row);
     setAssignmentClientsPopup(true);
   };
 
@@ -84,7 +84,7 @@ const AssignedClientsTable: React.FC<AssignedClientsTableProps> = ({ error,appoi
             </tr>
           </thead>
           <tbody>
-          {isLoading ? (
+            {isLoading ? (
               <tr>
                 <td colSpan={5} className="">
                   Loading...
@@ -97,46 +97,52 @@ const AssignedClientsTable: React.FC<AssignedClientsTableProps> = ({ error,appoi
                 </td>
               </tr>
             ) : assignedData?.length > 0 ? (
-     
-              assignedData?.map((row: any) => (
-                <tr key={row?._id}>
-                  <td onClick={() => openAssignmentsPopup(row)} className='hover:underline font-bold cursor-pointer'>{row?.clientName}</td>
-                  <td>{row?.therapistId?.firstName} {row?.therapistId?.lastName}</td>
-                  <td>
-                    {row?.peerSupportIds && row?.peerSupportIds.length > 0 ? (
-                      row?.peerSupportIds.map((peer: any, index: number) => (
-                        peer.error ? (
-                          <span key={peer.id}>
-                            {peer.error}
-                            {index < row?.peerSupportIds.length - 1 ? ', ' : ''}
-                          </span>
-                        ) : (
-                          <span key={peer?.id}>
-                            {peer?.firstName} {peer?.lastName}
-                            {index < row?.peerSupportIds.length - 1 ? ', ' : ''}
-                          </span>
-                        )
-                      ))
-                    ) : (
-                      'No peer supports assigned'
-                    )}
-                  </td>
-                  <td>{new Date(row?.createdAt).toLocaleDateString('en-US')}</td>
-                  {/* <td className="">{row.assignedDate ? new Date(row.assignedDate).toLocaleDateString() : 'N/A'}</td> Display date */}
-                  <td className="">
-                    <button
-                      onClick={() => openModal(row)}
-                      className="font-gothamMedium rounded-3xl py-[2px] px-[10px] text-[#26395E] bg-[#CCDDFF] text-[10px] "
-                    >
-                      Update Assignment
-                    </button>
-                  </td>
-                  {/* <td>
-                    <button
-                      onClick={() => openAssignmentsPopup(row)}><ViewIcon /></button>
-                  </td> */}
-                </tr>
-              ))
+
+              assignedData?.map((row: any) => {
+                console.log('row: ', row);
+                return (
+                  <tr key={row?._id}>
+                    <td onClick={() => openAssignmentsPopup(row)} className='hover:underline font-bold cursor-pointer'>{row?.firstName} {row?.lastName}</td>
+                    <td>{row?.therapistId?.firstName} {row?.therapistId?.lastName}</td>
+                    <td>
+                      {row?.peerSupportIds && row?.peerSupportIds.length > 0 ?
+                        (
+                          row?.peerSupportIds.map((peer: any, index: number) => (
+                            peer.error ? (
+                              <span key={peer.id}>
+                                {peer.error}
+                                {index < row?.peerSupportIds.length - 1 ? ', ' : ''}
+                              </span>
+                            ) : (
+                              <span key={peer?.id}>
+                                {peer?.firstName} {peer?.lastName}
+                                {index < row?.peerSupportIds.length - 1 ? ', ' : ''}
+                              </span>
+                            )
+                          ))
+                        ) :
+                        (
+                          'No peer supports assigned'
+                        )}
+                    </td>
+                    <td>{new Date(row?.createdAt).toLocaleDateString('en-US')}</td>
+                    {/* <td className="">{row.assignedDate ? new Date(row.assignedDate).toLocaleDateString() : 'N/A'}</td> Display date */}
+                    <td className="">
+                      <button
+                        onClick={() => openModal(row)}
+                        className="font-gothamMedium rounded-3xl py-[2px] px-[10px] text-[#26395E] bg-[#CCDDFF] text-[10px] "
+                      >
+                        Update Assignment
+                      </button>
+                    </td>
+                    {/* <td>
+                      <button
+                        onClick={() => openAssignmentsPopup(row)}><ViewIcon /></button>
+                    </td> */}
+                  </tr>
+                )
+              }
+            )
             )
               :
               <tr>

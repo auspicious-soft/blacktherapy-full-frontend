@@ -31,17 +31,17 @@ const Page = () => {
       setShouldFetchAppointments(false);
     }
   }, [activeTab]);
-  const { data: appointmentsData, isLoading: appointmentsIsLoading, mutate: appointmentsMutate, error } = useSWR(shouldFetchAppointments ? `/client/appointment/${session?.data?.user?.id}?${query}` : null, getClientAppointments)
+  const { data: appointmentsData, isLoading: appointmentsIsLoading, mutate: appointmentsMutate, error } = useSWR(shouldFetchAppointments ? `/client/appointment/${session?.data?.user?.id}?${query}` : null, getClientAppointments, { revalidateOnFocus: false });
 
 
 
   const renderTabContent = () => {
     switch (activeTab) {
       case 'Previous Appointments':
-        return <div><PreviousAppointments isChatAllowed = {isChatAllowed} isVideoCount = {isVideoCount} data={appointmentsData?.data} error={error} setQuery={setQuery} isLoading={appointmentsIsLoading} /></div>;
+        return <div><PreviousAppointments isChatAllowed={isChatAllowed} isVideoCount={isVideoCount} data={appointmentsData?.data} error={error} setQuery={setQuery} isLoading={appointmentsIsLoading} /></div>;
       case 'Upcoming Appointments':
-        return <div><UpcomingAppointments isChatAllowed = {isChatAllowed} isVideoCount = {isVideoCount} data={appointmentsData?.data} error={error} isLoading={appointmentsIsLoading} /></div>;
-     default:
+        return <div><UpcomingAppointments isChatAllowed={isChatAllowed} isVideoCount={isVideoCount} data={appointmentsData?.data} error={error} isLoading={appointmentsIsLoading} /></div>;
+      default:
         return null;
     }
   }
@@ -67,7 +67,7 @@ const Page = () => {
   if (error) return <div className="text-red-500">Error: {error.message}</div>
 
 
-  
+
   return (
     <>
       <h1 className="font-antic text-[#283C63] text-[30px] leading-[1.2em] mb-[25px] lg:text-[40px] lg:mb-[50px]">
