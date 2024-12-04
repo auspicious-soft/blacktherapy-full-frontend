@@ -74,7 +74,6 @@ const Page = () => {
   useEffect(() => {
     const fetchTicketDetails = async () => {
       const response = await getTicketDetails(roomId);
-      console.log('response:', response);
       if (response) {
         setRecieverDetails(response?.data?.data?.sender);
         setIsReciever(response?.data?.data);

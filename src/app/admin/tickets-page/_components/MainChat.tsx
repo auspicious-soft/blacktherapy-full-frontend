@@ -37,7 +37,7 @@ const MainChat = (props: any) => {
             alt="User Avatar" className="w-10 h-10 rounded-full" />
           <div>
             <h2 className="text-lg font-semibold text-white"> {`${titleText?.clientName}`}</h2>
-            <p className="text-sm text-white ">{isRecieverOnline ? 'Active Now' : 'Offline'}</p>
+            {/* <p className="text-sm text-white ">{isRecieverOnline ? 'Active Now' : 'Offline'}</p> */}
           </div>
         </div>
         {/* <div className="ml-auto">
@@ -63,8 +63,8 @@ const MainChat = (props: any) => {
               {/* <div className={`mb-2 ${(msg.sender._id || msg.sender) === userId ? "text-right" : "text-left"}`}> */}
 
               <div className={`mb-2 ${(msg.reciever) === 'support' ? "text-left " : "text-right"}`}>
-                <div className={`px-3 py-2 text-sm leading-[normal] text-[#686C78] rounded-lg shadow-md ${(msg.sender._id || msg.sender) === userId ? "bg-[#CCE9FA]" : "bg-[#E7F8F6]"} inline-block max-w-[70%]`}>
-                  {msg.message}
+                <div className={`px-3 py-2 text-sm leading-[normal] text-[#686C78] rounded-lg shadow-md ${(msg.reciever) === 'support' ? "bg-[#CCE9FA]" : "bg-[#E7F8F6]"} inline-block max-w-[70%]`}>
+                  {msg?.message}
                   {msg?.attachment && (
                     <div className="flex items-center justify-center">
                       {msg.fileType.includes('image') ? (
