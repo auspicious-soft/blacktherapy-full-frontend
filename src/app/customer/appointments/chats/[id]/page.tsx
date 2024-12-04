@@ -24,7 +24,6 @@ const Page = () => {
   const [socket, setSocket] = useState<any>(null);
   const params = useParams();
   const roomId = params.id as string
-  const [isPeerSupport, setIsPeerSupported] = useState(false)
   containerRef.current?.scrollTo(0, containerRef.current?.scrollHeight)
   const [recieverDetails, setRecieverDetails] = useState<any>(null)
   const [isRecieverOnline, setIsRecieverOnline] = useState(false)
@@ -74,7 +73,6 @@ const Page = () => {
   useEffect(() => {
     const fetchAppointmentDetails = async () => {
       const response = await getAppointmentDetails(roomId)
-      setIsPeerSupported(response?.data?.therapistId?.therapistId !== userId)
       setRecieverDetails(response?.data?.therapistId)
     }
     const fetchChatHistory = async () => {
@@ -84,11 +82,11 @@ const Page = () => {
     fetchAppointmentDetails()
     fetchChatHistory()
 
-  }, [isPeerSupport, prompt, file])
+  }, [file])
 
   const handleSendMessage = async () => {
     startTransition(async () => {
-      let fileKey = null
+      let fileKey:any = null
       let fileType = null
       if (socket) {
         if (file) {
@@ -108,13 +106,14 @@ const Page = () => {
           fileKey = `appointments/${session?.data?.user?.email}/my-appointment-files/${(file as File).name}`
         }
         socket.emit('message', {
-          sender: userId, roomId, message: prompt, attachment: fileKey, fileType: file?.type, fileName: file?.name, ...(isPeerSupport && { isCareMsg: true })
+          sender: userId, roomId, message: prompt, attachment: fileKey, fileType: file?.type, fileName: file?.name
         })
         setPrompt('')
         setFile(null)
         setImagePreview(null)
         setFilePreview(null)
       }
+      file && window.location.reload()
       setTimeout(() => {
         containerRef.current?.scrollTo(0, containerRef.current?.scrollHeight);
       }, 1000)
@@ -146,9 +145,9 @@ const Page = () => {
       <h1 className="font-antic text-[#283C63] text-[30px] leading-[1.2em] mb-[25px] lg:text-[40px] lg:mb-[50px]">
         Messages
       </h1>
-      <div className="h-[calc(100vh-168px)] grid grid-cols-[minmax(0,_4fr)_minmax(0,_8fr)] gap-[31px]">
-        <NotificationChat messages={messages?.filter((msg: any) => msg.isCareMsg === true)} />
-        <MainChat containerRef={containerRef} messages={messages} handleSendMessage={handleSendMessage}
+      <div className="h-[calc(100vh-168px)] flex gap-[31px]">
+        {messages?.filter((msg: any) => msg.isCareMsg === true).length > 0 && <NotificationChat messages={messages?.filter((msg: any) => msg.isCareMsg === true)} />}
+        <MainChat containerRef={containerRef} messages={messages?.filter((msg: any) => msg.isCareMsg === false)} handleSendMessage={handleSendMessage}
           prompt={prompt} setPrompt={setPrompt}
           file={file} setFile={setFile}
           userId={userId} roomId={roomId}
