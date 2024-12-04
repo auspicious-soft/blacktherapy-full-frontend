@@ -43,7 +43,7 @@ const Page = () => {
     socketInstance.on("connect", () => {
       console.log("Connected to chat socket server.");
       socketInstance.emit('joinQueryRoom', { sender: userId, roomId })
-    socketInstance.emit('checkOnlineStatus', { userId: recieverDetails })
+      socketInstance.emit('checkOnlineStatus', { userId: recieverDetails })
     })
 
     socketInstance.on("queryMessage", (data: any) => {
@@ -72,29 +72,25 @@ const Page = () => {
 
   useEffect(() => {
     const fetchTicketDetails = async () => {
-        try {
-            const response = await getTicketDetails(roomId);
-            if (response) {
-                setRecieverDetails(response?.data?.data?.sender);
-            }
-        } catch (error) {
-            console.error('Error fetching ticket details:', error);
-        }
-    };
+      const response = await getTicketDetails(roomId);
+      if (response) {
+        setRecieverDetails(response?.data?.data?.sender);
+      }
+    }
 
     const fetchQueriesHistory = async () => {
-        const response = await getQueriesHistory(roomId)
-        setMessages(response?.data)
+      const response = await getQueriesHistory(roomId)
+      setMessages(response?.data)
     }
 
     fetchTicketDetails();
     fetchQueriesHistory();
 
-}, [file, roomId])
+  }, [file, roomId])
 
   const handleSendMessage = async () => {
     startTransition(async () => {
-      let fileKey:any = null
+      let fileKey: any = null
       let fileType = null
       if (socket) {
         if (file) {
@@ -153,9 +149,9 @@ const Page = () => {
       <h1 className="font-antic text-[#283C63] text-[30px] leading-[1.2em] mb-[25px] lg:text-[40px] lg:mb-[50px]">
         Messages
       </h1>
-      
+
       <div className="h-[calc(100vh-168px)] flex gap-[31px]">
-        <MainChat containerRef={containerRef} messages={messages?.filter((msg: any) => msg.isCareMsg === false)} handleSendMessage={handleSendMessage}
+        <MainChat containerRef={containerRef} messages={messages} handleSendMessage={handleSendMessage}
           prompt={prompt} setPrompt={setPrompt}
           file={file} setFile={setFile}
           userId={userId} roomId={roomId}
