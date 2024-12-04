@@ -8,7 +8,7 @@ import { useSession } from "next-auth/react";
 import { getAppointmentDetails, getChatHistory, getQueriesHistory, getTicketDetails } from "@/utils";
 import { generateSignedUrlOfAppointment, generateSignedUrlOfQueries } from "@/actions";
 import { toast } from "sonner";
-import MainChat from "@/app/customer/appointments/_components/MainChat";
+import MainChat from "@/app/admin/tickets-page/_components/MainChat";
 
 
 const Page = () => {
@@ -27,6 +27,7 @@ const Page = () => {
   containerRef.current?.scrollTo(0, containerRef.current?.scrollHeight)
   const [recieverDetails, setRecieverDetails] = useState<any>(null)
   const [isRecieverOnline, setIsRecieverOnline] = useState(false)
+  const [isReciever, setIsReciever] = useState<any>(null);
 
   useEffect(() => {
     if (!recieverDetails) return  // Necessary condition to prevent errors and unexpected behavior
@@ -73,8 +74,10 @@ const Page = () => {
   useEffect(() => {
     const fetchTicketDetails = async () => {
       const response = await getTicketDetails(roomId);
+      console.log('response:', response);
       if (response) {
         setRecieverDetails(response?.data?.data?.sender);
+        setIsReciever(response?.data?.data);
       }
     }
 
@@ -147,11 +150,12 @@ const Page = () => {
   return (
     <div>
       <h1 className="font-antic text-[#283C63] text-[30px] leading-[1.2em] mb-[25px] lg:text-[40px] lg:mb-[50px]">
-        Messages
+        Queries #{isReciever?.title}
       </h1>
 
       <div className="h-[calc(100vh-168px)] flex gap-[31px]">
         <MainChat containerRef={containerRef} messages={messages} handleSendMessage={handleSendMessage}
+          titleText={isReciever}
           prompt={prompt} setPrompt={setPrompt}
           file={file} setFile={setFile}
           userId={userId} roomId={roomId}
