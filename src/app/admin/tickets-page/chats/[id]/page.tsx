@@ -10,6 +10,7 @@ import { generateSignedUrlOfAppointment, generateSignedUrlOfQueries } from "@/ac
 import { toast } from "sonner";
 import MainChat from "@/app/customer/appointments/_components/MainChat";
 
+
 const Page = () => {
   const session = useSession()
   const userId = session?.data?.user?.id as string;
@@ -24,11 +25,11 @@ const Page = () => {
   const params = useParams();
   const roomId = params.id as string
   containerRef.current?.scrollTo(0, containerRef.current?.scrollHeight)
-//   const [recieverDetails, setRecieverDetails] = useState<any>(null)
+  const [recieverDetails, setRecieverDetails] = useState<any>(null)
   const [isRecieverOnline, setIsRecieverOnline] = useState(false)
 
   useEffect(() => {
-    // if (!recieverDetails) return  // Necessary condition to prevent errors and unexpected behavior
+    if (!recieverDetails) return  // Necessary condition to prevent errors and unexpected behavior
     const socketInstance = io(process.env.NEXT_PUBLIC_BACKEND_URL as string, {
       // path: '/api/socket.io/',
       withCredentials: true,
@@ -42,7 +43,7 @@ const Page = () => {
     socketInstance.on("connect", () => {
       console.log("Connected to chat socket server.");
       socketInstance.emit('joinQueryRoom', { sender: userId, roomId })
-    //   socketInstance.emit('checkOnlineStatus', { userId: recieverDetails?.therapistId })
+    socketInstance.emit('checkOnlineStatus', { userId: recieverDetails })
     })
 
     socketInstance.on("queryMessage", (data: any) => {
@@ -67,21 +68,29 @@ const Page = () => {
     return () => {
       socketInstance.disconnect();
     };
-  }, [userId, roomId])
+  }, [userId, roomId, recieverDetails])
 
   useEffect(() => {
-    // const fetchTicketDetails = async () => {
-    //   const response = await getTicketDetails(roomId)
-    // //   setRecieverDetails(response?.data?.reciever)
-    // }
-    const fetchQueriesHistory = async () => {
-      const response = await getQueriesHistory(roomId)
-      setMessages(response?.data)
-    }
-    // fetchTicketDetails()
-    fetchQueriesHistory()
+    const fetchTicketDetails = async () => {
+        try {
+            const response = await getTicketDetails(roomId);
+            if (response) {
+                setRecieverDetails(response?.data?.data?.sender);
+            }
+        } catch (error) {
+            console.error('Error fetching ticket details:', error);
+        }
+    };
 
-  }, [file])
+    const fetchQueriesHistory = async () => {
+        const response = await getQueriesHistory(roomId)
+        setMessages(response?.data)
+    }
+
+    fetchTicketDetails();
+    fetchQueriesHistory();
+
+}, [file, roomId])
 
   const handleSendMessage = async () => {
     startTransition(async () => {
@@ -151,7 +160,7 @@ const Page = () => {
           file={file} setFile={setFile}
           userId={userId} roomId={roomId}
           handleTyping={handleTyping} handleStopTyping={handleStopTyping}
-        //   recieverDetails={recieverDetails}
+          recieverDetails={recieverDetails}
           isRecieverOnline={isRecieverOnline}
           isPending={isPending}
           imagePreview={imagePreview}

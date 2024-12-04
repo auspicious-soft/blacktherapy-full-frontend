@@ -151,7 +151,7 @@ const Page = () => {
           file={file} setFile={setFile}
           userId={userId} roomId={roomId}
           handleTyping={handleTyping} handleStopTyping={handleStopTyping}
-        //   recieverDetails={recieverDetails}
+        //recieverDetails={recieverDetails}
           isRecieverOnline={isRecieverOnline}
           isPending={isPending}
           imagePreview={imagePreview}
