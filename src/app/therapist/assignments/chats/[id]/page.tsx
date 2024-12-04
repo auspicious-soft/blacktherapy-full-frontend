@@ -90,7 +90,7 @@ const Page = () => {
     fetchAppointmentDetails()
     fetchChatHistory()
 
-  }, [file])
+  }, [file, isPeerSupport])
 
   const handleSendMessage = async () => {
     startTransition(async () => {
