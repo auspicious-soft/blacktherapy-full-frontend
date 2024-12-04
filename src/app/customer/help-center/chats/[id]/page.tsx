@@ -147,11 +147,13 @@ const Page = () => {
       
       <div className="h-[calc(100vh-168px)] flex gap-[31px]">
         <MainChat containerRef={containerRef} messages={messages} handleSendMessage={handleSendMessage}
+          
           prompt={prompt} setPrompt={setPrompt}
           file={file} setFile={setFile}
           userId={userId} roomId={roomId}
           handleTyping={handleTyping} handleStopTyping={handleStopTyping}
-        //recieverDetails={recieverDetails}
+          titleText='Support Team'
+          //recieverDetails={recieverDetails}
           isRecieverOnline={isRecieverOnline}
           isPending={isPending}
           imagePreview={imagePreview}
