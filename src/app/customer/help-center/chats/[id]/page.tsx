@@ -146,7 +146,7 @@ const Page = () => {
       </h1>
       
       <div className="h-[calc(100vh-168px)] flex gap-[31px]">
-        <MainChat containerRef={containerRef} messages={messages?.filter((msg: any) => msg.isCareMsg === false)} handleSendMessage={handleSendMessage}
+        <MainChat containerRef={containerRef} messages={messages} handleSendMessage={handleSendMessage}
           prompt={prompt} setPrompt={setPrompt}
           file={file} setFile={setFile}
           userId={userId} roomId={roomId}
