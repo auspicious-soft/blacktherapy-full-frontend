@@ -33,6 +33,24 @@ export const getChatHistory = async (id: string) => {
     }
 }
 
+export const getQueriesHistory = async(roomId: string) => {
+    try {
+        const axiosInstance = await getAxiosInstance()
+        return (await (await axiosInstance.get(`/chat/queries-history/${roomId}`))?.data)
+    } catch (error) {
+        toast.error("Failed to fetch queries history")
+    }
+}
+
+export const getTicketDetails = async (roomId: string) => {
+    try {
+        const axiosInstance = await getAxiosInstance()
+        return (await (await axiosInstance.get(`/tickets/get-ticket-by-room-id/${roomId}`))?.data)
+    } catch (error) {
+        toast.error("Failed to fetch ticket details")
+    }
+} 
+
 export const formatDate = (date: Date) => {
     const today = new Date();
     const yesterday = new Date(today);

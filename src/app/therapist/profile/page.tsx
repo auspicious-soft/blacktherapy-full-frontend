@@ -178,7 +178,6 @@ const Page = () => {
           },
           cache: 'no-store'
         });
-        console.log('uploadResponse: ', uploadResponse);
         if (!uploadResponse.ok) {
           toast.error('Something went wrong. Please try again');
           return;
@@ -201,7 +200,6 @@ const Page = () => {
         delete formDataToSend.dob
       }
 
-      console.log('formDataToSend: ', formDataToSend);
       const response = await updateTherapistsProfile(`/therapist/${session?.data?.user?.id}`, formDataToSend);
       if (response?.status === 200) {
         toast.success("Profile updated successfully");

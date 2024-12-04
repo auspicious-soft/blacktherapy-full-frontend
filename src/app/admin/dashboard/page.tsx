@@ -32,7 +32,6 @@ const Home = () => {
   const {data: alertsData, error: alertError, isLoading: alertLoadig} = useSWR(`/admin/notifications`, getAdminAlerts)
   
   const alertsArray = alertsData?.data?.data
-  console.log('alertsArray:', alertsArray);
 
   const handleRead = () => {
     startTransition(async () => {
@@ -60,7 +59,6 @@ const Home = () => {
       }
     });
 
-    console.log();
   }
 
   const OverviewData = [

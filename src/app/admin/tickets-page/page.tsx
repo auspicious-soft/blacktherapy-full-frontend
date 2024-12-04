@@ -6,6 +6,7 @@ import SearchBar from '@/app/admin/components/SearchBar';
 import {  getAdminTicketsData, updateAdminTicketsData } from '@/services/admin/admin-service';
 import useSWR from 'swr';
 import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
 
 
 const Page: React.FC = () => {
@@ -13,9 +14,8 @@ const Page: React.FC = () => {
   const [query, setQuery] = useState('page=1&limit=10&'); //?${query}
   const { data, error, isLoading, mutate } = useSWR(`/admin/tickets/?${query}`, getAdminTicketsData);
   const ticketsData = data?.data?.data?.data;
-  console.log('ticketsData:', ticketsData);
   const total = data?.data?.total ?? 0;
-
+ const router = useRouter();
   const rowsPerPage = 10;
 
   const handlePageClick = (selectedItem: { selected: number }) => {
@@ -52,6 +52,11 @@ const Page: React.FC = () => {
     }
   };
 
+  const handleChat = (id: string) => {
+    router.push(`/admin/tickets-page/chats/${id}`);
+  };
+
+  
   return (
     <div>
       <h1 className="font-antic text-[#283C63] text-[30px] leading-[1.2em] mb-[25px] lg:text-[40px] lg:mb-[50px]">
@@ -98,7 +103,7 @@ const Page: React.FC = () => {
                   <td> <p className={`px-[10px] py-[2px] text-[10px] text-center rounded-3xl ${getStatusColor(row?.status)}`}>{row?.status}</p>
                   </td>
 
-                  <td><button><TicketTableIcon/> </button> </td>
+                  <td><button onClick={()=>handleChat(row?.roomId)}><TicketTableIcon/> </button> </td>
                     <td>  
                     <select
                     name="status"

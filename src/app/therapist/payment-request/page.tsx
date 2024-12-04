@@ -47,7 +47,6 @@ const Page = () => {
           setSelectedClient(null)
         }
       } catch (error) {
-        console.log('error: ', error);
         toast.error("An error occurred please try again")
       }
       finally {
