@@ -96,7 +96,7 @@ const UnassignedClientTable: React.FC<UnassignedPageProps> = ({error, setQuery, 
             ) : unassignedData?.length > 0 ? (
               unassignedData?.map((row: any) => (
                 <tr key={row._id}>
-                  <td onClick={() => openAssignmentsPopup(row)} className='hover:underline font-bold cursor-pointer'>{row.clientName}</td>
+                  <td onClick={() => openAssignmentsPopup(row)} className='hover:underline font-bold cursor-pointer'>{row.firstName} {row.lastName}</td>
                   <td>
                     {row.therapistId && row.therapistId.firstName && row.therapistId.lastName
                       ? `${row.therapistId.firstName} ${row.therapistId.lastName}`

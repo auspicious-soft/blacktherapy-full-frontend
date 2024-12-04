@@ -99,7 +99,6 @@ const AssignedClientsTable: React.FC<AssignedClientsTableProps> = ({ error,appoi
             ) : assignedData?.length > 0 ? (
 
               assignedData?.map((row: any) => {
-                console.log('row: ', row);
                 return (
                   <tr key={row?._id}>
                     <td onClick={() => openAssignmentsPopup(row)} className='hover:underline font-bold cursor-pointer'>{row?.firstName} {row?.lastName}</td>
@@ -125,7 +124,7 @@ const AssignedClientsTable: React.FC<AssignedClientsTableProps> = ({ error,appoi
                           'No peer supports assigned'
                         )}
                     </td>
-                    <td>{new Date(row?.createdAt).toLocaleDateString('en-US')}</td>
+                    <td>{new Date(row?.updatedAt).toLocaleDateString('en-US')}</td>
                     {/* <td className="">{row.assignedDate ? new Date(row.assignedDate).toLocaleDateString() : 'N/A'}</td> Display date */}
                     <td className="">
                       <button
