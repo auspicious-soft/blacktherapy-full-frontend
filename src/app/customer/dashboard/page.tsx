@@ -24,7 +24,6 @@ const Home = () => {
   const newAlert = Array.isArray(alertsData?.data?.data?.newChatAlerts) ? alertsData?.data?.data?.newChatAlerts : [];
   
    const alertsArray =[...otherAlert, ...newAlert];
-   console.log('alertsArray:', alertsArray);
     
    const handleRead = () => {
     startTransition(async () => {

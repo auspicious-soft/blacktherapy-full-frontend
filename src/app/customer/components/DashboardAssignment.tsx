@@ -29,7 +29,6 @@ const DashboardAssignment = (props: any) => {
   };
 
   const viewProfile = (therapist: any) => {
-    console.log('therapist:', therapist);
     router.push(
       `/customer/dashboard/care/${therapist.therapistId}?firstName=${therapist.firstName}&lastName=${therapist.lastName}`
     );

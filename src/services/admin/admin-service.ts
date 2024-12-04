@@ -215,5 +215,3 @@ export const updateAdminTicketsData = async (route: any, payload: any) => {
   const axiosInstance = await getAxiosInstance();
   return axiosInstance.patch(route, payload);
 }
-
-

@@ -142,3 +142,19 @@ export const generateSignedUrlOfAppointment = async (fileName: string, fileType:
         throw error
     }
 }
+
+export const generateSignedUrlOfQueries = async(fileName: string, fileType: string, userEmail: string) => {
+    const uploadParams = {
+        Bucket: process.env.AWS_BUCKET_NAME,
+        Key: `queries/${userEmail}/my-queries-files/${fileName}`,
+        ContentType: fileType
+    }
+    try {
+        const command = new PutObjectCommand(uploadParams)
+        const signedUrl = await getSignedUrl(await createS3Client(), command)
+        return signedUrl
+    } catch (error) {
+        console.error("Error generating signed URL:", error);
+        throw error
+    }
+}

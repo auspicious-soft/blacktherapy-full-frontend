@@ -36,7 +36,6 @@ const ClinicianNotesTab: React.FC<NotesProps> = ({ rowId }) => {
           toast.error("Error adding the note.");
         }
       } catch (err) {
-        console.log('err:', err);
         toast.error("Error submitting the note.");
       }
      });

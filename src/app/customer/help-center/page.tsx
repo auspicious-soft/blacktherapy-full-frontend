@@ -8,11 +8,13 @@ import { toast } from 'sonner';
 import { addClientsTickets, getClientsTickets } from '@/services/client/client-service';
 import { useSession } from 'next-auth/react';
 import { v4 as uuidv4 } from 'uuid';
+import { useRouter } from 'next/navigation';
 
 
 
 const TableComponent: React.FC = () => {
   const session = useSession()
+  const router= useRouter();
   const clientId= session?.data?.user?.id;
   const [isPending, startTransition] = useTransition()
   const [query, setQuery] = useState('page=1&limit=10&');
@@ -61,6 +63,10 @@ const TableComponent: React.FC = () => {
     });
 };
 
+const handleChat = (id: string) => {
+  router.push(`/customer/help-center/chats/${id}`);
+};
+
 
   return (
     <div>
@@ -106,7 +112,7 @@ const TableComponent: React.FC = () => {
                   </td>
                 
                   <td>
-                    <button><TicketTableIcon/> </button>
+                    <button onClick={()=>handleChat(row?.roomId)}><TicketTableIcon/> </button>
                   </td>
                   
                 </tr>

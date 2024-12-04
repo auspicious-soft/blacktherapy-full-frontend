@@ -94,7 +94,6 @@ const ClientTable: React.FC<ClientsDataProps> = ({ clientsData, setQuery, error,
         toast.success('Client status updated successfully');
         mutate();
       } catch (error) {
-        console.log('Error:', error);
         toast.error('Error updating client status');
       }
       

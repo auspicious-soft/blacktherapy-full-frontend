@@ -18,7 +18,6 @@ export const LottieNotification:React.FC<LottieProps> = ({data, id}) => {
     const otherAlert = data?.otherAlerts
     const newAlert = data?.newChatAlerts;
     const alertsArray =[...otherAlert, ...newAlert];
-    console.log('alertsArray:', alertsArray);
     
     const hasUnreadAlerts = alertsArray.some((alert) => !alert.read);
 
