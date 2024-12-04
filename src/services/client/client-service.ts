@@ -69,3 +69,7 @@ export const getClientsTickets = async (route: string) => {
     const axiosInstance = await getAxiosInstance()
     return axiosInstance.get(route)
 }
+export const addClientsTickets = async (route: string, payload: any) => {
+    const axiosInstance = await getAxiosInstance()
+    return axiosInstance.post(route, payload)
+}

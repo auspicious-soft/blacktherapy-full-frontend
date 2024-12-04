@@ -1,27 +1,28 @@
 "use client"
-import React, { useState } from 'react';
+import React, { useState, useTransition } from 'react';
 import Modal from 'react-modal';
-import Image from 'next/image';
 import ReactPaginate from 'react-paginate';
-import deleteCross from "@/assets/images/deleteCross.png"
-import { DeleteIcon, TicketTableIcon } from '@/utils/svgicons';
-import SearchBar from '@/app/admin/components/SearchBar';
+import { ButtonArrow, DeleteIcon, TicketTableIcon } from '@/utils/svgicons';
 import useSWR from 'swr';
 import { toast } from 'sonner';
-import { getClientsTickets } from '@/services/client/client-service';
+import { addClientsTickets, getClientsTickets } from '@/services/client/client-service';
 import { useSession } from 'next-auth/react';
+import { v4 as uuidv4 } from 'uuid';
+
 
 
 const TableComponent: React.FC = () => {
-    const session = useSession()
-    const clientId= session?.data?.user?.id;
-    console.log('clientId:', clientId);
+  const session = useSession()
+  const clientId= session?.data?.user?.id;
+  const [isPending, startTransition] = useTransition()
   const [query, setQuery] = useState('page=1&limit=10&');
   const { data, error, isLoading, mutate } = useSWR(`/client/tickets/${clientId}`, getClientsTickets);
-  const ticketsData = data?.data?.data?.data;
-  console.log('ticketsData:', ticketsData);
-  const total = data?.data?.total ?? 0;
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [title, setTitle] = useState('');
+  const [message, setMessage] = useState('');
+
+  const ticketsData = data?.data?.data?.data;
+  const total = data?.data?.total ?? 0;
   const rowsPerPage = 10;
 
   const handlePageClick = (selectedItem: { selected: number }) => {
@@ -31,6 +32,34 @@ const TableComponent: React.FC = () => {
   const getStatusColor = (status: 'Pending' | 'Completed'): string => {
     return status === 'Pending' ? 'text-[#A85C03] bg-[#FFFDD1]' : 'text-[#42A803] bg-[#CBFFB2]';
   };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const roomId = uuidv4();
+    const ticketData = {
+        roomId,
+        title,
+        message
+    };
+    startTransition(async () => {
+        try {
+            const response = await addClientsTickets(`/client/tickets/${clientId}`, ticketData);
+            
+            if (response?.status === 201) {
+                toast.success('Ticket created successfully');
+                setTitle('');
+                setMessage('');
+                setIsModalOpen(false);
+                mutate();
+            } else {
+                toast.error('Failed to create ticket. Unexpected response.');
+            }
+        } catch (error) {
+            console.error('Ticket creation failed:', error);
+            toast.error('Failed to create ticket. Please try again.');
+        }
+    });
+};
 
 
   return (
@@ -104,14 +133,48 @@ const TableComponent: React.FC = () => {
         >
         <h2 className='bg-[#283C63] text-[#fff] py-6 px-8 '>New Ticket</h2>
         <div className='py-6 px-8 '>
-        <label className="text-[#707070] block ">
-        Title
-        <input type="text" name="" id="" />
-        </label>
-        <label className="text-[#707070] block  mt-5">
-        Message
-            <textarea name="" className='w-full border border-[#CDE3F1] rounded-lg ' rows={6}></textarea>
-        </label>
+        <form onSubmit={handleSubmit} className='py-6 px-8'>
+                <label className="text-[#707070] block">
+                    Title
+                    <input 
+                        type="text" 
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                        className='w-full border border-[#CDE3F1] rounded-lg p-4 mt-2'
+                        placeholder="Enter ticket title"
+                        required
+                    />
+                </label>
+                <label className="text-[#707070] block mt-5">
+                    Message
+                    <textarea 
+                        value={message}
+                        onChange={(e) => setMessage(e.target.value)}
+                        className='w-full border border-[#CDE3F1] rounded-lg p-4 mt-2' 
+                        rows={6}
+                        placeholder="Enter your message"
+                        required
+                    />
+                </label>
+                <div className='mt-[49px] flex justify-end items-center gap-3'>
+                    <button 
+                        type="button"
+                        onClick={()=>setIsModalOpen(false)}
+                        className='h-[50px] border border-[#283C63] text-[#283C63] text-base px-7 py-3 rounded-[10px]'
+                        disabled={isPending}
+                    >
+                        Cancel
+                    </button>
+                    <button 
+                        type="submit" 
+                        className='button !mt-0'
+                        disabled={isPending}
+                    >
+                        {isPending ? 'Creating...' : 'Create'} <ButtonArrow/>
+                    </button>
+                </div>
+            </form>
+
         </div>
         </Modal>
       </div>
