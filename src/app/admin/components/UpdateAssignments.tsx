@@ -48,7 +48,7 @@ const UpdateAssignments: React.FC<AssignmentProps> = ({ isOpen, onRequestClose, 
                 appointmentTime: row?.appointmentTime ? row?.appointmentTime : null
             });
         }
-    }, [row]);
+    }, [row, isOpen, mutate]);
 
     const checkStateMatch = (state: string) => {
         if (state === nameState) {

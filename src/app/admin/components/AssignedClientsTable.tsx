@@ -29,18 +29,15 @@ const AssignedClientsTable: React.FC<AssignedClientsTableProps> = ({ error,appoi
   const [currentRow, setCurrentRow] = useState<TableData | null>(null);
   const [assignmentClientsPopup, setAssignmentClientsPopup] = useState(false);
   const [updateAssignment, setUpdateAssignment] = useState(false);
-  const [assignmentDetails, setAssignmentDetails] = useState<{
-    id: number;
-    client: string;
-  } | null>(null);
+  const [assignmentDetails, setAssignmentDetails] = useState<any>(null);
 
-  const [formData, setFormData] = useState({
-    assignedClinician: "",
-    assignedPeerSupport: "",
-    message: "",
-    workshop: "",
-    video: "",
-  });
+  // const [formData, setFormData] = useState({
+  //   assignedClinician: "",
+  //   assignedPeerSupport: "",
+  //   message: "",
+  //   workshop: "",
+  //   video: "",
+  // });
 
   const assignedData = appointmentsData?.data;
   const rowsPerPage = 10;
