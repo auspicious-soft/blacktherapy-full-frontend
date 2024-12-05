@@ -11,7 +11,7 @@ const useTherapists = (isOnboarding?: boolean) => {
         value: user._id,
         state: user?.otherDetailsOfTherapist?.state
     })) || []; 
-
+    
     return {
         therapistData,
         isLoading: isLoading,

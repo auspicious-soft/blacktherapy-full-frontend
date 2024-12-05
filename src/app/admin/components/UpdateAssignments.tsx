@@ -14,29 +14,27 @@ interface AssignmentProps {
 }
 
 const UpdateAssignments: React.FC<AssignmentProps> = ({ isOpen, onRequestClose, row, mutate }) => {
-
-
     const { therapistData, isLoading, error } = useTherapists(true);
-
     const [selectedClinician, setSelectedClinician] = useState<any>(null);
     const [selectedPeers, setSelectedPeers] = useState<any>([]);
     const [formData, setFormData] = useState<any>({
         message: '',
         workshop: '',
         video: '',
-        appointmentDate: null,
-        appointmentTime: null
+        // appointmentDate: null,
+        // appointmentTime: null
     });
     const [isPending, startTransition] = useTransition();
     const nameState = row?.clientId?.state;
 
     useEffect(() => {
-        if (row) { 
+        if (row) {
             setSelectedClinician(row?.therapistId?.firstName && row?.therapistId?.lastName ?
-                { label: `${row?.therapistId?.firstName} ${row?.therapistId?.lastName}` } : null);
+                { label: `${row?.therapistId?.firstName} ${row?.therapistId?.lastName}`, value: row?.therapistId?._id } : null);
 
             setSelectedPeers(row?.peerSupportIds?.map((peer: any) => ({
                 label: `${peer?.firstName} ${peer?.lastName}`,
+                value: peer?._id,
                 state: peer?.state
             })) || []);
 
@@ -44,8 +42,8 @@ const UpdateAssignments: React.FC<AssignmentProps> = ({ isOpen, onRequestClose, 
                 message: row?.message !== undefined ? row?.message.toString() : '',
                 workshop: row?.workshop || '',
                 video: row?.video !== undefined ? row?.video.toString() : '',
-                appointmentDate: row?.appointmentDate ? new Date(row?.appointmentDate).toISOString().split('T')[0] : null,
-                appointmentTime: row?.appointmentTime ? row?.appointmentTime : null
+                // appointmentDate: row?.appointmentDate ? new Date(row?.appointmentDate).toISOString().split('T')[0] : null,
+                // appointmentTime: row?.appointmentTime ? row?.appointmentTime : null
             });
         }
     }, [row, isOpen, mutate]);
@@ -90,7 +88,8 @@ const UpdateAssignments: React.FC<AssignmentProps> = ({ isOpen, onRequestClose, 
         };
         startTransition(async () => {
             try {
-                const response = await updateAssignments(`/admin/appointments/${row._id}`, assignData);
+                console.log('assignData: ', assignData);
+                const response = await updateAssignments(`/admin/assignments/${row._id}`, assignData);
 
                 if (response.status === 200) {
                     toast.success("Assignment updated successfully");
@@ -176,14 +175,14 @@ const UpdateAssignments: React.FC<AssignmentProps> = ({ isOpen, onRequestClose, 
                             <option value="false">No</option>
                         </select>
                     </div>
-                    <div>
+                    {/* <div>
                         <label className="label">Appointment Date</label>
                         <input type="date" name="appointmentDate" value={formData.appointmentDate} onChange={handleInputChange} />
-                    </div>
-                    <div>
+                    </div> */}
+                    {/* <div>
                         <label className="label">Appointment Time</label>
                         <input type="time" name="appointmentTime" value={formData.appointmentTime} onChange={handleInputChange} />
-                    </div>
+                    </div> */}
                 </div>
                 <div className='mt-[30px] flex justify-end'>
                     <button type="submit" className="button px-[30px]" disabled={isPending}>

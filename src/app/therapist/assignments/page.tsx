@@ -75,8 +75,8 @@ const Page = () => {
                 clientsData?.map((item: any) => (
                   <tr key={item._id}>
                     <td>{item.clientId.firstName} {item.clientId.lastName}</td>
-                    <td>{new Date(item.appointmentDate).toLocaleDateString('en-US')}</td>
-                    <td>{item.appointmentTime}</td>
+                    <td>{new Date(item.clientId.assignedDate).toLocaleDateString('en-US')}</td>
+                    <td>{item.clientId.assignedTime}</td>
                     <td>{item.clientId.phoneNumber}</td>
                     <td>{item.clientId.email}</td>
                 {/* <td> <p className='cursor-pointer font-gothamMedium text-center rounded-xl text-[10px] py-[4px] text-[#fff] bg-[#26395E]' onClick={()=>openModal(item?.notes)}>View</p></td> */}

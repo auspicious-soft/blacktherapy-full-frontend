@@ -258,7 +258,7 @@ const DashboardAssignment = (props: any) => {
         </div>
         <div className="bg-white px-5 pb-5 rounded-b-[20px]  grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-[20px] gap-y-[20px] lg:gap-y-[40px]">
           {selectedAppointment?.map((therapist: any) => (
-            <div key={therapist.id} className="">
+            <div key={therapist.id} className="cursor-pointer">
               <Image
                 onClick={() => viewProfile(therapist)}
                 src={getImageUrlOfS3(therapist?.profilePic)}
