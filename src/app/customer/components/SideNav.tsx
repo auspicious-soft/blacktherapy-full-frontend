@@ -76,7 +76,7 @@ const SideNav = () => {
               {!isCollapsed && <span>Billing & Insurance</span>}
             </Link>
           </li>
-          <li className={isActive('/customer/Help Center')}>
+          <li className={`${isActive('/customer/help-center')} ${pathname.startsWith('/customer/help-center/chat') ? 'active' : ''}`}>
             <Link href="/customer/help-center">
               <HelpCenterIcon />
               {!isCollapsed && <span>Help Center</span>}
