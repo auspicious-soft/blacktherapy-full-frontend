@@ -8,7 +8,6 @@ import { toast } from "sonner";
 
 const UpcomingAppointments = (props: any) => {
   const { data, error, setQuery, isChatAllowed, isVideoCount, video, message } = props;
-  console.log('video: ', video);
   const router = useRouter();
   const upcomingData = data?.data;
   const { isLoading } = props;
