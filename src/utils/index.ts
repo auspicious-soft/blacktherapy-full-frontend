@@ -72,13 +72,29 @@ export const formatDate = (date: Date) => {
 // Function to create a meeting room
 export const createVideoSDKMeeting = async (appointmentId: string, participantId: string) => {
     const token = await generateVideoSDKToken(appointmentId, participantId);
+
+    // Check if the meeting exists
+    const checkResponse = await fetch(`https://api.videosdk.live/v1/meetings/${appointmentId}`, {
+        method: 'GET',
+        headers: {
+            Authorization: token,
+            'Content-Type': 'application/json',
+        },
+    });
+
+    if (checkResponse.ok) {
+        // Meeting already exists
+        return appointmentId;
+    }
+
+    // Create a new meeting if it doesn't exist
     const response = await fetch('https://api.videosdk.live/v1/meetings', {
         method: 'POST',
         headers: {
-            'Authorization': token,
-            'Content-Type': 'application/json'
+            Authorization: token,
+            'Content-Type': 'application/json',
         },
-        body: JSON.stringify({})
+        body: JSON.stringify({}),
     });
 
     if (!response.ok) {
@@ -86,5 +102,5 @@ export const createVideoSDKMeeting = async (appointmentId: string, participantId
     }
 
     const data = await response.json();
-    return data.meetingId
-}
+    return data.meetingId;
+};
