@@ -9,6 +9,7 @@ import ReactLoading from 'react-loading';
 import Modal from "react-modal";
 import { useRouter } from "next/navigation";
 import { CloseIcon } from '@/utils/svgicons';
+import Link from 'next/link';
 
 const Page = () => {
   const [showModal, setShowModal] = useState(false);
@@ -82,7 +83,7 @@ const Page = () => {
                 {/* <td> <p className='cursor-pointer font-gothamMedium text-center rounded-xl text-[10px] py-[4px] text-[#fff] bg-[#26395E]' onClick={()=>openModal(item?.notes)}>View</p></td> */}
 
                     <td>
-                    {item?.message ? (
+                    {item?.clientId?.message ? (
                       <p
                         onClick={() => handleChat(item._id)}
                         className=" inline-block cursor-pointer font-bold text-center rounded-3xl py-[2px] px-[10px] text-[12px] text-[#42A803] bg-[#CBFFB2]"
@@ -95,7 +96,7 @@ const Page = () => {
                       </p>
                     )}
                     </td>
-                    <td>{!item.video ? 'No video' : <p className='cursor-pointer font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px]  text-[#42A803] bg-[#CBFFB2]'>Start Video</p>}</td>
+                    <td>{!item?.clientId?.video ? 'No video' : <Link href={`/therapist/assignments/video-chat/${item?._id}`}><p className='cursor-pointer font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px]  text-[#42A803] bg-[#CBFFB2]'>Start Video</p></Link>}</td>
                     <td>
                       <p className='font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px]  text-[#42A803] bg-[#CBFFB2]'>{item.status}</p>
                     </td>

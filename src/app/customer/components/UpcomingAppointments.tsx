@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import PervIcon from "@/assets/images/pervicon.png";
 import NextIcon from "@/assets/images/nexticon.png";
 import { toast } from "sonner";
+import Link from "next/link";
 
 const UpcomingAppointments = (props: any) => {
   const { data, error, setQuery, isChatAllowed, isVideoCount, video, message } = props;
@@ -83,7 +84,7 @@ const UpcomingAppointments = (props: any) => {
                   <td>
                     {video && video ? (
                       <p className={`cursor-pointer font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px] ${isVideoCount > 0 ? 'text-[#42A803] bg-[#CBFFB2]' : 'text-[#FFA234] bg-[#FFFCEC]'}`}>
-                        {isVideoCount > 0 ? `Start Video (${isVideoCount})` : 'Video chat limit reached for current plan'}
+                        {isVideoCount > 0 ? <Link href = {`/customer/appointments/video-chat/${item?._id}`}>{`Start Video (${isVideoCount})`}</Link> : 'Video chat limit reached for current plan'}
                       </p>
                     ) : (
                       <p className="cursor-not-allowed">No video</p>

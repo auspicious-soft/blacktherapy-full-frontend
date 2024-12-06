@@ -14,6 +14,7 @@ import { useRouter } from "next/navigation";
 import Modal from "react-modal";
 import { getImageUrlOfS3 } from "@/utils";
 import { toast } from "sonner";
+import Link from "next/link";
 
 
 const DashboardAssignment = (props: any) => {
@@ -94,7 +95,7 @@ const DashboardAssignment = (props: any) => {
                     )}
                   </td>
                   <td>{video ? <p className={`cursor-pointer font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px] ${isVideoCount > 0 ? 'text-[#42A803] bg-[#CBFFB2]' : 'text-[#FFA234] bg-[#FFFCEC]'}`}>
-                    {isVideoCount > 0 ? `Start Video (${isVideoCount})` : 'Video chat limit reached for current plan'}
+                    {isVideoCount > 0 ? <Link href = {`/customer/appointments/video-chat/${row?._id}`}>{`Start Video (${isVideoCount})`}</Link> : 'Video chat limit reached for current plan'}
                   </p> : <p className="cursor-not-allowed">No Video</p>}</td>
                   <td>
                     <span className="cursor-pointer w-[26px] flex" onClick={() => handleViewTeam(row)}>
