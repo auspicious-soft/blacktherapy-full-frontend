@@ -33,21 +33,24 @@ const ParticipantView = ({ participantId }: { participantId: string }) => {
     }, [micStream, micOn]);
 
     return (
-        <div className="participant-view">
+        <div className="">
             <p>
                 {displayName} | Webcam: {webcamOn ? "ON" : "OFF"} | Mic: {micOn ? "ON" : "OFF"}
             </p>
             <audio ref={micRef} autoPlay muted={isLocal} />
-            {webcamOn && (
+            {webcamOn ? (
                 <ReactPlayer
                     playsinline
                     url={videoStream}
                     playing
                     muted
-                    height="200px"
-                    width="300px"
+                // height="200px"
+                // width="300px"
                 />
-            )}
+            ) :
+                <p className='font-bold text-[30px]'>
+                    Webcam Disabled
+                </p>}
         </div>
     );
 };
@@ -56,16 +59,7 @@ const ParticipantView = ({ participantId }: { participantId: string }) => {
 const Controls = () => {
     const { leave, toggleMic, toggleWebcam } = useMeeting();
     const router = useRouter()
-    return <div className="flex flex-col items-center space-y-4">
-        <button
-            onClick={() => {
-                leave()
-                router.back()
-            }}
-            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-        >
-            Leave Meeting
-        </button>
+    return <div className="flex justify-center items-center gap-x-2 p-4">
         <button
             onClick={() => toggleMic()}
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
@@ -78,6 +72,15 @@ const Controls = () => {
         >
             Toggle Camera
         </button>
+        <button
+            onClick={() => {
+                leave()
+                router.back()
+            }}
+            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded ml-auto"
+        >
+            Leave Meeting
+        </button>
     </div>
 
 };
@@ -89,19 +92,21 @@ const MeetingView = ({ meetingId }: { meetingId: string }) => {
         onMeetingJoined: () => setJoined(true),
         onMeetingLeft: () => setJoined(false),
     });
-    
+
     useEffect(() => {
         join()
     }, [])
 
     return (
-        <div className="meeting-container">
+        <div className="w-full">
             <h3>Meeting ID: {meetingId}</h3>
             {joined ? (
-                <div>
+                <div className='w-full'>
                     <Controls />
                     {[...(participants as any).keys()].map((participantId) => (
-                        <ParticipantView key={participantId} participantId={participantId} />
+                        <div className='w-full'>
+                            <ParticipantView key={participantId} participantId={participantId} />
+                        </div>
                     ))}
                 </div>
             ) : (
