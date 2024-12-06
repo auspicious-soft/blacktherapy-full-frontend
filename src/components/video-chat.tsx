@@ -124,16 +124,18 @@ export const VideoChatPage = ({ appointmentId, userType, userId }: { appointment
     useEffect(() => {
         const initializeMeeting = async () => {
             try {
+                // Create or join a meeting using the appointmentId as room ID
                 const roomId = await createVideoSDKMeeting(appointmentId, userId);
-                const generatedToken = await generateVideoSDKToken(appointmentId, userId);
+                const generatedToken = await generateVideoSDKToken(roomId, userId);
 
                 setMeetingId(roomId);
                 setToken(generatedToken);
-            } catch (error) {
+            }
+            catch (error) {
                 console.error('Failed to initialize meeting:', error);
                 toast.error('Failed to initialize meeting');
             }
-        };
+        }
         initializeMeeting();
     }, [appointmentId, userId]);
 
