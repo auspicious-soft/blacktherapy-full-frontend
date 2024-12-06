@@ -6,6 +6,7 @@ import { cookies } from "next/headers"
 import { createS3Client } from "@/config/s3"
 import { GetObjectCommand, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3"
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner"
+import jwt, { Algorithm } from "jsonwebtoken"
 
 export const loginAction = async (payload: any) => {
     try {
@@ -157,4 +158,30 @@ export const generateSignedUrlOfQueries = async(fileName: string, fileType: stri
         console.error("Error generating signed URL:", error);
         throw error
     }
+}
+
+export const generateVideoSDKToken = async(appointmentId: string, participantId: string, role = 'rtc') => {
+    const API_KEY = process.env.VIDEOSDK_API_KEY
+    const SECRET_KEY = process.env.VIDEOSDK_SECRET_KEY
+
+    if (!API_KEY || !SECRET_KEY) {
+        throw new Error('VideoSDK API credentials are missing');
+    }
+
+    const payload = {
+        apikey: API_KEY,
+        permissions: ['allow_join'], // Directly allow joining
+        version: 2,
+        roomId: appointmentId, // Use appointment ID as room ID
+        participantId: participantId,
+        roles: [role]
+    }
+
+    const options = {
+        expiresIn: '120m', // Token valid for 2 hours
+        algorithm: 'HS256' as Algorithm
+    };
+
+    const token = jwt.sign(payload, SECRET_KEY, options);
+    return token
 }

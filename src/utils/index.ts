@@ -1,6 +1,8 @@
 import stripe from "@/config/stripe"
 import { getAxiosInstance } from "./axios"
 import { toast } from "sonner"
+import jwt, { Algorithm } from 'jsonwebtoken';
+import { generateVideoSDKToken } from "@/actions";
 
 export const getStripeProductNameById = async (id: string) => {
     return (await stripe.products.retrieve(id)).name
@@ -33,7 +35,7 @@ export const getChatHistory = async (id: string) => {
     }
 }
 
-export const getQueriesHistory = async(roomId: string) => {
+export const getQueriesHistory = async (roomId: string) => {
     try {
         const axiosInstance = await getAxiosInstance()
         return (await (await axiosInstance.get(`/chats/queries-history/${roomId}`))?.data)
@@ -49,20 +51,40 @@ export const getTicketDetails = async (roomId: string) => {
     } catch (error) {
         toast.error("Failed to fetch ticket details")
     }
-} 
+}
 
-  
-  
+
+
 export const formatDate = (date: Date) => {
     const today = new Date();
     const yesterday = new Date(today);
     yesterday.setDate(today.getDate() - 1);
 
     if (date.toDateString() === today.toDateString()) {
-      return 'Today';
+        return 'Today';
     } else if (date.toDateString() === yesterday.toDateString()) {
-      return 'Yesterday';
+        return 'Yesterday';
     } else {
-      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+        return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
     }
-  }
+}
+
+// Function to create a meeting room
+export const createVideoSDKMeeting = async (appointmentId: string, participantId: string) => {
+    const token = await generateVideoSDKToken(appointmentId, participantId);
+    const response = await fetch('https://api.videosdk.live/v1/meetings', {
+        method: 'POST',
+        headers: {
+            'Authorization': token,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({})
+    });
+
+    if (!response.ok) {
+        throw new Error('Failed to create meeting room');
+    }
+
+    const data = await response.json();
+    return data.meetingId
+}

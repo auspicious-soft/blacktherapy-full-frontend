@@ -17,6 +17,7 @@
     "@videosdk.live/react-sdk": "^0.1.104",
     "axios": "^1.7.7",
     "clsx": "^2.1.1",
+    "jsonwebtoken": "^9.0.2",
     "next": "^14.2.15",
     "next-auth": "^5.0.0-beta.22",
     "next-video": "^1.1.1",
@@ -41,6 +42,7 @@
     "uuid": "^10.0.0"
   },
   "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.7",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

@@ -24,7 +24,7 @@ const Page = () => {
   const page = data?.data?.page
   const total = data?.data?.total
   const rowsPerPage = data?.data?.limit
-  
+
   const handlePageClick = (selectedItem: { selected: number }) => {
     setQuery(`page=${selectedItem.selected + 1}&limit=${rowsPerPage}`);
   }
@@ -80,23 +80,23 @@ const Page = () => {
                     <td>{item.clientId.assignedTime}</td>
                     <td>{item.clientId.phoneNumber}</td>
                     <td>{item.clientId.email}</td>
-                {/* <td> <p className='cursor-pointer font-gothamMedium text-center rounded-xl text-[10px] py-[4px] text-[#fff] bg-[#26395E]' onClick={()=>openModal(item?.notes)}>View</p></td> */}
+                    {/* <td> <p className='cursor-pointer font-gothamMedium text-center rounded-xl text-[10px] py-[4px] text-[#fff] bg-[#26395E]' onClick={()=>openModal(item?.notes)}>View</p></td> */}
 
                     <td>
-                    {item?.clientId?.message ? (
-                      <p
-                        onClick={() => handleChat(item._id)}
-                        className=" inline-block cursor-pointer font-bold text-center rounded-3xl py-[2px] px-[10px] text-[12px] text-[#42A803] bg-[#CBFFB2]"
-                      >
-                        Start Chat
-                      </p>
-                    ) : (
-                      <p className="font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px] text-[#FFA234] bg-[#FFFCEC]">
-                        No Chat
-                      </p>
-                    )}
+                      {item?.clientId?.message ? (
+                        <p
+                          onClick={() => handleChat(item._id)}
+                          className=" inline-block cursor-pointer font-bold text-center rounded-3xl py-[2px] px-[10px] text-[12px] text-[#42A803] bg-[#CBFFB2]"
+                        >
+                          Start Chat
+                        </p>
+                      ) : (
+                        <p className="font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px] text-[#FFA234] bg-[#FFFCEC]">
+                          No Chat
+                        </p>
+                      )}
                     </td>
-                    <td>{!item?.clientId?.video ? 'No video' : <Link href={`/therapist/assignments/video-chat/${item?._id}`}><p className='cursor-pointer font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px]  text-[#42A803] bg-[#CBFFB2]'>Start Video</p></Link>}</td>
+                    <td>{!item?.clientId?.video ? 'No video' : <div onClick={() => window.location.href = `/therapist/assignments/video-chat/${item?._id}`}><p className='cursor-pointer font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px]  text-[#42A803] bg-[#CBFFB2]'>Start Video</p></div>}</td>
                     <td>
                       <p className='font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px]  text-[#42A803] bg-[#CBFFB2]'>{item.status}</p>
                     </td>
@@ -142,17 +142,17 @@ const Page = () => {
         overlayClassName="w-full h-full fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center"
       >
 
-          <div className='flex items-center justify-between rounded-t-[20px] p-5  bg-[#283C63]  '>
+        <div className='flex items-center justify-between rounded-t-[20px] p-5  bg-[#283C63]  '>
           <h2 className="text-xl text-white font- ">Session Notes</h2>
           <button onClick={() => setShowModal(false)} className="">
-           <CloseIcon/>
+            <CloseIcon />
           </button>
-          </div>
-          <div className='bg-white p-5 rounded-b-[20px] '>
-          <p>{sessionNotes || "No notes available"}</p>
-          
         </div>
-       </Modal>
+        <div className='bg-white p-5 rounded-b-[20px] '>
+          <p>{sessionNotes || "No notes available"}</p>
+
+        </div>
+      </Modal>
 
 
     </div>
