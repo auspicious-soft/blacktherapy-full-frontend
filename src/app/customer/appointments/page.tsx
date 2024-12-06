@@ -16,8 +16,10 @@ const Page = () => {
   const [openModal, setOpenModal] = useState(false);
   const session = useSession()
   const { data: user } = useSWR(`/client/${session?.data?.user?.id}`, getProfileService, { revalidateOnFocus: false })
-  const isChatAllowed = user?.data?.data?.chatAllowed
-  const isVideoCount = user?.data?.data?.videoCount
+  const isChatAllowedByPaymentStatus = user?.data?.data?.chatAllowed
+  const isVideoCountByPaymentStatus = user?.data?.data?.videoCount
+  const video = user?.data?.data?.video
+  const message = user?.data?.data?.message
   const [activeTab, setActiveTab] = useState('Previous Appointments');
   const [shouldFetchAppointments, setShouldFetchAppointments] = useState(false);
   const [query, setQuery] = useState('page=1&limit=10');
@@ -38,9 +40,9 @@ const Page = () => {
   const renderTabContent = () => {
     switch (activeTab) {
       case 'Previous Appointments':
-        return <div><PreviousAppointments isChatAllowed={isChatAllowed} isVideoCount={isVideoCount} data={appointmentsData?.data} error={error} setQuery={setQuery} isLoading={appointmentsIsLoading} /></div>;
+        return <div><PreviousAppointments message={message} video={video} isChatAllowed={isChatAllowedByPaymentStatus} isVideoCount={isVideoCountByPaymentStatus} data={appointmentsData?.data} error={error} setQuery={setQuery} isLoading={appointmentsIsLoading} /></div>;
       case 'Upcoming Appointments':
-        return <div><UpcomingAppointments isChatAllowed={isChatAllowed} isVideoCount={isVideoCount} data={appointmentsData?.data} error={error} isLoading={appointmentsIsLoading} /></div>;
+        return <div><UpcomingAppointments message={message} video={video} isChatAllowed={isChatAllowedByPaymentStatus} isVideoCount={isVideoCountByPaymentStatus} data={appointmentsData?.data} error={error} isLoading={appointmentsIsLoading} /></div>;
       default:
         return null;
     }

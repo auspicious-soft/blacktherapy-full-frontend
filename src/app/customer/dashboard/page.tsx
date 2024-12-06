@@ -83,7 +83,8 @@ const Home = () => {
   const userPlanOrSubscriptionId = user?.data?.data?.planOrSubscriptionId
   const isChatAllowed = user?.data?.data?.chatAllowed
   const isVideoCount = user?.data?.data?.videoCount
-
+  const video = user?.data?.data?.video
+  const message = user?.data?.data?.message
   const { data: subsData } = useSWR(userPlanOrSubscriptionId ? `${userPlanOrSubscriptionId}` : null, getSubscriptionById)
   previousBilled.amount = String(`$${(subsData as any)?.plan.amount / 100}`)
   
@@ -111,7 +112,7 @@ const Home = () => {
         previousAppointment={previousAppointment}
         previousBilled={previousBilled}
       />
-      <DashboardAssignment isChatAllowed = {isChatAllowed} isVideoCount ={isVideoCount} total={appointmentsData?.total} data={appointmentsData?.data} rowsPerPage={appointmentsData?.limit} isLoading={isLoading} error={appointmentsData?.error} setQuery={setQuery} />
+      <DashboardAssignment message={message} video={video} isChatAllowed = {isChatAllowed} isVideoCount ={isVideoCount} total={appointmentsData?.total} data={appointmentsData?.data} rowsPerPage={appointmentsData?.limit} isLoading={isLoading} error={appointmentsData?.error} setQuery={setQuery} />
     </>
   );
 };

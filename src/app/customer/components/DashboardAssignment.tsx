@@ -17,7 +17,7 @@ import { toast } from "sonner";
 
 
 const DashboardAssignment = (props: any) => {
-  const { total, data, rowsPerPage, isLoading, error, setQuery, isChatAllowed, isVideoCount } = props;
+  const { total, data, rowsPerPage, isLoading, error, setQuery, isChatAllowed, isVideoCount, message, video } = props;
   const router = useRouter();
   const [renewPopupOpen, setRenewPopupOpen] = useState(false);
   const [teamPopupOpen, setTeamPopupOpen] = useState(false);
@@ -78,9 +78,9 @@ const DashboardAssignment = (props: any) => {
                 <tr key={row?._id}>
                   <td>{row?._id}</td>
                   <td>{row?.appointmentDate ? new Date(row?.appointmentDate).toLocaleDateString('en-US') : 'No date Assigned'}</td>
-                  <td>{row?.appointmentTime ? (row?.appointmentTime): 'Not Assigned Yet'}</td>
+                  <td>{row?.appointmentTime ? (row?.appointmentTime) : 'Not Assigned Yet'}</td>
                   <td>
-                    {row?.message ? (
+                    {message ? (
                       <p
                         onClick={() => handleChat(row._id)}
                         className={`font-bold cursor-pointer  inline-block text-center rounded-3xl py-[2px] px-[10px] text-[10px] ${isChatAllowed ? 'text-[#42A803] bg-[#CBFFB2]' : 'text-[#FFA234] bg-[#FFFCEC]'}`}
@@ -93,9 +93,9 @@ const DashboardAssignment = (props: any) => {
                       </p>
                     )}
                   </td>
-                  <td>{!row.video ? <p className="cursor-not-allowed">No Video</p>: <p className={`cursor-pointer font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px] ${isVideoCount > 0 ? 'text-[#42A803] bg-[#CBFFB2]' : 'text-[#FFA234] bg-[#FFFCEC]'}`}>
+                  <td>{video ? <p className={`cursor-pointer font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px] ${isVideoCount > 0 ? 'text-[#42A803] bg-[#CBFFB2]' : 'text-[#FFA234] bg-[#FFFCEC]'}`}>
                     {isVideoCount > 0 ? `Start Video (${isVideoCount})` : 'Video chat limit reached for current plan'}
-                  </p>}</td>
+                  </p> : <p className="cursor-not-allowed">No Video</p>}</td>
                   <td>
                     <span className="cursor-pointer w-[26px] flex" onClick={() => handleViewTeam(row)}>
                       <ViewIcon />
