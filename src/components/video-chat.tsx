@@ -104,8 +104,8 @@ const MeetingView = ({ meetingId }: { meetingId: string }) => {
                 <div className='w-full'>
                     <Controls />
                     {[...(participants as any).keys()].map((participantId) => (
-                        <div className='w-full'>
-                            <ParticipantView key={participantId} participantId={participantId} />
+                        <div key={participantId} className='w-full'>
+                            <ParticipantView participantId={participantId} />
                         </div>
                     ))}
                 </div>
