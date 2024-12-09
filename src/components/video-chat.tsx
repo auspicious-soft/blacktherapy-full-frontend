@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { MeetingProvider, useMeeting, useParticipant } from "@videosdk.live/react-sdk";
 import ReactPlayer from "react-player";
 import { createVideoSDKMeeting } from '@/utils';
@@ -89,19 +89,17 @@ const Controls = () => {
 };
 
 // Meeting View Component
-const MeetingView = ({ meetingId, userType }: { meetingId: string, userType: 'therapist' | 'client' }) => {
+const MeetingView = ({ meetingId, userType, token }: { meetingId: string, userType: 'therapist' | 'client', token: string }) => {
     const [joined, setJoined] = useState(false);
     const { join, participants } = useMeeting({
         onMeetingJoined: () => setJoined(true),
         onMeetingLeft: () => setJoined(false),
-    });
-
+    })
+    // const joinRef = useRef(join)
+  
     useEffect(() => {
-        join()
-        return () => {
-            setJoined(false);
-        }
-    }, [meetingId])
+       join()
+    }, [meetingId, token]);
 
     return (
         <div className="w-full">
@@ -161,7 +159,7 @@ export const VideoChatPage = ({ appointmentId, userType, userId }: { appointment
             }}
             token={token}
         >
-            <MeetingView meetingId={meetingId} userType={userType} />
+            <MeetingView meetingId={meetingId} userType={userType} token={token} />
         </MeetingProvider>
     );
 };
