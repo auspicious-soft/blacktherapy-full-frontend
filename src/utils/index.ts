@@ -1,7 +1,6 @@
 import stripe from "@/config/stripe"
 import { getAxiosInstance } from "./axios"
 import { toast } from "sonner"
-import jwt, { Algorithm } from 'jsonwebtoken';
 import { generateVideoSDKToken } from "@/actions";
 
 export const getStripeProductNameById = async (id: string) => {

@@ -19,7 +19,7 @@ const Page = () => {
         }
         fetchAppointmentDetails()
 
-    }, [])
+    }, [appointmentId])
 
 
     return (

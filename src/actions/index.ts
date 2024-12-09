@@ -160,9 +160,9 @@ export const generateSignedUrlOfQueries = async(fileName: string, fileType: stri
     }
 }
 
-export const generateVideoSDKToken = async(appointmentId: string, participantId: string, role = 'rtc') => {
-    const API_KEY = process.env.VIDEOSDK_API_KEY
-    const SECRET_KEY = process.env.VIDEOSDK_SECRET_KEY
+export const generateVideoSDKToken = async (roomId: string, participantId: string) => {
+    const API_KEY = process.env.VIDEOSDK_API_KEY;
+    const SECRET_KEY = process.env.VIDEOSDK_SECRET_KEY;
 
     if (!API_KEY || !SECRET_KEY) {
         throw new Error('VideoSDK API credentials are missing');
@@ -170,12 +170,12 @@ export const generateVideoSDKToken = async(appointmentId: string, participantId:
 
     const payload = {
         apikey: API_KEY,
-        permissions: ['allow_join'], // Directly allow joining
+        permissions: ['allow_join'], // Allow direct joining
         version: 2,
-        roomId: appointmentId, // Use appointment ID as room ID
+        roomId: roomId,
         participantId: participantId,
-        roles: [role]
-    }
+        roles: ['rtc'],
+    };
 
     const options = {
         expiresIn: '120m', // Token valid for 2 hours
