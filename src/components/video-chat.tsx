@@ -101,7 +101,7 @@ const MeetingView = ({ meetingId, userType }: { meetingId: string, userType: 'th
         return () => {
             setJoined(false);
         }
-    }, [])
+    }, [meetingId])
 
     return (
         <div className="w-full">
