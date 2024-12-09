@@ -2,6 +2,7 @@ import stripe from "@/config/stripe"
 import { getAxiosInstance } from "./axios"
 import { toast } from "sonner"
 import { generateVideoSDKToken } from "@/actions";
+import { addAppointmentAndRoomMap, getAppointmentRoomMap } from "@/services/therapist/therapist-service.";
 
 export const getStripeProductNameById = async (id: string) => {
     return (await stripe.products.retrieve(id)).name
@@ -70,36 +71,41 @@ export const formatDate = (date: Date) => {
 
 // Function to create a meeting room
 export const createVideoSDKMeeting = async (appointmentId: string, participantId: string) => {
-    const token = await generateVideoSDKToken(appointmentId, participantId);
+    const token = await generateVideoSDKToken(appointmentId, participantId)
 
-    // Check if the meeting exists
-    const checkResponse = await fetch(`https://api.videosdk.live/v1/meetings/${appointmentId}`, {
-        method: 'GET',
-        headers: {
-            Authorization: token,
-            'Content-Type': 'application/json',
-        },
-    });
+    const { data: alreadyRoomExists } = await getAppointmentRoomMap(`/chats/video-room/${appointmentId}`)
+    
+    if (alreadyRoomExists.success) {
+        const alreadyPresentRoomId = alreadyRoomExists?.data?.roomId;
+        const checkResponse = await fetch(`https://api.videosdk.live/v1/meetings/${alreadyPresentRoomId}`, {
+            method: 'GET',
+            headers: {
+                Authorization: token,
+                'Content-Type': 'application/json',
+            },
+        })
 
-    if (checkResponse.ok) {
-        // Meeting already exists
-        return appointmentId;
+        if (checkResponse.ok) {
+            return alreadyPresentRoomId;
+        }
+
     }
-
     // Create a new meeting if it doesn't exist
-    const response = await fetch('https://api.videosdk.live/v1/meetings', {
-        method: 'POST',
-        headers: {
-            Authorization: token,
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({}),
-    });
+    else {
+        const response = await fetch('https://api.videosdk.live/v2/rooms', {
+            method: 'POST',
+            headers: {
+                Authorization: token,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({}),
+        })
 
-    if (!response.ok) {
-        throw new Error('Failed to create meeting room');
+        if (!response.ok) {
+            throw new Error('Failed to create meeting room');
+        }
+        const data = await response.json()
+        await addAppointmentAndRoomMap('/chats/video-room', { appointmentId, roomId: data.roomId })
+        return data.roomId
     }
-
-    const data = await response.json();
-    return data.meetingId;
 };

@@ -174,7 +174,7 @@ export const generateVideoSDKToken = async (roomId: string, participantId: strin
         version: 2,
         roomId: roomId,
         participantId: participantId,
-        roles: ['rtc'],
+        roles: [''],
     };
 
     const options = {

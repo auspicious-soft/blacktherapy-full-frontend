@@ -61,3 +61,19 @@ export const updateReadStatus = async (route: string,  payload: any) => {
 }
 
 
+
+// -----------------------Video Chat------------------------
+export const addAppointmentAndRoomMap = async (route: string, payload: any) => {
+    const axiosInstance = await getAxiosInstance()
+    return axiosInstance.post(route, payload)
+}
+
+export const getAppointmentRoomMap = async (route: string) => {
+    const axiosInstance = await getAxiosInstance()
+    return axiosInstance.get(route)
+}
+
+export const deleteAppointmentRoomMap = async (route: string) => {
+    const axiosInstance = await getAxiosInstance()
+    return axiosInstance.delete(route)
+}
