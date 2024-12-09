@@ -4,12 +4,12 @@ import ReactPlayer from "react-player";
 import { createVideoSDKMeeting } from '@/utils';
 import { toast } from 'sonner';
 import { generateVideoSDKToken } from '@/actions';
-import { redirect, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 // Participant View Component
-const ParticipantView = ({ participantId }: { participantId: string }) => {
+const ParticipantView = ({ participantId, userType }: { participantId: string, userType: 'therapist' | 'client' }) => {
     const micRef = React.useRef<HTMLAudioElement>(null);
-    const { webcamStream, micStream, webcamOn, micOn, isLocal, displayName } = useParticipant(participantId);
+    const { webcamStream, micStream, webcamOn, micOn, isLocal, displayName, setQuality } = useParticipant(participantId);
 
     const videoStream = React.useMemo(() => {
         if (webcamOn && webcamStream) {
@@ -30,23 +30,26 @@ const ParticipantView = ({ participantId }: { participantId: string }) => {
                 micRef.current.srcObject = null;
             }
         }
-    }, [micStream, micOn]);
+        setQuality('high')
+    }, [micStream, micOn, setQuality])
 
     return (
-        <div className="">
+        <div className="w-full">
             <p>
                 {displayName} | Webcam: {webcamOn ? "ON" : "OFF"} | Mic: {micOn ? "ON" : "OFF"}
             </p>
             <audio ref={micRef} autoPlay muted={isLocal} />
             {webcamOn ? (
-                <ReactPlayer
-                    playsinline
-                    url={videoStream}
-                    playing
-                    muted
-                // height="200px"
-                // width="300px"
-                />
+                <div className={`'p-[1px] rounded-lg`}>
+                    <ReactPlayer
+                        playsinline
+                        url={videoStream}
+                        playing
+                        muted
+                        height={`100%`}
+                        width={`100%`}
+                    />
+                </div>
             ) :
                 <p className='font-bold text-[30px]'>
                     Webcam Disabled
@@ -86,7 +89,7 @@ const Controls = () => {
 };
 
 // Meeting View Component
-const MeetingView = ({ meetingId }: { meetingId: string }) => {
+const MeetingView = ({ meetingId, userType }: { meetingId: string, userType: 'therapist' | 'client' }) => {
     const [joined, setJoined] = useState(false);
     const { join, participants } = useMeeting({
         onMeetingJoined: () => setJoined(true),
@@ -103,11 +106,14 @@ const MeetingView = ({ meetingId }: { meetingId: string }) => {
             {joined ? (
                 <div className='w-full'>
                     <Controls />
-                    {[...(participants as any).keys()].map((participantId) => (
-                        <div key={participantId} className='w-full'>
-                            <ParticipantView participantId={participantId} />
-                        </div>
-                    ))}
+                    <div className='w-full '>
+                        {[...(participants as any).keys()].map((participantId) => (
+                            <div key={participantId} className='border flex gap-8 space-between'>
+                                <ParticipantView participantId={participantId} userType={userType} />
+                                <ParticipantView participantId={participantId} userType={userType} />
+                            </div>
+                        ))}
+                    </div>
                 </div>
             ) : (
                 <p>Joining the meeting...</p>
@@ -155,7 +161,7 @@ export const VideoChatPage = ({ appointmentId, userType, userId }: { appointment
             }}
             token={token}
         >
-            <MeetingView meetingId={meetingId} />
+            <MeetingView meetingId={meetingId} userType={userType} />
         </MeetingProvider>
     );
 };
