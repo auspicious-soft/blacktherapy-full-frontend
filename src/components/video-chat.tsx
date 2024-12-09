@@ -98,7 +98,9 @@ const MeetingView = ({ meetingId, userType, token }: { meetingId: string, userTy
     // const joinRef = useRef(join)
   
     useEffect(() => {
-       join()
+        if (meetingId && token) {
+            join()
+        }
     }, [meetingId, token]);
 
     return (
