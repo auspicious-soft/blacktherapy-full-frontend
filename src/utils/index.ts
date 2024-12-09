@@ -74,7 +74,7 @@ export const createVideoSDKMeeting = async (appointmentId: string, participantId
     const token = await generateVideoSDKToken(appointmentId, participantId)
 
     const { data: alreadyRoomExists } = await getAppointmentRoomMap(`/chats/video-room/${appointmentId}`)
-    
+
     if (alreadyRoomExists.success) {
         const alreadyPresentRoomId = alreadyRoomExists?.data?.roomId;
         const checkResponse = await fetch(`https://api.videosdk.live/v1/meetings/${alreadyPresentRoomId}`, {
@@ -86,12 +86,16 @@ export const createVideoSDKMeeting = async (appointmentId: string, participantId
         })
 
         if (checkResponse.ok) {
-            return alreadyPresentRoomId;
+            return {
+                roomId: alreadyPresentRoomId,
+                token
+            }
         }
 
     }
     // Create a new meeting if it doesn't exist
     else {
+         console.log('Creating new room')
         const response = await fetch('https://api.videosdk.live/v2/rooms', {
             method: 'POST',
             headers: {
@@ -106,6 +110,9 @@ export const createVideoSDKMeeting = async (appointmentId: string, participantId
         }
         const data = await response.json()
         await addAppointmentAndRoomMap('/chats/video-room', { appointmentId, roomId: data.roomId })
-        return data.roomId
+        return {
+            roomId: data.roomId,
+            token
+        }
     }
 };

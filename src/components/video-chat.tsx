@@ -98,6 +98,9 @@ const MeetingView = ({ meetingId, userType }: { meetingId: string, userType: 'th
 
     useEffect(() => {
         join()
+        return () => {
+            setJoined(false);
+        }
     }, [])
 
     return (
@@ -130,11 +133,9 @@ export const VideoChatPage = ({ appointmentId, userType, userId }: { appointment
         const initializeMeeting = async () => {
             try {
                 // Create or join a meeting using the appointmentId as room ID
-                const roomId = await createVideoSDKMeeting(appointmentId, userId);
-                const generatedToken = await generateVideoSDKToken(roomId, userId);
-
-                setMeetingId(roomId);
-                setToken(generatedToken);
+                const { roomId, token }: any = await createVideoSDKMeeting(appointmentId, userId)
+                setMeetingId(roomId)
+                setToken(token)
             }
             catch (error) {
                 console.error('Failed to initialize meeting:', error);
