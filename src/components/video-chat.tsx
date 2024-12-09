@@ -40,7 +40,9 @@ const ParticipantView = ({ participantId, userType }: { participantId: string, u
             </p>
             <audio ref={micRef} autoPlay muted={isLocal} />
             {webcamOn ? (
-                <div className={`'p-[1px] rounded-lg`}>
+                <div className={`'p-[1px] rounded-lg`} style={
+                    isLocal ? { transform: "scaleX(-1)", WebkitTransform: "scaleX(-1)" } : {}
+                }>
                     <ReactPlayer
                         playsinline
                         url={videoStream}
@@ -96,7 +98,7 @@ const MeetingView = ({ meetingId, userType, token }: { meetingId: string, userTy
         onMeetingLeft: () => setJoined(false),
     })
     // const joinRef = useRef(join)
-  
+
     useEffect(() => {
         if (meetingId && token) {
             join()
