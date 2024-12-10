@@ -93,6 +93,9 @@ const Page = () => {
   }, [file, isPeerSupport])
 
   const handleSendMessage = async () => {
+    if (!prompt && !file) {
+      return
+    }
     startTransition(async () => {
       let fileKey: any = null
       let fileType = null

@@ -91,6 +91,9 @@ const Page = () => {
   }, [file, roomId])
 
   const handleSendMessage = async () => {
+    if (!prompt && !file) {
+      return
+    }
     startTransition(async () => {
       let fileKey: any = null
       let fileType = null
