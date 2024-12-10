@@ -86,6 +86,7 @@ const Page = () => {
 
   const handleSendMessage = async () => {
     if (!prompt && !file) {
+      toast.warning('Please enter a message')
       return
     }
     startTransition(async () => {
