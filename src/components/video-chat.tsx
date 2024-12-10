@@ -129,23 +129,44 @@ const MeetingView = ({ meetingId, userType, token }: { meetingId: string, userTy
 // Main Video Chat Component
 export const VideoChatPage = ({ appointmentId, userType, userId }: { appointmentId: string, userType: 'therapist' | 'client', userId: string }) => {
     const [meetingId, setMeetingId] = useState<string | null>(null);
-    const [token, setToken] = useState<string | null>(null);
-
+    const [token, setToken] = useState<string | null>(null)
+    const requestCameraAndMicrophonePermissions = async () => {
+        try {
+            await navigator.mediaDevices.getUserMedia({
+                audio: true,
+                video: true
+            })
+            return true;
+        } catch (error) {
+            return false;
+        }
+    }
+    const isSafari = () => {
+        const userAgent = navigator.userAgent.toLowerCase();
+        return userAgent.includes('safari') && !userAgent.includes('chrome');
+    }
     useEffect(() => {
         const initializeMeeting = async () => {
-            try {
-                // Create or join a meeting using the appointmentId as room ID
-                const { roomId, token }: any = await createVideoSDKMeeting(appointmentId, userId)
-                setMeetingId(roomId)
-                setToken(token)
+            if (isSafari()) {
+                const permissionsGranted = await requestCameraAndMicrophonePermissions();
+                if (!permissionsGranted) {
+                    toast.error('Camera and microphone access are required');
+                    return;
+                }
             }
-            catch (error) {
-                console.error('Failed to initialize meeting:', error);
-                toast.error('Failed to initialize meeting');
-            }
+                try {
+                    // Create or join a meeting using the appointmentId as room ID
+                    const { roomId, token }: any = await createVideoSDKMeeting(appointmentId, userId)
+                    setMeetingId(roomId)
+                    setToken(token)
+                }
+                catch (error) {
+                    console.error('Failed to initialize meeting:', error);
+                    toast.error('Failed to initialize meeting');
+                }
         }
-        initializeMeeting();
-    }, [appointmentId, userId]);
+            initializeMeeting();
+        }, [appointmentId, userId]);
 
     if (!meetingId || !token) {
         return <p>Initializing meeting...</p>;
