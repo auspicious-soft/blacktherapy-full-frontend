@@ -25,7 +25,7 @@ const UpdateAssignments: React.FC<AssignmentProps> = ({ isOpen, onRequestClose, 
         // appointmentTime: null
     });
     const [isPending, startTransition] = useTransition();
-    const nameState = row?.clientId?.state;
+    const nameState = row?.state;
 
     useEffect(() => {
         if (row) {
@@ -50,7 +50,12 @@ const UpdateAssignments: React.FC<AssignmentProps> = ({ isOpen, onRequestClose, 
 
     const checkStateMatch = (state: string) => {
         if (state === nameState) {
-            toast.warning('The Client state matches with the client.');
+            toast.warning('The Client state matches with the client.',  
+                {
+                    position: "top-right",
+                    duration: 5000,
+                }
+            );
         }
     };
 
@@ -88,7 +93,6 @@ const UpdateAssignments: React.FC<AssignmentProps> = ({ isOpen, onRequestClose, 
         };
         startTransition(async () => {
             try {
-                console.log('assignData: ', assignData);
                 const response = await updateAssignments(`/admin/assignments/${row._id}`, assignData);
 
                 if (response.status === 200) {
