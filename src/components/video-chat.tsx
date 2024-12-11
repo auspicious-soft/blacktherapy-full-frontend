@@ -47,6 +47,9 @@ const ParticipantView = ({ participantId, userType }: { participantId: string, u
                     isLocal ? { transform: "scaleX(-1)", WebkitTransform: "scaleX(-1)" } : {}
                 }>
                     <ReactPlayer
+                        style={
+                            isLocal ? { width: '30%'} : {}
+                        }
                         playsinline
                         url={videoStream}
                         playing
