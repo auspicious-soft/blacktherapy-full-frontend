@@ -37,7 +37,7 @@ const ParticipantView = ({ participantId, userType }: { participantId: string, u
     }, [micStream, micOn, setQuality])
 
     return (
-        <div className={`w-full ${isLocal ? 'w-1/3' : 'w-full'}`}>
+        <div className={isLocal ? 'w-1/3' : 'w-full'}>
             <p>
                 {displayName} | Webcam: {webcamOn ? "ON" : "OFF"} | Mic: {micOn ? "ON" : "OFF"}
             </p>
