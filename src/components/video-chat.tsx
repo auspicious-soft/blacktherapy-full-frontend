@@ -92,6 +92,7 @@ const Controls = () => {
 
 // Meeting View Component
 const MeetingView = ({ meetingId, userType, token }: { meetingId: string, userType: 'therapist' | 'client', token: string }) => {
+    const router = useRouter()
     const [joined, setJoined] = useState(false);
     const { join, participants } = useMeeting({
         onMeetingJoined: () => setJoined(true),
@@ -100,7 +101,8 @@ const MeetingView = ({ meetingId, userType, token }: { meetingId: string, userTy
     // const joinRef = useRef(join)
 
     useEffect(() => {
-        if (meetingId && token) {
+        if (token) {
+            router.refresh()
             join()
         }
     }, [meetingId, token]);
