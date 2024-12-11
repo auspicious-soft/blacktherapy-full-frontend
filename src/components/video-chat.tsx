@@ -113,12 +113,15 @@ const MeetingView = ({ meetingId, userType, token }: { meetingId: string, userTy
             {joined ? (
                 <div className='w-full'>
                     <Controls />
-                    <div className='w-full flex gap-8 space-between '>
-                        {[...(participants as any).keys()].map((participantId) => (
-                            <div key={participantId}>
-                                <ParticipantView participantId={participantId} userType={userType} />
-                            </div>
-                        ))}
+                    <div className='w-full sm:flex gap-8 space-between '>
+                        {[...(participants as any).keys()].map((participantId) => {
+                            console.log('participantId: ', participantId);
+                            return (
+                                <div key={participantId}>
+                                    <ParticipantView participantId={participantId} userType={userType} />
+                                </div>
+                            )
+                        })}
                     </div>
                 </div>
             ) : (
