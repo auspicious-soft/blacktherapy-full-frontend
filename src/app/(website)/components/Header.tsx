@@ -26,8 +26,11 @@ const Header = () => {
     color: "#fff",
   }
 
-  const handleLogout = async () => {
+  const handleLogout = async (isPhone: boolean = false) => {
     await signOut({ redirect: false })
+    if (isPhone) {
+      setIsToggleOpen(false)
+    }
     window.location.href = '/login'
   };
 
@@ -56,7 +59,7 @@ const Header = () => {
           </div>
         </div>
         <div className="right flex items-center gap-6">
-        <p onClick={handleLogout} className="text-white  cursor-pointer text-xs">
+        <p onClick={() => handleLogout()} className="text-white  cursor-pointer text-xs"> 
              Login/Sign Up
             </p>
         </div>
@@ -88,7 +91,7 @@ const Header = () => {
             <Link href="/contact" className="nav-menu-list lg:!inline-block lg:text-sm lg:text-white lg:bg-[#283C63] rounded-[30px] lg:!px-[30px] !py-[13px]">Contact</Link>
           </li>
           <li className="md:hidden mt-4">
-          <p onClick={handleLogout} className="text-white cursor-pointer text-sm bg-[#283C63] rounded-[30px] px-[30px] py-[13px]">
+          <p onClick={() => handleLogout(true)} className="text-white cursor-pointer text-sm bg-[#283C63] rounded-[30px] px-[30px] py-[13px]">
              Login/Sign Up
             </p>
         </li>
