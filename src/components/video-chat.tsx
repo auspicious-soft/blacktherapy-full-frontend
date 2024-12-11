@@ -132,13 +132,21 @@ export const VideoChatPage = ({ appointmentId, userType, userId }: { appointment
     const [token, setToken] = useState<string | null>(null)
     const requestCameraAndMicrophonePermissions = async () => {
         try {
-            await navigator.mediaDevices.getUserMedia({
-                audio: true,
-                video: true
-            })
-            return true;
+            const micPermission = await navigator.permissions.query({ name: 'microphone' } as any);
+            const cameraPermission = await navigator.permissions.query({ name: 'camera' } as any);
+    
+            if (micPermission.state === 'denied' || cameraPermission.state === 'denied') {
+                // Handle denied permissions
+                console.error("Permissions denied");
+                return;
+            }
+    
+            // Request permissions if they are not granted
+            if (micPermission.state === 'prompt' || cameraPermission.state === 'prompt') {
+                await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
+            }
         } catch (error) {
-            return false;
+            console.error("Error requesting permissions:", error);
         }
     }
     const isSafari = () => {
@@ -148,11 +156,12 @@ export const VideoChatPage = ({ appointmentId, userType, userId }: { appointment
     useEffect(() => {
         const initializeMeeting = async () => {
             if (isSafari()) {
-                const permissionsGranted = await requestCameraAndMicrophonePermissions();
-                if (!permissionsGranted) {
-                    toast.error('Camera and microphone access are required');
-                    return;
-                }
+                // const permissionsGranted = await requestCameraAndMicrophonePermissions();
+                // if (!permissionsGranted) {
+                //     toast.error('Camera and microphone access are required');
+                //     return;
+                // }
+                await requestCameraAndMicrophonePermissions();
             }
                 try {
                     // Create or join a meeting using the appointmentId as room ID
