@@ -114,8 +114,7 @@ const MeetingView = ({ meetingId, userType, token }: { meetingId: string, userTy
                 <div className='w-full'>
                     <Controls />
                     <div className='w-full sm:flex gap-8 space-between '>
-                        {[...(participants as any).keys()].map((participantId) => {
-                            console.log('participantId: ', participantId);
+                        {[...(participants as any).keys()].reverse().map((participantId) => {
                             return (
                                 <div key={participantId}>
                                     <ParticipantView participantId={participantId} userType={userType} />
