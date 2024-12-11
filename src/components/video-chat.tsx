@@ -37,7 +37,7 @@ const ParticipantView = ({ participantId, userType }: { participantId: string, u
     }, [micStream, micOn, setQuality])
 
     return (
-        <div className="w-full">
+        <div className={`w-full ${isLocal ? 'w-1/3' : 'w-full'}`}>
             <p>
                 {displayName} | Webcam: {webcamOn ? "ON" : "OFF"} | Mic: {micOn ? "ON" : "OFF"}
             </p>
@@ -47,9 +47,6 @@ const ParticipantView = ({ participantId, userType }: { participantId: string, u
                     isLocal ? { transform: "scaleX(-1)", WebkitTransform: "scaleX(-1)" } : {}
                 }>
                     <ReactPlayer
-                        style={
-                            isLocal ? { width: '30%'} : {}
-                        }
                         playsinline
                         url={videoStream}
                         playing
