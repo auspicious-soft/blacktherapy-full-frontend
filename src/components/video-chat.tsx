@@ -102,7 +102,7 @@ const MeetingView = ({ meetingId, userType, token }: { meetingId: string, userTy
 
     useEffect(() => {
         if (token) {
-            // router.refresh()
+            router.refresh()
             join()
         }
     }, [meetingId, token]);
