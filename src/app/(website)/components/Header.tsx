@@ -28,7 +28,7 @@ const Header = () => {
 
   const handleLogout = async () => {
     await signOut({ redirect: false })
-    router.replace('/login');
+    window.location.href = '/login'
   };
 
   return (
