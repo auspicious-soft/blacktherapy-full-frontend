@@ -67,29 +67,32 @@ const ParticipantView = ({ participantId, userType }: { participantId: string, u
 const Controls = () => {
     const { leave, toggleMic, toggleWebcam } = useMeeting();
     const router = useRouter()
-    return <div className="flex justify-center items-center gap-x-2 p-4">
-        <button
-            onClick={() => toggleMic()}
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-        >
-            Toggle Mic
-        </button>
-        <button
-            onClick={() => toggleWebcam()}
-            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-        >
-            Toggle Camera
-        </button>
-        <button
-            onClick={() => {
-                leave()
-                router.back()
-            }}
-            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded ml-auto"
-        >
-            Leave Meeting
-        </button>
-    </div>
+
+    return (
+        <div className="flex justify-center items-center gap-x-2 p-4">
+            <button
+                onClick={() => toggleMic()}
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            >
+                Toggle Mic
+            </button>
+            <button
+                onClick={() => toggleWebcam()}
+                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+            >
+                Toggle Camera
+            </button>
+            <button
+                onClick={() => {
+                    leave()
+                    router.back()
+                }}
+                className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded ml-auto"
+            >
+                Leave Meeting
+            </button>
+        </div>
+    )
 
 };
 
@@ -97,11 +100,23 @@ const Controls = () => {
 const MeetingView = ({ meetingId, userType, token }: { meetingId: string, userType: 'therapist' | 'client', token: string }) => {
     const router = useRouter()
     const [joined, setJoined] = useState(false);
-    const { join, participants } = useMeeting({
+    const { join, participants, leave } = useMeeting({
         onMeetingJoined: () => setJoined(true),
         onMeetingLeft: () => setJoined(false),
     })
-    // const joinRef = useRef(join)
+
+useEffect(() => {
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+        leave();
+        // event.preventDefault();
+        // event.returnValue = '';
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => {
+        window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+}, [leave]);
 
     useEffect(() => {
         if (token) {
@@ -143,7 +158,7 @@ export const VideoChatPage = ({ appointmentId, userType, userId }: { appointment
 
     const { data: client } = useSWR(userType == 'client' ? `/client/${userId}` : null, getProfileService)
     const clientName = client?.data?.data?.firstName + '' + client?.data?.data?.lastName
-    
+
     const requestCameraAndMicrophonePermissions = async () => {
         try {
             const micPermission = await navigator.permissions.query({ name: 'microphone' } as any);
