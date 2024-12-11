@@ -105,18 +105,16 @@ const MeetingView = ({ meetingId, userType, token }: { meetingId: string, userTy
         onMeetingLeft: () => setJoined(false),
     })
 
-useEffect(() => {
-    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-        leave();
-        // event.preventDefault();
-        // event.returnValue = '';
-    };
+    useEffect(() => {
+        const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+            leave();
+        }
 
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    return () => {
-        window.removeEventListener('beforeunload', handleBeforeUnload);
-    };
-}, [leave]);
+        window.addEventListener('beforeunload', handleBeforeUnload);
+        return () => {
+            window.removeEventListener('beforeunload', handleBeforeUnload);
+        };
+    }, [leave]);
 
     useEffect(() => {
         if (token) {
@@ -182,6 +180,7 @@ export const VideoChatPage = ({ appointmentId, userType, userId }: { appointment
         const userAgent = navigator.userAgent.toLowerCase();
         return userAgent.includes('safari') && !userAgent.includes('chrome');
     }
+
     useEffect(() => {
         const initializeMeeting = async () => {
             if (isSafari()) {

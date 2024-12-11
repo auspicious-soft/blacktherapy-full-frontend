@@ -27,7 +27,7 @@ const Page = () => {
     return (
         <div>
             <div className="flex justify-between">
-                <IoMdArrowRoundBack onClick={() => router.back()} />
+                <IoMdArrowRoundBack onClick={() => router.back()} className='text-black text-lg cursor-pointer'/>
                 <h1 className="font-antic text-[#283C63] text-[30px] leading-[1.2em] mb-[25px] lg:text-[40px] lg:mb-[50px]">
                     Care Session 👋
                 </h1>
