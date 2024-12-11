@@ -5,6 +5,9 @@ import { createVideoSDKMeeting } from '@/utils';
 import { toast } from 'sonner';
 import { generateVideoSDKToken } from '@/actions';
 import { useRouter } from 'next/navigation';
+import useSWR from 'swr';
+import { getTherapistsProfileData } from '@/services/therapist/therapist-service.';
+import { getProfileService } from '@/services/client/client-service';
 
 // Participant View Component
 const ParticipantView = ({ participantId, userType }: { participantId: string, userType: 'therapist' | 'client' }) => {
@@ -134,17 +137,24 @@ const MeetingView = ({ meetingId, userType, token }: { meetingId: string, userTy
 export const VideoChatPage = ({ appointmentId, userType, userId }: { appointmentId: string, userType: 'therapist' | 'client', userId: string }) => {
     const [meetingId, setMeetingId] = useState<string | null>(null);
     const [token, setToken] = useState<string | null>(null)
+
+    const { data } = useSWR(userType == 'therapist' ? `/therapist/${userId}` : null, getTherapistsProfileData)
+    const therapistName = data?.data?.data?.firstName + ' ' + data?.data?.data?.lastName
+
+    const { data: client } = useSWR(userType == 'client' ? `/client/${userId}` : null, getProfileService)
+    const clientName = client?.data?.data?.firstName + '' + client?.data?.data?.lastName
+    
     const requestCameraAndMicrophonePermissions = async () => {
         try {
             const micPermission = await navigator.permissions.query({ name: 'microphone' } as any);
             const cameraPermission = await navigator.permissions.query({ name: 'camera' } as any);
-    
+
             if (micPermission.state === 'denied' || cameraPermission.state === 'denied') {
                 // Handle denied permissions
                 console.error("Permissions denied");
                 return;
             }
-    
+
             // Request permissions if they are not granted
             if (micPermission.state === 'prompt' || cameraPermission.state === 'prompt') {
                 await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
@@ -167,19 +177,19 @@ export const VideoChatPage = ({ appointmentId, userType, userId }: { appointment
                 // }
                 await requestCameraAndMicrophonePermissions();
             }
-                try {
-                    // Create or join a meeting using the appointmentId as room ID
-                    const { roomId, token }: any = await createVideoSDKMeeting(appointmentId, userId)
-                    setMeetingId(roomId)
-                    setToken(token)
-                }
-                catch (error) {
-                    console.error('Failed to initialize meeting:', error);
-                    toast.error('Failed to initialize meeting');
-                }
+            try {
+                // Create or join a meeting using the appointmentId as room ID
+                const { roomId, token }: any = await createVideoSDKMeeting(appointmentId, userId)
+                setMeetingId(roomId)
+                setToken(token)
+            }
+            catch (error) {
+                console.error('Failed to initialize meeting:', error);
+                toast.error('Failed to initialize meeting');
+            }
         }
-            initializeMeeting();
-        }, [appointmentId, userId]);
+        initializeMeeting();
+    }, [appointmentId, userId]);
 
     if (!meetingId || !token) {
         return <p>Initializing meeting...</p>;
@@ -191,7 +201,7 @@ export const VideoChatPage = ({ appointmentId, userType, userId }: { appointment
                 meetingId,
                 micEnabled: true,
                 webcamEnabled: true,
-                name: `${userType === 'therapist' ? 'My Therapist' : 'My Client'} id - ${userId}`,
+                name: `${userType === 'therapist' ? therapistName : clientName}  - ${userId}`,
                 debugMode: true,
                 defaultCamera: 'front',
             }}
