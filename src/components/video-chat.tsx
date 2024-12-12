@@ -220,7 +220,8 @@ export const VideoChatPage = ({ appointmentId, userType, userId }: { appointment
                 meetingId,
                 micEnabled: true,
                 webcamEnabled: true,
-                name: `${userType === 'therapist' ? therapistName : clientName}  - ${userId}`,
+                // name: `${userType === 'therapist' ? therapistName : clientName}  - ${userId}`,
+                name: `${userType === 'therapist' ? therapistName : clientName}`,
                 debugMode: true,
                 defaultCamera: 'front',
             }}
