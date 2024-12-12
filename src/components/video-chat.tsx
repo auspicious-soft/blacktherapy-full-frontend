@@ -44,7 +44,7 @@ const ParticipantView = ({ participantId, userType }: { participantId: string, u
     return (
         <div className={'w-full'}>
             <p>
-                {displayName} | <span className='flex items-center justify-center'> Webcam: {webcamOn ? <ImCamera className='ml-2' /> : <BiSolidCameraOff className='ml-2' />} | Mic: {micOn ? <FaMicrophoneLines className='ml-2' /> : <FaMicrophoneLinesSlash className='ml-2' />} </span>
+                {displayName}  <span className='flex items-center justify-center'> Webcam: {webcamOn ? <ImCamera className='ml-2' /> : <BiSolidCameraOff className='ml-2' />} | Mic: {micOn ? <FaMicrophoneLines className='ml-2' /> : <FaMicrophoneLinesSlash className='ml-2' />} </span>
             </p>
             <audio ref={micRef} autoPlay muted={isLocal} />
             {webcamOn ? (
