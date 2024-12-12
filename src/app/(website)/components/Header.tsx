@@ -12,7 +12,7 @@ const Header = () => {
   const router = useRouter();
   const handleToggleOpen = () => {
     setIsToggleOpen(!isToggleOpen);
-  }; 
+  };
 
   const handleToggleClose = () => {
     setIsToggleOpen(false);
@@ -37,38 +37,38 @@ const Header = () => {
   return (
     <div>
       <div className='px-[10px]'>
-      <div className="announcement-bar mt-2.5 rounded-[27px] hidden md:flex justify-between items-center bg-[#283C63] px-[26px] py-[9px]">
-        <div className="left-icons flex items-center gap-6">
-          <div style={iconstyle}>
-          <span><PhoneIcon /> </span>
-          <p>
-            (888) 383-6002
-          </p>
+        <div className="announcement-bar mt-2.5 rounded-[27px] hidden md:flex justify-between items-center bg-[#283C63] px-[26px] py-[9px]">
+          <div className="left-icons flex items-center gap-6">
+            <div style={iconstyle}>
+              <span><PhoneIcon /> </span>
+              <p>
+                (888) 383-6002
+              </p>
+            </div>
+            <div style={iconstyle}>
+              <span> <PhoneIcon /></span>
+              <p>
+                980-333-4063
+              </p>
+            </div>
+            <div style={iconstyle}>
+              <span><MailIcon /></span>
+              <p>
+                hello@theblacktherapynetwork.com
+              </p>
+            </div>
           </div>
-          <div style={iconstyle}>
-           <span> <PhoneIcon /></span>
-           <p>
-            980-333-4063
-          </p>
-          </div>
-          <div style={iconstyle}>
-            <span><MailIcon /></span>
-            <p>
-            hello@theblacktherapynetwork.com
-          </p>
-          </div>
-        </div>
-        <div className="right flex items-center gap-6">
-        <p onClick={() => handleLogout()} className="text-white  cursor-pointer text-xs"> 
-             Login/Sign Up
+          <div onClick={() => handleLogout()} className="right flex items-center gap-6">
+            <p  className="text-white  cursor-pointer text-xs">
+              Login/Sign Up
             </p>
+          </div>
         </div>
-      </div>
       </div>
       <div className='nav-container w-full max-w-[1260px] mx-auto flex items-center justify-between pt-5 px-[15px]  md:px-[25px]'>
         <div className="nav_logo">
           <Link href="/" className="nav-logo-link">
-            <LogoIcon /> 
+            <LogoIcon />
           </Link>
         </div>
         <ul className={`nav-menu ${isToggleOpen ? 'open' : ''}`}>
@@ -90,11 +90,11 @@ const Header = () => {
           <li>
             <Link href="/contact" className="nav-menu-list lg:!inline-block lg:text-sm lg:text-white lg:bg-[#283C63] rounded-[30px] lg:!px-[30px] !py-[13px]">Contact</Link>
           </li>
-          <li className="md:hidden mt-4">
-          <p onClick={() => handleLogout(true)} className="text-white cursor-pointer text-sm bg-[#283C63] rounded-[30px] px-[30px] py-[13px]">
-             Login/Sign Up
+          <li className="md:hidden mt-4" onClick={() => handleLogout(true)}>
+            <p  className="text-white cursor-pointer text-sm bg-[#283C63] rounded-[30px] px-[30px] py-[13px]">
+              Login/Sign Up
             </p>
-        </li>
+          </li>
         </ul>
 
         <p className="menuToggleBtn lg:hidden" onClick={handleToggleOpen}>
