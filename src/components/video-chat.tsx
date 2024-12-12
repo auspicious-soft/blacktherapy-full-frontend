@@ -43,8 +43,8 @@ const ParticipantView = ({ participantId, userType }: { participantId: string, u
 
     return (
         <div className={'w-full'}>
-            <p>
-                {displayName}  <span className='flex items-center justify-center'> Webcam: {webcamOn ? <ImCamera className='ml-2' /> : <BiSolidCameraOff className='ml-2' />} | Mic: {micOn ? <FaMicrophoneLines className='ml-2' /> : <FaMicrophoneLinesSlash className='ml-2' />} </span>
+            <p className='font-bold text-[16px]'>
+                {displayName}  
             </p>
             <audio ref={micRef} autoPlay muted={isLocal} />
             {webcamOn ? (
@@ -59,6 +59,7 @@ const ParticipantView = ({ participantId, userType }: { participantId: string, u
                         height={`100%`}
                         width={`100%`}
                     />
+                    <span className='flex items-center justify-center'> Webcam: {webcamOn ? <ImCamera className='ml-2' /> : <BiSolidCameraOff className='ml-2' />} | Mic: {micOn ? <FaMicrophoneLines className='ml-2' /> : <FaMicrophoneLinesSlash className='ml-2' />} </span>
                 </div>
             ) :
                 <p className='font-bold text-[30px]'>
