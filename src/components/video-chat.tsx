@@ -44,23 +44,25 @@ const ParticipantView = ({ participantId, userType }: { participantId: string, u
     return (
         <div className={'w-full'}>
             <p className='font-bold text-[16px]'>
-                {displayName}  
+                {displayName}
             </p>
             <audio ref={micRef} autoPlay muted={isLocal} />
             {webcamOn ? (
-                <div className={`'p-[1px] rounded-lg`} style={
-                    isLocal ? { transform: "scaleX(-1)", WebkitTransform: "scaleX(-1)" } : {}
-                }>
-                    <ReactPlayer
-                        playsinline
-                        url={videoStream}
-                        playing
-                        muted
-                        height={`100%`}
-                        width={`100%`}
-                    />
+                <>
+                    <div className={`'p-[1px] rounded-lg`} style={
+                        isLocal ? { transform: "scaleX(-1)", WebkitTransform: "scaleX(-1)" } : {}
+                    }>
+                        <ReactPlayer
+                            playsinline
+                            url={videoStream}
+                            playing
+                            muted
+                            height={`100%`}
+                            width={`100%`}
+                        />
+                    </div>
                     <span className='flex items-center justify-center'> Webcam: {webcamOn ? <ImCamera className='ml-2' /> : <BiSolidCameraOff className='ml-2' />} | Mic: {micOn ? <FaMicrophoneLines className='ml-2' /> : <FaMicrophoneLinesSlash className='ml-2' />} </span>
-                </div>
+                </>
             ) :
                 <p className='font-bold text-[30px]'>
                     Webcam Disabled
