@@ -5,7 +5,7 @@ import {
   NotificationIcon,
   OverviewIcon1,
   OverviewIcon2,
-  OverviewIcon3, 
+  OverviewIcon3,
   OverviewIcon4,
   OverviewIcon5,
   OverviewIcon6,
@@ -25,25 +25,24 @@ const Home = () => {
   const session = useSession()
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
-  const [showAlertModal, setShowAlertModal] = useState(false);
-  const {data , error, isLoading} =  useSWR(`/admin/dashboard?id=${session?.data?.user?.id}`, getAdminDashboardStats)
-  const finalData:any = data?.data
+  const { data, error, isLoading } = useSWR(`/admin/dashboard?id=${session?.data?.user?.id}`, getAdminDashboardStats)
+  const finalData: any = data?.data
 
-  const {data: alertsData, error: alertError, isLoading: alertLoadig} = useSWR(`/admin/notifications`, getAdminAlerts)
-  
+  const { data: alertsData, error: alertError, isLoading: alertLoadig } = useSWR(`/admin/notifications`, getAdminAlerts)
+
   const alertsArray = alertsData?.data?.data
 
   const handleRead = () => {
     startTransition(async () => {
       try {
         const unreadAlertIds = alertsArray
-          .filter((alert:any) => !alert.read)
-          .map((alert:any) => alert._id);
+          .filter((alert: any) => !alert.read)
+          .map((alert: any) => alert._id);
 
-        const response = await updateAdminAlerts(`/admin/notifications` ,unreadAlertIds);
+        const response = await updateAdminAlerts(`/admin/notifications`, unreadAlertIds);
 
         if (response?.status === 200) {
-          const updatedAlerts = alertsArray.map((alert:any) => ({
+          const updatedAlerts = alertsArray.map((alert: any) => ({
             ...alert,
             read: true
           }));
@@ -116,16 +115,16 @@ const Home = () => {
   return (
     <>
       <div className=" flex items-center justify-between mb-[25px] lg:mb-[50px]">
-      <h1 className="font-antic text-[#283C63] text-[30px] leading-[1.2em]  lg:text-[40px] ">
-        Welcome
-      </h1>
-      <ClientNotifications 
-      alerts={alertsArray}
-       handleRead={handleRead}
-      isLoading={isPending}
-    />
-    </div>
-    
+        <h1 className="font-antic text-[#283C63] text-[30px] leading-[1.2em]  lg:text-[40px] ">
+          Welcome
+        </h1>
+        <ClientNotifications
+          alerts={alertsArray}
+          handleRead={handleRead}
+          isLoading={isPending}
+        />
+      </div>
+
 
       <h2 className="mb-[30px] select-none">Overview</h2>
       <div className="grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-[15px] md:gap-[30px]">
@@ -138,7 +137,7 @@ const Home = () => {
           />
         ))}
       </div>
-      <AlertsTable/>
+      <AlertsTable />
     </>
   );
 }

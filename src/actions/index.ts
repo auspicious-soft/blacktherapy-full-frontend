@@ -14,11 +14,11 @@ export const loginAction = async (payload: any) => {
         if (res && res?.data?.success) {
             await signIn('credentials', {
                 email: payload.email,
-                name: res?.data?.data.firstName + ' ' + res?.data?.data.lastName,
-                _id: res?.data?.data?._id,
-                role: res?.data?.data?.role,
-                onboardingCompleted: res?.data?.data?.onboardingCompleted,
-                status: res?.data?.data?.onboardingApplication?.status,
+                name: res?.data?.data?.user?.firstName + ' ' + res?.data?.data?.user?.lastName,
+                _id: res?.data?.data?.user?._id,
+                role: res?.data?.data?.user?.role,
+                onboardingCompleted: res?.data?.data?.user?.onboardingCompleted,
+                status: res?.data?.data?.user?.onboardingApplication?.status,
                 redirect: false,
             })
         }
