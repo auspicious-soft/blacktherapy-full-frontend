@@ -42,12 +42,12 @@ const Page: React.FC = () => {
       const resss = await loginAction({ email, password })
       if (resss?.success) {
         toast.success('Logged in successfully')
-        if (resss?.data?.role === 'client') {
+        if (resss?.data?.user?.role === 'client') {
           window.location.href = '/customer/dashboard'
         }
-        else if (resss?.data?.role === 'therapist') {
-          const isOnboarded = resss?.data?.onboardingCompleted
-          const verified = resss?.data?.onboardingApplication?.status
+        else if (resss?.data?.user?.role === 'therapist') {
+          const isOnboarded = resss?.data?.user?.onboardingCompleted
+          const verified = resss?.data?.user?.onboardingApplication?.status
           if (isOnboarded && verified === 'Active') window.location.href = '/therapist/dashboard'
           else window.location.href = '/onboarding'
         }
