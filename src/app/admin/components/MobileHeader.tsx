@@ -116,7 +116,7 @@ const MobileHeader = () => {
             <li className="!m-0">
             <Link href="/">
             <LogOut />
-               <span className="text-[#283C63] text-[600]">Log OuT</span>
+               <span className="text-[#283C63] text-[600]">Log Out</span>
             </Link>
             </li>
           </ul>

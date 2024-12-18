@@ -40,6 +40,7 @@ const Page: React.FC = () => {
     if (!email || !password) return toast.error('All fields are required')
     startTransition(async() => {
       const resss = await loginAction({ email, password })
+      console.log('resss: ', resss);
       if (resss?.success) {
         toast.success('Logged in successfully')
         if (resss?.data?.user?.role === 'client') {
