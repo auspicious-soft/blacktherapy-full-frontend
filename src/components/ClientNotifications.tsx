@@ -50,7 +50,8 @@ export const ClientNotifications: React.FC<NotificationProps> = ({
       </div>
 
       {showAlertModal && (
-        <div className="absolute right-0 top-full mt-2 w-[300px] bg-white rounded-lg z-10">
+        <div className='absolute right-0 top-full mt-2 w-[300px] bg-white rounded-lg z-10'>
+        <div className="max-h-[500px] overflow-y-auto overflo-custom ">
 
           <div className='bg-[#283C63] rounded-t-lg flex justify-between items-center px-3 py-3 border-b border-[#ccc]'>
             <h5 className='text-[#fff] text-sm select-none'>
@@ -97,6 +98,7 @@ export const ClientNotifications: React.FC<NotificationProps> = ({
           ) : (
             <p className="text-gray-500 text-center py-4">No new alerts</p>
           )}
+        </div>
         </div>
       )}
     </div>
