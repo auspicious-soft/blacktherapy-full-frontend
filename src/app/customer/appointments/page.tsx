@@ -15,7 +15,7 @@ import { toast } from "sonner";
 const Page = () => {
   const [openModal, setOpenModal] = useState(false);
   const session = useSession()
-  const { data: user } = useSWR(`/client/${session?.data?.user?.id}`, getProfileService, { revalidateOnFocus: false })
+  const { data: user } = useSWR(session?.data?.user?.id ? `/client/${session?.data?.user?.id}` : null, getProfileService, { revalidateOnFocus: false })
   const isChatAllowedByPaymentStatus = user?.data?.data?.chatAllowed
   const isVideoCountByPaymentStatus = user?.data?.data?.videoCount
   const video = user?.data?.data?.video
@@ -33,7 +33,7 @@ const Page = () => {
       setShouldFetchAppointments(false);
     }
   }, [activeTab]);
-  const { data: appointmentsData, isLoading: appointmentsIsLoading, mutate: appointmentsMutate, error } = useSWR(shouldFetchAppointments ? `/client/appointment/${session?.data?.user?.id}?${query}` : null, getClientAppointments, { revalidateOnFocus: false });
+  const { data: appointmentsData, isLoading: appointmentsIsLoading, mutate: appointmentsMutate, error } = useSWR((shouldFetchAppointments && session?.data?.user?.id) ? `/client/appointment/${session?.data?.user?.id}?${query}` : null, getClientAppointments, { revalidateOnFocus: false });
 
 
 
@@ -48,17 +48,24 @@ const Page = () => {
     }
   }
 
-  const handleRequestAppointment = async () => {
+  const handleRequestAppointment = async (e: any) => {
+    e.preventDefault();
     startTransition(async () => {
       try {
         const response = await postAnAppointment(`/client/appointment`, {
-          clientId: session?.data?.user?.id
+          clientId: session?.data?.user?.id,
+          appointmentDate: e.target['appointment-date'].value,
+          appointmentTime: e.target['appointment-time'].value
         })
         if (response?.data?.success) {
           toast.success('Appointment Requested Successfully')
           appointmentsMutate()
           setOpenModal(false);
-        } else {
+        }
+        else if (response?.status === 204) {
+          toast.error('Phone number is not valid please update it')
+        }
+        else {
           toast.error('Failed to request appointment');
         }
       } catch (error) {
@@ -124,10 +131,23 @@ const Page = () => {
             <div className=" text-center text-black w-full">
               Sure want to request an appointment?
             </div>
-            <div className="flex items-center text-lg text-black gap-5 justify-between mt-5">
-              <button className="button" onClick={() => setOpenModal(false)}>Cancel</button>
-              <button onClick={handleRequestAppointment} className="button">{isPending ? 'Requesting...' : 'Request'}<ButtonArrow /></button>
-            </div>
+            <form onSubmit={handleRequestAppointment}>
+              <div className="flex gap-4 mt-5" >
+                <div className="flex-1">
+                  <label htmlFor="appointment-date" className="block text-sm font-medium text-gray-700">Date</label>
+                  <input required type="date" id="appointment-date" name="appointment-date" className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+                </div>
+                <div className="flex-1">
+                  <label htmlFor="appointment-time" className="block text-sm font-medium text-gray-700">Time</label>
+                  <input required type="time" id="appointment-time" name="appointment-time" className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+                </div>
+              </div>
+
+              <div className="flex items-center text-lg text-black gap-5 justify-between mt-5">
+                <button className="button" onClick={() => setOpenModal(false)}>Cancel</button>
+                <button type="submit" className="button">{isPending ? 'Requesting...' : 'Request'}<ButtonArrow /></button>
+              </div>
+            </form>
           </div>
         </Modal>
       )}
