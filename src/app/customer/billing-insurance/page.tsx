@@ -16,7 +16,7 @@ const Page = () => {
   const [openPlansModal, setOpenPlansModal] = useState(false)
   const [openCancelPlanModal, setOpenCancelPlanModal] = useState(false)
   const id = session?.data?.user?.id
-  const { data: userData, error: userError, isLoading: userLoading } = useSWR(`/client/${id}`, getProfileService);
+  const { data: userData, error: userError, isLoading: userLoading } = useSWR(id ? `/client/${id}` : null, getProfileService);
   const insuranceData = userData?.data?.data?.insuranceCompany
   const stripeCustomerId = userData?.data?.data?.stripeCustomerId
   const planOrSubscriptionId = userData?.data?.data?.planOrSubscriptionId

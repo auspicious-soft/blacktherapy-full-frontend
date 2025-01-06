@@ -84,7 +84,9 @@ const BillingDetails = (props: BillingDetailsProps) => {
                                 </tr>
                                     :
                                     <tr className='p-2'>
-                                        <ReactLoading type={'spin'} color={'#26395e'} height={'20px'} width={'20px'} className='w-5 h-5 text-lg m-5'/>
+                                        <td>
+                                            <ReactLoading type={'spin'} color={'#26395e'} height={'20px'} width={'20px'} className='w-5 h-5 text-lg m-5' />
+                                        </td>
                                     </tr>
                         }
                     </tbody>

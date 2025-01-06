@@ -13,7 +13,7 @@ import Video from 'next-video';
 import HomeIconCard from "@/app/(website)/components/HomeIconCard";
 import Footer from "@/app/(website)/components/Footer";
 import VideoPlayer from "@/app/(website)/components/VideoPlayer";
-import React, { CSSProperties } from 'react';
+import React from 'react';
 import Link from "next/link";
 import { metadata } from './metadata';
 
