@@ -79,7 +79,7 @@ const DashboardAssignment = (props: any) => {
                 <tr key={row?._id}>
                   <td>{row?._id}</td>
                   <td>{row?.appointmentDate ? new Date(row?.appointmentDate).toLocaleDateString('en-US') : 'No date Assigned'}</td>
-                  <td>{row?.appointmentTime ? (row?.appointmentTime) : 'Not Assigned Yet'}</td>
+                  <td>{row?.appointmentTime ? (row?.appointmentTime) : 'Not Assigned Yet'}{Number(row?.appointmentTime.split(':')[0]) < 12 ? ' AM' : ' PM'}</td>
                   <td>
                     {message ? (
                       <p

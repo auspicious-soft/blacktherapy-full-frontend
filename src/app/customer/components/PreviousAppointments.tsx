@@ -92,7 +92,7 @@ const PreviousAppointments = (props: any) => {
               previousData?.map((item: any) => (
                 <tr key={item?._id}>
                   <td>{item?._id}</td>
-                  <td>{item.apptDate}</td>
+                  <td>{Number(item.apptDate.split(':')[0]) < 12 ? ' AM' : ' PM'}</td>
                   <td>{item.apptTime}</td>
                   <td>
                     <p className={`font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px] ${item.chat === 'Start Chat' ? ' text-[#42A803] bg-[#CBFFB2] ' : ' text-[#FFA234] bg-[#FFFCEC] '}`}>
