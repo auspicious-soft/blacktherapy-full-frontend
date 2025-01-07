@@ -78,8 +78,7 @@ export const submitForm = async (
           return;
         }
       }
-    }
-    console.log('formattedData:', formattedData);
+    } 
 
     //delete formattedData.signature;
     const response = await addOnboardingFormData("/therapist/onboarding", formattedData);
