@@ -84,7 +84,7 @@ const DashboardAssignment = (props: any) => {
                     {message ? (
                       <p
                         onClick={() => handleChat(row._id)}
-                        className={`font-bold cursor-pointer  inline-block text-center rounded-3xl py-[2px] px-[10px] text-[10px] ${isChatAllowed ? 'text-[#42A803] bg-[#CBFFB2]' : 'text-[#FFA234] bg-[#FFFCEC]'}`}
+                        className={`font-gothamMedium cursor-pointer  inline-block text-center rounded-3xl py-[2px] px-[10px] text-[10px] ${isChatAllowed ? 'text-[#42A803] bg-[#CBFFB2]' : 'text-[#FFA234] bg-[#FFFCEC]'}`}
                       >
                         {isChatAllowed ? 'Start Chat' : 'Chat not allowed'}
                       </p>
@@ -94,7 +94,7 @@ const DashboardAssignment = (props: any) => {
                       </p>
                     )}
                   </td>
-                  <td>{video ? <p className={`cursor-pointer font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px] ${isVideoCount > 0 ? 'text-[#42A803] bg-[#CBFFB2]' : 'text-[#FFA234] bg-[#FFFCEC]'}`}>
+                  <td>{video ? <p className={`cursor-pointer font-gothamMedium inline-block text-center rounded-3xl py-[2px] px-[10px] text-[10px] ${isVideoCount > 0 ? 'text-[#42A803] bg-[#CBFFB2]' : 'text-[#FFA234] bg-[#FFFCEC]'}`}>
                     {isVideoCount > 0 ? <div onClick={() => window.location.href = `/customer/appointments/video-chat/${row?._id}`}>{`Start Video (${isVideoCount})`}</div> : 'Video chat limit reached for current plan'}
                   </p> : <p className="cursor-not-allowed">No Video</p>}</td>
                   <td>

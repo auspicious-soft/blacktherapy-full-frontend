@@ -30,7 +30,7 @@ export const WelcomeProcess = ({
             <li>Excellent writing skills.</li>
         </ul>
       </p>
-      <p className="text-gray-500 md:text-base text-sm">
+      <div className="text-gray-500 md:text-base text-sm">
         <b>Requirements: </b>
         <ul className="list-disc pl-8 my-5">
             <li>Master’s degree in the mental health field from an accredited institution.</li>
@@ -44,7 +44,7 @@ export const WelcomeProcess = ({
             <li>Minimum caseload requirement.</li>
             <li>Listing on popular therapy platforms under our agency.</li>
         </ul>
-      </p>
+      </div>
       <p className="text-gray-500 md:text-base text-sm">
     <b>About The Black Therapy Network: </b>
     The Black Therapy Network is dedicated to meeting the mental health needs of the African American community. We offer flexible remote opportunities that allow you to balance personal commitments with professional growth. 

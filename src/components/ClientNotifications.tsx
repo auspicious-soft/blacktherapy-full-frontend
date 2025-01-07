@@ -78,9 +78,7 @@ export const ClientNotifications: React.FC<NotificationProps> = ({
               {alerts.map((row: any) => (
                 <div key={row._id} className={`border-b border-[#D9DCE2] mb- last:border-b-0  px-3 py-2 *:${row.read ? ' ' : 'font-bold bg-[#CCE9FA] '}`}>
                   <h4 className='text-base'>{row?.sender?.firstName} {row?.sender?.lastName} <span className='text-sm underline'> {row?.sender?.role}</span> </h4>
-                <p 
-                  
-                  className={`
+                <p className={`flex justify-between w-full
                     text-sm text-[#686c78] 
                     ${row.read 
                       ? ' ' 
@@ -91,6 +89,7 @@ export const ClientNotifications: React.FC<NotificationProps> = ({
                   {/* {!row.read && (
                     <span className="ml-2 text-xs text-blue-500">(New)</span>
                   )} */}
+                  <span className='min-w-[20%] '>{new Date(row?.createdAt).toLocaleDateString('en-US')} </span>
                 </p>
                 </div>
               ))}

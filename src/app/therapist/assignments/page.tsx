@@ -86,7 +86,7 @@ const Page = () => {
                       {item?.clientId?.message ? (
                         <p
                           onClick={() => handleChat(item._id)}
-                          className=" inline-block cursor-pointer font-bold text-center rounded-3xl py-[2px] px-[10px] text-[12px] text-[#42A803] bg-[#CBFFB2]"
+                          className="font-gothamMedium inline-block cursor-pointer text-center rounded-3xl py-[2px] px-[10px] text-[10px] text-[#42A803] bg-[#CBFFB2]"
                         >
                           Start Chat
                         </p>
@@ -96,9 +96,9 @@ const Page = () => {
                         </p>
                       )}
                     </td>
-                    <td>{!item?.clientId?.video ? 'No video' : <div onClick={() => window.location.href = `/therapist/assignments/video-chat/${item?._id}`}><p className='cursor-pointer font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px]  text-[#42A803] bg-[#CBFFB2]'>Start Video</p></div>}</td>
+                    <td>{!item?.clientId?.video ? 'No video' : <div onClick={() => window.location.href = `/therapist/assignments/video-chat/${item?._id}`}><p className='cursor-pointer font-gothamMedium inline-block text-center rounded-3xl py-[2px] px-[10px] text-[10px]  text-[#42A803] bg-[#CBFFB2]'>Start Video</p></div>}</td>
                     <td>
-                      <p className='font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px]  text-[#42A803] bg-[#CBFFB2]'>{item.status}</p>
+                      <p className='font-gothamMedium inline-block text-center rounded-3xl py-[2px] px-[10px] text-[10px]  text-[#42A803] bg-[#CBFFB2]'>{item.status}</p>
                     </td>
                   </tr>
                 ))

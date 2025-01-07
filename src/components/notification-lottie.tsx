@@ -88,8 +88,9 @@ export const LottieNotification: React.FC<LottieProps> = ({ data, id }) => {
               <ul className=' my-2 '>
                 {alertsArray.map((row) => (
                   <li key={row?._id}
-                    className={` text-[#686c78] text-xs border-b  px-3 last:border-b-0 py-2  ${row?.read ? 'text-' : 'font-bol bg-[#EBF3F8] '}`}>
+                    className={`flex justify-between w-full text-[#686c78] text-xs border-b  px-3 last:border-b-0 py-2  ${row?.read ? 'text-' : 'font-bol bg-[#EBF3F8] '}`}>
                     {row?.message}
+                    <span className='min-w-[20%] '>{new Date(row?.createdAt).toLocaleDateString('en-US')} </span>
                   </li>
                 ))}
               </ul>
