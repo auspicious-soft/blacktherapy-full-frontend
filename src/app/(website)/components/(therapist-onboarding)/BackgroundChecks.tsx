@@ -69,15 +69,23 @@ const BackgroundChecks: React.FC<BackgroundProps> = ({
     }
   };
 
-  const saveSignature = () => {
+  const saveSignature = async () => {
     if (sigCanvasRef.current && !sigCanvasRef.current.isEmpty()) {
-      const signatureData = sigCanvasRef.current.getTrimmedCanvas().toDataURL("image/png");
-      setFormData((prev) => ({
+      const canvas = sigCanvasRef.current.getTrimmedCanvas();
+      const blob = await new Promise(resolve => {
+        canvas.toBlob(resolve, 'image/png');
+      });
+      const signatureFile = new File([blob as any], 'signature2.png', { type: 'image/png' })
+
+      // const signature = sigCanvasRef.current.getTrimmedCanvas().toDataURL("image/png");
+      setFormData((prev: any) => ({
         ...prev,
-        signature: signatureData,
+        consentSignature: signatureFile,
       }));
-    }
+
+    } 
   };
+
 
   return (
     <div className="form-main">

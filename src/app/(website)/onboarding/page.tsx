@@ -15,7 +15,7 @@ const Page = async () => {
 
     return (
         <div className='container pt-[50px] pb-[80px] relative '>
-            <OnboardingForm session = {session}/>
+            <OnboardingForm/>
         </div>
     )
 

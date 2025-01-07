@@ -1,30 +1,31 @@
-import 'react-tippy/dist/tippy.css';
+import "react-tippy/dist/tippy.css";
 import { Toaster } from "sonner";
 import "./globals.css";
 import { SessionProvider } from "next-auth/react";
-import localFont from 'next/font/local'
+import localFont from "next/font/local";
+import { auth } from "@/auth";
 
 const gothamPro = localFont({
-  src: '../assets/fonts/GothamPro.ttf',
-  display: 'swap',
-  variable: '--font-gotham',
-})
+  src: "../assets/fonts/GothamPro.ttf",
+  display: "swap",
+  variable: "--font-gotham",
+});
 const anticDidone = localFont({
-  src: '../assets/fonts/AnticDidoneRegular.ttf',
-  display: 'swap',
-  variable: '--font-antic',
-})
+  src: "../assets/fonts/AnticDidoneRegular.ttf",
+  display: "swap",
+  variable: "--font-antic",
+});
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-
+  const session = await auth();
   return (
     <html lang="en">
-      <SessionProvider>
-          <Toaster richColors />
+      <SessionProvider session={session}>
+        <Toaster richColors />
         <body className={`${gothamPro.variable} ${anticDidone.variable}`}>
           {children}
         </body>

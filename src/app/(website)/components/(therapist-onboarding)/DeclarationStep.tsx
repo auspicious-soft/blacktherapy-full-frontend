@@ -4,6 +4,8 @@ import QuestionComponent from "@/app/(website)/components/QuestionComponent";
 import { ButtonSvg } from "@/utils/svgicons";
 import SignatureCanvas from "react-signature-canvas";
 import { submitForm } from "@/utils/onboarding-submit";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const DeclarationQuestions = [
   {
@@ -44,7 +46,9 @@ const DeclarationStep: React.FC<BackgroundProps> = ({
   nextStep
 }) => {
   const sigCanvasRef = useRef<SignatureCanvas | null>(null);
-
+ const  session  = useSession()
+ const router = useRouter();
+ const userEmail= session?.data?.user?.email;
   const validateStep = useCallback(() => {
     const isValid = DeclarationQuestions.every(q => formData[q.key] && formData[q.key].trim() !== "");
     setIsValid(isValid);
@@ -61,7 +65,7 @@ const DeclarationStep: React.FC<BackgroundProps> = ({
   //   }
   // };
   const handleSubmit = async () => {
-    await submitForm(formData, setFormData);
+    await submitForm(formData, userEmail as string, router);
   };
 
   const clearSignature = () => {
@@ -74,15 +78,33 @@ const DeclarationStep: React.FC<BackgroundProps> = ({
     }
   };
 
-  const saveSignature = () => {
+  // const saveSignature = () => {
+  //   if (sigCanvasRef.current && !sigCanvasRef.current.isEmpty()) {
+  //     const signatureData = sigCanvasRef.current.getTrimmedCanvas().toDataURL("image/png");
+  //     setFormData((prev) => ({
+  //       ...prev,
+  //       againConsentSignature: signatureData,
+  //     }));
+  //     console.log('signatureData:',  signatureData);
+  //   }
+  // };
+  const saveSignature = async () => {
     if (sigCanvasRef.current && !sigCanvasRef.current.isEmpty()) {
-      const signatureData = sigCanvasRef.current.getTrimmedCanvas().toDataURL("image/png");
-      setFormData((prev) => ({
+      const canvas = sigCanvasRef.current.getTrimmedCanvas();
+      const blob = await new Promise(resolve => {
+        canvas.toBlob(resolve, 'image/png');
+      });
+      const signatureFile = new File([blob as any], 'signature1.png', { type: 'image/png' })
+
+      // const signature = sigCanvasRef.current.getTrimmedCanvas().toDataURL("image/png");
+      setFormData((prev: any) => ({
         ...prev,
-        againConsentSignature: signatureData,
+        againConsentSignature: signatureFile,
       }));
-    }
+       
+    } 
   };
+
 
   return (
     <div className="form-main">

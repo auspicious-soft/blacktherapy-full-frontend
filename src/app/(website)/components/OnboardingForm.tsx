@@ -15,6 +15,8 @@ import UploadDocuments from "@/app/(website)/components/(therapist-onboarding)/U
 import DeclarationStep from "@/app/(website)/components/(therapist-onboarding)/DeclarationStep";
 import { submitForm } from "@/utils/onboarding-submit";
 import { toast } from "sonner";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const steps = [
   { component: WelcomeProcess, requiresValidation: false },
@@ -32,9 +34,10 @@ const steps = [
 ];
 
 const OnboardingForm = (props: any) => {
-  const { session } = props
-  const currentStepDefault = session?.user?.onboardingCompleted === 'true' ? 13 : 1
-  const userEmail= session?.user?.email;
+  const router = useRouter();
+  const  session  = useSession()
+  const currentStepDefault = (session as any)?.data?.user?.onboardingCompleted === 'true' ? 13 : 1
+  const userEmail= session?.data?.user?.email;
   const [currentStep, setCurrentStep] = useState(currentStepDefault)
   const [formData, setFormData] = useState<any>({
     licenceType: "",
@@ -126,8 +129,8 @@ const OnboardingForm = (props: any) => {
       setCurrentStep((prevStep) => prevStep - 1); 
     }
   };
-  const handleSubmit = async () => {
-    await submitForm(formData, setFormData, userEmail);
+  const handleSubmit = async () => { 
+     await submitForm(formData, userEmail as string, router);
   };
 
   const renderStep = () => {
