@@ -16,7 +16,7 @@ const ApplicationProcess = ({
         Network. <br /> We look forward to welcoming you to our team and helping you
         empower our community through dedicated and sensitive care.
       </p>
-      <p className="text-gray-500 md:text-base text-sm"> 
+      <div className="text-gray-500 md:text-base text-sm"> 
         <b>Application Process:</b>
         <ul className="list-decimal pl-8 my-5">
             <li>Complete this Employment Application.</li>
@@ -25,7 +25,7 @@ const ApplicationProcess = ({
             <li>If an offer is made, sign the Offer Letter sent via email from OnPay and begin Onboarding process.</li>
         </ul>
         We&apos;re excited about your interest in joining our team. Start your journey with The Black Therapy Network today!
-      </p>
+      </div>
     </div>
   );
 };

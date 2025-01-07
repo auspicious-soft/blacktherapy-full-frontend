@@ -14,6 +14,7 @@ import BackgroundChecks from "@/app/(website)/components/(therapist-onboarding)/
 import UploadDocuments from "@/app/(website)/components/(therapist-onboarding)/UploadDocuments";
 import DeclarationStep from "@/app/(website)/components/(therapist-onboarding)/DeclarationStep";
 import { submitForm } from "@/utils/onboarding-submit";
+import { toast } from "sonner";
 
 const steps = [
   { component: WelcomeProcess, requiresValidation: false },
@@ -126,7 +127,7 @@ const OnboardingForm = (props: any) => {
     }
   };
   const handleSubmit = async () => {
-    await submitForm(formData, setFormData);
+    await submitForm(formData, setFormData, userEmail);
   };
 
   const renderStep = () => {

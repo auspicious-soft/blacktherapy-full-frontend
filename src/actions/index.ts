@@ -67,13 +67,13 @@ export const getImageUrl = async (imageKey: string) => {
 export const generateSignedUrlToUploadOn = async (fileName: string, fileType: string, userEmail: string) => {
     const uploadParams = {
         Bucket: process.env.AWS_BUCKET_NAME,
-        Key: `projects/${userEmail}/my-media/${fileName}`,
-        ContentType: fileType
+        Key: `therapists/${userEmail}/onboarding/${fileName}`,
+        ContentType: fileType,
     }
     try {
         const command = new PutObjectCommand(uploadParams)
         const signedUrl = await getSignedUrl(await createS3Client(), command)
-        return signedUrl
+        return { signedUrl, key: uploadParams.Key }
     } catch (error) {
         console.error("Error generating signed URL:", error);
         throw error
