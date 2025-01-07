@@ -34,6 +34,17 @@ const Header = () => {
     window.location.href = '/login'
   };
 
+  const NavLink = ({ href, children, className }: { href: string; children: React.ReactNode; className?: string }) => {
+    return (
+      <Link 
+        href={href} 
+        className={className}
+        onClick={handleToggleClose}
+      >
+        {children}
+      </Link>
+    );
+  };
   return (
     <div>
       <div className='px-[10px]'>
@@ -75,20 +86,20 @@ const Header = () => {
           <button className="close-btn lg:hidden" onClick={handleToggleClose}>
             <ToggleClose />
           </button>
-          <li>
-            <Link href="/" className="nav-menu-list">Home</Link>
+            <li>
+            <NavLink href="/" className="nav-menu-list">Home</NavLink>
           </li>
           <li>
-            <Link href="/about" className="nav-menu-list">About</Link>
+            <NavLink href="/about" className="nav-menu-list">About</NavLink>
           </li>
           <li>
-            <Link href="/therapistnetwork" className="nav-menu-list">Join Our Therapist Network</Link>
+            <NavLink href="/therapistnetwork" className="nav-menu-list">Join Our Therapist Network</NavLink>
           </li>
           <li>
-            <Link href="/faq" className="nav-menu-list">FAQ</Link>
+            <NavLink href="/faq" className="nav-menu-list">FAQ</NavLink>
           </li>
           <li>
-            <Link href="/contact" className="nav-menu-list lg:!inline-block lg:text-sm lg:text-white lg:bg-[#283C63] rounded-[30px] lg:!px-[30px] !py-[13px]">Contact</Link>
+            <NavLink href="/contact" className="nav-menu-list lg:!inline-block lg:text-sm lg:text-white lg:bg-[#283C63] rounded-[30px] lg:!px-[30px] !py-[13px]">Contact</NavLink>
           </li>
           <li className="md:hidden mt-4" onClick={() => handleLogout(true)}>
             <p  className="text-white cursor-pointer text-sm bg-[#283C63] rounded-[30px] px-[30px] py-[13px]">
@@ -97,7 +108,7 @@ const Header = () => {
           </li>
         </ul>
 
-        <p className="menuToggleBtn lg:hidden" onClick={handleToggleOpen}>
+        <p className="menuToggleBtn lg:hidden cursor-pointer" onClick={handleToggleOpen}>
           <ToggleIcon />
         </p>
       </div>
