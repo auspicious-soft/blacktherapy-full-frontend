@@ -7,6 +7,7 @@ import Link from "next/link";
 import './SideNav.css';
 import { useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
+import { Calendar, CalendarIcon } from "lucide-react";
 
 const SideNav = () => {
   const router = useRouter();
@@ -49,9 +50,16 @@ const SideNav = () => {
           </li>
           <li className={isActive('/therapist/training')}>
             <Link href="/therapist/training">
-              <TrainingIcon/>
+              <TrainingIcon />
               {!isCollapsed && <span>Training</span>}
             </Link>
+          </li>
+          <li className={isActive('/therapist/calender')}>
+            <Link href="/therapist/calender">
+              <AssignIcon />
+              {!isCollapsed && <span>Calender</span>}
+            </Link>
+
           </li>
           <li className={`${isActive('/therapist/assignments')} ${pathname.startsWith('/therapist/assignments/chat') ? 'active' : ''}`}>
             <Link href="/therapist/assignments">
