@@ -17,52 +17,12 @@ interface OptionType {
   value: string;
   label: string;
 }
-interface FormData {
-  email: string,
-  companyProvidedEmail: boolean,
-  providerType: string,
-  licensedAndCertified: boolean,
-  computerAndWifi: boolean,
-  expInTeleHealthPlatform: boolean,
-  anyDisciplinaryActionTaken: boolean,
-  independentMalpracticeInsurance: boolean,
-  insuranceCompanyName: string,
-  claimedFilledInLast6Months: boolean,
-  profilePic: string,
-  firstName: string,
-  lastName: string,
-  phoneNumber: string,
-  dob: string,
-  state: string | null,
-  city: string,
-  zipCode: string,
-  addressLine1: string,
-  addressLine2: string,
-  licenseOrCertificationExpiryDate: string;
-  licenseOrCertificationIssuedDate: string,
-  PNPINumber: string,
-  taxonomyCode: string,
-  requireSupervision: boolean,
-  licenceType: string,
-  licenceOrCertificationNumber: number,
-  licenceOrCertificationState: string,
-  licensingBoardOrAgency: string,
-  validSupervisionAgreement: string,
-  licenseOrCertificationFile: string,
-  preferredLanguage: string,
-  fluencyOtherThanEnglish: boolean,
-  yearsOfExperience: number,
-  helpingApproach: string,
-  clientele: string,
-  generalExpertise: string,
-  preferredCommunicationMethod: string,
-  aboutYou: string,
-}
 
 const EditClinicianModal: React.FC<EditModalProps> = ({ row, isOpen, onRequestClose, mutate }) => {
+  console.log('Clinician row:', row);
 
   const [isPending, startTransition] = useTransition();
-  const [formData, setFormData] = useState<FormData>({
+  const [formData, setFormData] = useState<any>({
     email: "",
     companyProvidedEmail: false,
     providerType: "",
@@ -101,12 +61,12 @@ const EditClinicianModal: React.FC<EditModalProps> = ({ row, isOpen, onRequestCl
     clientele: "",
     generalExpertise: "",
     preferredCommunicationMethod: "",
-    aboutYou: "",
+    about: "",
   });
 
   useEffect(() => {
     if (row) {
-      setFormData(prevFormData => ({
+      setFormData((prevFormData: any) => ({
         ...prevFormData,
         email: row?.email,
         companyProvidedEmail: row?.otherDetailsOfTherapist?.companyProvidedEmail === "true",
@@ -146,7 +106,7 @@ const EditClinicianModal: React.FC<EditModalProps> = ({ row, isOpen, onRequestCl
         clientele: row?.otherDetailsOfTherapist?.clientele,
         generalExpertise: row?.otherDetailsOfTherapist?.generalExpertise,
         preferredCommunicationMethod: row?.otherDetailsOfTherapist?.preferredCommunicationMethod,
-        aboutYou: row?.otherDetailsOfTherapist?.aboutYou,
+        about: row?.otherDetailsOfTherapist?.about,
       }));
     }
   }, [row]);
@@ -209,10 +169,12 @@ const EditClinicianModal: React.FC<EditModalProps> = ({ row, isOpen, onRequestCl
           licenseOrCertificationFile: "http://example.com/attachments/static-license-file.pdf",
         };
 
+        console.log('updatedFormData:', updatedFormData);
         const response = await UpdateTherapistData(`/admin/therapists/${row?._id}`, updatedFormData);
 
         if (response?.status === 200) {
           toast.success("Therapist data updated successfully");
+          onRequestClose();
           mutate()
         } else {
           toast.error("Failed to update therapist data");
@@ -337,7 +299,7 @@ const EditClinicianModal: React.FC<EditModalProps> = ({ row, isOpen, onRequestCl
           </div>
           <div>
             <label className="block mb-2">Insurance Company</label>
-            <input type="text" name="insuranceCompanyName" value={formData.insuranceCompanyName} onChange={handleInputChange} required />
+            <input type="text" name="insuranceCompanyName" value={formData.insuranceCompanyName} onChange={handleInputChange} />
           </div>
           <div>
             <label className="block mb-2">Have you had a claim filed in the last 6 months.?</label>
@@ -400,19 +362,11 @@ const EditClinicianModal: React.FC<EditModalProps> = ({ row, isOpen, onRequestCl
           </div>
           <div>
             <label className="block mb-2">Licensure/Certification Issued Date *</label>
-            <input type="date" name="licenseOrCertificationIssuedDate" id="" value={formData.licenseOrCertificationIssuedDate} required onChange={handleInputChange} />
+            <input type="date" name="licenseOrCertificationIssuedDate" id="" value={formData.licenseOrCertificationIssuedDate}  onChange={handleInputChange} />
           </div>
           <div>
             <label className="block mb-2">Licensure/Certification Expiration *</label>
-            <input type="date" name="licenseOrCertificationExpiryDate" required value={formData.licenseOrCertificationExpiryDate} onChange={handleInputChange} />
-          </div>
-          <div>
-            <label className="block mb-2">NPI number * <br /> (If applicable,if not write N/A)</label>
-            <input type="text" name="PNPINumber" required value={formData.PNPINumber} onChange={handleInputChange} />
-          </div>
-          <div>
-            <label className="block mb-2">Taxonomy code(If applicable,if not write N/A) *</label>
-            <input type="text" name="taxonomyCode" required value={formData.taxonomyCode} onChange={handleInputChange} />
+            <input type="date" name="licenseOrCertificationExpiryDate" value={formData.licenseOrCertificationExpiryDate} onChange={handleInputChange} />
           </div>
           <div>
             <label className="block mb-2">Do you require supervision?</label>
@@ -434,19 +388,19 @@ const EditClinicianModal: React.FC<EditModalProps> = ({ row, isOpen, onRequestCl
           </div>
           <div>
             <label className="block mb-2">Licensure/Certification Number *</label>
-            <input type="number" minLength={9} name="licenceOrCertificationNumber" required value={formData.licenceOrCertificationNumber} onChange={handleInputChange} />
+            <input type="number" minLength={9} name="licenceOrCertificationNumber"  value={formData.licenceOrCertificationNumber} onChange={handleInputChange} />
           </div>
           <div>
             <label className="block mb-2">Licensure/Certification State*</label>
-            <input type="text" name="licenceOrCertificationState" required value={formData.licenceOrCertificationState} onChange={handleInputChange} />
+            <input type="text" name="licenceOrCertificationState"  value={formData.licenceOrCertificationState} onChange={handleInputChange} />
           </div>
           <div>
             <label className="block mb-2">Which licensing board or agency issued your credentials?</label>
-            <input type="text" name="licensingBoardOrAgency" required value={formData.licensingBoardOrAgency} onChange={handleInputChange} />
+            <input type="text" name="licensingBoardOrAgency"  value={formData.licensingBoardOrAgency} onChange={handleInputChange} />
           </div>
           <div>
             <label className="block mb-2">Do you have a supervisor with a valid supervision agreement in place?</label>
-            <input type="text" name="validSupervisionAgreement" required value={formData.validSupervisionAgreement} onChange={handleInputChange} />
+            <input type="text" name="validSupervisionAgreement"  value={formData.validSupervisionAgreement} onChange={handleInputChange} />
           </div>
           <div>
             <label className="block mb-2">Add file</label>
@@ -454,7 +408,7 @@ const EditClinicianModal: React.FC<EditModalProps> = ({ row, isOpen, onRequestCl
           </div>
           <div>
             <label className="block mb-2">Preferred Language?</label>
-            <input type="text" name="preferredLanguage" required value={formData.preferredLanguage} onChange={handleInputChange} />
+            <input type="text" name="preferredLanguage" value={formData.preferredLanguage} onChange={handleInputChange} />
           </div>
           <div>
             <label className="block mb-2">Are you fluent in any other languages besides english?</label>
@@ -471,19 +425,19 @@ const EditClinicianModal: React.FC<EditModalProps> = ({ row, isOpen, onRequestCl
           </div>
           <div>
             <label className="block mb-2">Year of Experience?</label>
-            <input type="number" name="yearsOfExperience" required value={formData.yearsOfExperience} onChange={handleInputChange} />
+            <input type="number" name="yearsOfExperience"  value={formData.yearsOfExperience} onChange={handleInputChange} />
           </div>
           <div>
             <label className="block mb-2">Your Approach to Helping?</label>
-            <input type="text" name="helpingApproach" required value={formData.helpingApproach} onChange={handleInputChange} />
+            <input type="text" name="helpingApproach"  value={formData.helpingApproach} onChange={handleInputChange} />
           </div>
           <div>
             <label className="block mb-2">Clientele*</label>
-            <input type="text" name="clientele" required value={formData.clientele} onChange={handleInputChange} />
+            <input type="text" name="clientele"  value={formData.clientele} onChange={handleInputChange} />
           </div>
           <div>
             <label className="block mb-2">General Expertise*</label>
-            <input type="text" name="generalExpertise" required value={formData.generalExpertise} onChange={handleInputChange} />
+            <input type="text" name="generalExpertise"  value={formData.generalExpertise} onChange={handleInputChange} />
           </div>
           <div>
             <label className="block mb-2">Which are your preferred means of online consultation?*</label>
@@ -503,12 +457,12 @@ const EditClinicianModal: React.FC<EditModalProps> = ({ row, isOpen, onRequestCl
         </div>
         <div>
           <label className="block mb-2 mt-3">About Description*</label>
-          <input type="text" name="aboutYou" value={formData.aboutYou} onChange={handleInputChange} />
+          <input type="text" required name="about" value={formData.about} onChange={handleInputChange} />
           {/* <textarea 
           
-          name="aboutYou" 
+          name="about" 
           required 
-          value={formData.aboutYou} 
+          value={formData.about} 
           onChange={handleInputChange}
           rows={4} 
           ></textarea> */}

@@ -9,6 +9,8 @@ import SearchBar from '@/app/admin/components/SearchBar';
 import { deleteTaskData, getTasksData } from '@/services/admin/admin-service';
 import useSWR from 'swr';
 import { toast } from 'sonner';
+import Link from 'next/link';
+import { getImageUrlOfS3 } from '@/utils';
 
 
 const TableComponent: React.FC = () => {
@@ -121,7 +123,13 @@ const TableComponent: React.FC = () => {
                     <p className={`px-[10px] py-[2px] text-[10px] text-center rounded-3xl ${getPriorityColor(row?.priority)}`}>{row?.priority}</p>
                   </td>
                   <td>
-                    <a href="#" onClick={() => alert(`Opening attachment for ${row?.title}`)}>{row?.attachment}</a>
+                  <Link href={getImageUrlOfS3(row?.attachment) ?? ""}
+                    target="_blank"
+                    className="rounded-3xl py-[2px] px-2 text-[10px] text-center  text-[#26395E] bg-[#CCDDFF]"
+                    >
+                    View Attachment
+                  </Link>
+                    {/* <a href="#" onClick={() => alert(`Opening attachment for ${row?.title}`)}>{row?.attachment}</a> */}
                   </td>
                   <td>{row?.note}</td>
                   <td>

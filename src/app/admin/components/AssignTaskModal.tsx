@@ -1,9 +1,16 @@
-import { AssignTaskToTherapist } from '@/services/admin/admin-service';
-import { ButtonArrow } from '@/utils/svgicons';
-import { useSession } from 'next-auth/react';
-import React, { ChangeEvent, FormEvent, useEffect, useState, useTransition } from 'react';
-import Modal from 'react-modal';
-import { toast } from 'sonner';
+import { generateSignedUrlOfTaskData } from "@/actions";
+import { AssignTaskToTherapist } from "@/services/admin/admin-service";
+import { ButtonArrow } from "@/utils/svgicons";
+import { useSession } from "next-auth/react";
+import React, {
+  ChangeEvent,
+  FormEvent,
+  useEffect,
+  useState,
+  useTransition,
+} from "react";
+import Modal from "react-modal";
+import { toast } from "sonner";
 
 interface AssignTaskModalProps {
   isOpen: boolean;
@@ -15,11 +22,11 @@ interface TaskData {
   dueDate: string;
   priority: string;
   note: string;
-  attachment: string;
+  attachment: File | null;
   assignedBy: string;
 }
 
-const AssignTaskModal: React.FC<AssignTaskModalProps> = ({ isOpen, onRequestClose, row }) => {
+const AssignTaskModal: React.FC<AssignTaskModalProps> = ({isOpen,onRequestClose,row,}) => {
   const session = useSession();
   const userRole = (session as any)?.data?.user?.role;
   const [isPending, startTransition] = useTransition();
@@ -28,7 +35,7 @@ const AssignTaskModal: React.FC<AssignTaskModalProps> = ({ isOpen, onRequestClos
     dueDate: "",
     priority: "",
     note: "",
-    attachment: "",
+    attachment: null,
     assignedBy: "",
   });
 
@@ -40,8 +47,10 @@ const AssignTaskModal: React.FC<AssignTaskModalProps> = ({ isOpen, onRequestClos
       }));
     }
   }, [userRole]);
-  
-  const handleAssignTaskInput = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+
+  const handleAssignTaskInput = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     setTaskData((prevData: any) => ({
       ...prevData,
@@ -49,27 +58,57 @@ const AssignTaskModal: React.FC<AssignTaskModalProps> = ({ isOpen, onRequestClos
     }));
   };
 
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setTaskData((prev) => ({
+        ...prev,
+        attachment: e.target.files![0],
+      }));
+    }
+  };
+
   const handleAssignTaskSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-  
+
     startTransition(async () => {
-      try {
-        const formattedDueDate = new Date(taskData.dueDate).toISOString();
-  
+    try {
+         if (!taskData.attachment) {
+           toast.error('Please select a file to upload');
+           return;
+         } 
+         const { signedUrl, key } = await generateSignedUrlOfTaskData(
+           taskData.attachment.name,
+           taskData.attachment.type,
+          row?.email
+         );
+ 
+         const uploadResponse = await fetch(signedUrl, {
+           method: 'PUT',
+           body: taskData.attachment,
+           headers: {
+             'Content-Type': taskData.attachment.type,
+           },
+           cache: 'no-store'
+         });
+ 
+         if (!uploadResponse.ok) {
+           toast.error('Failed to upload file. Please try again');
+           return;
+         }
         const taskPayload = {
           ...taskData,
-          attachment: "http://example.com/attachments/static-task-file.pdf",
+          attachment: key,
         };
-        const response = await AssignTaskToTherapist(`/admin/therapists/tasks/${row?._id}`, taskPayload);
+        const response = await AssignTaskToTherapist(`/admin/therapists/tasks/${row?._id}`,taskPayload);
         if (response?.status === 201) {
           toast.success("Task assigned successfully");
-          onRequestClose();  
+          onRequestClose();
           setTaskData({
             title: "",
             dueDate: "",
             priority: "",
             note: "",
-            attachment: "",
+            attachment: null,
             assignedBy: userRole,
           });
         } else {
@@ -90,7 +129,9 @@ const AssignTaskModal: React.FC<AssignTaskModalProps> = ({ isOpen, onRequestClos
       className="modal bg-white w-[90%] max-w-[668px] max-h-[90vh] rounded-xl overflow-auto overflo-custom"
       overlayClassName="overlay"
     >
-      <h2 className="text-white bg-[#283C63] py-8 font-gothamMedium px-[50px]">Assign Task</h2>
+      <h2 className="text-white bg-[#283C63] py-8 font-gothamMedium px-[50px]">
+        Assign Task
+      </h2>
       <form onSubmit={handleAssignTaskSubmit} className="py-[40px] px-[60px]">
         <div className="grid gap-[30px]">
           <div>
@@ -115,7 +156,12 @@ const AssignTaskModal: React.FC<AssignTaskModalProps> = ({ isOpen, onRequestClos
           </div>
           <div>
             <label className="block mb-2">Priority</label>
-            <select name="priority" value={taskData.priority} onChange={handleAssignTaskInput} className="w-full p-2 border rounded">
+            <select
+              name="priority"
+              value={taskData.priority}
+              onChange={handleAssignTaskInput}
+              className="w-full p-2 border rounded"
+            >
               <option value="">select</option>
               <option value="High">High</option>
               <option value="Low">Low</option>
@@ -127,7 +173,7 @@ const AssignTaskModal: React.FC<AssignTaskModalProps> = ({ isOpen, onRequestClos
             <input
               type="file"
               name="attachment"
-              onChange={handleAssignTaskInput}
+              onChange={handleFileChange}
               className="w-full p-2 border rounded"
             />
           </div>
@@ -143,7 +189,10 @@ const AssignTaskModal: React.FC<AssignTaskModalProps> = ({ isOpen, onRequestClos
           </div>
         </div>
         <div className="flex justify-end">
-          <button type="submit" className="button mt-5">Submit<ButtonArrow /></button>
+          <button type="submit" className="button mt-5">
+            Submit
+            <ButtonArrow />
+          </button>
         </div>
       </form>
     </Modal>

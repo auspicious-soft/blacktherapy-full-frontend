@@ -13,11 +13,14 @@ import Notification from "../components/Notification";
 import useClients from "@/utils/useClients";
 import CustomSelect from "../components/CustomSelect";
 import useTherapists from "@/utils/useTherapists";
+import { getImageUrlOfS3 } from "@/utils";
+import Link from "next/link";
+import { generateSignedUrlOfWellness } from "@/actions";
 interface FormData {
   title: string;
   assignTo: string;
   link: string;
-  attachment: string;
+  attachment: File | null;
   description: string;
 }
 
@@ -26,7 +29,7 @@ const Page = () => {
     title: "",
     assignTo: "",
     link: "",
-    attachment: "",
+    attachment: null,
     description: "",
   });
 
@@ -40,8 +43,8 @@ const Page = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deleteItemId, setDeleteItemId] = useState<string | null>(null);
   const [selectedClientOrClinician, setSelectedClientOrClinician] = useState<any>(null);
-  const { clientsData } = useClients();
-  const { therapistData } = useTherapists();
+  const { clientsData } = useClients(); 
+  const { therapistData } = useTherapists(); 
   const rowsPerPage = 10;
 
   const handlePageClick = (selectedItem: { selected: number }) => {
@@ -49,32 +52,78 @@ const Page = () => {
   }
 
 
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    if (e.target.name == 'assignTo') setSelectedClientOrClinician(null)
-    const { name, value, files } = e.target as HTMLInputElement & { files: FileList };
-    setFormData({
-      ...formData,
-      [name]: files ? files[0] : value,
-    });
+  const handleInputChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
+    if (e.target.name === 'assignTo') setSelectedClientOrClinician(null);
+    
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setFormData(prev => ({
+        ...prev,
+        attachment: e.target.files![0]
+      }));
+    }
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();    
     startTransition(async () => {
       try {
-        if (selectedClientOrClinician) (formData as any).assignedToId = selectedClientOrClinician?.value
-        formData.attachment = 'http://example.com/attachments/yoga-session.pdf'
-        const response = await AddNewWellness(formData);
+        if (!formData.attachment) {
+          toast.error('Please select a file to upload');
+          return;
+        }
+        const submissionData = {
+          ...formData,
+          assignedToId: selectedClientOrClinician?.value
+        };
+
+        const { signedUrl, key } = await generateSignedUrlOfWellness(
+          formData.attachment.name,
+          formData.attachment.type
+        );
+
+        const uploadResponse = await fetch(signedUrl, {
+          method: 'PUT',
+          body: formData.attachment,
+          headers: {
+            'Content-Type': formData.attachment.type,
+          },
+          cache: 'no-store'
+        });
+
+        if (!uploadResponse.ok) {
+          toast.error('Failed to upload file. Please try again');
+          return;
+        }
+
+        const finalSubmissionData = {
+          ...submissionData,
+          attachment: key
+        };
+
+        const response = await AddNewWellness(finalSubmissionData);
+        
         if (response?.status === 201) {
-          setNotification("Therapist Registeration Successful");
+          setNotification("Wellness Entry Added Successfully");
           setFormData({
             title: "",
             assignTo: "",
             link: "",
-            attachment: "",
+            attachment: null,
             description: "",
-          })
-          mutate()
+          });
+          setSelectedClientOrClinician(null);
+          mutate();
+          toast.success("Wellness entry added successfully");
         } else {
           toast.error("Failed to add wellness entry");
         }
@@ -84,6 +133,7 @@ const Page = () => {
       }
     });
   };
+
 
   const handleDelete = (id: string) => {
     setDeleteItemId(id);
@@ -115,12 +165,7 @@ const Page = () => {
   const handleSelectChange = (selected: any) => {
     setSelectedClientOrClinician(selected);
   };
-  // const handleClient = (selected: any) => {
-  //     setSelectedClients(selected);
-  // };
-  // const handleClinician = (selected: any) => {
-  //   setSelectedClinician(selected);
-  // };
+
 
 
   return (
@@ -197,7 +242,7 @@ const Page = () => {
                 type="file"
                 required
                 name="attachment"
-                onChange={handleInputChange}
+                onChange={handleFileChange}
               />
             </div>
             <div className="w-full">
@@ -274,14 +319,16 @@ const Page = () => {
                     <td>{row?._id}</td>
                     <td>{row?.title}</td>
                     <td>
-                      <a href={row?.link} className="text-[#26395E] ">
+                      <a href={row?.link} target="_blank" className="text-[#26395E] hover:underline ">
                         {row?.link}</a>
                     </td>
                     <td className="capitalize">{row?.assignedToId ? row?.assignedToId?.firstName + ' ' + row?.assignedToId?.lastName : row?.assignTo}</td>
                     <td>
-                      <a href={row?.attachment}
-                        className="font-gothamMedium rounded-3xl py-[4px] px-[10px] text-[#26395E] bg-[#CCDDFF] text-[10px]">
-                        View Attachment</a>
+                    <Link href={getImageUrlOfS3(row?.attachment) ?? ""}
+                      target="_blank"
+                        className="rounded-3xl py-[2px] px-2 text-[10px] text-center  text-[#26395E] bg-[#CCDDFF]" >
+                            View Attachment
+                        </Link>
                     </td>
                     <td>{row?.description}</td>
                     <td>

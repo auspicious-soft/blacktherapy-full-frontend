@@ -9,6 +9,8 @@ import ClinicianOtherInfo from "./ClinicianOtherInfo";
 import ClinicianRecord from "./ClinicianRecord";
 import ClinicianNotesTab from "./ClinicianNotesTab";
 import ClinicianAttachments from "./ClinicianAttachments";
+import { getImageUrlOfS3 } from "@/utils";
+import { useSession } from "next-auth/react";
   interface ClinicianDetailsPopupProps {
   isOpen: boolean;
   onRequestClose: () => void;
@@ -16,8 +18,6 @@ import ClinicianAttachments from "./ClinicianAttachments";
 }
 
 const ClinicianDetailsPopup: React.FC<ClinicianDetailsPopupProps> = ({ isOpen, onRequestClose, row,}) => {
-
-
 const [activeTab, setActiveTab] = useState("tab1");
 const handleTabClick = (tab: string) => {
     setActiveTab(tab);
@@ -39,7 +39,7 @@ const handleTabClick = (tab: string) => {
       </div>
       <div className=" bg-white p-5 md:py-[30px] md:px-[35px] ">
         <div className="flex items-center gap-[23px] mb-5 md:mb-10">
-            <div><Image src={Client} height={100} width={100} alt="Profile picture" className="rounded-full w-[100px] object-cover aspect-square " /> </div>
+            <div><Image src={getImageUrlOfS3(row?.otherDetailsOfTherapist?.profilePic)?? ''} height={100} width={100} alt="Profile picture" className="rounded-full w-[100px] object-cover aspect-square " /> </div>
         <div>
             <h3 className="font-gothamBold">{row?.firstName} {row?.lastName} </h3>
             <p>{row?._id}</p>
@@ -101,7 +101,7 @@ const handleTabClick = (tab: string) => {
           {activeTab === "tab1" && <ClinicianPersonalinfo row={row} />}
           {activeTab === "tab2" && <ClinicianOtherInfo row={row} />}
           {activeTab==="tab3" && <ClinicianRecord rowId={row?._id}/>}
-          {activeTab==="tab4" && <ClinicianAttachments rowId={row?._id}/>}
+          {activeTab==="tab4" && <ClinicianAttachments userEmail={row?.email} rowId={row?._id}/>}
           {activeTab==="tab5" && <ClinicianNotesTab rowId={row?._id} /> }
         </div>
       </div>

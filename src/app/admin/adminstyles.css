@@ -118,6 +118,7 @@ background-size: cover;
 }
 button:disabled {
   opacity: 0.4;
+  color: #1d1d1d; 
 }
 input:focus-visible,
 select:focus-visible,

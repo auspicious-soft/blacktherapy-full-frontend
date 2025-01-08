@@ -9,15 +9,16 @@ import ClinicianOtherInfo from "./ClinicianOtherInfo";
 import ClinicianRecord from "./ClinicianRecord";
 import AppointmentsTab from "./AppointmentsTab";
 import InsurenceTab from "./InsurenceTab";
+import { getImageUrlOfS3 } from "@/utils";
 
 interface ClinicianDetailsPopupProps {
   isOpen: boolean;
   onRequestClose: () => void;
   row: any;
 }
-
+ 
 const ClientsAssignmentPopup = (props: ClinicianDetailsPopupProps) => {
-  const { row } = props;
+  const { row } = props; 
   const [activeTab, setActiveTab] = useState("tab1");
 
 
@@ -41,7 +42,7 @@ const ClientsAssignmentPopup = (props: ClinicianDetailsPopupProps) => {
       </div>
       <div className="md:py-[30px] bg-white p-5 md:px-[35px] ">
         <div className="flex items-center gap-[23px] mb-5 md:mb-10">
-          <div><Image src={Client} height={100} width={100} alt="Profile picture" className="rounded-full w-[100px] object-cover aspect-square " /> </div>
+          <div><Image src={getImageUrlOfS3(row?.profilePic) ?? ''} height={100} width={100} alt="Profile picture" className="rounded-full w-[100px] object-cover aspect-square " /> </div>
           <div>
             <h3 className="font-gothamBold">{row?.firstName} {row?.lastName}</h3>
             <p>Id- {row?._id}</p>

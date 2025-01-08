@@ -112,6 +112,62 @@ export const generateSignedUrlOfProfilePicTherapist = async (fileName: string, f
     }
 }
 
+export const generateSignedUrlOfAttachments = async (fileName: string, fileType: string, userEmail: string, identify: "client" | "therapist") => {
+    
+    const key =
+    identify === "client"
+      ? `attachments/${userEmail}/clients/${fileName}`
+      : `attachments/${userEmail}/therapists/${fileName}`;
+
+    const uploadParams = {
+        Bucket: process.env.AWS_BUCKET_NAME,
+        Key: key,
+        ContentType: fileType
+    }
+    try {
+        const command = new PutObjectCommand(uploadParams)
+        const signedUrl = await getSignedUrl(await createS3Client(), command)
+        return {signedUrl, key: uploadParams.Key}
+    } catch (error) {
+        console.error("Error generating signed URL:", error);
+        throw error
+    }
+}
+
+export const generateSignedUrlOfWellness = async (fileName: string, fileType: string) => {
+
+    const uploadParams = {
+        Bucket: process.env.AWS_BUCKET_NAME,
+        Key: `wellness/${fileName}`,
+        ContentType: fileType
+    }
+    try {
+        const command = new PutObjectCommand(uploadParams)
+        const signedUrl = await getSignedUrl(await createS3Client(), command)
+        return {signedUrl, key: uploadParams.Key}
+    } catch (error) {
+        console.error("Error generating signed URL:", error);
+        throw error
+    }
+}
+
+export const generateSignedUrlOfTaskData = async (fileName: string, fileType: string, userEmail: string) => {
+
+    const uploadParams = {
+        Bucket: process.env.AWS_BUCKET_NAME,
+        Key: `tasks/${userEmail}/${fileName}`,
+        ContentType: fileType
+    }
+    try {
+        const command = new PutObjectCommand(uploadParams)
+        const signedUrl = await getSignedUrl(await createS3Client(), command)
+        return {signedUrl, key: uploadParams.Key}
+    } catch (error) {
+        console.error("Error generating signed URL:", error);
+        throw error
+    }
+}
+
 export const deleteImageFromS3 = async (imageKey: string) => {
     const params = {
         Bucket: process.env.AWS_BUCKET_NAME,

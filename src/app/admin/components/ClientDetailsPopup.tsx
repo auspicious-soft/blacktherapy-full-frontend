@@ -10,6 +10,7 @@ import BillingInformationTab from "./BillingInformationTab";
 import ServiceAssignmentTab from "./ServiceAssignmentTab";
 import AttachmentsTabs from "./AttachmentsTabs";
 import ClientNotesTab from "./ClientNotesTab";
+import { getImageUrlOfS3 } from "@/utils";
 
 interface ClientDetailsPopupProps {
   isOpen: boolean;
@@ -21,6 +22,7 @@ interface ClientDetailsPopupProps {
 
 const ClientDetailsPopup = (props: ClientDetailsPopupProps) => {
   const {row} = props;
+
   const {mutate} = props;
   const {role} = props;
   const [activeTab, setActiveTab] = useState("tab1");
@@ -44,7 +46,7 @@ const ClientDetailsPopup = (props: ClientDetailsPopupProps) => {
       </div>
       <div className=" bg-white p-5 md:py-[30px] md:px-[35px] ">
         <div className="flex items-center gap-[23px] mb-5 md:mb-10">
-            <div><Image src={row?.profilePic} height={100} width={100} alt="Profile picture" className="rounded-full w-[100px] object-cover aspect-square " /> </div>
+            <div><Image src={getImageUrlOfS3(row?.profilePic)?? ''} height={100} width={100} alt="Profile picture" className="rounded-full w-[100px] object-cover aspect-square " /> </div>
         <div>
             <h3 className="font-gothamBold">{row?.firstName} {row?.lastName}</h3>
             <p>{row?._id}</p>
@@ -128,7 +130,7 @@ const ClientDetailsPopup = (props: ClientDetailsPopupProps) => {
           {activeTab==="tab3" && <ClientsInsurenceTab row={row} mutate={mutate} />}
           {activeTab==="tab4" && <BillingInformationTab rowId={row?._id} /> }
           {activeTab==="tab5" && <ServiceAssignmentTab rowId={row?._id}/> }
-          {activeTab==="tab6" && <AttachmentsTabs role={role} rowId={row?._id}/> }
+          {activeTab==="tab6" && <AttachmentsTabs userEmail={row?.email} role={role} rowId={row?._id}/> }
           {activeTab==="tab7" && <ClientNotesTab role={role} rowId={row?._id}/> }
         </div>
       </div>
