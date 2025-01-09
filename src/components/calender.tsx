@@ -5,6 +5,7 @@ import { format, parse, startOfWeek, getDay } from 'date-fns';
 import { enUS } from 'date-fns/locale/en-US';
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon } from 'lucide-react';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
+import { ToolbarProps, NavigateAction } from 'react-big-calendar';
 
 interface CalendarEvent extends Event {
     id: number;
@@ -76,13 +77,11 @@ const MyCalendar: React.FC = () => {
     }, []);
 
     // Custom toolbar component
-    const CustomToolbar: React.FC<{
-        onNavigate: (navigate: 'PREV' | 'NEXT' | 'TODAY' | 'DATE', date?: Date) => void;
-        label: string;
-    }> = ({ onNavigate, label }) => {
+
+    const CustomToolbar: React.FC<ToolbarProps<CalendarEvent, object>> = ({ onNavigate, label }) => {
         const buttonClass = "px-3 py-2 rounded-md transition-colors duration-200 text-sm whitespace-nowrap";
         const activeButtonClass = "bg-[#283C63] text-white";  // Change active button color
-        const inactiveButtonClass = "hover:bg-gray-100";
+        const inactiveButtonClass = "hover:bg-gray-100 text-black";
 
         return (
             <div className="flex flex-col gap-4 p-3 border-b sticky top-0 bg-white z-10">
@@ -90,14 +89,14 @@ const MyCalendar: React.FC = () => {
                     <div>
                         <button
                             onClick={() => onNavigate('PREV')}
-                            className="p-2 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                            className="p-2 hover:bg-gray-100 rounded-full transition-colors text-black duration-200"
                             aria-label="Previous"
                         >
                             <ChevronLeft className="w-5 h-5" />
                         </button>
                         <button
                             onClick={() => onNavigate('NEXT')}
-                            className="p-2 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                            className="p-2 hover:bg-gray-100 rounded-full transition-colors duration-200 text-black"
                             aria-label="Next"
                         >
                             <ChevronRight className="w-5 h-5" />
@@ -108,7 +107,7 @@ const MyCalendar: React.FC = () => {
                     </span>
                     <button
                         onClick={() => onNavigate('TODAY')}
-                        className="ml-2 flex items-center gap-2 px-3 py-2 bg-white border rounded-md hover:bg-gray-50 transition-colors duration-200"
+                        className="ml-2 flex items-center text-black gap-2 px-3 py-2 bg-white border rounded-md hover:bg-gray-50 transition-colors duration-200"
                     >
                         <CalendarIcon className="w-4 h-4" />
                         Today
@@ -144,18 +143,18 @@ const MyCalendar: React.FC = () => {
     }), []);
 
     // Custom time slot wrapper for responsive time display
-    const TimeSlotWrapper: React.FC = ({ children }:any) => (
+    const TimeSlotWrapper: React.FC<React.PropsWithChildren<{}>> = useCallback(({ children }) => (
         <div className="text-sm font-medium">
             {children}
         </div>
-    );
+    ), []);
 
     useEffect(() => {
         const style = document.createElement('style');
         style.innerHTML = `
       / General styles for all views /
       .rbc-time-view {
-        min-height: 600px !important;
+        min-height: 700px !important;
       }
       .rbc-calendar {
         height: 600px !important;
@@ -165,6 +164,10 @@ const MyCalendar: React.FC = () => {
       // }
       .rbc-timeslot-group {
         min-height: 60px !important;
+        // color: #333 !important;
+      }
+        .rbc-label ,.rbc-button-link{
+        color: black !important;
       }
 
       / Specific styling for month view /
@@ -237,8 +240,8 @@ const MyCalendar: React.FC = () => {
                     eventPropGetter={eventStyleGetter}
                     step={60}
                     timeslots={1}
-                    min={new Date(0, 0, 0, 1, 0)} //Set start time to 1 AM /}
-                    max={new Date(0, 0, 0, 23, 59)}  // Set end time to 12 PM /}
+                    min={new Date(0, 0, 0, 1, 0)}
+                    max={new Date(0, 0, 0, 23, 59)}
                     messages={{
                         work_week: 'Work Week'
                     }}
