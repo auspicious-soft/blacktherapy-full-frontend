@@ -15,17 +15,17 @@ const TSGEmployeeDetails = ({ record }: { record: any }) => (
     <div className='grid grid-cols-[minmax(0,_5fr)_minmax(0,_7fr)] gap-[30px]'>
       <label>Employment Status
         <p className='text-[#283C63] text-[18px] underline font-gothamMedium leading-[normal] mt-1'>
-          {record.employmentStatus || "Withdrawn"}
+          {record?.employmentStatus || "Withdrawn"}
         </p>
       </label>
       <label>TSG Employee Name
-        <p className='text-[#283C63] text-sm font-gothamMedium leading-[normal] mt-1'>{record?.tsgtsgEmployeeName}</p>
+        <p className='text-[#283C63] text-sm font-gothamMedium leading-[normal] mt-1'>{record?.tsgEmployeeName}</p>
       </label>
       <label>TSG Employee Owner
-        <p className='text-[#283C63] text-sm font-gothamMedium leading-[normal] mt-1'>{record?.tsgtsgEmployeeOwner}</p>
+        <p className='text-[#283C63] text-sm font-gothamMedium leading-[normal] mt-1'>{record?.tsgEmployeeOwner}</p>
       </label>
       <label>Assigned Employee ID
-        <p className='text-[#283C63] text-sm font-gothamMedium leading-[normal] mt-1'>{record?.assignedassignedEmployeeId}</p>
+        <p className='text-[#283C63] text-sm font-gothamMedium leading-[normal] mt-1'>{record?.assignedEmployeeId}</p>
       </label>
     </div>
   </div>

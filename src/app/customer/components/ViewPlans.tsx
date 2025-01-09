@@ -116,7 +116,7 @@ const ViewPlans = (props: any) => {
   }
 
   return (
-    <div className="max-h-[90vh] overflow-auto overflo-custom" ref={modalRef}>
+    <div className="ma" ref={modalRef}>
       <h2 className='mb-5'>Select your Plan</h2>
       <div className='gap-[30px] grid grid-cols-2'>
         {/* Stay Rooted Plan */}

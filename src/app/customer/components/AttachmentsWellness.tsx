@@ -7,6 +7,7 @@ import React, { useState, ReactNode } from "react";
 import { YoutubeIcon } from "@/utils/svgicons";
 import ReactLoading from "react-loading";
 import Link from "next/link";
+import { getImageUrlOfS3 } from "@/utils";
 
 interface ModalProps {
   isOpen: boolean;
@@ -52,7 +53,7 @@ const AttachmentsWellness = (props: any) => {
 
     if (fileExtension === 'pdf' || fileExtension === 'docx') {
       return (
-        <Link href={obj.attachment} className="" target="_blank">
+        <Link href={getImageUrlOfS3(obj.attachment)} className="" target="_blank">
           <div className="grid place-items-center h-[273px] border rounded-[20px] bg-[#e0f2fc] border-[#CCE9FA] ">
             <div className="rounded-full bg-[#26395E] w-[100px] h-[100px] flex items-center justify-center">
               <span className="text-white text-lg font-bold uppercase">{fileExtension}</span>
@@ -82,7 +83,7 @@ const AttachmentsWellness = (props: any) => {
     } else if (fileExtension === 'png' || fileExtension === 'jpg' || fileExtension === 'jpeg') {
       return (
         <Image
-          src={obj.attachment}
+          src={getImageUrlOfS3(obj.attachment)}
           alt="Image"
           width={300}
           height={200}

@@ -7,7 +7,7 @@ import NextIcon from "@/assets/images/nexticon.png";
 import { toast } from "sonner";
 import Link from "next/link";
 
-const UpcomingAppointments = (props: any) => {
+const   UpcomingAppointments = (props: any) => {
   const { data, error, setQuery, isChatAllowed, isVideoCount, video, message } = props;
   const router = useRouter();
   const upcomingData = data?.data;

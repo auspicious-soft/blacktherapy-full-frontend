@@ -7,6 +7,7 @@ import { GetEmployeeRecordsData } from "@/services/admin/admin-service";
 import { useRouter } from "next/navigation";
 import { useParams, useSearchParams } from "next/navigation";
 import { getEmployeeDetails } from "@/services/client/client-service";
+import { getImageUrlOfS3 } from "@/utils";
 
 const Page = () => {
   const params = useParams();
@@ -25,14 +26,14 @@ const Page = () => {
     getEmployeeDetails,
     { revalidateOnFocus: false }
   );
-  const records = data?.data?.data[0];
-  const employeeDetails = employee?.data?.data;
+  const records = data?.data?.data[0]; 
+  const employeeDetails = employee?.data?.data; 
 
   return (
     <div>
       <div className="text-lg">
         <div className="mb-5 flex gap-5 items-center bg-white p-5 rounded-xl ">
-          <Image src={profileImage} alt="profile" width={150} height={150} className="object-contain "/>
+          <Image src={getImageUrlOfS3(employeeDetails?.profilePic)} alt="profile" width={150} height={150} className="object-contain "/>
         <div>
         <h2 className="leading-[normal]">{firstName} {lastName} <span className="text-lg">({records?.position})</span></h2>
         <p>{employeeDetails?.about} </p>
