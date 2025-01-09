@@ -84,7 +84,6 @@ const Page = () => {
 
   const formatTime = (timeString: string): string => {
     if (!timeString) return "";
-    // Return the time in "HH:mm" format or handle further formatting here if needed
     const [hours, minutes] = timeString.split(":");
     return `${hours}:${minutes}`;
   };

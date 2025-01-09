@@ -1,4 +1,6 @@
 import React from 'react';
+import { format } from 'date-fns';
+import Link from 'next/link'
 
 interface ModalProps {
     isOpen: boolean;
@@ -8,7 +10,6 @@ interface ModalProps {
 
 const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, event }) => {
     if (!isOpen || !event) return null;
-
     const startTime = event.start.toLocaleTimeString('en-US', {
         hour: '2-digit',
         minute: '2-digit',
@@ -25,11 +26,14 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, event }) => {
             <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
                 <h2 className="text-2xl font-bold mb-4">{event.title}</h2>
                 <p><strong>Client Name:</strong> {event.clientName}</p>
-                <p><strong>Appointment Date:</strong> {event.start.toLocaleDateString()}</p>
-                <p><strong>Appointment Time:</strong> {startTime} - {endTime}</p>
+                <p><strong>Appointment Date:</strong> {format(event.start, 'MM/dd/yyyy')}</p>
+                <p><strong>Appointment Time:</strong> {startTime} - {endTime}</p> 
                 <p><strong>Status:</strong> {event.status}</p>
-                <div className="mt-4">
-                    <button onClick={onClose} className="px-4 py-2 bg-[#283C63] text-white rounded-lg hover:bg-[#283C63]">
+                <div className="mt-4 flex gap-4 ">
+                    <Link href={`/therapist/assignments/video-chat/${event.id}`} className="px-4 py-2 bg-[#283C63] text-white rounded-lg hover:bg-[#283C63]">
+                        Open Appointment
+                    </Link>
+                    <button onClick={onClose} className="px-4 py-2 font-bold  text-black rounded-lg ">
                         Close
                     </button>
                 </div>

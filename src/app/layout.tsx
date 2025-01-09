@@ -4,6 +4,7 @@ import "./globals.css";
 import { SessionProvider } from "next-auth/react";
 import localFont from "next/font/local";
 import { auth } from "@/auth";
+import Providers from "@/components/progress-provider";
 
 const gothamPro = localFont({
   src: "../assets/fonts/GothamPro.ttf",
@@ -25,10 +26,12 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <SessionProvider session={session}>
-        <Toaster richColors />
-        <body className={`${gothamPro.variable} ${anticDidone.variable}`}>
-          {children}
-        </body>
+        <Providers>
+          <Toaster richColors />
+          <body className={`${gothamPro.variable} ${anticDidone.variable}`}>
+            {children}
+          </body>
+        </Providers>
       </SessionProvider>
     </html>
   );

@@ -1,23 +1,20 @@
-// components/MyCalendar.tsx
-"use client"
-import React, { useState, useCallback, useMemo, useEffect } from 'react';
-import { Calendar, dateFnsLocalizer, View, Event } from 'react-big-calendar';
-import { format, parse, startOfWeek, getDay, addMinutes } from 'date-fns';
-import { enUS } from 'date-fns/locale/en-US';
-import { ChevronLeft, ChevronRight, Calendar as CalendarIcon } from 'lucide-react';
-import 'react-big-calendar/lib/css/react-big-calendar.css';
-import { ToolbarProps } from 'react-big-calendar';
-import useSWR from 'swr';
-import { useSession } from 'next-auth/react';
-import { getTherapistAssignments } from '@/services/therapist/therapist-service.';
-import EventModal from './EventModal';
-// import CustomEvent from './CustomEvents'; // Import the CustomEvent component
+"use client";
+import React, { useState, useCallback, useMemo, useEffect } from "react";
+import { Calendar, dateFnsLocalizer, View, Event } from "react-big-calendar";
+import { format, parse, startOfWeek, getDay, addMinutes } from "date-fns";
+import { enUS } from "date-fns/locale/en-US";
+import { ChevronLeft, ChevronRight, Calendar as CalendarIcon } from "lucide-react";
+import "react-big-calendar/lib/css/react-big-calendar.css";
+import { ToolbarProps } from "react-big-calendar";
+import useSWR from "swr";
+import { useSession } from "next-auth/react";
+import { getTherapistAssignments } from "@/services/therapist/therapist-service.";
+import EventModal from "./EventModal";
 
 export interface CalendarEvent extends Event {
     id: number;
     title: string;
     start: Date;
-
     end: Date;
 }
 
@@ -26,26 +23,29 @@ const localizer = dateFnsLocalizer({
     parse,
     startOfWeek,
     getDay,
-    locales: { 'en-US': enUS },
+    locales: { "en-US": enUS },
 });
 
 const CALENDAR_VIEWS = [
-    { key: 'month', label: 'Month' },
-    { key: 'week', label: 'Week' },
-    { key: 'day', label: 'Day' },
-    { key: 'work_week', label: 'Work Week' }
+    { key: "month", label: "Month" },
+    { key: "week", label: "Week" },
+    { key: "day", label: "Day" },
+    { key: "work_week", label: "Work Week" },
 ] as const;
 
 const MyCalendar: React.FC = () => {
     const [date, setDate] = useState<Date>(new Date());
-    const [view, setView] = useState<View>('week');
+    const [view, setView] = useState<View>("week");
     const [isMobile, setIsMobile] = useState<boolean>(false);
     const [selectedEvent, setSelectedEvent] = useState<any>(null);
-    const [isModalOpen, setIsModalOpen] = useState(false); 
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const session = useSession();
     const userId = session?.data?.user?.id;
 
-    const { data, error, isLoading, mutate } = useSWR(userId ? `/therapist/${session?.data?.user?.id}/clients` : null, getTherapistAssignments);
+    const { data, error, isLoading, mutate } = useSWR(
+        userId ? `/therapist/${session?.data?.user?.id}/clients` : null,
+        getTherapistAssignments
+    );
 
     useEffect(() => {
         const checkIsMobile = () => {
@@ -53,18 +53,18 @@ const MyCalendar: React.FC = () => {
         };
 
         checkIsMobile();
-        window.addEventListener('resize', checkIsMobile);
+        window.addEventListener("resize", checkIsMobile);
 
         return () => {
-            window.removeEventListener('resize', checkIsMobile);
+            window.removeEventListener("resize", checkIsMobile);
         };
     }, []);
+
     useEffect(() => {
-        const style = document.createElement('style');
+        const style = document.createElement("style");
         style.innerHTML = `
-      / General styles for all views /
-      .rbc-time-view {
-        min-height: 700px !important;
+  .rbc-time-view {
+        min-height: 500px !important;
       }
       .rbc-calendar {
         height: 600px !important;
@@ -108,13 +108,68 @@ const MyCalendar: React.FC = () => {
       / Work Week view styling /
       .rbc-work-week-view .rbc-time-view,
       .rbc-work-week-view .rbc-time-content {
-        min-height: 600px !important;
+        min-height: 500px !important;
       }
      .rbc-day-slot .rbc-event-label{
        text-wrap: wrap!important;
       }
-     
-      / Mobile-specific adjustments /
+      .rbc-event {
+        background-color: #283C63 !important;
+        color: white !important;
+        font-size: 11px !important;
+        padding: 2px !important;
+        border-radius: 4px !important;
+        margin: 2px !important;
+        position: relative !important;
+        z-index: 1 !important;
+        width: calc(100% - 1px) !important;
+        height: 20px !important;
+        text-wrap: wrap;
+      }
+
+    
+      .rbc-time-slot {
+        height: auto !important;
+      }
+
+      .rbc-timeslot-group {
+        min-height: 100px !important;
+      }
+
+      .time-slot-content {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 2px !important;
+        padding: 4px !important;
+        min-height: 100px !important;
+      }
+
+      .event-container {
+        position: relative !important;
+        height: 30px !important;
+        margin-bottom: 8px !important;
+      }
+
+      .rbc-events-container {
+        margin-right: 0 !important;
+      }
+      .rbc-day-slot .rbc-event, .rbc-day-slot .rbc-background-event{
+      left: 0% !important; 
+      text-wrap: wrap !important;
+      min-height: 35px !important;
+    }
+      .custom-event-wrapper {
+        position: absolute !important;
+        width: 100% !important;
+        height: 100% !important;
+      }
+
+      .rbc-events-container rbc-event {
+    left: 0% !important;
+}
+    .time-slot-content > .event-container:nth-child(2) .rbc-event {
+  left: 0% !important;
+}
       @media (max-width: 768px) {
         .rbc-toolbar {
           flex-direction: column;
@@ -122,6 +177,24 @@ const MyCalendar: React.FC = () => {
         .rbc-toolbar-label {
           margin: 8px 0;
         }
+        .rbc-event {
+          font-size: 10px !important;
+          padding: 4px !important;
+          height: 25px !important;
+        }
+
+        .event-container {
+          height: 25px !important;
+          margin-bottom: 6px !important;
+        }
+
+        .time-slot-content {
+          gap: 6px !important;
+        }
+      }
+
+      .rbc-time-view .rbc-row {
+        min-height: auto !important;
       }
     `;
         document.head.appendChild(style);
@@ -130,33 +203,95 @@ const MyCalendar: React.FC = () => {
             document.head.removeChild(style);
         };
     }, []);
+
     const initialEvents: CalendarEvent[] = useMemo(() => {
         if (!data) return [];
 
-        return data?.data?.data?.map((appointment: any) => {
-            const appointmentDate = new Date(appointment.appointmentDate);
-            const [hour, minute] = appointment.appointmentTime.split(':').map(Number);
-            const start = new Date(appointmentDate.setHours(hour, minute));
-            const end = addMinutes(start, 60);
+        return (
+            data?.data?.data?.map((appointment: any) => {
+                const appointmentDate = new Date(appointment.appointmentDate);
+                const [hour, minute] = appointment.appointmentTime
+                    .split(":")
+                    .map(Number);
+                const start = new Date(appointmentDate.setHours(hour, minute));
+                const end = addMinutes(start, 60);
 
-            return {
-                id: appointment._id,
-                title: `${appointment.clientName}`,
-                start,
-                end,
-                clientName: appointment.clientName,
-                status: appointment.status,
-            };
-        }) || [];
+                return {
+                    id: appointment._id,
+                    title: `${appointment.clientName}`,
+                    start,
+                    end,
+                    clientName: appointment.clientName,
+                    status: appointment.status,
+                };
+            }) || []
+        );
     }, [data]);
 
     const handleEventSelect = useCallback((event: CalendarEvent) => {
         setSelectedEvent(event);
-        setIsModalOpen(true); 
+        setIsModalOpen(true);
     }, []);
 
-    const CustomToolbar: React.FC<ToolbarProps<CalendarEvent, object>> = ({ onNavigate, label }) => {
-        const buttonClass = "px-3 py-2 rounded-md transition-colors duration-200 text-sm whitespace-nowrap";
+    const groupEventsByHour = useMemo(() => {
+        const grouped: { [key: string]: CalendarEvent[] } = {};
+
+        initialEvents.forEach((event) => {
+            const hour = format(event.start, "yyyy-MM-dd HH");
+            if (!grouped[hour]) {
+                grouped[hour] = [];
+            }
+            grouped[hour].push(event);
+        });
+
+        return grouped;
+    }, [initialEvents]);
+
+    const EventWrapper: React.FC<{ event: CalendarEvent; index: number }> = ({ event, index }) => {
+        return (
+            <div className="event-container flex flex-col">
+                <div
+                    className={`rbc-event relative ${index === 1 ? "left-[0%]" : ""}`}
+                    onClick={() => handleEventSelect(event)}
+                >
+                    <div className="rbc-event-content">{event.title}</div>
+                </div>
+            </div>
+        );
+    };
+
+
+    const TimeSlotWrapper: React.FC<React.PropsWithChildren<{}>> = useCallback(
+        ({ children }) => {
+            const date = new Date(children as string);
+
+            // Check if the date is invalid
+            if (isNaN(date.getTime())) {
+                return <div className="time-slot-content">{children}</div>;
+            }
+
+            const hourKey = format(date, "yyyy-MM-dd HH");
+            const events = groupEventsByHour[hourKey] || [];
+
+            return (
+                <div className="time-slot-content">
+                    {events.map((event: any, index: number) => (
+                        <EventWrapper key={event.id} event={event} index={index} />
+                    ))}
+                    {children}
+                </div>
+            );
+        },
+        [groupEventsByHour]
+    );
+
+
+    const CustomToolbar: React.FC<ToolbarProps<CalendarEvent, object>> = ({
+        onNavigate,
+        label,
+    }) => {
+        const buttonClass =
+            "px-3 py-2 rounded-md transition-colors duration-200 text-sm whitespace-nowrap";
         const activeButtonClass = "bg-[#283C63] text-white";
         const inactiveButtonClass = "hover:bg-gray-100 text-black";
 
@@ -165,25 +300,23 @@ const MyCalendar: React.FC = () => {
                 <div className="flex items-center justify-between width-full">
                     <div>
                         <button
-                            onClick={() => onNavigate('PREV')}
+                            onClick={() => onNavigate("PREV")}
                             className="p-2 hover:bg-gray-100 rounded-full transition-colors text-black duration-200"
                             aria-label="Previous"
                         >
                             <ChevronLeft className="w-5 h-5" />
                         </button>
                         <button
-                            onClick={() => onNavigate('NEXT')}
+                            onClick={() => onNavigate("NEXT")}
                             className="p-2 hover:bg-gray-100 rounded-full transition-colors duration-200 text-black"
                             aria-label="Next"
                         >
                             <ChevronRight className="w-5 h-5" />
                         </button>
                     </div>
-                    <span className="text-lg font-semibold">
-                        {label}
-                    </span>
+                    <span className="text-lg font-semibold">{label}</span>
                     <button
-                        onClick={() => onNavigate('TODAY')}
+                        onClick={() => onNavigate("TODAY")}
                         className="ml-2 flex items-center text-black gap-2 px-3 py-2 bg-white border rounded-md hover:bg-gray-50 transition-colors duration-200"
                     >
                         <CalendarIcon className="w-4 h-4" />
@@ -196,7 +329,8 @@ const MyCalendar: React.FC = () => {
                         <button
                             key={key}
                             onClick={() => setView(key as View)}
-                            className={`${buttonClass} ${view === key ? activeButtonClass : inactiveButtonClass}` }
+                            className={`${buttonClass} ${view === key ? activeButtonClass : inactiveButtonClass
+                                }`}
                         >
                             {viewLabel}
                         </button>
@@ -205,26 +339,6 @@ const MyCalendar: React.FC = () => {
             </div>
         );
     };
-
-    const eventStyleGetter = useCallback(() => ({
-        style: {
-            fontSize: '12px',
-            padding: '4px 4px',
-            backgroundColor: '#283C63',
-            color: 'white',
-            whiteSpace: "normal",
-            border: 'none',
-            borderRadius: '4px',
-            margin:'2px',
-        }
-    }), []);
-
-    const TimeSlotWrapper: React.FC<React.PropsWithChildren<{}>> = useCallback(({ children }) => (
-     
-        <div className="text-sm font-medium ">
-            {children}
-        </div>
-    ), []);
 
     return (
         <div className="p-2 md:p-5 min-h-[calc(100vh-200px)]">
@@ -236,7 +350,10 @@ const MyCalendar: React.FC = () => {
                     startAccessor="start"
                     endAccessor="end"
                     onSelectEvent={handleEventSelect}
-                    views={CALENDAR_VIEWS.reduce((acc, { key }) => ({ ...acc, [key]: true }), {})}
+                    views={CALENDAR_VIEWS.reduce(
+                        (acc, { key }) => ({ ...acc, [key]: true }),
+                        {}
+                    )}
                     defaultView="week"
                     view={view}
                     onView={setView}
@@ -246,28 +363,19 @@ const MyCalendar: React.FC = () => {
                     components={{
                         toolbar: CustomToolbar,
                         timeSlotWrapper: TimeSlotWrapper,
-                  
                     }}
-                    eventPropGetter={eventStyleGetter}
                     step={60}
                     timeslots={1}
-                    min={new Date(0, 0, 0, 1, 0)}
-                    max={new Date(0, 0, 0, 23, 59)}
-                    messages={{
-                        work_week: 'Work Week'
-                    }}
                 />
             </div>
 
-
-            <EventModal 
-                isOpen={isModalOpen} 
-                onClose={() => setIsModalOpen(false)} 
-                event={selectedEvent} 
+            <EventModal
+                event={selectedEvent}
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
             />
         </div>
     );
 };
 
 export default MyCalendar;
-
