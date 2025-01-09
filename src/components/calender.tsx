@@ -119,7 +119,6 @@ const MyCalendar: React.FC = () => {
         font-size: 11px !important;
         padding: 2px !important;
         border-radius: 4px !important;
-        margin: 2px !important;
         position: relative !important;
         z-index: 1 !important;
         width: calc(100% - 1px) !important;
@@ -314,7 +313,7 @@ const MyCalendar: React.FC = () => {
                             <ChevronRight className="w-5 h-5" />
                         </button>
                     </div>
-                    <span className="text-lg font-semibold">{label}</span>
+                    <span className="text-lg text-black font-semibold">{label}</span>
                     <button
                         onClick={() => onNavigate("TODAY")}
                         className="ml-2 flex items-center text-black gap-2 px-3 py-2 bg-white border rounded-md hover:bg-gray-50 transition-colors duration-200"
