@@ -19,7 +19,6 @@ interface OptionType {
 }
 
 const EditClinicianModal: React.FC<EditModalProps> = ({ row, isOpen, onRequestClose, mutate }) => {
-  console.log('Clinician row:', row);
 
   const [isPending, startTransition] = useTransition();
   const [formData, setFormData] = useState<any>({
