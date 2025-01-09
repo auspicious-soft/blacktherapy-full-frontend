@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import previmg2 from "@/assets/images/previmg.png";
+import previmg2 from "@/assets/images/profile.png";
 import { ButtonArrow, EditImgIcon } from "@/utils/svgicons";
 import success from "@/assets/images/succes.png";
 import {
@@ -47,6 +47,7 @@ const Page = () => {
   const session = useSession();
   const { data, error, mutate } = useSWR(`/therapist/${session?.data?.user?.id}`, getTherapistsProfileData);
   const profileData = data?.data?.data;
+  console.log('profileData:', profileData);
   const [isPending, setIsPending] = useState(false);
   const [formData, setFormData] = useState<any>({
     firstName: "",
@@ -69,7 +70,7 @@ const Page = () => {
     startTime: "",
     endTime: "",
   });
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>();
   const [notification, setNotification] = useState<string | null>(null);
 
   const formatDate = (dateString: string) => {
@@ -103,14 +104,14 @@ const Page = () => {
         about: profileData?.about || "",
         preferredCommunicationMethod: profileData?.preferredCommunicationMethod || "",
         preferredlanguage: profileData?.preferredlanguage || "",
-        profilePic: profileData.profilePic || "",
+        profilePic: profileData?.profilePic || "",
         currentAvailability: Array.isArray(profileData?.currentAvailability) ? profileData?.currentAvailability : [],
         startTime: formatTime(profileData?.startTime),
         endTime: formatTime(profileData?.endTime),
       })
 
       if (profileData?.profilePic) {
-        const imageUrl = getImageUrlOfS3(profileData.profilePic);
+        const imageUrl = getImageUrlOfS3(profileData?.profilePic)?? '';
         setImagePreview(imageUrl);
       }
     }

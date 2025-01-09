@@ -106,23 +106,10 @@ const Page = () => {
       {openModal && (
         <Modal
           isOpen={openModal}
-          style={{
-            content: {
-              top: '50%',
-              left: '50%',
-              right: 'auto',
-              bottom: 'auto',
-              marginRight: '-50%',
-              transform: 'translate(-50%, -50%)',
-              maxWidth: '100%',
-              width: '500px',
-              borderRadius: '10px',
-            },
-            overlay: {
-              backgroundColor: 'rgba(0, 0, 0, 0.5)',
-            },
-          }}
-          onRequestClose={() => setOpenModal(false)} >
+          overlayClassName="w-full h-full p-3 fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center"
+          className="modal max-w-[810px] bg-white pt-5 mx-auto rounded-[20px] w-full max-h-[90vh] overflow-auto"
+          onRequestClose={() => setOpenModal(false)} 
+        >
           <h1 className="text-center font-antic text-[#283C63] text-[30px] leading-[1.2em] mb-[25px] lg:text-[40px] lg:mb-[50px]">
             Request Appointment
           </h1>

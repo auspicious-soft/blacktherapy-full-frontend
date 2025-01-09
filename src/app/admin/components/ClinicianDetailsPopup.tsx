@@ -1,16 +1,13 @@
 import { CloseIcon } from "@/utils/svgicons";
 import React, { act, useState } from "react";
 import Modal from "react-modal";
-import Image from "next/image";
-import Client from "@/assets/images/clientpic.png";
-import ClientNotesTab from "./ClientNotesTab";
+import Image from "next/image"; 
 import ClinicianPersonalinfo from "./ClinicianPersonalinfo";
 import ClinicianOtherInfo from "./ClinicianOtherInfo";
 import ClinicianRecord from "./ClinicianRecord";
 import ClinicianNotesTab from "./ClinicianNotesTab";
 import ClinicianAttachments from "./ClinicianAttachments";
-import { getImageUrlOfS3 } from "@/utils";
-import { useSession } from "next-auth/react";
+import { getImageUrlOfS3 } from "@/utils"; 
   interface ClinicianDetailsPopupProps {
   isOpen: boolean;
   onRequestClose: () => void;
@@ -98,8 +95,8 @@ const handleTabClick = (tab: string) => {
           </button>
         </div>
         <div className="mt-[30px]">
-          {activeTab === "tab1" && <ClinicianPersonalinfo row={row} />}
-          {activeTab === "tab2" && <ClinicianOtherInfo row={row} />}
+          {activeTab=== "tab1" && <ClinicianPersonalinfo row={row} />}
+          {activeTab=== "tab2" && <ClinicianOtherInfo row={row} />}
           {activeTab==="tab3" && <ClinicianRecord rowId={row?._id}/>}
           {activeTab==="tab4" && <ClinicianAttachments userEmail={row?.email} rowId={row?._id}/>}
           {activeTab==="tab5" && <ClinicianNotesTab rowId={row?._id} /> }
