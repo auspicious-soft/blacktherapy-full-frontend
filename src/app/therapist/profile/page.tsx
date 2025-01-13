@@ -47,7 +47,6 @@ const Page = () => {
   const session = useSession();
   const { data, error, mutate } = useSWR(`/therapist/${session?.data?.user?.id}`, getTherapistsProfileData);
   const profileData = data?.data?.data;
-  console.log('profileData:', profileData);
   const [isPending, setIsPending] = useState(false);
   const [formData, setFormData] = useState<any>({
     firstName: "",
