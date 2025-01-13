@@ -83,7 +83,6 @@ const TableComponent: React.FC = () => {
         <table className="">
           <thead>
             <tr>
-              <th>ID</th>
               <th>Status</th>
               <th>From</th>
               <th>To</th>
@@ -111,7 +110,6 @@ const TableComponent: React.FC = () => {
             ) : taskData?.length > 0 ? (
               taskData?.map((row: any) => (
                 <tr key={row?._id}>
-                  <td>{row?._id}</td>
                   <td>
                     <p className={`px-[10px] py-[2px] text-[10px] text-center rounded-3xl ${getStatusColor(row?.status)}`}>{row?.status}</p>
                   </td>

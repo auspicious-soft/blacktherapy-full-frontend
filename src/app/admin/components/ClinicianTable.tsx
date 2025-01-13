@@ -170,10 +170,9 @@ const ClinicianTable: React.FC<TherapistsDataProps> = ({
         <table className="">
           <thead>
             <tr>
-              <th>ID</th>
+              <th title={(tooltipContent && tooltipContent as string) ?? ''}>Name</th>
               <th>Status</th>
               <th>Training</th>
-              <th title={(tooltipContent && tooltipContent as string) ?? ''}>Name</th>
               <th>Contact</th>
               <th>Address</th>
               <th>Member Since</th>
@@ -199,20 +198,7 @@ const ClinicianTable: React.FC<TherapistsDataProps> = ({
             ) : therapistsDataArray?.length > 0 ? (
               therapistsDataArray?.map((row: any) => (
                 <tr key={row?._id}>
-                  <td>{row?._id}</td>
-                  <td>
-                    <p className=" inline-block font-gothamMedium text-center leading-[normal] rounded-3xl py-[3px] px-[10px] text-[#26395E] bg-[#CCDDFF] text-[10px] ">
-                      {row?.otherDetailsOfTherapist?.status ??
-                        "Background Check Pending"}
-                    </p>
-                  </td>
-                  <td>
-                    <p className=" font-gothamMedium text-center leading-[normal] rounded-3xl py-[3px] px-[10px] text-[#A85C03] bg-[#fffdd1] text-[10px] ">
-                      {row?.training}
-                    </p>
-                  </td>
-
-                  <td onClick={() => openClinicianPopup(row)} className="hover:underline hover:font-bold relative"
+                                    <td onClick={() => openClinicianPopup(row)} className="hover:underline hover:font-bold relative"
                     data-tip
                     title={(tooltipContent && tooltipContent as string) ?? ''}
                     data-for={`tooltip-${row?._id}`}
@@ -240,6 +226,20 @@ const ClinicianTable: React.FC<TherapistsDataProps> = ({
                     )}
 
                   </td>
+
+
+                  <td>
+                    <p className=" inline-block font-gothamMedium text-center leading-[normal] rounded-3xl py-[3px] px-[10px] text-[#26395E] bg-[#CCDDFF] text-[10px] ">
+                      {row?.otherDetailsOfTherapist?.status ??
+                        "Background Check Pending"}
+                    </p>
+                  </td>
+                  <td>
+                    <p className=" font-gothamMedium text-center leading-[normal] rounded-3xl py-[3px] px-[10px] text-[#A85C03] bg-[#fffdd1] text-[10px] ">
+                      {row?.training}
+                    </p>
+                  </td>
+
 
 
                   <td>{row?.phoneNumber}</td>

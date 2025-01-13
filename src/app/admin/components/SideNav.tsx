@@ -72,7 +72,7 @@ const SideNav = () => {
           <li className={isActive('/admin/client-page')}>
             <Link href="/admin/client-page">
               <ClientIcon />
-              {!isCollapsed && <span>Client</span>}
+              {!isCollapsed && <span>Clients</span>}
             </Link>
           </li>
           <li className={isActive('/admin/addnew-client')}>

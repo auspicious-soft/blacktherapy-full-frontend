@@ -10,7 +10,7 @@ import { deleteClientData, updateClientsDetails } from '@/services/admin/admin-s
 import { toast } from 'sonner';
 import { useSession } from 'next-auth/react';
 
-interface ClientsDataProps { 
+interface ClientsDataProps {
   clientsData: any;
   setQuery: any;
   error: any;
@@ -27,25 +27,25 @@ const ClientTable: React.FC<ClientsDataProps> = ({ clientsData, setQuery, error,
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const { data: session } = useSession();
   //const isAdmin = (session as any)?.user?.role === 'admin';
-  
 
-   
+
+
   const ClientsArray = clientsData?.data;
-  
+
   const rowsPerPage = 10;
   const handlePageClick = (selectedItem: { selected: number }) => {
     setQuery(`page=${selectedItem.selected + 1}&limit=${rowsPerPage}`)
   }
-  
-  
-  const openClientPopup = (row:any) => {
+
+
+  const openClientPopup = (row: any) => {
     setClientDetails(row);
     setClientDetailsPopup(true);
   };
 
   const closeClientPopup = () => {
     setClientDetailsPopup(false);
-    setClientDetails(null); 
+    setClientDetails(null);
   };
   const handleModalClose = () => {
     setIsDeleteModalOpen(false);
@@ -59,7 +59,7 @@ const ClientTable: React.FC<ClientsDataProps> = ({ clientsData, setQuery, error,
 
   const handleDeleteConfirm = async (id: string) => {
     try {
-      const response = await deleteClientData(`/admin/clients/${id}`); 
+      const response = await deleteClientData(`/admin/clients/${id}`);
       if (response.status === 200) {
         toast.success("Client deleted successfully");
         setIsDeleteModalOpen(false);
@@ -86,8 +86,8 @@ const ClientTable: React.FC<ClientsDataProps> = ({ clientsData, setQuery, error,
       const updatedRow = { ...ClientsArray.find((client: any) => client._id === id), [name]: value };
       setSelectedRow(updatedRow);
       const actionData = {
-        id: updatedRow._id, 
-        [name]: value, 
+        id: updatedRow._id,
+        [name]: value,
       };
       try {
         await updateClientsDetails(`/admin/clients/${updatedRow._id}`, actionData);
@@ -96,11 +96,11 @@ const ClientTable: React.FC<ClientsDataProps> = ({ clientsData, setQuery, error,
       } catch (error) {
         toast.error('Error updating client status');
       }
-      
-     
+
+
     }
   };
-  
+
 
   return (
     <div className="">
@@ -108,9 +108,8 @@ const ClientTable: React.FC<ClientsDataProps> = ({ clientsData, setQuery, error,
         <table className="">
           <thead className="">
             <tr>
-              <th>ID</th>
-              <th>Status</th>
               <th>Client</th>
+              <th>Status</th>
               <th>Contact</th>
               <th>Member Since</th>
               <th>Assignments</th>
@@ -120,81 +119,80 @@ const ClientTable: React.FC<ClientsDataProps> = ({ clientsData, setQuery, error,
             </tr>
           </thead>
           <tbody>
-          {isLoading ? (
-      <tr>
-        <td colSpan={5} className="">Loading...</td>
-      </tr>
-    ) : error ? (
-      <tr>
-        <td colSpan={5} className="text-center text-red-500">Error loading clients data.</td>
-      </tr>
-    ) :ClientsArray?.length > 0 ? (
-          ClientsArray?.map((row: any) => (
-              <tr key={row?._id} className="border-b">
-                <td>{row?._id}</td>
-                <td>
-                <p className={`font-gothamMedium rounded-3xl py-[2px] px-[10px] text-[10px] text-center 
-          ${row?.status === 'Active Client' ? 'text-[#155724] bg-[#D4EDDA]' : 'text-[#5E2626] bg-[#FFCCCC]'}`}
-        >
-            {row?.status === 'Active Client' ? 'Active Client' : row?.status}
-            </p>
- 
-                </td>
-                <td className='hover:underline hover:font-bold cursor-pointer'
-                onClick={() => openClientPopup(row)}>{row?.firstName} {row?.lastName}</td>
-                <td>{row?.phoneNumber}</td>
-                <td>{new Date(row?.createdAt).toLocaleDateString('en-US')}</td>
-                <td>{row?.appointments.length}</td>
-                <td>
-                  <select
-                    name="status"
-                    value={row?.status}
-                    onChange={(event)=>handleInputChange(event, row?._id)}
-                    className="w-auto border-none h-auto bg-transparent p-0"
-                  >
-                    <option value="Active Client">Active Client</option>
-                    <option value="Pending">Pending</option>
-                    <option value="Callback Pending">Callback Pending</option>
-                    <option value="Insurance Verified">Insurence Verified</option>
-                    <option value="Pending Clinical Review">Pending Clinical Review</option>
-                    <option value="Waiting Assignment">Waiting Assignment</option>
-                    <option value="Assessment Pending">Assessment Pending</option>
-                    <option value="Assessment Scheduled">Assessment Scheduled</option>
-                    <option value="Insurance Hold">Insurance Hold</option>
-                    <option value="Ineligible Due to insurance">Ineligible Due to insurance</option>
-                    <option value="Alert -SEE NOTES">Alert -SEE NOTES</option>
-                    <option value="Alert - Past Due Balance/Collection">Alert - Past Due Balance/Collection</option>
-                    <option value="Unresponsive - Week 1">Unresponsive - Week 1</option>
-                    <option value="Unresponsive - Week 2">Unresponsive - Week 2</option>
-                    <option value="Unresponsive - Week 3">Unresponsive - Week 3</option>
-                    <option value="Unresponsive - Week 4">Unresponsive - Week 4</option>
-                    <option value="No Contact Sent">No Contact Sent</option>
-                    <option value="Inactive - Discharged">Inactive - Discharged</option>
-                    <option value="Inactive - Unresponsive">Inactive - Unresponsive</option>
-                    <option value="Inactive - Bad Lead">Inactive - Bad Lead</option>
-                    <option value="Inactive - Referred Out">Inactive - Referred Out</option>
-                    <option value="Inactive - Not Interested">Inactive - Not Interested</option>
-                    <option value="Intake Pending">Intake Pending</option>
-                    <option value="Intake Complete">Intake Complete</option>
-                  </select>
-                </td>
-                <td className="py-2 px-4">
-                 <div className='text-center '>
-                 {/* <button onClick={() => openClientPopup(row)}> <ViewIcon /> </button> */}
-                  <button
-                   disabled={(session as any)?.user?.role !== 'admin'}
-                    onClick={() => handleDelete(row?._id)} >
-                    <DeleteIcon />
-                  </button>
-                 </div>
-                </td>
+            {isLoading ? (
+              <tr>
+                <td colSpan={5} className="">Loading...</td>
               </tr>
-            ))
-          ) : (
-            <tr>
-              <td className='w-full flex justify-center p-3 items-center' colSpan={5} >No data found</td>
-            </tr>
-          )}
+            ) : error ? (
+              <tr>
+                <td colSpan={5} className="text-center text-red-500">Error loading clients data.</td>
+              </tr>
+            ) : ClientsArray?.length > 0 ? (
+              ClientsArray?.map((row: any) => (
+                <tr key={row?._id} className="border-b">
+                  <td className='hover:underline hover:font-bold cursor-pointer'
+                    onClick={() => openClientPopup(row)}>{row?.firstName} {row?.lastName}</td>
+                  <td>
+                    <p className={`font-gothamMedium rounded-3xl py-[2px] px-[10px] text-[10px] text-center 
+          ${row?.status === 'Active Client' ? 'text-[#155724] bg-[#D4EDDA]' : 'text-[#5E2626] bg-[#FFCCCC]'}`}
+                    >
+                      {row?.status === 'Active Client' ? 'Active Client' : row?.status}
+                    </p>
+
+                  </td>
+                  <td>{row?.phoneNumber}</td>
+                  <td>{new Date(row?.createdAt).toLocaleDateString('en-US')}</td>
+                  <td>{row?.appointments.length}</td>
+                  <td>
+                    <select
+                      name="status"
+                      value={row?.status}
+                      onChange={(event) => handleInputChange(event, row?._id)}
+                      className="w-auto border-none h-auto bg-transparent p-0"
+                    >
+                      <option value="Active Client">Active Client</option>
+                      <option value="Pending">Pending</option>
+                      <option value="Callback Pending">Callback Pending</option>
+                      <option value="Insurance Verified">Insurence Verified</option>
+                      <option value="Pending Clinical Review">Pending Clinical Review</option>
+                      <option value="Waiting Assignment">Waiting Assignment</option>
+                      <option value="Assessment Pending">Assessment Pending</option>
+                      <option value="Assessment Scheduled">Assessment Scheduled</option>
+                      <option value="Insurance Hold">Insurance Hold</option>
+                      <option value="Ineligible Due to insurance">Ineligible Due to insurance</option>
+                      <option value="Alert -SEE NOTES">Alert -SEE NOTES</option>
+                      <option value="Alert - Past Due Balance/Collection">Alert - Past Due Balance/Collection</option>
+                      <option value="Unresponsive - Week 1">Unresponsive - Week 1</option>
+                      <option value="Unresponsive - Week 2">Unresponsive - Week 2</option>
+                      <option value="Unresponsive - Week 3">Unresponsive - Week 3</option>
+                      <option value="Unresponsive - Week 4">Unresponsive - Week 4</option>
+                      <option value="No Contact Sent">No Contact Sent</option>
+                      <option value="Inactive - Discharged">Inactive - Discharged</option>
+                      <option value="Inactive - Unresponsive">Inactive - Unresponsive</option>
+                      <option value="Inactive - Bad Lead">Inactive - Bad Lead</option>
+                      <option value="Inactive - Referred Out">Inactive - Referred Out</option>
+                      <option value="Inactive - Not Interested">Inactive - Not Interested</option>
+                      <option value="Intake Pending">Intake Pending</option>
+                      <option value="Intake Complete">Intake Complete</option>
+                    </select>
+                  </td>
+                  <td className="py-2 px-4">
+                    <div className='text-center '>
+                      {/* <button onClick={() => openClientPopup(row)}> <ViewIcon /> </button> */}
+                      <button
+                        disabled={(session as any)?.user?.role !== 'admin'}
+                        onClick={() => handleDelete(row?._id)} >
+                        <DeleteIcon />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td className='w-full flex justify-center p-3 items-center' colSpan={5} >No data found</td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
@@ -216,17 +214,17 @@ const ClientTable: React.FC<ClientsDataProps> = ({ clientsData, setQuery, error,
           nextLinkClassName={'py-2 px-4 inline-block'}
           disabledClassName={'opacity-50 cursor-not-allowed'}
         />
-      </div> 
-          
-    {clientDetails && ( 
-  <ClientDetailsPopup
-    isOpen={clientDetailsPopup}
-    onRequestClose={closeClientPopup}
-    row={clientDetails}
-    mutate={mutate}
-    role={role}
-  /> 
-)}
+      </div>
+
+      {clientDetails && (
+        <ClientDetailsPopup
+          isOpen={clientDetailsPopup}
+          onRequestClose={closeClientPopup}
+          row={clientDetails}
+          mutate={mutate}
+          role={role}
+        />
+      )}
 
       <Modal
         isOpen={isDeleteModalOpen}
@@ -240,7 +238,7 @@ const ClientTable: React.FC<ClientsDataProps> = ({ clientsData, setQuery, error,
         <div className="flex items-center justify-center gap-6 mt-8">
           <button
             type="button"
-            onClick={()=>handleDeleteConfirm(deleteId as string) }
+            onClick={() => handleDeleteConfirm(deleteId as string)}
             className="py-[10px] px-8 bg-[#CC0000] text-white rounded"
           >
             Yes, Delete

@@ -78,7 +78,6 @@ const AlertsTable = () => {
         <table className="">
           <thead className="">
             <tr>
-              <th>ID</th>
               <th>Client</th>
               <th>Alert Message</th>
               <th>Status</th>
@@ -97,7 +96,6 @@ const AlertsTable = () => {
             ) : alertsData?.length > 0 ? (
               alertsData.map((row: any) => (
                 <tr key={row?.userId?._id} className="border-b">
-                  <td>{row?._id}</td>
                   <td onClick={() => openClientPopup(row?.userId)} className='hover:underline hover:font-bold cursor-pointer'>
                     {row?.userId?.firstName} {row?.userId?.lastName}</td>
                   <td>{row?.message}</td>
