@@ -54,7 +54,6 @@ const DashboardAssignment = (props: any) => {
         <table>
           <thead>
             <tr>
-              <th>ID</th>
               <th>Appt Date</th>
               <th>Appt Time</th>
               <th>Chat With Clinician</th>
@@ -75,7 +74,6 @@ const DashboardAssignment = (props: any) => {
             ) : data?.length > 0 ? (
               data?.map((row: any) => (
                 <tr key={row?._id}>
-                  <td>{row?._id}</td>
                   <td>{row?.appointmentDate ? new Date(row?.appointmentDate).toLocaleDateString('en-US') : 'No date Assigned'}</td>
                   <td>{row?.appointmentTime ? (row?.appointmentTime) : 'Not Assigned Yet'}{Number(row?.appointmentTime?.split(':')[0]) < 12 ? ' AM' : ' PM'}</td>
                   <td>

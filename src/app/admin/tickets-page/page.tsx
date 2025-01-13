@@ -94,7 +94,7 @@ const Page: React.FC = () => {
             ) : ticketsData?.length > 0 ? (
               ticketsData?.map((row: any) => (
                 <tr key={row?._id}>
-                  <td>{row?._id}</td>
+                  <td>#{row?.ticketId}</td>
                   
                   <td>{row?.sender?.firstName} {row?.sender?.lastName}</td>
                   <td>{row?.title}</td>

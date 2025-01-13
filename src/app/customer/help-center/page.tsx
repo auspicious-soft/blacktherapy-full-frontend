@@ -104,7 +104,7 @@ const handleChat = (id: string) => {
             ) : ticketsData?.length > 0 ? (
                 ticketsData?.map((row: any) => (
                 <tr key={row?._id}>
-                  <td>{row?._id}</td>
+                  <td>#{row?.ticketId}</td>
                   <td>{row?.title}</td>
                   <td>{new Date(row?.createdAt).toLocaleDateString('en-US')}</td>
                   <td>

@@ -72,7 +72,6 @@ const [careTeam, setCareTeam] = useState<any>();
         <table>
           <thead>
             <tr>
-              <th>ID</th>
               <th>Appt Date</th>
               <th>Appt Time</th>
               <th>Chat With Clinician</th>
@@ -97,7 +96,6 @@ const [careTeam, setCareTeam] = useState<any>();
             ) : previousData?.length > 0 ? (
               previousData?.map((item: any) => (
                 <tr key={item?._id}>
-                  <td>{item?._id}</td>
                   <td>{Number(item?.apptDate?.split(':')[0]) < 12 ? ' AM' : ' PM'}</td>
                   <td>{item.apptTime}</td>
                   <td>

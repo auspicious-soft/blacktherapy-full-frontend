@@ -27,7 +27,6 @@ const   UpcomingAppointments = (props: any) => {
         <table>
           <thead>
             <tr>
-              <th>ID</th>
               <th>Appt Date</th>
               <th>Appt Time</th>
               <th>Chat With Clinician</th>
@@ -51,7 +50,6 @@ const   UpcomingAppointments = (props: any) => {
             ) : upcomingData?.length > 0 ? (
               upcomingData?.map((item: any) => (
                 <tr key={item?._id}>
-                  <td>{item?._id}</td>
                   <td>
                     {item.appointmentDate ? new Date(item.appointmentDate).toLocaleDateString(
                       "en-US",
