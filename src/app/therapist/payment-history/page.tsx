@@ -65,7 +65,7 @@ const Page = () => {
               paymentsData?.length > 0 ? (
             paymentsData?.map((item: any) => (
               <tr key={item?._id}>
-                <td>{item?._id}</td>
+                <td>#{item?.identifier}</td>
                 <td>{session?.data?.user?.name}</td>
                 <td>{item?.requestType}</td>
                 <td>{item?.servicesProvided}</td>

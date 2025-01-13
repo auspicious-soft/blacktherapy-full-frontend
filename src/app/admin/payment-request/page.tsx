@@ -205,7 +205,7 @@ const Page: React.FC = () => {
     ) :paymentsData?.length > 0 ? (
             paymentsData?.map((payment: any) => (
               <tr key={payment?._id}>
-                <td>{payment?._id}</td>
+                <td>#{payment?.identifier}</td>
                 <td>{payment?.therapistId?.firstName} {payment?.therapistId?.lastName}</td>
                 <td>{payment?.requestType}</td>
                 <td>{payment?.servicesProvided}</td>
