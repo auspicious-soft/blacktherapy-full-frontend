@@ -64,7 +64,6 @@ const Page: React.FC = () => {
       <table className="min-w-full bg-white border border-gray-200">
         <thead>
           <tr>
-            <th>ID</th>
             <th>Status</th>
             <th>From</th>
             <th>To</th>
@@ -87,7 +86,6 @@ const Page: React.FC = () => {
               tasksData?.length > 0 ? (
           tasksData?.map((task: any) => (
             <tr key={task?._id}>
-              <td>{task?._id}</td>
              <td>
              <p 
                 className={`font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px] ${
