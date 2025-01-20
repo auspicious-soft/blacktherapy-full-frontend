@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import previmg2 from "@/assets/images/profile.png";
+import previmg2 from "@/assets/images/previmg.png";
 import { ButtonArrow, EditImgIcon } from "@/utils/svgicons";
 import success from "@/assets/images/succes.png";
 import {
@@ -17,26 +17,6 @@ import { preloadFont } from "next/dist/server/app-render/entry-base";
 import { getImageUrlOfS3 } from "@/utils";
 import { deleteImageFromS3, generateSignedUrlOfProfilePic, generateSignedUrlOfProfilePicTherapist } from "@/actions";
 
-type FormData = {
-  firstName: string;
-  lastName: string;
-  email: string;
-  dob: string;
-  phoneNumber: string;
-  gender: string;
-  state: string;
-  city: string;
-  addressLine1: string;
-  about: string;
-  preferredCommunicationMethod: string;
-  preferredlanguage: string;
-  availableStartTime: string;
-  availableEndTime: string;
-  // image: string;
-  currentAvailability: string[];
-  startTime: string;
-  endTime: string;
-};
 
 interface OptionType {
   value: string;
@@ -65,7 +45,6 @@ const Page = () => {
     availableEndTime: "",
     profilePic: null,
     currentAvailability: [],
-    //i amm getting date like thsi from backend "09:35"
     startTime: "",
     endTime: "",
   });
@@ -87,7 +66,7 @@ const Page = () => {
     const [hours, minutes] = timeString.split(":");
     return `${hours}:${minutes}`;
   };
-
+  
   useEffect(() => {
     if (profileData) {
       setFormData({

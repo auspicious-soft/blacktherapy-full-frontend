@@ -8,7 +8,7 @@ import { CiFileOn } from "react-icons/ci";
 
 
 const MainChat = (props: any) => {
-  const {isRecieverOnline, imagePreview, setImagePreview, filePreview, setFilePreview, prompt, setPrompt, isPending, file, setFile, handleSendMessage, handleTyping, handleStopTyping, messages, userId, roomId, containerRef, recieverDetails } = props
+  const { isRecieverOnline, imagePreview, setImagePreview, filePreview, setFilePreview, prompt, setPrompt, isPending, file, setFile, handleSendMessage, handleTyping, handleStopTyping, messages, userId, roomId, containerRef, recieverDetails } = props
 
 
   useEffect(() => {
@@ -72,88 +72,88 @@ const MainChat = (props: any) => {
                   {formattedDate}
                 </div>
               )}
-              <div className={`mb-2 ${(msg.sender.therapistId || msg.sender) === userId ? "text-right" : "text-left"}`}>
+              <div className={`mb-2 ${((msg?.sender?.role === 'client') ) ?  "text-left" : "text-right"}`}>
               <div className={`px-3 py-2 text-sm leading-[normal] text-[#686C78] rounded-lg shadow-md ${(msg.sender._id || msg.sender) === userId ? "bg-[#CCE9FA]" : "bg-[#E7F8F6]"} inline-block max-w-[70%]`}>
-                  {msg.message}
-                  {msg?.attachment && (
-                    <div className="flex items-center justify-center">
-                      {msg.fileType.includes('image') ? (
-                        <Link href={getImageUrlOfS3(msg?.attachment)} target='_blank'>
-                          <Image width={300} height={300} src={getImageUrlOfS3(msg?.attachment)} alt="Preview" className="w-60 h-60 object-cover rounded" />
+                {msg.message}
+                {msg?.attachment && (
+                  <div className="flex items-center justify-center">
+                    {msg.fileType.includes('image') ? (
+                      <Link href={getImageUrlOfS3(msg?.attachment)} target='_blank'>
+                        <Image width={300} height={300} src={getImageUrlOfS3(msg?.attachment)} alt="Preview" className="w-60 h-60 object-cover rounded" />
+                      </Link>
+                    ) : (
+                      <div>
+                        <Link href={getImageUrlOfS3(msg?.attachment)} target='_blank' className='flex gap-x-2'>
+                          {msg.fileName} <CiFileOn className='text-white w-5  h-5 items-center' />
                         </Link>
-                      ) : (
-                        <div>
-                          <Link href={getImageUrlOfS3(msg?.attachment)} target='_blank' className='flex gap-x-2'>
-                            {msg.fileName} <CiFileOn className='text-white w-5  h-5 items-center' />
-                          </Link>
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-                <div className="text-[#849DA8] mt-[3px] text-xs">
-                  {messageDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
-                </div>
-              </div>
-            </React.Fragment>
-          );
-        })}
-      </div>
-
-      {/* Input Box */}
-      <form>
-        <div className="bg-white p-[10px] rounded-[10px] border border-[#AEAEAE]  m-3 w-[calc(100%-24px)] left-0  right-0 ">
-          <input
-            required
-            type="text"
-            placeholder={`Message ${recieverDetails?.firstName} ${recieverDetails?.lastName}...`}
-            value={prompt}
-            onChange={(e) => setPrompt(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                handleSendMessage()
-              }
-            }}
-            onKeyDownCapture={handleTyping}
-            onKeyUpCapture={handleStopTyping}
-            className="w-full pb-3 pt-0 px-0 border-none text-base"
-          />
-          <div className="flex justify-between items-center">
-            <div className="flex gap-2">
-              <label htmlFor="" className="relative cursor-pointer">
-                <input type="file" className="file-inputs cursor-pointer"
-                  onChange={(e) => setFile(e?.target?.files ? e.target.files[0] : null)} />
-                <FileUpload />
-              </label>
-              {imagePreview && (
-                <div className='relative'>
-                  <p onClick={() => {
-                    setImagePreview(null)
-                    setFilePreview(null)
-                    setFile(null)
-                  }} className='absolute -top-4 border right-1 shadow-lg cursor-pointer w-1 h-1 text-white text-xs'><CloseIcon /></p>
-                  <Image width={300} height={300} src={imagePreview} alt="Preview" className="w-20 h-20 object-cover rounded" />
-                </div>
-              )}
-              {filePreview && (
-                <div className='relative'>
-                  <p onClick={() => {
-                    setImagePreview(null)
-                    setFilePreview(null)
-                    setFile(null)
-                  }} className='absolute -top-2 border right-2 shadow-lg cursor-pointer w-1 h-1 text-white text-xs'><FileAttachment /></p>
-                  <div className="bg-[#f5f5f5] p-2 rounded-lg">
-                    <p>{filePreview}</p>
-                    <p className="text-xs text-gray-500">File size: {file.size} bytes</p>
+                      </div>
+                    )}
                   </div>
-                </div>
-              )}
+                )}
+              </div>
+              <div className="text-[#849DA8] mt-[3px] text-xs">
+                {messageDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
+              </div>
             </div>
-            <button disabled={isPending} onClick={handleSendMessage}> <MessageSend /></button>
-          </div>
-        </div>
-      </form>
+            </React.Fragment>
+      );
+        })}
     </div>
+
+      {/* Input Box */ }
+  <form>
+    <div className="bg-white p-[10px] rounded-[10px] border border-[#AEAEAE]  m-3 w-[calc(100%-24px)] left-0  right-0 ">
+      <input
+        required
+        type="text"
+        placeholder={`Message ${recieverDetails?.firstName} ${recieverDetails?.lastName}...`}
+        value={prompt}
+        onChange={(e) => setPrompt(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            handleSendMessage()
+          }
+        }}
+        onKeyDownCapture={handleTyping}
+        onKeyUpCapture={handleStopTyping}
+        className="w-full pb-3 pt-0 px-0 border-none text-base"
+      />
+      <div className="flex justify-between items-center">
+        <div className="flex gap-2">
+          <label htmlFor="" className="relative cursor-pointer">
+            <input type="file" className="file-inputs cursor-pointer"
+              onChange={(e) => setFile(e?.target?.files ? e.target.files[0] : null)} />
+            <FileUpload />
+          </label>
+          {imagePreview && (
+            <div className='relative'>
+              <p onClick={() => {
+                setImagePreview(null)
+                setFilePreview(null)
+                setFile(null)
+              }} className='absolute -top-4 border right-1 shadow-lg cursor-pointer w-1 h-1 text-white text-xs'><CloseIcon /></p>
+              <Image width={300} height={300} src={imagePreview} alt="Preview" className="w-20 h-20 object-cover rounded" />
+            </div>
+          )}
+          {filePreview && (
+            <div className='relative'>
+              <p onClick={() => {
+                setImagePreview(null)
+                setFilePreview(null)
+                setFile(null)
+              }} className='absolute -top-2 border right-2 shadow-lg cursor-pointer w-1 h-1 text-white text-xs'><FileAttachment /></p>
+              <div className="bg-[#f5f5f5] p-2 rounded-lg">
+                <p>{filePreview}</p>
+                <p className="text-xs text-gray-500">File size: {file.size} bytes</p>
+              </div>
+            </div>
+          )}
+        </div>
+        <button disabled={isPending} onClick={handleSendMessage}> <MessageSend /></button>
+      </div>
+    </div>
+  </form>
+    </div >
   );
 }
 

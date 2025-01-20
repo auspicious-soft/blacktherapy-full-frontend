@@ -68,7 +68,7 @@ const Page = () => {
     return () => {
       socketInstance.disconnect();
     };
-  }, [userId, roomId, recieverDetails?.therapistId])
+  }, [userId, roomId, recieverDetails?._id])
 
   useEffect(() => {
     const fetchAppointmentDetails = async () => {
