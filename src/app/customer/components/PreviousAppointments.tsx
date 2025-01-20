@@ -1,46 +1,29 @@
-import React, { ReactNode, useState, CSSProperties } from "react";
+import React, { useState } from "react";
 import ReactPaginate from "react-paginate";
 import Image from "next/image";
 import PervIcon from "@/assets/images/pervicon.png";
 import NextIcon from "@/assets/images/nexticon.png";
 import { ViewIcon } from "@/utils/svgicons";
-import Therapist1 from "@/assets/images/therapist1.jpg";
-import Therapist2 from "@/assets/images/therapist2.jpg";
-import Therapist3 from "@/assets/images/therapist3.jpg";
 import Modal from 'react-modal';
 import { getImageUrlOfS3 } from "@/utils";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
-interface ModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  children: ReactNode;
+export interface PreviousAppointmentsProps {
+  data: any;
+  error: any;
+  isLoading: boolean;
+  setQuery: any;
+  isChatAllowed: boolean;
+  isVideoCount: number;
+  message: boolean;
+  video: boolean;
 }
 
-// const Modal = ({ isOpen, onClose, children }: ModalProps) => {
-//   if (!isOpen) return null;
-
-//   return (
-//     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-//       <div className="bg-white w-[94%] max-w-[1200px] shadow-lg relative max-h-[90vh] overflo-custom py-[25px] px-[15px] lg:p-[40px]">
-//         <button
-//           onClick={onClose}
-//           className="absolute top-2 right-2 text-gray-600 hover:text-gray-800"
-//         >
-//           &#x2715;
-//         </button>
-//         {children}
-//       </div>
-//     </div>
-//   );
-// };
-
-
-const PreviousAppointments = (props: any) => {
-  const { isLoading } = props
-  const { data, error } = props;
-  const { setQuery } = props;
-const [careTeam, setCareTeam] = useState<any>();
-
+const PreviousAppointments = (props: PreviousAppointmentsProps) => {
+  const { data, error, isLoading, setQuery, isChatAllowed, isVideoCount, message, video } = props;
+  const router = useRouter();
+  const [careTeam, setCareTeam] = useState<any>();
   const previousData = data?.data;
 
   const total = data?.total ?? 0;
@@ -50,13 +33,9 @@ const [careTeam, setCareTeam] = useState<any>();
   }
   const [teamPopupOpen, setTeamPopupOpen] = useState(false);
 
-  const therapists = [
-    { id: 1, name: "Therapist One", imageUrl: Therapist1 },
-    { id: 2, name: "Therapist Two", imageUrl: Therapist2 },
-    { id: 3, name: "Therapist Three", imageUrl: Therapist3 },
-    { id: 4, name: "Therapist Three", imageUrl: Therapist3 },
-    // Add more therapists here
-  ];
+  const handleChat = (id: string) => {
+    isChatAllowed ? router.push(`/customer/appointments/chats/${id}`) : toast.error('Chat not allowed')
+  }
 
   const handleViewTeam = (care: any) => {
     setCareTeam(care);
@@ -75,7 +54,6 @@ const [careTeam, setCareTeam] = useState<any>();
               <th>Appt Time</th>
               <th>Chat With Clinician</th>
               <th>Video Chat</th>
-              <th>Billing Amount</th>
               <th>Care Team</th>
             </tr>
           </thead>
@@ -93,24 +71,36 @@ const [careTeam, setCareTeam] = useState<any>();
                 </td>
               </tr>
             ) : previousData?.length > 0 ? (
-              previousData?.map((item: any) => (
-                <tr key={item?._id}>
-                  <td>{Number(item?.apptDate?.split(':')[0]) < 12 ? ' AM' : ' PM'}</td>
-                  <td>{item.apptTime}</td>
-                  <td>
-                    <p className={`font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px] ${item.chat === 'Start Chat' ? ' text-[#42A803] bg-[#CBFFB2] ' : ' text-[#FFA234] bg-[#FFFCEC] '}`}>
-                      {!item.message ? 'No chat' : <p className='cursor-pointer font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px]  text-[#42A803] bg-[#CBFFB2]'>Start Chat</p>}
-                    </p>
-                  </td>
-                  <td>{!item.video ? 'No video' : <p className='cursor-pointer font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px]  text-[#42A803] bg-[#CBFFB2]'>Start Video</p>}</td>
-                  <td>{item.billingAmount}</td>
-                  <td>
-                    <span className="cursor-pointer w-[26px] flex" onClick={()=>handleViewTeam(item?.peerSupportIds)}>
-                      <ViewIcon />
-                    </span>
-                  </td>
-                </tr>
-              ))
+              previousData?.map((item: any) => {
+                return (
+                  <tr key={item?._id}>
+                    <td>{new Date(item?.appointmentDate?.split('T')[0]).toLocaleDateString('en-US')}</td>
+                    <td>{item.appointmentTime}</td>
+                    <td>
+                      {message ? (
+                        <p
+                          onClick={() => handleChat(item._id)}
+                          className={`font-gothamMedium cursor-pointer  inline-block text-center rounded-3xl py-[2px] px-[10px] text-[10px] ${isChatAllowed ? 'text-[#42A803] bg-[#CBFFB2]' : 'text-[#FFA234] bg-[#FFFCEC]'}`}
+                        >
+                          {isChatAllowed ? 'Start Chat' : 'Chat not allowed'}
+                        </p>
+                      ) : (
+                        <p className="cursor-not-allowed">
+                          No Chat
+                        </p>
+                      )}
+                    </td>
+                    <td>{video ? <p className={`cursor-pointer font-gothamMedium inline-block text-center rounded-3xl py-[2px] px-[10px] text-[10px] ${isVideoCount > 0 ? 'text-[#42A803] bg-[#CBFFB2]' : 'text-[#FFA234] bg-[#FFFCEC]'}`}>
+                      {isVideoCount > 0 ? <div onClick={() => window.location.href = `/customer/appointments/video-chat/${item?._id}`}>{`Start Video (${isVideoCount})`}</div> : 'Video chat limit reached for current plan'}
+                    </p> : <p className="cursor-not-allowed">No Video</p>}</td>
+                    <td>
+                      <span className="cursor-pointer w-[26px] flex" onClick={() => handleViewTeam(item?.peerSupportIds)}>
+                        <ViewIcon />
+                      </span>
+                    </td>
+                  </tr>
+                )
+              })
             ) : (
               <tr>
                 <td
@@ -148,12 +138,12 @@ const [careTeam, setCareTeam] = useState<any>();
 
 
       {/* Renew Popup Component */}
-      <Modal 
-      isOpen={teamPopupOpen} 
-      onRequestClose={handleCloseTeam}
-      overlayClassName="w-full h-full p-3 fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center"
-      className="modal max-w-[90%] py-[25px] px-[15px] lg:p-[40px] bg-white mx-auto rounded-[20px] w-full max-h-[90vh] overflow-auto"
-       >
+      <Modal
+        isOpen={teamPopupOpen}
+        onRequestClose={handleCloseTeam}
+        overlayClassName="w-full h-full p-3 fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center"
+        className="modal max-w-[90%] py-[25px] px-[15px] lg:p-[40px] bg-white mx-auto rounded-[20px] w-full max-h-[90vh] overflow-auto"
+      >
         <h1 className="font-antic text-[#283C63] text-[30px] leading-[1.2em] mb-[25px] lg:text-[40px] lg:mb-[50px]">
           Care Team
         </h1>
@@ -161,7 +151,7 @@ const [careTeam, setCareTeam] = useState<any>();
           {careTeam?.map((therapist: any) => (
             <div key={therapist._id} className="">
               <Image
-                src={getImageUrlOfS3(therapist?.profilePic)|| './assets/images/therapist1.jpg' }
+                src={getImageUrlOfS3(therapist?.profilePic) || './assets/images/therapist1.jpg'}
                 alt={therapist?.firstName}
                 width={200}
                 height={200}

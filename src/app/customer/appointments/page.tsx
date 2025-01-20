@@ -71,6 +71,7 @@ const Page = () => {
               data={appointmentsData?.data}
               error={error}
               isLoading={appointmentsIsLoading}
+              setQuery={setQuery}
             />
           </div>
         );
