@@ -64,7 +64,7 @@ const SideNav = () => {
           <li className={`${isActive('/therapist/assignments')} ${pathname.startsWith('/therapist/assignments/chat') ? 'active' : ''}`}>
             <Link href="/therapist/assignments">
               <AssignIcon />
-              {!isCollapsed && <span>Assignments</span>}
+              {!isCollapsed && <span>Appointments</span>}
             </Link>
           </li>
           <li className={isActive('/therapist/payment-request')}>

@@ -42,7 +42,6 @@ const PreviousAppointments = (props: any) => {
 const [careTeam, setCareTeam] = useState<any>();
 
   const previousData = data?.data;
-  console.log('previousData:', previousData);
 
   const total = data?.total ?? 0;
   const rowsPerPage = 10;

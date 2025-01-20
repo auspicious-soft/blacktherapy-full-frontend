@@ -49,7 +49,7 @@ const DashboardAssignment = (props: any) => {
 
   return (
     <>
-      <h3 className="mb-[20px]">Assignment details</h3>
+      <h3 className="mb-[20px]">Appointment details</h3>
       <div className="table-common overflo-custom">
         <table>
           <thead>
@@ -254,7 +254,7 @@ const DashboardAssignment = (props: any) => {
           <button onClick={handleCloseTeam}><CloseIcon /> </button>
         </div>
         <div className="bg-white px-5 pb-5 rounded-b-[20px]  grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-[20px] gap-y-[20px] lg:gap-y-[40px]">
-          {selectedAppointment?.map((therapist: any) => (
+          {selectedAppointment?.map((therapist: any, index: number) => (
             <div key={therapist.id} className="cursor-pointer">
               <Image
                 onClick={() => viewProfile(therapist)}

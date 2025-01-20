@@ -43,7 +43,7 @@ const Page = () => {
 
   return (
     <div className="">
-      <h1 className=' mb-[20px] md:mb-[50px]'>Assignments</h1>
+      <h1 className=' mb-[20px] md:mb-[50px]'>Appointments</h1>
       <div className="flex justify-end my-4">
         <SearchBar setQuery={setQuery} />
       </div>

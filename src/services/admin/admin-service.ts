@@ -17,6 +17,12 @@ export const updateAssignments = async (route:string, payload: any) =>{
   return axiosInstance.patch(route, payload)
 }
 
+//-------Assignment Page----
+export const getAppoinmentsForCalender = async (route: string) => {
+  const axiosInstance = await getAxiosInstance()
+  return axiosInstance.get(route)
+}
+
 //------Client page------------
 export const getClientsPageData = async (route: string) => {
   const axiosInstance = await getAxiosInstance()
