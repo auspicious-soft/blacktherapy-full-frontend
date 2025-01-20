@@ -1,14 +1,8 @@
-
-
 "use client";
 import { FaHandsHelping } from "react-icons/fa";
 import { useState, useEffect, useTransition } from "react";
 import useSWR from "swr";
-import {
-  getClientAppointments,
-  getProfileService,
-  postAnAppointment,
-} from "@/services/client/client-service";
+import { getClientAppointments, getProfileService, postAnAppointment } from "@/services/client/client-service";
 import { useSession } from "next-auth/react";
 import Modal from "react-modal";
 import { ButtonArrow } from "@/utils/svgicons";
@@ -22,11 +16,7 @@ import UpcomingAppointments from "@/app/customer/components/UpcomingAppointments
 const Page = () => {
   const [openModal, setOpenModal] = useState(false);
   const session = useSession();
-  const { data: user, mutate: userMutate } = useSWR(
-    session?.data?.user?.id ? `/client/${session?.data?.user?.id}` : null,
-    getProfileService,
-    { revalidateOnFocus: false }
-  );
+  const { data: user, mutate: userMutate } = useSWR(session?.data?.user?.id ? `/client/${session?.data?.user?.id}` : null, getProfileService, { revalidateOnFocus: false });
   const isChatAllowedByPaymentStatus = user?.data?.data?.chatAllowed;
   const isVideoCountByPaymentStatus = user?.data?.data?.videoCount;
   const therapistId = user?.data?.data?.therapistId;
@@ -36,10 +26,7 @@ const Page = () => {
   const [shouldFetchAppointments, setShouldFetchAppointments] = useState(false);
   const [query, setQuery] = useState("page=1&limit=10");
   const [isPending, startTransition] = useTransition();
-
-  const [disabledTimes, setDisabledTimes] = useState<{
-    [key: string]: string[];
-  }>({});
+  const [disabledTimes, setDisabledTimes] = useState<{ [key: string]: string[]; }>({});
   const [disabledDates, setDisabledDates] = useState<Date[]>([]);
   const [availableTimes, setAvailableTimes] = useState<string[]>([]);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -49,11 +36,7 @@ const Page = () => {
       activeTab === "Previous Appointments" ||
       activeTab === "Upcoming Appointments"
     ) {
-      setQuery(
-        `appointmentType=${
-          activeTab === "Previous Appointments" ? "past" : "upcoming"
-        }&page=1&limit=10`
-      );
+      setQuery(`appointmentType=${activeTab === "Previous Appointments" ? "past" : "upcoming"}&page=1&limit=10`);
       setShouldFetchAppointments(true);
     } else {
       setShouldFetchAppointments(false);
@@ -96,30 +79,9 @@ const Page = () => {
     }
   };
 
-  const {
-    data: appointmentsData,
-    isLoading: appointmentsIsLoading,
-    mutate: appointmentsMutate,
-    error,
-  } = useSWR(
-    shouldFetchAppointments && session?.data?.user?.id
-      ? `/client/appointment/${session?.data?.user?.id}?${query}`
-      : null,
-    getClientAppointments,
-    { revalidateOnFocus: false }
-  );
-  const {
-    data: therapistData,
-    isLoading,
-    mutate: therapistMutate,
-  } = useSWR(
-    therapistId ? `/therapist/${therapistId}` : null,
-    getTherapistAssignments
-  );
-  const { data: therapistAppointment, mutate: therapistApptMutate } = useSWR(
-    therapistId ? `/therapist/${therapistId}/clients` : null,
-    getTherapistAssignments
-  );
+  const { data: appointmentsData, isLoading: appointmentsIsLoading, mutate: appointmentsMutate, error } = useSWR(shouldFetchAppointments && session?.data?.user?.id ? `/client/appointment/${session?.data?.user?.id}?${query}` : null, getClientAppointments, { revalidateOnFocus: false });
+  const { data: therapistData, isLoading, mutate: therapistMutate } = useSWR(therapistId ? `/therapist/${therapistId}` : null, getTherapistAssignments);
+  const { data: therapistAppointment, mutate: therapistApptMutate } = useSWR(therapistId ? `/therapist/${therapistId}/clients` : null, getTherapistAssignments);
 
   useEffect(() => {
     if (therapistData?.data?.data?.currentAvailability) {
@@ -158,7 +120,7 @@ const Page = () => {
         }
       });
       setDisabledTimes(disabledDatesTimesMap);
-    
+
       setDisabledDates((prev) => {
         const newDisabledDates = [];
         const today = new Date();
@@ -227,11 +189,10 @@ const Page = () => {
             {["Previous Appointments", "Upcoming Appointments"].map((tab) => (
               <button
                 key={tab}
-                className={`tab-button ${
-                  activeTab === tab
-                    ? "active"
-                    : "!bg-transparent border-[1px] !border-[#283c63] !text-[#283c63]"
-                } bg-[#283c63] text-[#fff] rounded-[6px] mt-0 text-[14px] py-[8px] px-[16px] lg:px-[32px] lg:py-[12px] `}
+                className={`tab-button ${activeTab === tab
+                  ? "active"
+                  : "!bg-transparent border-[1px] !border-[#283c63] !text-[#283c63]"
+                  } bg-[#283c63] text-[#fff] rounded-[6px] mt-0 text-[14px] py-[8px] px-[16px] lg:px-[32px] lg:py-[12px] `}
                 onClick={() => setActiveTab(tab)}
               >
                 {tab}
@@ -273,7 +234,7 @@ const Page = () => {
           }}
           onRequestClose={() => {
             setOpenModal(false);
-            setSelectedDate(null);  
+            setSelectedDate(null);
           }}
         >
           <h1 className="text-center font-antic text-[#283C63] text-[30px] leading-[1.2em] mb-[25px] lg:text-[40px] lg:mb-[50px]">
@@ -325,31 +286,31 @@ const Page = () => {
                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                     defaultValue={""}
                   >
-                    <option value  = ''>
-                      Select a time 
+                    <option value=''>
+                      Select a time
                     </option>
                     {availableTimes.map((time, index) => {
                       console.log('time: ', time);
                       const dateString = selectedDate
                         ? `${selectedDate.getFullYear()}-${(
-                            selectedDate.getMonth() + 1
-                          ).toString().padStart(2, "0")}-${selectedDate
-                            .getDate()
-                            .toString()
-                            .padStart(2, "0")}`
+                          selectedDate.getMonth() + 1
+                        ).toString().padStart(2, "0")}-${selectedDate
+                          .getDate()
+                          .toString()
+                          .padStart(2, "0")}`
                         : "";
 
                       const isDisabled = dateString
                         ? Object.keys(disabledTimes).some((key) => {
-                            const disabledDate = new Date(key)
-                              .toISOString()
-                              .split("T")[0];
+                          const disabledDate = new Date(key)
+                            .toISOString()
+                            .split("T")[0];
 
-                            return (
-                              disabledDate === dateString &&
-                              disabledTimes[key]?.includes(time)
-                            );
-                          })
+                          return (
+                            disabledDate === dateString &&
+                            disabledTimes[key]?.includes(time)
+                          );
+                        })
                         : false;
 
                       return (

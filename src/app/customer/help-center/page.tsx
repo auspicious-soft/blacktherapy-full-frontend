@@ -14,8 +14,8 @@ import { useRouter } from 'next/navigation';
 
 const TableComponent: React.FC = () => {
   const session = useSession()
-  const router= useRouter();
-  const clientId= session?.data?.user?.id;
+  const router = useRouter();
+  const clientId = session?.data?.user?.id;
   const [isPending, startTransition] = useTransition()
   const [query, setQuery] = useState('page=1&limit=10&');
   const { data, error, isLoading, mutate } = useSWR(`/client/tickets/${clientId}`, getClientsTickets);
@@ -39,43 +39,43 @@ const TableComponent: React.FC = () => {
     e.preventDefault();
     const roomId = uuidv4();
     const ticketData = {
-        roomId,
-        title,
-        message
+      roomId,
+      title,
+      message
     };
     startTransition(async () => {
-        try {
-            const response = await addClientsTickets(`/client/tickets/${clientId}`, ticketData);
-            
-            if (response?.status === 201) {
-                toast.success('Ticket created successfully');
-                setTitle('');
-                setMessage('');
-                setIsModalOpen(false);
-                mutate();
-            } else {
-                toast.error('Failed to create ticket. Unexpected response.');
-            }
-        } catch (error) {
-            console.error('Ticket creation failed:', error);
-            toast.error('Failed to create ticket. Please try again.');
-        }
-    });
-};
+      try {
+        const response = await addClientsTickets(`/client/tickets/${clientId}`, ticketData);
 
-const handleChat = (id: string) => {
-  router.push(`/customer/help-center/chats/${id}`);
-};
+        if (response?.status === 201) {
+          toast.success('Ticket created successfully');
+          setTitle('');
+          setMessage('');
+          setIsModalOpen(false);
+          mutate();
+        } else {
+          toast.error('Failed to create ticket. Unexpected response.');
+        }
+      } catch (error) {
+        console.error('Ticket creation failed:', error);
+        toast.error('Failed to create ticket. Please try again.');
+      }
+    });
+  };
+
+  const handleChat = (id: string) => {
+    router.push(`/customer/help-center/chats/${id}`);
+  };
 
 
   return (
     <div>
       <h1 className="font-antic text-[#283C63] text-[30px] leading-[1.2em] mb-[25px] lg:text-[40px] lg:mb-[50px]">
-      Help Center
+        Help Center
       </h1>
       <div className='flex justify-end mb-5'>
-        <button onClick={()=> setIsModalOpen(true)}
-        className='button mt-0'>Raise a Ticket</button>
+        <button onClick={() => setIsModalOpen(true)}
+          className='button mt-0'>Raise a Ticket</button>
       </div>
       <div className='table-common overflo-custom'>
         <table className="">
@@ -102,7 +102,7 @@ const handleChat = (id: string) => {
                 </td>
               </tr>
             ) : ticketsData?.length > 0 ? (
-                ticketsData?.map((row: any) => (
+              ticketsData?.map((row: any) => (
                 <tr key={row?._id}>
                   <td>#{row?.ticketId}</td>
                   <td>{row?.title}</td>
@@ -110,11 +110,11 @@ const handleChat = (id: string) => {
                   <td>
                     <p className={`px-[10px] py-[2px] text-[10px] text-center rounded-3xl ${getStatusColor(row?.status)}`}>{row?.status}</p>
                   </td>
-                
+
                   <td>
-                    <button onClick={()=>handleChat(row?.roomId)}><TicketTableIcon/> </button>
+                    <button onClick={() => handleChat(row?.roomId)}><TicketTableIcon /> </button>
                   </td>
-                  
+
                 </tr>
               ))
             ) : (
@@ -132,56 +132,56 @@ const handleChat = (id: string) => {
 
         <Modal
           isOpen={isModalOpen}
-          onRequestClose={()=>setIsModalOpen(false)}
+          onRequestClose={() => setIsModalOpen(false)}
           contentLabel="Confirm Deletion"
           className="modal max-w-[668px] mx-auto bg-white rounded-xl w-full  max-h-[90vh]  overflow-auto overflo-custom"
           overlayClassName="w-full h-full p-3 fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center"
         >
-        <h2 className='bg-[#283C63] text-[#fff] py-6 px-8 '>New Ticket</h2>
-        <div className='py-6 px-8 '>
-        <form onSubmit={handleSubmit} className='py-6 px-8'>
-                <label className="text-[#707070] block">
-                    Title
-                    <input 
-                        type="text" 
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                        className='w-full border border-[#CDE3F1] rounded-lg p-4 mt-2'
-                        placeholder="Enter ticket title"
-                        required
-                    />
-                </label>
-                <label className="text-[#707070] block mt-5">
-                    Message
-                    <textarea 
-                        value={message}
-                        onChange={(e) => setMessage(e.target.value)}
-                        className='w-full border border-[#CDE3F1] rounded-lg p-4 mt-2' 
-                        rows={6}
-                        placeholder="Enter your message"
-                        required
-                    />
-                </label>
-                <div className='mt-[49px] flex justify-end items-center gap-3'>
-                    <button 
-                        type="button"
-                        onClick={()=>setIsModalOpen(false)}
-                        className='h-[50px] border border-[#283C63] text-[#283C63] text-base px-7 py-3 rounded-[10px]'
-                        disabled={isPending}
-                    >
-                        Cancel
-                    </button>
-                    <button 
-                        type="submit" 
-                        className='button !mt-0'
-                        disabled={isPending}
-                    >
-                        {isPending ? 'Creating...' : 'Create'} <ButtonArrow/>
-                    </button>
-                </div>
+          <h2 className='bg-[#283C63] text-[#fff] py-6 px-8 '>New Ticket</h2>
+          <div className='py-6 px-8 '>
+            <form onSubmit={handleSubmit} className='py-6 px-8'>
+              <label className="text-[#707070] block">
+                Title
+                <input
+                  type="text"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  className='w-full border border-[#CDE3F1] rounded-lg p-4 mt-2'
+                  placeholder="Enter ticket title"
+                  required
+                />
+              </label>
+              <label className="text-[#707070] block mt-5">
+                Message
+                <textarea
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  className='w-full border border-[#CDE3F1] rounded-lg p-4 mt-2'
+                  rows={6}
+                  placeholder="Enter your message"
+                  required
+                />
+              </label>
+              <div className='mt-[49px] flex justify-end items-center gap-3'>
+                <button
+                  type="button"
+                  onClick={() => setIsModalOpen(false)}
+                  className='h-[50px] border border-[#283C63] text-[#283C63] text-base px-7 py-3 rounded-[10px]'
+                  disabled={isPending}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className='button !mt-0'
+                  disabled={isPending}
+                >
+                  {isPending ? 'Creating...' : 'Create'} <ButtonArrow />
+                </button>
+              </div>
             </form>
 
-        </div>
+          </div>
         </Modal>
       </div>
       <div className="text-right mt-4">
