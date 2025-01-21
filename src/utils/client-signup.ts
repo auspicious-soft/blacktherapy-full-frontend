@@ -47,7 +47,7 @@ export const submitClientForm = async (
       toast.success("Client data added successfully");
       setFormData({});
       setTimeout(() => {
-        window.location.href = "/login";
+        window.location.href = "/client-signup-success";
       }, 2000);
       return true;
     } else {

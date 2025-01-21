@@ -21,9 +21,9 @@ const IntroSection: React.FC<{ onContinue: () => void}> = ({ onContinue }) => {
           <p><FormIconThree /> </p>
           <p>We&apos;ll take it from there and find you a therapist that meets your needs</p>
         </div>
-      <div className="">
+      {/* <div className="">
         <button onClick={onContinue} className="button absolute right-0 bottom-[-56px] md:bottom-[-70px] ">Continue</button>
-      </div>
+      </div> */}
     </div>
   );
 };

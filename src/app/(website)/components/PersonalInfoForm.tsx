@@ -67,6 +67,7 @@ const InputField: React.FC<InputFieldProps> = ({ name, label, value, type = 'tex
       onChange={onChange}
       required={required} 
       className="text-sm md:text-base text-[#686C78] py-[10px] px-4 border border-[#dbe0eb] rounded-[20px]"
+      placeholder={label}
     />
   </div>
 );
