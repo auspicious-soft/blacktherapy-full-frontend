@@ -3,7 +3,6 @@ import { MeetingProvider, useMeeting, useParticipant } from "@videosdk.live/reac
 import ReactPlayer from "react-player";
 import { createVideoSDKMeeting } from '@/utils';
 import { toast } from 'sonner';
-import { generateVideoSDKToken } from '@/actions';
 import { useRouter } from 'next/navigation';
 import useSWR from 'swr';
 import { getTherapistsProfileData } from '@/services/therapist/therapist-service.';
@@ -125,11 +124,11 @@ const MeetingView = ({ meetingId, userType, token }: { meetingId: string, userTy
     }, [leave]);
 
     useEffect(() => {
-        if (token) {
-            router.refresh()
-            join()
+        if (token || meetingId) {
+            // router.refresh()
+            // join()
         }
-    }, [meetingId, token]);
+    }, [meetingId, token, meetingId]);
 
     return (
         <div className="w-full">

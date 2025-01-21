@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client'
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useParams, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { getAppointmentDetails } from "@/utils";
@@ -15,16 +15,7 @@ const Page = () => {
     const params = useParams();
     const appointmentId = params.id as string
 
-    useEffect(() => {
-        const fetchAppointmentDetails = async () => {
-            const response = await getAppointmentDetails(appointmentId)
-        }
-        fetchAppointmentDetails()
-
-    }, [])
-
-
-    return (
+   return (
         <div>
             <div className="flex justify-between">
                 <IoMdArrowRoundBack onClick={() => router.back()} className='text-black text-lg cursor-pointer'/>
