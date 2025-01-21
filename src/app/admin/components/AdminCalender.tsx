@@ -387,7 +387,7 @@ const AdminCalendar: React.FC = () => {
 
       </div>
 
-      <EventModal
+      {isModalOpen && <EventModal
         event={selectedEvent}
         isOpen={isModalOpen}
         onClose={() => {
@@ -397,7 +397,7 @@ const AdminCalendar: React.FC = () => {
         }}
         groupEventsByHour={groupEventsByTime}
         events={selectedTimeslot ? groupEventsByTime[selectedTimeslot] : []}
-      />
+      />}
     </div>
   );
 };

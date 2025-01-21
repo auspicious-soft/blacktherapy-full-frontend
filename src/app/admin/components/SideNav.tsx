@@ -51,6 +51,12 @@ const SideNav = () => {
               {!isCollapsed && <span>Dashboard</span>}
             </Link>
           </li>
+          <li className={isActive('/admin/appointments')}>
+            <Link href="/admin/appointments">
+              <TaskIcon />
+              {!isCollapsed && <span>Appointments</span>}
+            </Link>
+          </li>
           <li className={isActive('/admin/assignments')}>
             <Link href="/admin/assignments">
               <AssignmentIcon />

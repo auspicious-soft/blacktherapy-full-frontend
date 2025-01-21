@@ -28,7 +28,7 @@ const EventModal: React.FC<{
   const relatedEvents = groupEventsByHour[hourKey] || [];
 
   return (
-    <div className="modal">
+    <div className="modal table-common overflo-custom">
       <div className="modal-content">
         <button onClick={onClose}>Close</button>
         <h2>Details for {event.title}</h2>

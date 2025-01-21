@@ -54,6 +54,12 @@ const MobileHeader = () => {
                 <span>Assignments</span>
               </Link>
             </li>
+            <li className={isActive('/admin/appointments')}>
+              <Link href="/admin/appointments" onClick={() => handleLinkClick("/admin/appointments")}>
+                <AssignmentIcon />
+                <span>Appointments</span>
+              </Link>
+            </li>
             <li className={isActive('/admin/clinician')}>
               <Link href="/admin/clinician" onClick={() => handleLinkClick("/admin/clinician")}>
                 <ClinicianIcon />
