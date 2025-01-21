@@ -111,7 +111,7 @@ const MeetingView = ({ meetingId, userType, token }: { meetingId: string, userTy
         onMeetingJoined: () => setJoined(true),
         onMeetingLeft: () => setJoined(false),
     })
-
+    const joinAttempted = useRef(false);
     useEffect(() => {
         const handleBeforeUnload = (event: BeforeUnloadEvent) => {
             leave();
@@ -124,11 +124,18 @@ const MeetingView = ({ meetingId, userType, token }: { meetingId: string, userTy
     }, [leave]);
 
     useEffect(() => {
-        if (token || meetingId) {
-            // router.refresh()
-            join()
+        if (token && meetingId && !joinAttempted.current) {
+            joinAttempted.current = true;
+            // Add a small delay to ensure token is properly initialized
+            setTimeout(() => {
+                join();
+            }, 100);
         }
-    }, [meetingId, token, meetingId]);
+    }, [meetingId, token]);
+
+    useEffect(() => {
+        joinAttempted.current = false;
+    }, [meetingId, token])
 
     return (
         <div className="w-full">
@@ -153,7 +160,7 @@ const MeetingView = ({ meetingId, userType, token }: { meetingId: string, userTy
     );
 };
 
-// Main Video Chat Component
+// Main Video Chat Wrapper
 export const VideoChatPage = ({ appointmentId, userType, userId }: { appointmentId: string, userType: 'therapist' | 'client', userId: string }) => {
     const [meetingId, setMeetingId] = useState<string | null>(null);
     const [token, setToken] = useState<string | null>(null)
