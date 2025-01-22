@@ -252,9 +252,6 @@ const ClinicianTable: React.FC<TherapistsDataProps> = ({
                   <td>{row?.appointments.length}</td>
                   <td>
                     <div className="flex gap-2">
-                      {/* <button onClick={() => openClinicianPopup(row)}>
-                        <ViewIcon />{" "}
-                      </button> */}
                       <button onClick={() => openEditModal(row)} className="">
                         {" "}
                         <EditIcon />

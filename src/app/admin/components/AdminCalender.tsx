@@ -27,7 +27,7 @@ const localizer = dateFnsLocalizer({
 });
 
 const CALENDAR_VIEWS = [
-  { key: "month", label: "Month" },
+  // { key: "month", label: "Month" },
   { key: "week", label: "Week" },
   { key: "day", label: "Day" },
   { key: "work_week", label: "Work Week" },
@@ -42,10 +42,7 @@ const AdminCalendar: React.FC = () => {
   const session = useSession();
   const userId = session?.data?.user?.id;
 
-  const { data, error, isLoading, mutate } = useSWR(
-    userId ? `/admin/appointments` : null,
-    getAppoinmentsForCalender
-  );
+  const { data } = useSWR(userId ? `/admin/appointments` : null, getAppoinmentsForCalender);
 
   useEffect(() => {
     const checkIsMobile = () => {
@@ -59,7 +56,7 @@ const AdminCalendar: React.FC = () => {
       window.removeEventListener("resize", checkIsMobile);
     };
   }, [])
-  
+
   useEffect(() => {
     const style = document.createElement("style");
     style.innerHTML = `
@@ -204,38 +201,44 @@ const AdminCalendar: React.FC = () => {
   }, [])
 
   const initialEvents: CalendarEvent[] = useMemo(() => {
-    if (!data) return [];
+    if (!data) return []
+    const appointmentData = data?.data?.data
+    const uniqueAppointments = appointmentData.reduce((acc: any, current: any) => {
+      const x = acc.find((item: any) => item.appointmentDate === current.appointmentDate && item.appointmentTime === current.appointmentTime);
+      if (!x) {
+        return acc.concat([current]);
+      } else {
+        return acc;
+      }
+    }, []);
 
     return (
-      data?.data?.data?.map((appointment: any) => {
+      uniqueAppointments?.map((appointment: any) => {
         const appointmentDate = new Date(appointment.appointmentDate);
-        const [hour, minute] = appointment.appointmentTime
-          .split(":")
-          .map(Number);
+        const [hour, minute] = appointment.appointmentTime?.split(":")?.map(Number);
         const start = new Date(appointmentDate.setHours(hour, minute));
         const end = addMinutes(start, 60);
 
         const eventObj = {
           id: appointment._id,
-          title: `${appointment.clientName}`,
+          title: `${new Date(appointment.appointmentDate.split("T")[0]).toLocaleDateString('en-US', { weekday: 'long' })}`,
           start,
           end,
           clientName: appointment.clientName,
           status: appointment.status,
         };
-        return eventObj;
+        return eventObj
       }) || []
-    );
+    )
   }, [data]);
   // Add new state for timeslot selection
-  const [selectedTimeslot, setSelectedTimeslot] = useState<string | null>(null);
+  const [selectedTimeslot, setSelectedTimeslot] = useState<string | null  >(null);
 
   // Modify the groupEventsByHour logic to be more precise
   const groupEventsByTime = useMemo(() => {
     const grouped: { [key: string]: CalendarEvent[] } = {};
 
     initialEvents.forEach((event) => {
-      // Group by exact date and hour-minute
       const timeKey = format(event.start, "yyyy-MM-dd HH:mm");
       if (!grouped[timeKey]) {
         grouped[timeKey] = [];
@@ -251,62 +254,46 @@ const AdminCalendar: React.FC = () => {
     setIsModalOpen(true);
   }, []);
 
-  const EventWrapper: React.FC<{ event: CalendarEvent; index: number }> = ({ event, index }) => {
+  const EventWrapper = useCallback(({ event, index }: { event: CalendarEvent; index: number }) => {
     return (
       <div className="event-container flex flex-col">
-        <div
-          className={`rbc-event relative ${index === 1 ? "left-[0%]" : ""}`}
-          onClick={() => handleEventSelect(event)}
-        >
+        <div className={`rbc-event relative ${index === 1 ? "left-[0%]" : ""}`} onClick={() => handleEventSelect(event)}>
           <div className="rbc-event-content">{event.title}</div>
         </div>
       </div>
     );
-  };
+  }, [handleEventSelect]);
 
+  const TimeSlotWrapper: React.FC<React.PropsWithChildren<{}>> = useCallback(({ children }) => {
+    if (!children) return null;
 
+    const slotDate = new Date(children as string);
+    if (isNaN(slotDate.getTime())) {
+      return <div className="time-slot-content">{children}</div>;
+    }
 
-  const TimeSlotWrapper: React.FC<React.PropsWithChildren<{}>> = useCallback(
-    ({ children }) => {
-      if (!children) return null;
+    const timeKey = format(slotDate, "yyyy-MM-dd HH:mm");
+    const events = groupEventsByTime[timeKey] || [];
 
-      const slotDate = new Date(children as string);
-      if (isNaN(slotDate.getTime())) {
-        return <div className="time-slot-content">{children}</div>;
+    const handleSlotClick = () => {
+      if (events.length > 0) {
+        setSelectedTimeslot(timeKey);
+        setIsModalOpen(true);
       }
+    };
 
-      const timeKey = format(slotDate, "yyyy-MM-dd HH:mm");
-      const events = groupEventsByTime[timeKey] || [];
-
-      const handleSlotClick = () => {
-        if (events.length > 0) {
-          setSelectedTimeslot(timeKey);
-          setIsModalOpen(true);
-        }
-      };
-
-      return (
-        <div 
-          className="time-slot-content" 
-          onClick={handleSlotClick}
-          style={{ cursor: events.length ? 'pointer' : 'default' }}
-        >
-          {events.map((event, index) => (
-            <EventWrapper key={event.id} event={event} index={index} />
-          ))}
-          {children}
-        </div>
-      );
-    },
-    [groupEventsByTime]
+    return <div className="time-slot-content" onClick={handleSlotClick} style={{ cursor: events.length ? 'pointer' : 'default' }}>
+      {events.map((event, index) => (
+        <EventWrapper key={event.id} event={event} index={index} />
+      ))}
+      {children}
+    </div>
+  }
+    , [EventWrapper, groupEventsByTime]
   );
 
-  const CustomToolbar: React.FC<ToolbarProps<CalendarEvent, object>> = ({
-    onNavigate,
-    label,
-  }) => {
-    const buttonClass =
-      "px-3 py-2 rounded-md transition-colors duration-200 text-sm whitespace-nowrap";
+  const CustomToolbar: React.FC<ToolbarProps<CalendarEvent, object>> = ({ onNavigate, label, }) => {
+    const buttonClass = "px-3 py-2 rounded-md transition-colors duration-200 text-sm whitespace-nowrap";
     const activeButtonClass = "bg-[#283C63] text-white";
     const inactiveButtonClass = "hover:bg-gray-100 text-black";
 
@@ -329,7 +316,7 @@ const AdminCalendar: React.FC = () => {
               <ChevronRight className="w-5 h-5" />
             </button>
           </div>
-          <span className="text-lg font-semibold">{label}</span>
+          <span className="text-lg font-semibold text-black">{label}</span>
           <button
             onClick={() => onNavigate("TODAY")}
             className="ml-2 flex items-center text-black gap-2 px-3 py-2 bg-white border rounded-md hover:bg-gray-50 transition-colors duration-200"
@@ -382,9 +369,6 @@ const AdminCalendar: React.FC = () => {
           step={60}
           timeslots={1}
         />
-
-
-
       </div>
 
       {isModalOpen && <EventModal
@@ -395,8 +379,7 @@ const AdminCalendar: React.FC = () => {
           setSelectedTimeslot(null);
           setSelectedEvent(null);
         }}
-        groupEventsByHour={groupEventsByTime}
-        events={selectedTimeslot ? groupEventsByTime[selectedTimeslot] : []}
+        events={data?.data?.data}
       />}
     </div>
   );
