@@ -23,6 +23,11 @@ export const getAppoinmentsForCalender = async (route: string) => {
   return axiosInstance.get(route)
 }
 
+export const updateAppointmentData = async (route: string, payload: any) => {
+  const axiosInstance = await getAxiosInstance()
+  return axiosInstance.put(route, payload)
+}
+
 //------Client page------------
 export const getClientsPageData = async (route: string) => {
   const axiosInstance = await getAxiosInstance()

@@ -42,7 +42,7 @@ const AdminCalendar: React.FC = () => {
   const session = useSession();
   const userId = session?.data?.user?.id;
 
-  const { data } = useSWR(userId ? `/admin/appointments` : null, getAppoinmentsForCalender);
+  const { data, mutate } = useSWR(userId ? `/admin/appointments` : null, getAppoinmentsForCalender);
 
   useEffect(() => {
     const checkIsMobile = () => {
@@ -232,7 +232,7 @@ const AdminCalendar: React.FC = () => {
     )
   }, [data]);
   // Add new state for timeslot selection
-  const [selectedTimeslot, setSelectedTimeslot] = useState<string | null  >(null);
+  const [selectedTimeslot, setSelectedTimeslot] = useState<string | null>(null);
 
   // Modify the groupEventsByHour logic to be more precise
   const groupEventsByTime = useMemo(() => {
@@ -380,6 +380,7 @@ const AdminCalendar: React.FC = () => {
           setSelectedEvent(null);
         }}
         events={data?.data?.data}
+        mutate={mutate}
       />}
     </div>
   );

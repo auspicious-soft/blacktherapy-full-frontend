@@ -1,29 +1,72 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client'
-import React from "react";
-import { format, isValid } from "date-fns";
+import React, { useEffect, useState, useTransition } from "react";
+import { format } from "date-fns";
 import "./EventModal.css";
 import { CalendarEvent } from "@/components/calender";
 import { EditIcon } from "@/utils/svgicons";
 import Modal from "react-modal";
 import useTherapists from "@/utils/useTherapists";
-import { useSession } from "next-auth/react";
+import CustomSelect from "./CustomSelect";
+import { toast } from "sonner";
+import { updateAppointmentData } from "@/services/admin/admin-service";
+import { KeyedMutator } from "swr";
+import { AxiosResponse } from "axios";
+import ReactLoader from "@/components/ReactLoader";
 
 interface EventModalProps {
   event?: CalendarEvent | null;
   isOpen: boolean;
   onClose: () => void;
   events: CalendarEvent[];
+  mutate: KeyedMutator<AxiosResponse<any, any>>
 }
-const EventModal = ({ event, isOpen, onClose, events }: EventModalProps) => {
-  const id = useSession().data?.user?.id
-  const therapistsData = useTherapists();
-  const [selectedRow, setSelectedRow] = React.useState<any>(null)
-  const [isEditModalOpen, setIsEditModalOpen] = React.useState(false);
+const EventModal = ({ event, isOpen, onClose, events, mutate }: EventModalProps) => {
+  const { therapistData } = useTherapists(true);
+  const [selectedRow, setSelectedRow] = useState<any>(null)
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedClinician, setSelectedClinician] = useState<any>()
   const eventsToShowInModal = events.filter((ev: any) => (new Date(ev.appointmentDate).toLocaleDateString() === new Date(event!.start).toLocaleDateString()) && (ev.appointmentTime === event?.start?.toTimeString().slice(0, 5)));
+  const [isPending, startTransition] = useTransition()
+
+  useEffect(() => {
+    if (Object.keys(therapistData).length > 0) {
+      setSelectedClinician(therapistData.find((therapist: any) => therapist.value === selectedRow?.therapistId?._id))
+    }
+  }, [selectedRow?.therapistId?._id, isEditModalOpen])
+
+  const handleSelectChange = (selectedOption: any) => {
+    setSelectedClinician(selectedOption);
+  }
+
   if (!event || !isOpen) return null;
   const openEditModal = (row: any) => {
     setSelectedRow(row);
     setIsEditModalOpen(true);
+  }
+  const handleSubmit = async (e: any) => {
+    e.preventDefault()
+    const payload = {
+      therapistId: selectedClinician?.value,
+      appointmentDate: selectedRow.appointmentDate,
+      appointmentTime: selectedRow.appointmentTime,
+      status: selectedRow.status
+    }
+    startTransition(async () => {
+      try {
+        const response = await updateAppointmentData(`/admin/appointments/${selectedRow._id}`, payload)
+        if (response.status === 200) {
+          toast.success("Appointment updated successfully")
+          mutate()
+        }
+      }
+      catch (error) {
+        toast.error("An error occurred while updating the assignment");
+      }
+      finally {
+        setIsEditModalOpen(false)
+      }
+    })
   }
   return (
     <div className="modal table-common overflo-custom">
@@ -44,12 +87,16 @@ const EventModal = ({ event, isOpen, onClose, events }: EventModalProps) => {
             </tr>
           </thead>
           <tbody>
-            {eventsToShowInModal.map((relatedEvent: any) => {
+            {eventsToShowInModal.length > 0 ? eventsToShowInModal?.map((relatedEvent: any) => {
               return (
                 <tr key={relatedEvent.id}>
                   <td >{relatedEvent.therapistId?.firstName} {relatedEvent.therapistId?.lastName}</td>
                   <td >{relatedEvent.clientName}</td>
-                  <td >{relatedEvent.status}</td>
+                  <td>
+                    <span className={`px-2 py-1 rounded-full text-white ${relatedEvent.status === "Pending" ? "bg-yellow-400" : relatedEvent.status === "Completed" ? "bg-[#029108]" : "bg-red-500"}`} >
+                      {relatedEvent.status}
+                    </span>
+                  </td>
                   <td >{format(new Date((relatedEvent.appointmentDate)), "MM/dd/yyyy")}</td>
                   <td >{(relatedEvent.appointmentTime)}</td>
                   <td>
@@ -59,7 +106,12 @@ const EventModal = ({ event, isOpen, onClose, events }: EventModalProps) => {
                   </td>
                 </tr>
               )
-            })}
+            })
+              :
+              <tr>
+                <td colSpan={6} className="text-center">No appointments scheduled for this time</td>
+              </tr>
+            }
           </tbody>
         </table>
       </div>
@@ -74,12 +126,7 @@ const EventModal = ({ event, isOpen, onClose, events }: EventModalProps) => {
           >
             <h3 className="font-semibold">Appointment Details</h3>
             <div className="p-3">
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  console.log("Updated Appointment:", selectedRow);
-                  setIsEditModalOpen(false);
-                }}
+              <form onSubmit={(e) => handleSubmit(e)}
                 className="space-y-4"
               >
                 <div className="flex flex-col">
@@ -104,27 +151,14 @@ const EventModal = ({ event, isOpen, onClose, events }: EventModalProps) => {
 
                 {/* Therapist Name */}
                 <div className="flex flex-col">
-                  <label htmlFor="therapistId" className="font-medium">
-                    Therapist Name
-                  </label>
-                  <select
-                    id="therapistId"
-                    value={selectedRow?.therapistId?._id || ""}
-                    onChange={(e) =>
-                      setSelectedRow((prev: any) => ({
-                        ...prev,
-                        therapistId: therapistsData.therapistData.find((t: any) => t.value === e.target.value),
-                      }))
-                    }
-                    className="border p-2 rounded"
-                    required
-                  >
-                    {therapistsData.therapistData.map((therapist: any) => (
-                      <option key={therapist.value} value={therapist.value}>
-                        {therapist.label}
-                      </option>
-                    ))}
-                  </select>
+                  <CustomSelect
+                    name="Assigned Clinician"
+                    value={selectedClinician}
+                    options={therapistData || []}
+                    onChange={handleSelectChange}
+                    placeholder="Select"
+                    required={true}
+                  />
                 </div>
 
                 {/* Appointment Date */}
@@ -135,11 +169,7 @@ const EventModal = ({ event, isOpen, onClose, events }: EventModalProps) => {
                   <input
                     type="date"
                     id="appointmentDate"
-                    value={
-                      selectedRow?.appointmentDate
-                        ? format(new Date(selectedRow.appointmentDate), "yyyy-MM-dd")
-                        : ""
-                    }
+                    value={selectedRow?.appointmentDate ? format(new Date(selectedRow.appointmentDate), "yyyy-MM-dd") : ""}
                     onChange={(e) =>
                       setSelectedRow((prev: any) => ({
                         ...prev,
@@ -194,14 +224,14 @@ const EventModal = ({ event, isOpen, onClose, events }: EventModalProps) => {
                 </div>
                 {/* Submit Button */}
                 <div className="flex justify-end gap-2">
-                  <button className="text-black p-2 rounded-md" onClick={() => setIsEditModalOpen(false)}>
+                  <button className="text-black p-2 rounded-md font-semibold" onClick={() => setIsEditModalOpen(false)}>
                     Close
                   </button>
                   <button
                     type="submit"
                     className="bg-[#283C63] text-white px-4 py-2 rounded"
                   >
-                    Save Changes
+                    {!isPending ? 'Save Changes' : <ReactLoader color="#fff"/>}
                   </button>
                 </div>
               </form>
