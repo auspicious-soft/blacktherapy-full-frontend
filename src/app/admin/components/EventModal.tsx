@@ -93,7 +93,7 @@ const EventModal = ({ event, isOpen, onClose, events, mutate }: EventModalProps)
                   <td >{relatedEvent.therapistId?.firstName} {relatedEvent.therapistId?.lastName}</td>
                   <td >{relatedEvent.clientName}</td>
                   <td>
-                    <span className={`px-2 py-1 rounded-full text-white ${relatedEvent.status === "Pending" ? "bg-yellow-400" : relatedEvent.status === "Completed" ? "bg-[#029108]" : "bg-red-500"}`} >
+                    <span className={`px-2 py-1 rounded-full text-black`} >
                       {relatedEvent.status}
                     </span>
                   </td>

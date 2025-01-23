@@ -364,8 +364,7 @@ const MyCalendar: React.FC = () => {
                     }}
                     step={60}
                     timeslots={1}
-                    eventPropGetter={
-                        (event, start, end, isSelected) => {
+                    eventPropGetter={(event, start, end, isSelected) => {
                             let newStyle = {
                                 backgroundColor: "lightgrey",
                                 color: 'black',
