@@ -42,7 +42,7 @@ const MyCalendar: React.FC = () => {
     const session = useSession();
     const userId = session?.data?.user?.id;
 
-    const { data , mutate} = useSWR(userId ? `/therapist/${session?.data?.user?.id}/clients` : null, getTherapistAssignments);
+    const { data, mutate } = useSWR(userId ? `/therapist/${session?.data?.user?.id}/clients` : null, getTherapistAssignments);
 
     useEffect(() => {
         const checkIsMobile = () => {
@@ -111,7 +111,7 @@ const MyCalendar: React.FC = () => {
        text-wrap: wrap!important;
       }
       .rbc-event {
-        background-color: #283C63 !important;
+        // background-color: #283C63 !important;
         color: white !important;
         font-size: 11px !important;
         padding: 2px !important;
@@ -364,6 +364,40 @@ const MyCalendar: React.FC = () => {
                     }}
                     step={60}
                     timeslots={1}
+                    eventPropGetter={
+                        (event, start, end, isSelected) => {
+                            let newStyle = {
+                                backgroundColor: "lightgrey",
+                                color: 'black',
+                                borderRadius: "0px",
+                                border: "none"
+                            };
+
+                            switch ((event as any).status) {
+                                case "Pending":
+                                    newStyle.backgroundColor = "#eab308";
+                                    break;
+                                case "Approved":
+                                    newStyle.backgroundColor = "#283c63";
+                                    break;
+                                case "Completed":
+                                    newStyle.backgroundColor = "darkgreen";
+                                    break;
+                                case "Not Attended":
+                                    newStyle.backgroundColor = "darkred";
+                                    break;
+                                case "Rejected":
+                                    newStyle.backgroundColor = "darkred";
+                                    break;
+                                default:
+                                    newStyle.backgroundColor = "darkgrey";
+                            }
+                            return {
+                                className: "",
+                                style: newStyle
+                            };
+                        }
+                    }
                 />
             </div>
 
