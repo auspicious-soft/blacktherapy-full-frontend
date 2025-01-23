@@ -42,10 +42,7 @@ const MyCalendar: React.FC = () => {
     const session = useSession();
     const userId = session?.data?.user?.id;
 
-    const { data, error, isLoading, mutate } = useSWR(
-        userId ? `/therapist/${session?.data?.user?.id}/clients` : null,
-        getTherapistAssignments
-    );
+    const { data , mutate} = useSWR(userId ? `/therapist/${session?.data?.user?.id}/clients` : null, getTherapistAssignments);
 
     useEffect(() => {
         const checkIsMobile = () => {
@@ -222,7 +219,9 @@ const MyCalendar: React.FC = () => {
                     end,
                     clientName: appointment.clientName,
                     status: appointment.status,
-                };
+                    appointmentDate: appointment.appointmentDate,
+                    appointmentTime: appointment.appointmentTime,
+                }
             }) || []
         );
     }, [data]);
@@ -368,11 +367,12 @@ const MyCalendar: React.FC = () => {
                 />
             </div>
 
-            <EventModal
+            {isModalOpen && <EventModal
                 event={selectedEvent}
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
-            />
+                mutate={mutate}
+            />}
         </div>
     );
 };

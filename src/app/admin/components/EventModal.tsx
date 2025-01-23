@@ -26,7 +26,7 @@ const EventModal = ({ event, isOpen, onClose, events, mutate }: EventModalProps)
   const [selectedRow, setSelectedRow] = useState<any>(null)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedClinician, setSelectedClinician] = useState<any>()
-  const eventsToShowInModal = events.filter((ev: any) => (new Date(ev.appointmentDate).toLocaleDateString() === new Date(event!.start).toLocaleDateString()) && (ev.appointmentTime === event?.start?.toTimeString().slice(0, 5)));
+  const eventsToShowInModal = events.filter((ev: any) => (new Date(ev.appointmentDate).toLocaleDateString() === new Date(event!?.start).toLocaleDateString()) && (ev.appointmentTime === event?.start?.toTimeString().slice(0, 5)));
   const [isPending, startTransition] = useTransition()
 
   useEffect(() => {
@@ -220,6 +220,8 @@ const EventModal = ({ event, isOpen, onClose, events, mutate }: EventModalProps)
                     <option value="Pending">Pending</option>
                     <option value="Completed">Completed</option>
                     <option value="Not Attended">Not Attended</option>
+                    <option value="Approved">Approved</option>
+                    <option value="Rejected">Rejected</option>
                   </select>
                 </div>
                 {/* Submit Button */}
@@ -231,7 +233,7 @@ const EventModal = ({ event, isOpen, onClose, events, mutate }: EventModalProps)
                     type="submit"
                     className="bg-[#283C63] text-white px-4 py-2 rounded"
                   >
-                    {!isPending ? 'Save Changes' : <ReactLoader color="#fff"/>}
+                    {!isPending ? 'Save Changes' : <ReactLoader color="#fff" />}
                   </button>
                 </div>
               </form>

@@ -1,6 +1,6 @@
 import { getAxiosInstance } from "@/utils/axios";
 import { axiosInstance } from "@/utils/axios";
- 
+
 export const loginService = async (payload: any) => await axiosInstance.post(`/login`, { email: payload.email, password: payload.password });
 //-----Dashboard Page-----
 export const getAdminDashboardStats = async (route: string) => {
@@ -12,7 +12,7 @@ export const getAppoinmentsData = async (route: string) => {
   const axiosInstance = await getAxiosInstance()
   return axiosInstance.get(route)
 }
-export const updateAssignments = async (route:string, payload: any) =>{
+export const updateAssignments = async (route: string, payload: any) => {
   const axiosInstance = await getAxiosInstance()
   return axiosInstance.patch(route, payload)
 }
@@ -28,6 +28,10 @@ export const updateAppointmentData = async (route: string, payload: any) => {
   return axiosInstance.put(route, payload)
 }
 
+export const assignAppointmentToClient = async (route: string, payload: any) => {
+  const axiosInstance = await getAxiosInstance()
+  return axiosInstance.post(route, payload)
+}
 //------Client page------------
 export const getClientsPageData = async (route: string) => {
   const axiosInstance = await getAxiosInstance()
@@ -41,23 +45,23 @@ export const ServiceAssignmentStats = async (route: string) => {
   const axiosInstance = await getAxiosInstance()
   return axiosInstance.get(route)
 }
-export const addServiceAssignments = async (route:string, payload: any) =>{
+export const addServiceAssignments = async (route: string, payload: any) => {
   const axiosInstance = await getAxiosInstance()
   return axiosInstance.post(route, payload)
 }
-export const updateServiceAgreements = async (route:string, payload: any) =>{
+export const updateServiceAgreements = async (route: string, payload: any) => {
   const axiosInstance = await getAxiosInstance()
   return axiosInstance.put(route, payload)
 }
-export const GetClientAttachments = async (route: string) =>{
+export const GetClientAttachments = async (route: string) => {
   const axiosInstance = await getAxiosInstance()
   return axiosInstance.get(route)
 }
-export const addClientAttachments = async (route:string, payload: any) =>{
+export const addClientAttachments = async (route: string, payload: any) => {
   const axiosInstance = await getAxiosInstance()
   return axiosInstance.post(route, payload)
 }
-export const GetClientNotes = async (route: string) =>{
+export const GetClientNotes = async (route: string) => {
   const axiosInstance = await getAxiosInstance()
   return axiosInstance.get(route)
 }
@@ -73,7 +77,7 @@ export const updateClientsDetails = async (route: string, payload: any) => {
   const axiosInstance = await getAxiosInstance();
   return axiosInstance.patch(route, payload);
 };
-export const addClientBilling = async (route:string, payload: any) =>{
+export const addClientBilling = async (route: string, payload: any) => {
   const axiosInstance = await getAxiosInstance()
   return axiosInstance.post(route, payload)
 }
@@ -152,11 +156,11 @@ export const AddEmployeeRecordData = async (route: string, payload: any) => {
 }
 
 //--attachments---
-export const getClinicianAttachments = async (route: string) =>{
+export const getClinicianAttachments = async (route: string) => {
   const axiosInstance = await getAxiosInstance()
   return axiosInstance.get(route)
 }
-export const addClinicianAttachments = async (route:string, payload: any) =>{
+export const addClinicianAttachments = async (route: string, payload: any) => {
   const axiosInstance = await getAxiosInstance()
   return axiosInstance.post(route, payload)
 }
@@ -199,7 +203,7 @@ export const UpdateTherapistDetails = async (route: string, payload: any) => {
 }
 
 //-------View Tasks----------
-export const getTasksData = async (route: string) =>{
+export const getTasksData = async (route: string) => {
   const axiosInstance = await getAxiosInstance()
   return axiosInstance.get(route)
 }

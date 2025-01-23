@@ -1,7 +1,7 @@
 "use client";
-import React, { useState, useMemo, useEffect, useCallback } from "react";
+import React, { useState, useMemo, useEffect, useCallback, useRef } from "react";
 import { Calendar, dateFnsLocalizer, View, Event } from "react-big-calendar";
-import { format, parse, startOfWeek, getDay, addMinutes } from "date-fns";
+import { format, parse, startOfWeek, getDay, addMinutes, set } from "date-fns";
 import { enUS } from "date-fns/locale/en-US";
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon } from "lucide-react";
 import "react-big-calendar/lib/css/react-big-calendar.css";
@@ -10,6 +10,7 @@ import useSWR from "swr";
 import { useSession } from "next-auth/react";
 import EventModal from "./EventModal";
 import { getAppoinmentsForCalender } from "@/services/admin/admin-service";
+import AddAppointmentModal from "./Calender/add-appointment-modal";
 
 export interface CalendarEvent extends Event {
   id: number;
@@ -34,15 +35,37 @@ const CALENDAR_VIEWS = [
 ] as const;
 
 const AdminCalendar: React.FC = () => {
+  const clickRef = useRef<any>(null)
+  const session = useSession();
+  const userId = session?.data?.user?.id;
+  const { data, mutate } = useSWR(userId ? `/admin/appointments` : null, getAppoinmentsForCalender, { revalidateOnFocus: false });
   const [date, setDate] = useState<Date>(new Date());
   const [view, setView] = useState<View>("week");
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [selectedEvent, setSelectedEvent] = useState<any>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const session = useSession();
-  const userId = session?.data?.user?.id;
+  const [openAddAppointmentModal, setOpenAddAppointmentModal] = useState(false);
+  const [selectedSlot, setSelectedSlot] = useState<any>(null);
 
-  const { data, mutate } = useSWR(userId ? `/admin/appointments` : null, getAppoinmentsForCalender);
+  useEffect(() => {
+    /**
+     * What Is This?
+     * This is to prevent a memory leak, in the off chance that you
+     * teardown your interface prior to the timed method being called.
+     */
+    setTimeout(() => {
+      const currentClickRef = clickRef.current;
+      return () => {
+        window.clearTimeout(currentClickRef);
+      }
+    }, 3000)
+  }, [clickRef])
+
+  const onSelectSlot = useCallback((slotInfo: any) => {
+    setSelectedSlot(slotInfo)
+    setOpenAddAppointmentModal(true)
+  }, [])
+
 
   useEffect(() => {
     const checkIsMobile = () => {
@@ -232,7 +255,6 @@ const AdminCalendar: React.FC = () => {
     )
   }, [data]);
   // Add new state for timeslot selection
-  const [selectedTimeslot, setSelectedTimeslot] = useState<string | null>(null);
 
   // Modify the groupEventsByHour logic to be more precise
   const groupEventsByTime = useMemo(() => {
@@ -277,7 +299,7 @@ const AdminCalendar: React.FC = () => {
 
     const handleSlotClick = () => {
       if (events.length > 0) {
-        setSelectedTimeslot(timeKey);
+        // setSelectedTimeslot(timeKey);
         setIsModalOpen(true);
       }
     };
@@ -340,18 +362,42 @@ const AdminCalendar: React.FC = () => {
         </div>
       </div>
     );
-  };
+  }
 
   return (
     <div className="p-2 md:p-5 min-h-[calc(100vh-200px)]">
       <h2 className="text-xl md:text-2xl font-bold mb-2 md:mb-4">My Calendar</h2>
+      {
+        isModalOpen && <EventModal
+          event={selectedEvent}
+          isOpen={isModalOpen}
+          onClose={() => {
+            setIsModalOpen(false);
+            setSelectedEvent(null);
+          }}
+          events={data?.data?.data}
+          mutate={mutate}
+        />
+      }
+
+      {
+        openAddAppointmentModal && <AddAppointmentModal
+          openAddAppointmentModal={openAddAppointmentModal}
+          setOpenAddAppointmentModal={setOpenAddAppointmentModal}
+          selectedSlot={selectedSlot}
+          mutate={mutate}
+        />
+      }
+
+
       <div className="!min-h-[calc(100vh-200px)] border rounded-lg overflow-hidden bg-white shadow-sm">
         <Calendar
+          selectable
+          selected={selectedEvent}
           localizer={localizer}
           events={initialEvents}
           startAccessor="start"
           endAccessor="end"
-          onSelectEvent={handleEventSelect}
           views={CALENDAR_VIEWS.reduce(
             (acc, { key }) => ({ ...acc, [key]: true }),
             {}
@@ -362,26 +408,17 @@ const AdminCalendar: React.FC = () => {
           date={date}
           onNavigate={setDate}
           className="!min-h-[calc(100vh-200px)]"
+          onSelectEvent={handleEventSelect}
+          onSelectSlot={onSelectSlot}
           components={{
             toolbar: CustomToolbar,
             timeSlotWrapper: TimeSlotWrapper,
           }}
-          step={60}
+          step={30}
           timeslots={1}
         />
       </div>
 
-      {isModalOpen && <EventModal
-        event={selectedEvent}
-        isOpen={isModalOpen}
-        onClose={() => {
-          setIsModalOpen(false);
-          setSelectedTimeslot(null);
-          setSelectedEvent(null);
-        }}
-        events={data?.data?.data}
-        mutate={mutate}
-      />}
     </div>
   );
 };
