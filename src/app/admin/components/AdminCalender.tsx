@@ -366,7 +366,7 @@ const AdminCalendar: React.FC = () => {
 
   return (
     <div className="p-2 md:p-5 min-h-[calc(100vh-200px)]">
-      <h2 className="text-xl md:text-2xl font-bold mb-2 md:mb-4">My Calendar</h2>
+      <h2 className="text-xl md:text-2xl font-bold mb-2 md:mb-4">Appointment Calender</h2>
       {
         isModalOpen && <EventModal
           event={selectedEvent}
