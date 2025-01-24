@@ -121,7 +121,6 @@ const EditClinicianModal: React.FC<EditModalProps> = ({ row, isOpen, onRequestCl
           // currentResume: "http://example.com/attachments/static-license-file.pdf",
         };
 
-        console.log('updatedFormData:', updatedFormData);
         const response = await UpdateTherapistData(`/admin/therapists/${row?._id}`, updatedFormData);
 
         if (response?.status === 200) {

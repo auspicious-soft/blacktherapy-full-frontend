@@ -7,7 +7,6 @@ interface ClinicianOtherInfoProps {
 }
 
 const ClinicianOtherInfo: React.FC<ClinicianOtherInfoProps> = ({ row }) => {
-    console.log('row:', row);
     const questions = [
         { question: 'Are you licensed and/or certified? ', answer: row?.otherDetailsOfTherapist?.licenceType, type: 'text' },
         // { question: 'Provider Type?', answer: row?.otherDetailsOfTherapist?.providerType, type: 'text' },
@@ -25,7 +24,7 @@ const ClinicianOtherInfo: React.FC<ClinicianOtherInfoProps> = ({ row }) => {
         { question: 'Are you able to perform the essential functions of the position for which you are applying either with or without reasonable accommodations?', answer: row?.otherDetailsOfTherapist?.reasonableAccommodation, type: 'boolean' },
         { question: 'Do you have Reliable Transportation?', answer: row?.otherDetailsOfTherapist?.reliableTransportation, type: 'boolean' },
         { question: 'Do you have a supervisor with a valid supervision agreement in place?', answer: row?.otherDetailsOfTherapist?.validSupervisionAgreement, type: 'boolean' },
-        { question: 'Copy of your Resume?', answer: row?.otherDetailsOfTherapist?.currentResume, type: 'document' },
+        { question: 'Copy of Resume', answer: row?.otherDetailsOfTherapist?.currentResume, type: 'document' },
         { question: 'Which are your preferred means of online consultation?', answer: row?.otherDetailsOfTherapist?.preferredCommunicationMethod, type: 'text' },
         { question: 'Do you have Driver License?', answer: row?.otherDetailsOfTherapist?.validDriverLicense, type: 'boolean' },
         { question: 'Driver’s license or State ID Number', answer: row?.otherDetailsOfTherapist?.driverLicenseOrStateId, type: 'text' },

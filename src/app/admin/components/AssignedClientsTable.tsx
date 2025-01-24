@@ -31,13 +31,6 @@ const AssignedClientsTable: React.FC<AssignedClientsTableProps> = ({ error,appoi
   const [updateAssignment, setUpdateAssignment] = useState(false);
   const [assignmentDetails, setAssignmentDetails] = useState<any>(null);
 
-  // const [formData, setFormData] = useState({
-  //   assignedClinician: "",
-  //   assignedPeerSupport: "",
-  //   message: "",
-  //   workshop: "",
-  //   video: "",
-  // });
 
   const assignedData = appointmentsData?.data;
   const rowsPerPage = 10;

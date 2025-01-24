@@ -1,12 +1,7 @@
 import { CloseIcon } from "@/utils/svgicons";
-import React, { act, useState } from "react";
+import React, { useState } from "react";
 import Modal from "react-modal";
 import Image from "next/image";
-import Client from "@/assets/images/clientpic.png";
-import ClientNotesTab from "./ClientNotesTab";
-import ClinicianPersonalinfo from "./ClinicianPersonalinfo";
-import ClinicianOtherInfo from "./ClinicianOtherInfo";
-import ClinicianRecord from "./ClinicianRecord";
 import AppointmentsTab from "./AppointmentsTab";
 import InsurenceTab from "./InsurenceTab";
 import { getImageUrlOfS3 } from "@/utils";
@@ -27,14 +22,14 @@ const ClientsAssignmentPopup = (props: ClinicianDetailsPopupProps) => {
   };
 
   return (
-    <Modal
-      isOpen={props.isOpen}
-      onRequestClose={props.onRequestClose}
-      contentLabel="Delete Item"
-      className="modal max-w-[1180px] md:px-0 px-3 mx-auto rounded-[20px] w-full  max-h-[90vh] overflow-auto overflo-custom "
-      overlayClassName="w-full h-full fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center"
-    >
-      <div className="flex items-center justify-between rounded-t-[20px] p-5 md:py-[25px] md:px-[35px] bg-[#283C63]  ">
+      <Modal
+        isOpen={props.isOpen}
+        onRequestClose={props.onRequestClose}
+        contentLabel="Delete Item"
+        className="rounded-lg w-full max-w-4xl mx-auto bg-white shadow-lg max-h-[90vh] overflow-auto"
+        overlayClassName="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center"
+      >
+      <div className="flex items-center justify-between p-5 md:py-[25px] md:px-[35px] bg-[#283C63]  ">
         <h2 className="font-gothamMedium !text-white">Client Details</h2>
         <button onClick={props.onRequestClose}>
           <CloseIcon />{" "}

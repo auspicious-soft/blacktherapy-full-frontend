@@ -27,7 +27,7 @@ const ClinicianNotesTab: React.FC<NotesProps> = ({ rowId }) => {
   const handleAddNote = async () => {
      startTransition(async () => {
       try {
-        const response = await AddEmployeeNotesData(`/admin/thrapists/notes/${rowId}`, { note: newNote });
+        const response = await AddEmployeeNotesData(`/admin/thrapists/notes/${rowId}`, { note: newNote, assignedBy: userRole });
         if (response?.status === 201) {
           mutate(); 
           toast.success("Note added successfully");
@@ -80,7 +80,7 @@ const ClinicianNotesTab: React.FC<NotesProps> = ({ rowId }) => {
             notesInfo?.map((row: any) => (
               <tr key={row?._id}>
                 <td>{row?.note}</td>
-                <td>{row?.createdAt}</td>
+                <td>{new Date(row?.createdAt).toLocaleDateString('en-US')} at {new Date(row?.createdAt).toLocaleTimeString().slice(0, 5)}</td>
                 <td className="capitalize">{userRole}</td>
               </tr>
             ))

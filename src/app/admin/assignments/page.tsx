@@ -1,7 +1,7 @@
 "use client"
 import AssignedClientsTable from "@/app/admin/components/AssignedClientsTable";
 import SearchBar from "@/app/admin/components/SearchBar";
-import UnassignedClientTable, { TableData } from "@/app/admin/components/UnassignedClientTable";
+import UnassignedClientTable from "@/app/admin/components/UnassignedClientTable";
 import { getAppoinmentsData } from "@/services/admin/admin-service";
 import { useState } from "react";
 import useSWR from "swr";
