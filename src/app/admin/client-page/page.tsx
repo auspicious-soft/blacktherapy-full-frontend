@@ -8,15 +8,12 @@ import { useSession } from "next-auth/react";
 
 const Page: React.FC = () => {
     const { data: session } = useSession();
-    const [query, setQuery] = useState('');
+    const [query, setQuery] = useState('page=1&limit=10')
     const [status, setStatus] = useState('');
-    const filterStr = `${query && query.includes('description') ? `${query}` : ''}${query && status ? '&' : ''}${status ? `status=${status}` : ''}&page=1&limit=10`;    
+    const filterStr = `${query ? `${query}` : ''}${query && status ? '&' : ''}${status ? `status=${status}` : ''}`;
     const { data, error, isLoading, mutate } = useSWR(`/admin/clients${filterStr ? `?${filterStr}` : ''}`, getClientsPageData);
     const clientsData: any = data?.data;
-    const userRole = (session as any)?.user?.role;
-
-    useEffect(() => {
-    }, [userRole]);
+    const userRole = (session as any)?.user?.role;  
 
     const handleFilters = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setStatus(e.target.value);
