@@ -198,7 +198,7 @@ const ClinicianTable: React.FC<TherapistsDataProps> = ({
             ) : therapistsDataArray?.length > 0 ? (
               therapistsDataArray?.map((row: any) => (
                 <tr key={row?._id}>
-                                    <td onClick={() => openClinicianPopup(row)} className="hover:underline hover:font-bold relative"
+                  <td onClick={() => openClinicianPopup(row)} className="hover:underline hover:font-bold relative"
                     data-tip
                     title={(tooltipContent && tooltipContent as string) ?? ''}
                     data-for={`tooltip-${row?._id}`}
@@ -208,12 +208,12 @@ const ClinicianTable: React.FC<TherapistsDataProps> = ({
                     }}
                     onMouseLeave={() => {
                       setHoveredRow(null)
-                      setTooltipContent(null) 
+                      setTooltipContent(null)
                     }}
                   >
                     <p className={`cursor-pointer`}
                     >{row?.firstName} {row?.lastName}</p>
-                    {(tooltipContent && tooltipContent as string)  && (
+                    {(tooltipContent && tooltipContent as string) && (
                       <Tooltip
                         title="Welcome to React"
                         position="bottom"
@@ -330,7 +330,7 @@ const ClinicianTable: React.FC<TherapistsDataProps> = ({
           </tbody>
         </table>
       </div>
-      {Math.ceil(total / rowsPerPage) > 0 &&  <div className="text-right">
+      {Math.ceil(total / rowsPerPage) > 0 && <div className="text-right">
         <ReactPaginate
           previousLabel={"<"}
           nextLabel={">"}
@@ -355,8 +355,8 @@ const ClinicianTable: React.FC<TherapistsDataProps> = ({
         isOpen={isDeleteModalOpen}
         onRequestClose={handleModalClose}
         contentLabel="Delete Clinician"
-        className="modal max-w-[584px] mx-auto bg-white rounded-xl w-full p-5 bg-flower"
-        overlayClassName="overlay"
+        className="rounded-lg w-full max-w-4xl mx-auto bg-white shadow-lg max-h-[90vh] overflow-auto"
+        overlayClassName="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center"
       >
         <Image
           src={deleteCross}
