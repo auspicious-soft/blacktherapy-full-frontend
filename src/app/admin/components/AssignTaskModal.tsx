@@ -26,7 +26,7 @@ interface TaskData {
   assignedBy: string;
 }
 
-const AssignTaskModal: React.FC<AssignTaskModalProps> = ({isOpen,onRequestClose,row,}) => {
+const AssignTaskModal: React.FC<AssignTaskModalProps> = ({ isOpen, onRequestClose, row, }) => {
   const session = useSession();
   const userRole = (session as any)?.data?.user?.role;
   const [isPending, startTransition] = useTransition();
@@ -71,35 +71,35 @@ const AssignTaskModal: React.FC<AssignTaskModalProps> = ({isOpen,onRequestClose,
     e.preventDefault();
 
     startTransition(async () => {
-    try {
-         if (!taskData.attachment) {
-           toast.error('Please select a file to upload');
-           return;
-         } 
-         const { signedUrl, key } = await generateSignedUrlOfTaskData(
-           taskData.attachment.name,
-           taskData.attachment.type,
+      try {
+        if (!taskData.attachment) {
+          toast.error('Please select a file to upload');
+          return;
+        }
+        const { signedUrl, key } = await generateSignedUrlOfTaskData(
+          taskData.attachment.name,
+          taskData.attachment.type,
           row?.email
-         );
- 
-         const uploadResponse = await fetch(signedUrl, {
-           method: 'PUT',
-           body: taskData.attachment,
-           headers: {
-             'Content-Type': taskData.attachment.type,
-           },
-           cache: 'no-store'
-         });
- 
-         if (!uploadResponse.ok) {
-           toast.error('Failed to upload file. Please try again');
-           return;
-         }
+        );
+
+        const uploadResponse = await fetch(signedUrl, {
+          method: 'PUT',
+          body: taskData.attachment,
+          headers: {
+            'Content-Type': taskData.attachment.type,
+          },
+          cache: 'no-store'
+        });
+
+        if (!uploadResponse.ok) {
+          toast.error('Failed to upload file. Please try again');
+          return;
+        }
         const taskPayload = {
           ...taskData,
           attachment: key,
         };
-        const response = await AssignTaskToTherapist(`/admin/therapists/tasks/${row?._id}`,taskPayload);
+        const response = await AssignTaskToTherapist(`/admin/therapists/tasks/${row?._id}`, taskPayload);
         if (response?.status === 201) {
           toast.success("Task assigned successfully");
           onRequestClose();
@@ -126,8 +126,8 @@ const AssignTaskModal: React.FC<AssignTaskModalProps> = ({isOpen,onRequestClose,
       isOpen={isOpen}
       onRequestClose={onRequestClose}
       contentLabel="Assign Task"
-      className="modal bg-white w-[90%] max-w-[668px] max-h-[90vh] rounded-xl overflow-auto overflo-custom"
-      overlayClassName="overlay"
+      className="rounded-lg w-full max-w-3xl mx-auto bg-white shadow-lg max-h-[90vh] overflow-auto"
+      overlayClassName="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center"
     >
       <h2 className="text-white bg-[#283C63] py-8 font-gothamMedium px-[50px]">
         Assign Task

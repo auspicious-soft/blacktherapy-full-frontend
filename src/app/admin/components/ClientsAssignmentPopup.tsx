@@ -11,9 +11,9 @@ interface ClinicianDetailsPopupProps {
   onRequestClose: () => void;
   row: any;
 }
- 
+
 const ClientsAssignmentPopup = (props: ClinicianDetailsPopupProps) => {
-  const { row } = props; 
+  const { row } = props;
   const [activeTab, setActiveTab] = useState("tab1");
 
 
@@ -22,13 +22,13 @@ const ClientsAssignmentPopup = (props: ClinicianDetailsPopupProps) => {
   };
 
   return (
-      <Modal
-        isOpen={props.isOpen}
-        onRequestClose={props.onRequestClose}
-        contentLabel="Delete Item"
-        className="rounded-lg w-full max-w-4xl mx-auto bg-white shadow-lg max-h-[90vh] overflow-auto"
-        overlayClassName="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center"
-      >
+    <Modal
+      isOpen={props.isOpen}
+      onRequestClose={props.onRequestClose}
+      contentLabel="Delete Item"
+      className="rounded-lg w-full max-w-4xl mx-auto bg-white shadow-lg max-h-[90vh] overflow-auto"
+      overlayClassName="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center"
+    >
       <div className="flex items-center justify-between p-5 md:py-[25px] md:px-[35px] bg-[#283C63]  ">
         <h2 className="font-gothamMedium !text-white">Client Details</h2>
         <button onClick={props.onRequestClose}>

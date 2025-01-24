@@ -50,7 +50,7 @@ const UpdateAssignments: React.FC<AssignmentProps> = ({ isOpen, onRequestClose, 
 
     const checkStateMatch = (state: string) => {
         if (state === nameState) {
-            toast.warning('The Client state matches with the client.',  
+            toast.warning('The Client state matches with the client.',
                 {
                     position: "top-right",
                     duration: 5000,
@@ -115,8 +115,8 @@ const UpdateAssignments: React.FC<AssignmentProps> = ({ isOpen, onRequestClose, 
             onRequestClose={onRequestClose}
             contentLabel="Update Assignment"
             bodyOpenClassName='overflow-hidden'
-            className="modal max-w-[1180px] bg-white p-5 mx-auto rounded-[20px] w-full max-h-[90vh] overflow-auto overflo-custom"
-            overlayClassName="w-full h-full fixed inset-0 px-3 bg-gray-500 bg-opacity-75 flex items-center justify-center"
+            className="rounded-lg w-full max-w-4xl p-4 mx-auto bg-white shadow-lg max-h-[90vh] overflow-auto"
+            overlayClassName="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center"
         >
             <h2 className="text-xl mb-4">Update Assignment Information</h2>
             <form onSubmit={handleFormSubmit}>
