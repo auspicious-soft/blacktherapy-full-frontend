@@ -30,7 +30,7 @@ const Page = () => {
   const [disabledDates, setDisabledDates] = useState<Date[]>([]);
   const [availableTimes, setAvailableTimes] = useState<string[]>([]);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-
+  const noActivePlan = user?.data?.data?.planOrSubscriptionId === null;
   useEffect(() => {
     if (
       activeTab === "Previous Appointments" ||
@@ -202,6 +202,7 @@ const Page = () => {
           </div>
           <div>
             <button
+              disabled={noActivePlan}
               className="button !mt-0"
               onClick={() => {
                 userMutate();
