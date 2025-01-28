@@ -77,9 +77,9 @@ const UpcomingAppointments = (props: PreviousAppointmentsProps) => {
                       </p>
                     )}
                   </td>
-                  <td>{video ? <p className={`cursor-pointer font-gothamMedium inline-block text-center rounded-3xl py-[2px] px-[10px] text-[10px] ${isVideoCount > 0 ? 'text-[#42A803] bg-[#CBFFB2]' : 'text-[#FFA234] bg-[#FFFCEC]'}`}>
+                  <td>{video ? <button disabled={item?.status == 'Completed'} className={`cursor-pointer font-gothamMedium inline-block text-center rounded-3xl py-[2px] px-[10px] text-[10px] ${isVideoCount > 0 ? 'text-[#42A803] bg-[#CBFFB2]' : 'text-[#FFA234] bg-[#FFFCEC]'}`}>
                     {isVideoCount > 0 ? <div onClick={() => window.location.href = `/customer/appointments/video-chat/${item?._id}`}>{`Start Video (${isVideoCount})`}</div> : 'Video chat limit reached for current plan'}
-                  </p> : <p className="cursor-not-allowed">No Video</p>}</td>
+                  </button> : <p className="cursor-not-allowed">No Video</p>}</td>
                   <td>
                     <span className="cursor-pointer w-[26px] flex" onClick={() => handleViewTeam(item?.peerSupportIds)}>
                       <ViewIcon />
@@ -122,37 +122,37 @@ const UpcomingAppointments = (props: PreviousAppointmentsProps) => {
         />
       </div>
 
-        <Modal
-              isOpen={teamPopupOpen}
-              onRequestClose={handleCloseTeam}
-              overlayClassName="w-full h-full p-3 fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center"
-              className="modal max-w-[90%] py-[25px] px-[15px] lg:p-[40px] bg-white mx-auto rounded-[20px] w-full max-h-[90vh] overflow-auto"
-            >
-              <h1 className="font-antic text-[#283C63] text-[30px] leading-[1.2em] mb-[25px] lg:text-[40px] lg:mb-[50px]">
-                Care Team
-              </h1>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-[20px] gap-y-[20px] lg:gap-y-[40px]">
-                {careTeam?.map((therapist: any) => (
-                  <div key={therapist._id} className="">
-                    <Image
-                      src={getImageUrlOfS3(therapist?.profilePic) || './assets/images/therapist1.jpg'}
-                      alt={therapist?.firstName}
-                      width={200}
-                      height={200}
-                      className="rounded-[20px] w-full aspect-square cover"
-                    />
-                    <h4 className="mt-4 font-gotham">{therapist?.firstName} {therapist?.lastName}</h4>
-                  </div>
-                ))}
-              </div>
-              <button
-                className="button !bg-transparent !text-[#283c63] border-[#283c63] border-[1px]"
-                type="button"
-                onClick={handleCloseTeam}
-              >
-                Close
-              </button>
-            </Modal>
+      <Modal
+        isOpen={teamPopupOpen}
+        onRequestClose={handleCloseTeam}
+        overlayClassName="w-full h-full p-3 fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center"
+        className="modal max-w-[90%] py-[25px] px-[15px] lg:p-[40px] bg-white mx-auto rounded-[20px] w-full max-h-[90vh] overflow-auto"
+      >
+        <h1 className="font-antic text-[#283C63] text-[30px] leading-[1.2em] mb-[25px] lg:text-[40px] lg:mb-[50px]">
+          Care Team
+        </h1>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-[20px] gap-y-[20px] lg:gap-y-[40px]">
+          {careTeam?.map((therapist: any) => (
+            <div key={therapist._id} className="">
+              <Image
+                src={getImageUrlOfS3(therapist?.profilePic) || './assets/images/therapist1.jpg'}
+                alt={therapist?.firstName}
+                width={200}
+                height={200}
+                className="rounded-[20px] w-full aspect-square cover"
+              />
+              <h4 className="mt-4 font-gotham">{therapist?.firstName} {therapist?.lastName}</h4>
+            </div>
+          ))}
+        </div>
+        <button
+          className="button !bg-transparent !text-[#283c63] border-[#283c63] border-[1px]"
+          type="button"
+          onClick={handleCloseTeam}
+        >
+          Close
+        </button>
+      </Modal>
     </>
   );
 };

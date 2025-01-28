@@ -90,9 +90,9 @@ const PreviousAppointments = (props: PreviousAppointmentsProps) => {
                         </p>
                       )}
                     </td>
-                    <td>{video ? <p className={`cursor-pointer font-gothamMedium inline-block text-center rounded-3xl py-[2px] px-[10px] text-[10px] ${isVideoCount > 0 ? 'text-[#42A803] bg-[#CBFFB2]' : 'text-[#FFA234] bg-[#FFFCEC]'}`}>
+                    <td>{video ? <button disabled= {item?.status == 'Completed'} className={`cursor-pointer font-gothamMedium inline-block text-center rounded-3xl py-[2px] px-[10px] text-[10px] ${isVideoCount > 0 ? 'text-[#42A803] bg-[#CBFFB2]' : 'text-[#FFA234] bg-[#FFFCEC]'}`}>
                       {isVideoCount > 0 ? <div onClick={() => window.location.href = `/customer/appointments/video-chat/${item?._id}`}>{`Start Video (${isVideoCount})`}</div> : 'Video chat limit reached for current plan'}
-                    </p> : <p className="cursor-not-allowed">No Video</p>}</td>
+                    </button> : <p className="cursor-not-allowed">No Video</p>}</td>
                     <td>
                       <span className="cursor-pointer w-[26px] flex" onClick={() => handleViewTeam(item?.peerSupportIds)}>
                         <ViewIcon />
