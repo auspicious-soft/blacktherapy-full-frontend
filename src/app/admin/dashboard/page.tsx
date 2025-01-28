@@ -25,10 +25,10 @@ const Home = () => {
   const session = useSession()
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
-  const { data, error, isLoading } = useSWR(`/admin/dashboard?id=${session?.data?.user?.id}`, getAdminDashboardStats)
+  const { data, error, isLoading } = useSWR(session?.data?.user?.id ? `/admin/dashboard?id=${session?.data?.user?.id}` : null, getAdminDashboardStats)
+  const { data: alertsData, error: alertError, isLoading: alertLoadig } = useSWR(session?.data?.user?.id ? `/admin/notifications` : null, getAdminAlerts)
   const finalData: any = data?.data
 
-  const { data: alertsData, error: alertError, isLoading: alertLoadig } = useSWR(`/admin/notifications`, getAdminAlerts)
 
   const alertsArray = alertsData?.data?.data
 
