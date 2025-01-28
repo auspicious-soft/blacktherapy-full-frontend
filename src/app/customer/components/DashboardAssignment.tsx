@@ -5,7 +5,7 @@ import Image from "next/image";
 import PervIcon from "@/assets/images/pervicon.png";
 import NextIcon from "@/assets/images/nexticon.png";
 import { ViewIcon, ButtonArrow, CloseIcon } from "@/utils/svgicons";
-import demo from "@/assets/images/square.jpg"; 
+import demo from "@/assets/images/square.jpg";
 import ReactLoading from "react-loading";
 import router, { Router } from "next/router";
 import { useRouter } from "next/navigation";
@@ -78,16 +78,16 @@ const DashboardAssignment = (props: any) => {
                   <td>{row?.appointmentTime ? (row?.appointmentTime) : 'Not Assigned Yet'}{Number(row?.appointmentTime?.split(':')[0]) < 12 ? ' AM' : ' PM'}</td>
                   <td>
                     {message ? (
-                      <p
+                      <button
                         onClick={() => handleChat(row._id)}
                         className={`font-gothamMedium cursor-pointer  inline-block text-center rounded-3xl py-[2px] px-[10px] text-[10px] ${isChatAllowed ? 'text-[#42A803] bg-[#CBFFB2]' : 'text-[#FFA234] bg-[#FFFCEC]'}`}
                       >
                         {isChatAllowed ? 'Start Chat' : 'Chat not allowed'}
-                      </p>
+                      </button>
                     ) : (
-                      <p className="cursor-not-allowed">
+                      <button className="cursor-not-allowed">
                         No Chat
-                      </p>
+                      </button>
                     )}
                   </td>
                   <td>{video ? <p className={`cursor-pointer font-gothamMedium inline-block text-center rounded-3xl py-[2px] px-[10px] text-[10px] ${isVideoCount > 0 ? 'text-[#42A803] bg-[#CBFFB2]' : 'text-[#FFA234] bg-[#FFFCEC]'}`}>
@@ -258,7 +258,7 @@ const DashboardAssignment = (props: any) => {
             <div key={therapist.id} className="cursor-pointer">
               <Image
                 onClick={() => viewProfile(therapist)}
-                src={therapist?.profilePic ? getImageUrlOfS3(therapist?.profilePic) : demo} 
+                src={therapist?.profilePic ? getImageUrlOfS3(therapist?.profilePic) : demo}
                 alt={therapist?.firstName}
                 width={200}
                 height={200}

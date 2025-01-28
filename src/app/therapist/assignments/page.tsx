@@ -28,7 +28,7 @@ const Page = () => {
   const page = data?.data?.page
   const total = data?.data?.total
   const rowsPerPage = data?.data?.limit
-
+  const [isCompletedFieldsDisable, setIsCompletedFieldsDisable] = useState(false)
   const handlePageClick = (selectedItem: { selected: number }) => {
     setQuery(`page=${selectedItem.selected + 1}&limit=${rowsPerPage}`);
   }
@@ -43,14 +43,23 @@ const Page = () => {
   };
   const [selectedRow, setSelectedRow] = useState<any>({})
 
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     const payload = {
       appointmentDate: selectedRow.appointmentDate,
       appointmentTime: selectedRow.appointmentTime,
-      status: selectedRow.status
-    };
+      status: selectedRow.status,
+      progressNotes: selectedRow.progressNotes,
+      servicesProvided: selectedRow.servicesProvided,
+      requestType: selectedRow.requestType,
+      duration: selectedRow.duration
+    }
+    if (payload.duration && isNaN(Number(payload.duration))) {
+      toast.error("Duration must be a number")
+      return
+    }
     startTransition(async () => {
       try {
         const response = await updateAppointmentData(`/admin/appointments/${selectedRow?._id}`, payload);
@@ -67,8 +76,8 @@ const Page = () => {
       } finally {
         setIsEditModalOpen(false);
       }
-    });
-  };
+    })
+  }
 
 
   return (
@@ -128,7 +137,7 @@ const Page = () => {
                           <button
                             disabled={disableOldAppointmentThatCompleted}
                             className={`font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px] 
-        ${disableOldAppointmentThatCompleted
+                                ${disableOldAppointmentThatCompleted
                                 ? 'bg-gray-200 text-gray-500 cursor-not-allowed opacity-50'
                                 : 'text-[#FFA234] bg-[#FFFCEC]'}`}
                           >
@@ -139,20 +148,20 @@ const Page = () => {
                       <td>
                         {!item?.clientId?.video ? (
                           <span className={`font-gothamMedium inline-block text-center rounded-3xl py-[2px] px-[10px] text-[10px]
-      ${disableOldAppointmentThatCompleted
+                            ${(item?.status === 'Completed')
                               ? 'bg-gray-200 text-gray-500'
                               : 'text-[#FFA234] bg-[#FFFCEC]'}`}>
                             No video
                           </span>
                         ) : (
-                          <div onClick={() => !disableOldAppointmentThatCompleted && (window.location.href = `/therapist/assignments/video-chat/${item?._id}`)}>
+                          <button disabled={(item?.status === 'Completed')} onClick={() => !(item?.status === 'Completed') && (window.location.href = `/therapist/assignments/video-chat/${item?._id}`)}>
                             <p className={`font-gothamMedium inline-block text-center rounded-3xl py-[2px] px-[10px] text-[10px]
-        ${disableOldAppointmentThatCompleted
+                              ${(item?.status === 'Completed')
                                 ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
                                 : 'text-[#42A803] bg-[#CBFFB2] cursor-pointer'}`}>
                               Start Video
                             </p>
-                          </div>
+                          </button>
                         )}
                       </td>
                       <td>
@@ -171,7 +180,8 @@ const Page = () => {
                           disabled={disableOldAppointmentThatCompleted}
                           onClick={() => {
                             setSelectedRow(item)
-                            setIsEditModalOpen(true);
+                            setIsEditModalOpen(true)
+                            setIsCompletedFieldsDisable(item?.status === 'Completed')
                           }}>
                           <EditIcon />
                         </button>
@@ -239,7 +249,7 @@ const Page = () => {
             isOpen={isEditModalOpen}
             onRequestClose={() => setIsEditModalOpen(false)}
             contentLabel="Edit Event"
-            className={`overflow-auto max-w-xl child-modal bottom-0 !bg-white rounded-lg w-full p-5 shadow-lg z-[2000] h-auto !top-auto ${isEditModalOpen ? 'modal-open' : ''}`}
+            className={`overflow-auto max-w-2xl child-modal bottom-0 !bg-white rounded-lg w-full p-5 shadow-lg z-[2000] h-auto !top-auto ${isEditModalOpen ? 'modal-open' : ''}`}
             overlayClassName="overlay fixed inset-0 bg-black bg-opacity-50 z-[2000]"
           >
             <h3 className="font-semibold">Edit Appointment Details</h3>
@@ -313,6 +323,7 @@ const Page = () => {
                     }
                     className="border p-2 rounded"
                     required
+                    disabled={isCompletedFieldsDisable}
                   >
                     <option value="Pending">Pending</option>
                     <option value="Completed">Completed</option>
@@ -321,6 +332,100 @@ const Page = () => {
                     <option value="Rejected">Rejected</option>
                   </select>
                 </div>
+
+                {
+                  (selectedRow?.status === 'Completed' && !isCompletedFieldsDisable) && (
+                    <div className="flex flex-col gap-3">
+                      <label htmlFor="progressNotes" className="font-medium">
+                        Progress Notes
+                      </label>
+                      <textarea
+                        id="progressNotes"
+                        value={selectedRow.progressNotes}
+                        onChange={(e) =>
+                          setSelectedRow((prev: any) => ({
+                            ...prev,
+                            progressNotes: e.target.value
+                          }))
+                        }
+                        className="border p-2 rounded"
+                        required
+                      />
+                      <div className="flex gap-3 w-full">
+                        <div className='flex-1'>
+                          <label className="block mb-2">Services Provided</label>
+                          <select
+                            required
+                            name="assignedClinician"
+                            value={selectedRow.servicesProvided || ""}
+                            onChange={(e) =>
+                              setSelectedRow((prev: any) => ({
+                                ...prev,
+                                servicesProvided: e.target.value,
+                              }))
+                            }
+                            className="border p-2 rounded"
+                          >
+                            <option value="">--Select--</option>
+                            <option value="Psychiatric Diagnostic Evaluation (Assessment)">
+                              Psychiatric Diagnostic Evaluation (Assessment)
+                            </option>
+                            <option value="Psychotherapy (Individual)">Psychotherapy (Individual)</option>
+                            <option value="Peer Support Service">Peer Support Service</option>
+                            <option value="Psychotherapy (couple)">Psychotherapy (couple)</option>
+                            <option value="Psychotherapy (Group)">Psychotherapy (Group)</option>
+                            <option value="Nurse (RN) Assessment">Nurse (RN) Assessment</option>
+                            <option value="Peer Support">Peer Support</option>
+                            <option value="Personal Care Service">Personal Care Service</option>
+                            <option value="DWI Assessment">DWI Assessment</option>
+                            <option value="Intensive in-home Respite">Intensive in-home Respite</option>
+                            <option value="Other">Other</option>
+                          </select>
+                        </div>
+                        <div>
+                          <div className='flex-1'>
+                            <label className="block mb-2">Request Type</label>
+                            <select
+                              required
+                              name="requestType"
+                              value={selectedRow.requestType || ""}
+                              onChange={(e) =>
+                                setSelectedRow((prev: any) => ({
+                                  ...prev,
+                                  requestType: e.target.value,
+                                }))
+                              }
+                              className="border p-2 rounded"
+                            >
+                              <option value="">--Select--</option>
+                              <option value="Payment">Payment</option>
+                              <option value="Reimbursement">Reimbursement</option>
+                              <option value="Other Services Provided">Other Services Provided</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="md:w-[calc(20%-15px)] w-[calc(50%-15px)]">
+                        <label className="block mb-2">Duration (Hours)</label>
+                        <input
+                          required
+                          type="text"
+                          value={selectedRow.duration || ""}
+                          onChange={(e) =>
+                            setSelectedRow((prev: any) => ({
+                              ...prev,
+                              duration: e.target.value,
+                            }))
+                          }
+                          name="duration"
+                          id="duration"
+                          placeholder=""
+                          className="border p-2 rounded"
+                        />
+                      </div>
+                    </div>
+                  )
+                }
                 {/* Submit Button */}
                 <div className="flex justify-end gap-2">
                   <button className="text-black p-2 rounded-md font-semibold" onClick={() => setIsEditModalOpen(false)}>
