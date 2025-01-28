@@ -2,21 +2,25 @@
 import SearchBar from '@/app/admin/components/SearchBar';
 import { getTherapistAssignments } from '@/services/therapist/therapist-service.';
 import { useSession } from 'next-auth/react';
-import { use, useState } from 'react';
+import { useState, useTransition } from 'react';
+import { format } from 'date-fns';
 import ReactPaginate from 'react-paginate';
 import useSWR from 'swr';
 import ReactLoading from 'react-loading';
 import Modal from "react-modal";
 import { useRouter } from "next/navigation";
-import { CloseIcon } from '@/utils/svgicons';
+import { CloseIcon, EditIcon } from '@/utils/svgicons';
 import Link from 'next/link';
+import ReactLoader from '@/components/ReactLoader';
+import { updateAppointmentData } from '@/services/admin/admin-service';
+import { toast } from 'sonner';
+import { set } from 'date-fns';
 
 const Page = () => {
   const [showModal, setShowModal] = useState(false);
   const [sessionNotes, setSessionNotes] = useState<string | null>(null);
   const router = useRouter();
-
-
+  const [isPending, startTransition] = useTransition()
   const session = useSession()
   const [query, setQuery] = useState('')
   const { data, error, isLoading, mutate } = useSWR(`/therapist/${session?.data?.user?.id}/clients?${query}`, getTherapistAssignments);
@@ -37,9 +41,35 @@ const Page = () => {
   const handleChat = (id: string) => {
     router.push(`/therapist/assignments/chats/${id}`);
   };
+  const [selectedRow, setSelectedRow] = useState<any>({})
 
-  // const data = activeTab === 'peerSupport' ? peerSupportData : therapistData;
-  // const filteredData = data.slice(currentPage * rowsPerPage, (currentPage + 1) * rowsPerPage);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    const payload = {
+      appointmentDate: selectedRow.appointmentDate,
+      appointmentTime: selectedRow.appointmentTime,
+      status: selectedRow.status
+    };
+    startTransition(async () => {
+      try {
+        const response = await updateAppointmentData(`/admin/appointments/${selectedRow?._id}`, payload);
+        if (response.status === 200) {
+          toast.success("Appointment updated successfully")
+          mutate()
+          setSelectedRow({})
+          setIsEditModalOpen(false)
+
+        }
+      }
+      catch (error) {
+        toast.error("An error occurred while updating the assignment");
+      } finally {
+        setIsEditModalOpen(false);
+      }
+    });
+  };
+
 
   return (
     <div className="">
@@ -61,6 +91,7 @@ const Page = () => {
               <th >Chat Client</th>
               <th >Video Chat</th>
               <th >Status</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -73,35 +104,82 @@ const Page = () => {
             ) : (
               // convert this time to am or pm
               clientsData?.length > 0 ? (
-                clientsData?.map((item: any) => (
-                  <tr key={item._id}>
-                    <td>{item.clientId.firstName} {item.clientId.lastName}</td>
-                    <td>{new Date(item.clientId.assignedDate).toLocaleDateString('en-US')}</td>
-                    <td>{item.clientId.assignedTime}</td>
-                    <td>{item.clientId.phoneNumber}</td>
-                    <td>{item.clientId.email}</td>
-                    {/* <td> <p className='cursor-pointer font-gothamMedium text-center rounded-xl text-[10px] py-[4px] text-[#fff] bg-[#26395E]' onClick={()=>openModal(item?.notes)}>View</p></td> */}
+                clientsData?.map((item: any) => {
+                  const disableOldAppointmentThatCompleted = item?.status == 'Completed' && new Date(item?.appointmentDate) < new Date()
+                  return (
+                    <tr key={item._id}>
+                      <td>{item.clientId.firstName} {item.clientId.lastName}</td>
+                      <td>{new Date(item.appointmentDate).toLocaleDateString('en-US')}</td>
+                      <td>{item.appointmentTime}</td>
+                      <td>{item.clientId.phoneNumber}</td>
+                      <td>{item.clientId.email}</td>
+                      {/* <td> <p className='cursor-pointer font-gothamMedium text-center rounded-xl text-[10px] py-[4px] text-[#fff] bg-[#26395E]' onClick={()=>openModal(item?.notes)}>View</p></td> */}
 
-                    <td>
-                      {item?.clientId?.message ? (
-                        <p
-                          onClick={() => handleChat(item._id)}
-                          className="font-gothamMedium inline-block cursor-pointer text-center rounded-3xl py-[2px] px-[10px] text-[10px] text-[#42A803] bg-[#CBFFB2]"
-                        >
-                          Start Chat
+                      <td>
+                        {item?.clientId?.message ? (
+                          <button
+                            // disabled={disableOldAppointmentThatCompleted}
+                            onClick={() => handleChat(item._id)}
+                            className={`font-gothamMedium inline-block text-center rounded-3xl py-[2px] px-[10px] text-[10px] text-[#42A803] bg-[#CBFFB2] cursor-pointer`}
+                          >
+                            Start Chat
+                          </button>
+                        ) : (
+                          <button
+                            disabled={disableOldAppointmentThatCompleted}
+                            className={`font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px] 
+        ${disableOldAppointmentThatCompleted
+                                ? 'bg-gray-200 text-gray-500 cursor-not-allowed opacity-50'
+                                : 'text-[#FFA234] bg-[#FFFCEC]'}`}
+                          >
+                            No Chat
+                          </button>
+                        )}
+                      </td>
+                      <td>
+                        {!item?.clientId?.video ? (
+                          <span className={`font-gothamMedium inline-block text-center rounded-3xl py-[2px] px-[10px] text-[10px]
+      ${disableOldAppointmentThatCompleted
+                              ? 'bg-gray-200 text-gray-500'
+                              : 'text-[#FFA234] bg-[#FFFCEC]'}`}>
+                            No video
+                          </span>
+                        ) : (
+                          <div onClick={() => !disableOldAppointmentThatCompleted && (window.location.href = `/therapist/assignments/video-chat/${item?._id}`)}>
+                            <p className={`font-gothamMedium inline-block text-center rounded-3xl py-[2px] px-[10px] text-[10px]
+        ${disableOldAppointmentThatCompleted
+                                ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                                : 'text-[#42A803] bg-[#CBFFB2] cursor-pointer'}`}>
+                              Start Video
+                            </p>
+                          </div>
+                        )}
+                      </td>
+                      <td>
+                        <p className={`font-gothamMedium inline-block text-center rounded-3xl py-[2px] px-[10px] text-[10px]
+    ${item.status === 'Completed'
+                            ? 'text-[#42A803] bg-[#CBFFB2]'
+                            : item.status === 'Pending'
+                              ? 'text-[#FFA234] bg-[#FFFCEC]'
+                              : 'text-gray-500 bg-gray-200'}`}>
+                          {item.status}
                         </p>
-                      ) : (
-                        <p className="font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px] text-[#FFA234] bg-[#FFFCEC]">
-                          No Chat
-                        </p>
-                      )}
-                    </td>
-                    <td>{!item?.clientId?.video ? 'No video' : <div onClick={() => window.location.href = `/therapist/assignments/video-chat/${item?._id}`}><p className='cursor-pointer font-gothamMedium inline-block text-center rounded-3xl py-[2px] px-[10px] text-[10px]  text-[#42A803] bg-[#CBFFB2]'>Start Video</p></div>}</td>
-                    <td>
-                      <p className='font-gothamMedium inline-block text-center rounded-3xl py-[2px] px-[10px] text-[10px]  text-[#42A803] bg-[#CBFFB2]'>{item.status}</p>
-                    </td>
-                  </tr>
-                ))
+                      </td>
+                      <td>
+                        <button
+                          className={`cursor-pointer ${disableOldAppointmentThatCompleted ? 'opacity-50' : ''} flex justify-center items-center`}
+                          disabled={disableOldAppointmentThatCompleted}
+                          onClick={() => {
+                            setSelectedRow(item)
+                            setIsEditModalOpen(true);
+                          }}>
+                          <EditIcon />
+                        </button>
+                      </td>
+                    </tr>
+                  )
+                }
+                )
               ) : (
                 <tr>
                   <td colSpan={7} className='text-center'>No data found</td>
@@ -134,7 +212,7 @@ const Page = () => {
         />
       </div>}
 
-      <Modal
+      {showModal && <Modal
         isOpen={showModal}
         onRequestClose={() => setShowModal(false)}
         contentLabel="Notes "
@@ -152,8 +230,114 @@ const Page = () => {
           <p>{sessionNotes || "No notes available"}</p>
 
         </div>
-      </Modal>
+      </Modal>}
 
+
+      {
+        isEditModalOpen && (
+          <Modal
+            isOpen={isEditModalOpen}
+            onRequestClose={() => setIsEditModalOpen(false)}
+            contentLabel="Edit Event"
+            className={`overflow-auto max-w-xl child-modal bottom-0 !bg-white rounded-lg w-full p-5 shadow-lg z-[2000] h-auto !top-auto ${isEditModalOpen ? 'modal-open' : ''}`}
+            overlayClassName="overlay fixed inset-0 bg-black bg-opacity-50 z-[2000]"
+          >
+            <h3 className="font-semibold">Edit Appointment Details</h3>
+            <div className="p-3">
+              <form onSubmit={(e) => handleSubmit(e)} className="space-y-4" >
+                <div className="flex flex-col">
+                  <label htmlFor="clientName" className="font-medium">
+                    Client Name
+                  </label>
+                  <input
+                    disabled
+                    type="text"
+                    id="clientName"
+                    value={selectedRow?.clientName || ""}
+                    className="border p-2 rounded"
+                    required
+                  />
+                </div>
+
+                <div className="flex flex-col">
+                  <label htmlFor="appointmentDate" className="font-medium">
+                    Appointment Date
+                  </label>
+                  <input
+                    type="date"
+                    id="appointmentDate"
+                    value={selectedRow?.appointmentDate ? format(new Date(selectedRow.appointmentDate), "yyyy-MM-dd") : ""}
+                    onChange={(e) =>
+                      setSelectedRow((prev: any) => ({
+                        ...prev,
+                        appointmentDate: e.target.value,
+                      }))
+                    }
+                    className="border p-2 rounded"
+                    required
+                  />
+                </div>
+
+                {/* Appointment Time */}
+                <div className="flex flex-col">
+                  <label htmlFor="appointmentTime" className="font-medium">
+                    Appointment Time
+                  </label>
+                  <input
+                    type="time"
+                    id="appointmentTime"
+                    value={selectedRow.appointmentTime}
+                    onChange={(e) =>
+                      setSelectedRow((prev: any) => ({
+                        ...prev,
+                        appointmentTime: e.target.value,
+                      }))
+                    }
+                    className="border p-2 rounded"
+                    required
+                  />
+                </div>
+                {/* Status */}
+                <div className="flex flex-col">
+                  <label htmlFor="status" className="font-medium">
+                    Status
+                  </label>
+                  <select
+                    id="status"
+                    value={selectedRow.status}
+                    onChange={(e) =>
+                      setSelectedRow((prev: any) => ({
+                        ...prev,
+                        status: e.target.value,
+                      }))
+                    }
+                    className="border p-2 rounded"
+                    required
+                  >
+                    <option value="Pending">Pending</option>
+                    <option value="Completed">Completed</option>
+                    <option value="Not Attended">Not Attended</option>
+                    <option value="Approved">Approved</option>
+                    <option value="Rejected">Rejected</option>
+                  </select>
+                </div>
+                {/* Submit Button */}
+                <div className="flex justify-end gap-2">
+                  <button className="text-black p-2 rounded-md font-semibold" onClick={() => setIsEditModalOpen(false)}>
+                    Close
+                  </button>
+                  <button
+                    type="submit"
+                    className="bg-[#283C63] text-white px-4 py-2 rounded"
+                  >
+                    {!isPending ? 'Save Changes' : <ReactLoader color="#fff" />}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </Modal>
+        )
+      }
 
     </div>
   );
