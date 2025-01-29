@@ -2,13 +2,13 @@
 import useSWR from "swr";
 import { useRef, useState } from "react";
 import Modal from 'react-modal';
-import ViewPlans from "../components/ViewPlans";
 import BillingDetails from "../components/BillingDetails";
 import { getCustomerSubscriptionDetails, getProfileService, getSubscriptionById } from "@/services/client/client-service";
 import ReactLoading from "react-loading";
 import { useSession } from "next-auth/react";
 import { toast } from "sonner";
 import CancelPlan from "./_components/CancelPlan";
+import PlansModal from "@/components/plans";
 
 const Page = () => {
   const session = useSession()
@@ -72,16 +72,7 @@ const Page = () => {
 
       <BillingDetails hasMore={data?.has_more ?? false} billingData={data?.data as any ?? []} isLoading={isLoading} />
 
-      {openPlansModal && (
-        <Modal
-          // ref={modalRef}T
-          isOpen={openPlansModal}
-          className="modal bg-[#E7F8F6] max-w-[1200px] p-10 max-h-[95vh] h-full mx-auto rounded-[20px] w-full overflow-y-auto overflo-custom "
-          overlayClassName="w-full h-full p-3 fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center"
-          onRequestClose={() => setOpenPlansModal(false)} >
-          <ViewPlans modalRef={modalRef} />
-        </Modal>
-      )}
+      {openPlansModal && <PlansModal modalRef={modalRef} openPlansModal={openPlansModal} setOpenPlansModal={setOpenPlansModal} />}
 
       {openCancelPlanModal && (
         <Modal

@@ -6,6 +6,7 @@ import MobileHeader from "@/app/customer/components/MobileHeader";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import ToShowPlanModal from "@/components/show-plans-modal-in-root";
 
 const gothamPro = localFont({
   src: '../../assets/fonts/GothamPro.ttf',
@@ -63,6 +64,7 @@ export default async function RootLayout({
             <main className="flex-grow p-[15px] md:overflow-y-auto lg:p-[50px]">
               {children}
             </main>
+            <ToShowPlanModal/>
           </div>
         </body>
       </html>
