@@ -77,3 +77,12 @@ export const deleteAppointmentRoomMap = async (route: string) => {
     const axiosInstance = await getAxiosInstance()
     return axiosInstance.delete(route)
 }
+
+
+
+// My Clients Page
+
+export const getTherapistClients = async (route: string) => {
+    const axiosInstance = await getAxiosInstance()
+    return axiosInstance.get(route)
+}
