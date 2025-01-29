@@ -67,6 +67,12 @@ const SideNav = () => {
               {!isCollapsed && <span>Appointments</span>}
             </Link>
           </li>
+          <li className={isActive('/therapist/my-clients')}>
+            <Link href="/therapist/my-clients">
+            <PasswordIcon />
+              {!isCollapsed && <span>My Clients</span>}
+            </Link>
+          </li>
           <li className={isActive('/therapist/payment-history')}>
             <Link href="/therapist/payment-history">
               <PaymentHistoryIcon />
