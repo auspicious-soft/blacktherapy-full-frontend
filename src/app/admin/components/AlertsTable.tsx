@@ -20,7 +20,7 @@ const AlertsTable = () => {
   const alertsTable = data?.data?.data;
   const alertsData = alertsTable?.data;
   const { data: session } = useSession();
-  const userRole = (session as any)?.user?.role 
+  const userRole = (session as any)?.user?.role
 
   const total = alertsTable?.total ?? 0;
   const rowsPerPage = 10;
@@ -29,13 +29,13 @@ const AlertsTable = () => {
     setQuery(`page=${selectedItem.selected + 1}&limit=${rowsPerPage}`);
   };
 
-  const openClientPopup = (row:any) => {
+  const openClientPopup = (row: any) => {
     setClientDetails(row);
     setClientDetailsPopup(true);
   };
   const closeClientPopup = () => {
     setClientDetailsPopup(false);
-    setClientDetails(null); 
+    setClientDetails(null);
   };
   const handleMarkStatus = async (id: string, readStatus: boolean) => {
     try {
@@ -120,7 +120,7 @@ const AlertsTable = () => {
             )}
           </tbody>
         </table>
-      </div> 
+      </div>
 
       <div className="text-right mt-4">
         <ReactPaginate
@@ -140,15 +140,15 @@ const AlertsTable = () => {
           disabledClassName={'opacity-50 cursor-not-allowed'}
         />
       </div>
-      {clientDetails && ( 
-  <ClientDetailsPopup
-    isOpen={clientDetailsPopup}
-    onRequestClose={closeClientPopup}
-    row={clientDetails}
-    mutate={mutate}
-    role={userRole}
-  /> 
-)}
+      {clientDetails && (
+        <ClientDetailsPopup
+          isOpen={clientDetailsPopup}
+          onRequestClose={closeClientPopup}
+          row={clientDetails}
+          mutate={mutate}
+          role={userRole}
+        />
+      )}
     </div>
   );
 };

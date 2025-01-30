@@ -69,7 +69,7 @@ const ClientDetailsPopup = (props: ClientDetailsPopupProps) => {
               } text-[#969696]`}
             onClick={() => handleTabClick("tab2")}
           >
-            Assignments
+            Basic Client Diagnoses
           </button>
           <button
             className={`font-gothamMedium pb-[15px] px-[5px] text-sm  ${activeTab === "tab3"

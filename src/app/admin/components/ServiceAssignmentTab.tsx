@@ -210,22 +210,22 @@ const ServiceAssignmentTab: React.FC<ServiceAssignmentProps> = ({ rowId }) => {
     ) :serviceInfo?.length > 0 ? (
             serviceInfo?.map((row: any) => (
               <tr key={row?._id}>
-                <td>{row?.ccaCompletionDate}</td>
-                <td>{row?.servicesReviewing}</td>
+                <td>{new Date(row?.ccaCompletionDate).toLocaleDateString('en-US')}</td>
+                <td>{row?.servicesReviewing})</td>
                 <td>{row?.pcpInEHR}</td>
                 <td>{row?.authorizationRequired ? "Yes" : "No"}</td>
                 <td>{row?.authorizationStatus}</td>
-                <td>{row?.ccaCompletionDate}</td>
+                <td>{new Date(row?.ccaCompletionDate).toLocaleDateString('en-US')}</td>
                 <td>{row?.assignedTherapist?.firstName} {row?.assignedTherapist?.lastName}</td>
-                <td>{row?.pcpCompletionDate}</td>
-                <td>{row?.authorizationCompleted ? "Yes" : "No"}</td>
+                <td>{new Date(row?.pcpCompletionDate).toLocaleDateString('en-US')}</td>
+                <td>{row?.authorizationComplete}</td>
                 <td>{row?.ccaCompletedBy}</td>
                 <td>{row?.peerSupportTherapist?.map((peer: any) => (
                   <span key={peer._id}>{peer.firstName} {peer.lastName}</span>
                 ))}</td>
                 <td>{row?.pcpCompletedBy}</td>
                 <td>{row?.authorizationCompletedBy ?? ''}</td>
-                <td>{row?.expirationDate} </td>
+                <td>{new Date(row?.expirationDate).toLocaleDateString('en-US')} </td>
                 <td>{row?.noOfUnits} </td>
                 <td>
                   <button onClick={() => openModal(row)} className='hover:underline font-bold'>Update</button>

@@ -201,11 +201,11 @@ const AttachmentsTabs: React.FC<AttachmentsTabsProps> = ({ rowId, role, userEmai
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
         contentLabel="Add New Entry"
-        className="modal max-w-[810px] mx-auto rounded-[20px] w-full  max-h-[90vh] overflow-auto overflo-custom "
-        overlayClassName="w-full h-full p-3 fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center"
+       className="rounded-lg w-full max-w-4xl mx-auto bg-white shadow-lg max-h-[90vh] overflow-auto"
+      overlayClassName="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center"
         ariaHideApp={false}
       >
-        <div className="flex items-center justify-between rounded-t-[20px]  p-5 md:py-[25px] md:px-[35px] bg-[#283C63]  ">
+        <div className="flex items-center justify-between p-5 md:py-[25px] md:px-[35px] bg-[#283C63]  ">
           <h2 className="font-gothamMedium !text-white">Add New</h2>
           <button onClick={closeModal}>
             <CloseIcon />
