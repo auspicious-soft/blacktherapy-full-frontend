@@ -1,6 +1,6 @@
 'use client'
 import DashboardCard from "@/app/admin/components/DashboardCard";
-import { getAdminAlerts, getAdminDashboardStats, updateAdminAlerts } from "@/services/admin/admin-service";
+import { deleteSingleAlert, getAdminAlerts, getAdminDashboardStats, updateAdminAlerts } from "@/services/admin/admin-service";
 import {
   NotificationIcon,
   OverviewIcon1,
@@ -26,7 +26,7 @@ const Home = () => {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
   const { data, error, isLoading } = useSWR(session?.data?.user?.id ? `/admin/dashboard?id=${session?.data?.user?.id}` : null, getAdminDashboardStats)
-  const { data: alertsData, error: alertError, isLoading: alertLoadig } = useSWR(session?.data?.user?.id ? `/admin/notifications` : null, getAdminAlerts)
+  const { data: alertsData, error: alertError, isLoading: alertLoadig, mutate } = useSWR(session?.data?.user?.id ? `/admin/notifications` : null, getAdminAlerts)
   const finalData: any = data?.data
 
 
@@ -46,7 +46,7 @@ const Home = () => {
             ...alert,
             read: true
           }));
-          //setShowAlertModal(false);
+          mutate()
           router.refresh();
           toast.success('All notifications marked as read');
         } else {
@@ -59,6 +59,7 @@ const Home = () => {
     });
 
   }
+
 
   const OverviewData = [
     {
@@ -111,7 +112,20 @@ const Home = () => {
     },
   ];
 
-
+  const handleDelete = async (id: string) => {
+    try {
+      const response = await deleteSingleAlert(`/admin/notifications/${id}`);
+      if (response?.status === 200) {
+        toast.success('Notification deleted successfully');
+        mutate();
+      } else {
+        toast.error('Failed to delete notification');
+      }
+    } catch (error) {
+      console.error('Error deleting notification:', error);
+      toast.error('An error occurred while deleting notification');
+    }
+  }
   return (
     <>
       <div className=" flex items-center justify-between mb-[25px] lg:mb-[50px]">
@@ -122,6 +136,7 @@ const Home = () => {
           alerts={alertsArray}
           handleRead={handleRead}
           isLoading={isPending}
+          handleDelete={handleDelete}
         />
       </div>
 
