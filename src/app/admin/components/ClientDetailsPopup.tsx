@@ -63,68 +63,78 @@ const ClientDetailsPopup = (props: ClientDetailsPopupProps) => {
             Personal Information
           </button>
           <button
-            className={`font-gothamMedium pb-[15px] px-[5px] text-sm ${activeTab === "tab2"
+            className={`font-gothamMedium pb-[15px] px-[5px] text-sm  ${activeTab === "tab2"
                 ? "active !text-[#283c63]  border-b-2 border-[#283c63]"
                 : ""
               } text-[#969696]`}
             onClick={() => handleTabClick("tab2")}
           >
-            Basic Client Diagnoses
+            Appointments
           </button>
           <button
-            className={`font-gothamMedium pb-[15px] px-[5px] text-sm  ${activeTab === "tab3"
+            className={`font-gothamMedium pb-[15px] px-[5px] text-sm ${activeTab === "tab3"
                 ? "active !text-[#283c63]  border-b-2 border-[#283c63]"
                 : ""
               } text-[#969696]`}
             onClick={() => handleTabClick("tab3")}
           >
-            Insurance
+            Basic Client Diagnoses
           </button>
           <button
-            className={`font-gothamMedium pb-[15px] px-[5px] text-sm ${activeTab === "tab4"
+            className={`font-gothamMedium pb-[15px] px-[5px] text-sm  ${activeTab === "tab4"
                 ? "active !text-[#283c63]  border-b-2 border-[#283c63]"
                 : ""
               } text-[#969696]`}
             onClick={() => handleTabClick("tab4")}
           >
-            Billing Information
+            Insurance
           </button>
           <button
-            className={`font-gothamMedium pb-[15px] px-[5px] text-sm  ${activeTab === "tab5"
+            className={`font-gothamMedium pb-[15px] px-[5px] text-sm ${activeTab === "tab5"
                 ? "active !text-[#283c63]  border-b-2 border-[#283c63]"
                 : ""
               } text-[#969696]`}
             onClick={() => handleTabClick("tab5")}
           >
-            Service Assignment
+            Billing Information
           </button>
           <button
-            className={`font-gothamMedium pb-[15px] px-[5px] text-sm ${activeTab === "tab6"
+            className={`font-gothamMedium pb-[15px] px-[5px] text-sm  ${activeTab === "tab6"
                 ? "active !text-[#283c63]  border-b-2 border-[#283c63]"
                 : ""
               } text-[#969696]`}
             onClick={() => handleTabClick("tab6")}
           >
-            Attachments
+            Service Assignment
           </button>
           <button
-            className={`font-gothamMedium pb-[15px] px-[5px] text-sm  ${activeTab === "tab7"
+            className={`font-gothamMedium pb-[15px] px-[5px] text-sm ${activeTab === "tab7"
                 ? "active !text-[#283c63]  border-b-2 border-[#283c63]"
                 : ""
               } text-[#969696]`}
             onClick={() => handleTabClick("tab7")}
+          >
+            Attachments
+          </button>
+          <button
+            className={`font-gothamMedium pb-[15px] px-[5px] text-sm  ${activeTab === "tab8"
+                ? "active !text-[#283c63]  border-b-2 border-[#283c63]"
+                : ""
+              } text-[#969696]`}
+            onClick={() => handleTabClick("tab8")}
           >
             Notes
           </button>
         </div>
         <div className="mt-[30px]">
           {activeTab === "tab1" && <PersonalInformationTab row={row} mutate={mutate} />}
-          {activeTab === "tab2" && <ClientsAssignmentsTab row={row} mutate={mutate} />}
-          {activeTab === "tab3" && <ClientsInsurenceTab row={row} mutate={mutate} />}
-          {activeTab === "tab4" && <BillingInformationTab rowId={row?._id} />}
-          {activeTab === "tab5" && <ServiceAssignmentTab rowId={row?._id} />}
-          {activeTab === "tab6" && <AttachmentsTabs userEmail={row?.email} role={role} rowId={row?._id} />}
-          {activeTab === "tab7" && <ClientNotesTab role={role} rowId={row?._id} />}
+          {/* {activeTab === "tab2" && <ClientsSpecificAppointmentsTab row={row} mutate={mutate} />} */}
+          {activeTab === "tab3" && <ClientsAssignmentsTab row={row} mutate={mutate} />}
+          {activeTab === "tab4" && <ClientsInsurenceTab row={row} mutate={mutate} />}
+          {activeTab === "tab5" && <BillingInformationTab rowId={row?._id} />}
+          {activeTab === "tab6" && <ServiceAssignmentTab rowId={row?._id} />}
+          {activeTab === "tab7" && <AttachmentsTabs userEmail={row?.email} role={role} rowId={row?._id} />}
+          {activeTab === "tab8" && <ClientNotesTab role={role} rowId={row?._id} />}
         </div>
       </div>
     </Modal>
