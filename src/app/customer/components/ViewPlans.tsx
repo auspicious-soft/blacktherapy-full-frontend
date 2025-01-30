@@ -205,9 +205,6 @@ const ViewPlans = (props: any) => {
           >
             <CheckoutForm
               clientSecret={clientSecret}
-              userId={session?.data?.user?.id as string}
-              planType={plan}
-              interval={interval}
             />
           </Elements>
         </div>

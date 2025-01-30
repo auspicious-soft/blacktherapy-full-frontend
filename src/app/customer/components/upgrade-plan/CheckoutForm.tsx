@@ -3,14 +3,10 @@ import { useStripe, useElements, PaymentElement } from '@stripe/react-stripe-js'
 import { toast } from 'sonner';
 
 interface CheckoutFormProps {
-  userId: string;
-  planType: string;
   clientSecret: string;
-  // subscriptionId: string;
-  interval: string;
 }
 
-const CheckoutForm = ({ userId, planType, clientSecret, interval }: CheckoutFormProps) => {
+const CheckoutForm = ({ clientSecret }: CheckoutFormProps) => {
   const stripe = useStripe();
   const elements = useElements();
   const [isProcessing, setIsProcessing] = useState(false);
@@ -23,12 +19,11 @@ const CheckoutForm = ({ userId, planType, clientSecret, interval }: CheckoutForm
     }
 
     setIsProcessing(true);
-
     try {
       const result = await stripe.confirmPayment({
         elements,
         confirmParams: {
-          return_url: `${window.location.origin}/customer/dashboard`
+          return_url: `${window.location.origin}/customer/payment-confirmed?session_id=${clientSecret}`,
         },
       });
 
@@ -39,7 +34,7 @@ const CheckoutForm = ({ userId, planType, clientSecret, interval }: CheckoutForm
       toast.error('Error processing subscription');
     } finally {
       setIsProcessing(false);
-    }     
+    }
   };
 
   return (
