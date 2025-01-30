@@ -225,33 +225,33 @@ const ClientTable: React.FC<ClientsDataProps> = ({ clientsData, setQuery, error,
           role={role}
         />
       )}
-
-      <Modal
-        isOpen={isDeleteModalOpen}
-        onRequestClose={handleModalClose}
-        contentLabel="Delete Item"
-        className="modal max-w-[584px] mx-auto bg-white rounded-xl w-full p-5 bg-flower"
-        overlayClassName="overlay"
-      >
-        <Image src={deleteCross} alt='delete' height={174} width={174} className="mx-auto" />
-        <h2 className="text-[20px] text-center leading-normal mt-[-20px]">Are you sure you want to Delete?</h2>
-        <div className="flex items-center justify-center gap-6 mt-8">
-          <button
-            type="button"
-            onClick={() => handleDeleteConfirm(deleteId as string)}
-            className="py-[10px] px-8 bg-[#CC0000] text-white rounded"
-          >
-            Yes, Delete
-          </button>
-          <button
-            type="button"
-            onClick={handleDeleteCancel}
-            className='py-[10px] px-8 bg-[#283C63] text-white rounded'
-          >
-            No
-          </button>
-        </div>
-      </Modal>
+      {isDeleteModalOpen &&
+        <Modal
+          isOpen={isDeleteModalOpen}
+          onRequestClose={handleModalClose}
+          contentLabel="Delete Item"
+          className="modal max-w-[584px] mx-auto bg-white rounded-xl w-full p-5 bg-flower"
+          overlayClassName="overlay"
+        >
+          <Image src={deleteCross} alt='delete' height={174} width={174} className="mx-auto" />
+          <h2 className="text-[20px] text-center leading-normal mt-[-20px]">Are you sure you want to Delete?</h2>
+          <div className="flex items-center justify-center gap-6 mt-8">
+            <button
+              type="button"
+              onClick={() => handleDeleteConfirm(deleteId as string)}
+              className="py-[10px] px-8 bg-[#CC0000] text-white rounded"
+            >
+              Yes, Delete
+            </button>
+            <button
+              type="button"
+              onClick={handleDeleteCancel}
+              className='py-[10px] px-8 bg-[#283C63] text-white rounded'
+            >
+              No
+            </button>
+          </div>
+        </Modal>}
     </div>
   );
 };

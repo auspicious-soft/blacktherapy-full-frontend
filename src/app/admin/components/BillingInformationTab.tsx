@@ -201,7 +201,7 @@ const BillingInformationTab: React.FC<BillingInformationTabProps> = ({ rowId }) 
             </div>
           </div>
           <div className='mt-10 flex justify-end'>
-            <button type="submit" className="button">Update</button>
+            <button type="submit" className="button">Add Billing Info</button>
           </div>
         </form>
       </Modal>
