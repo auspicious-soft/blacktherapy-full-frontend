@@ -30,12 +30,13 @@ const Page = () => {
   const [disabledDates, setDisabledDates] = useState<Date[]>([]);
   const [availableTimes, setAvailableTimes] = useState<string[]>([]);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const noActivePlan = user?.data?.data?.planOrSubscriptionId === null;
+  const videoCountAndChatFinished = user?.data?.data?.videoCount == 0 
+  const isChatAllowed = user?.data?.data?.chatAllowed == false
+  const currentPlan = user?.data?.data?.planOrSubscriptionId == null
+  const isVideoAllowed = user?.data?.data?.video == false
+  const disableRequest = currentPlan || videoCountAndChatFinished || isVideoAllowed  || isChatAllowed
   useEffect(() => {
-    if (
-      activeTab === "Previous Appointments" ||
-      activeTab === "Upcoming Appointments"
-    ) {
+    if (activeTab === "Previous Appointments" || activeTab === "Upcoming Appointments") {
       setQuery(`appointmentType=${activeTab === "Previous Appointments" ? "past" : "upcoming"}&page=1&limit=10`);
       setShouldFetchAppointments(true);
     } else {
@@ -153,9 +154,7 @@ const Page = () => {
 
       const disabledTimesForDate = disabledTimes[selectedDateStr];
       if (disabledTimesForDate && disabledTimesForDate.includes(selectedTime)) {
-        toast.error(
-          `Selected time ${selectedTime} is unavailable for this date.`
-        );
+        toast.error(`Selected time ${selectedTime} is unavailable for this date.`);
         return;
       }
 
@@ -168,6 +167,7 @@ const Page = () => {
       if (response?.data?.success) {
         toast.success("Appointment Requested Successfully");
         appointmentsMutate();
+        userMutate()
         setOpenModal(false);
       } else if (response?.status === 204) {
         toast.error("Phone number is not valid, please update it");
@@ -202,7 +202,7 @@ const Page = () => {
           </div>
           <div>
             <button
-              disabled={noActivePlan}
+              disabled={disableRequest}
               className="button !mt-0"
               onClick={() => {
                 userMutate();
