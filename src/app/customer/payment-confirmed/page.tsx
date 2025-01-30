@@ -27,7 +27,7 @@ const Page = async ({ searchParams }: { searchParams?: { [key: string]: string |
                     <VideoPlayer url="/tut-btn.mp4" muted={false} controls />
                     <p className="font-bold">This is how you book an appointment</p>
                 </div>
-                <div className="bg-white p-8 rounded-lg shadow-md text-center max-w-md w-full h-full flex flex-col">
+                <div className="bg-white p-8 rounded-lg shadow-md text-center max-w-md w-full sm:h-full flex flex-col">
                     {/* Image */}
                     <div className="mb-6">
                         <Image
@@ -43,7 +43,7 @@ const Page = async ({ searchParams }: { searchParams?: { [key: string]: string |
                     <h1 className="text-3xl font-bold text-gray-800 mb-4">Congratulations!</h1>
 
                     {/* Message */}
-                    <p className="text-gray-600 mt-6">
+                    <p className="text-gray-600 mt-6 p-2">
                         Your payment was successful. Now you can book your consultation.
                     </p>
                     {/* Button */}
