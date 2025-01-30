@@ -9,7 +9,8 @@ const ToShowPlanModal = () => {
     const session = useSession()
     const [openPlansModal, setOpenPlansModal] = React.useState(false)
     const modalRef = React.useRef(null)
-    const { data: user, isLoading } = useSWR(session?.data?.user?.id ? `/client/${session.data.user.id}` : null, getProfileService, { revalidateOnFocus: false })
+    const userId = session?.data?.user?.id
+    const { data: user, isLoading } = useSWR(session?.data?.user?.id ? `/client/${userId}` : null, getProfileService, { revalidateOnFocus: false })
     const userPlanOrSubscriptionId = user?.data?.data?.planOrSubscriptionId
 
     useEffect(() => {
