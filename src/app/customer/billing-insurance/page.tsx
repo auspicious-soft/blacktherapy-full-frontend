@@ -44,6 +44,11 @@ const Page = () => {
         <div className="bg-[#FFD899]   carg-bg rounded-[10px] py-6 px-[15px] lg:px-[30px]">
           <h6 className="text-[#686868]">Plan Details</h6>
           <div className="flex justify-between items-center gap-10 mt-[10px]">
+            <p className="font-gothamMedium">Plan Name</p>
+            <h5 className="font-bold">{userData?.data?.data?.planType === 'glowUp' ? 'Glow Up': 'Stay Rooted'}</h5>
+
+          </div>
+          <div className="flex justify-between items-center gap-10 mt-[10px]">
             <p className="font-gothamMedium">Start Date</p>
             <h5 className="font-bold">{currentSubscriptionData?.current_period_start ? new Date(currentSubscriptionData?.current_period_start * 1000).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : 'N/A'}</h5>
           </div>
