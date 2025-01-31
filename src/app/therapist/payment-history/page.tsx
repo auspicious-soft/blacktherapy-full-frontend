@@ -9,7 +9,7 @@ import ReactLoading from 'react-loading';
 import Modal from "react-modal";
 import { CloseIcon } from '@/utils/svgicons';
 
- 
+
 const Page = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedProgressNotes, setSelectedProgressNotes] = useState<string | null>(null);
@@ -21,12 +21,12 @@ const Page = () => {
   const page = data?.data?.page
   const total = data?.data?.total
   const rowsPerPage = data?.data?.limit
- 
+
 
   const handlePageClick = (selectedItem: { selected: number }) => {
     setQuery(`page=${selectedItem.selected + 1}&limit=${rowsPerPage}`);
   }
-  
+
   const openModal = (progressNotes: string) => {
     setSelectedProgressNotes(progressNotes);
     setShowModal(true);
@@ -36,7 +36,7 @@ const Page = () => {
     <div>
       <h1 className=' mb-[20px] md:mb-[50px]'>Payment History</h1>
       <div className='flex justify-end mb-[30px]'>
-        <SearchBar setQuery={setQuery}/>
+        <SearchBar setQuery={setQuery} />
       </div>
       <div className="table-common overflo-custom">
         <table>
@@ -52,10 +52,11 @@ const Page = () => {
               <th>Notes</th>
               <th>Submission Date</th>
               <th>Status</th>
+              <th>Late Payment</th>
             </tr>
           </thead>
           <tbody>
-          {isLoading ? (
+            {isLoading ? (
               <tr>
                 <td colSpan={7} className='text-center'>
                   <ReactLoading type={'spin'} color={'#26395e'} height={'20px'} width={'20px'} />
@@ -63,52 +64,53 @@ const Page = () => {
               </tr>
             ) : (
               paymentsData?.length > 0 ? (
-            paymentsData?.map((item: any) => (
-              <tr key={item?._id}>
-                <td>#{item?.identifier}</td>
-                <td>{session?.data?.user?.name}</td>
-                <td>{item?.requestType}</td>
-                <td>{item?.servicesProvided}</td>
-                <td>{item?.clientId?.firstName} {item?.clientId?.lastName}</td>  
-                {/* .toLocaleDateString('en-US')  {item?.progressNotes}*/}
-                <td>{new Date(item?.serviceDate).toLocaleDateString('en-US')} {item?.serviceTime} </td>
-                <td> <p className='cursor-pointer font-gothamMedium text-center rounded-xl text-[10px] py-[4px] text-[#fff] bg-[#26395E]' onClick={()=>openModal(item?.progressNotes)}>View</p></td>
-                <td>{item?.rejectedNote ? (item.detailsAboutPayment ? item.detailsAboutPayment : item.rejectedNote) : "No Note"}</td>
-
-                <td>{new Date(item?.serviceDate).toLocaleDateString('en-US')}</td>
-
-                <td>
-                <p className='capitalize  font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px]  text-[#42A803] bg-[#CBFFB2]'>{item?.status}</p> 
-              </td>
-              </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan={7} className='text-center'>No data found</td>
-            </tr>
-          )
-        )}
+                paymentsData?.map((item: any) => (
+                  <tr key={item?._id}>
+                    <td>#{item?.identifier}</td>
+                    <td>{session?.data?.user?.name}</td>
+                    <td>{item?.requestType}</td>
+                    <td>{item?.servicesProvided}</td>
+                    <td>{item?.clientId?.firstName} {item?.clientId?.lastName}</td>
+                    {/* .toLocaleDateString('en-US')  {item?.progressNotes}*/}
+                    <td>{new Date(item?.serviceDate).toLocaleDateString('en-US')} {item?.serviceTime} </td>
+                    <td> <p className='cursor-pointer font-gothamMedium text-center rounded-xl text-[10px] py-[4px] text-[#fff] bg-[#26395E]' onClick={() => openModal(item?.progressNotes)}>View</p></td>
+                    <td>{item?.rejectedNote ? (item.detailsAboutPayment ? item.detailsAboutPayment : item.rejectedNote) : "No Note"}</td>
+                    <td>{new Date(item?.serviceDate).toLocaleDateString('en-US')}</td>
+                    <td> <p className={`capitalize font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px] ${item?.status === 'approved' ? 'text-[#42A803] bg-[#CBFFB2]' : ''}`}>{item?.status}</p> </td>
+                    <td>
+                        <p className={`capitalize font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px] ${item?.latePayment ? 'text-[#FF0000] bg-[#FFB2B2]' : 'text-[#42A803] bg-[#CBFFB2]'}`}>
+                      {item?.latePayment ? 'Yes' : 'No'}
+                      </p>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={7} className='text-center'>No data found</td>
+                </tr>
+              )
+            )}
           </tbody>
         </table>
       </div>
       <div className="text-right">
-      <ReactPaginate
-        previousLabel={'<'}
-        nextLabel={'>'}
-        breakLabel={'...'}
-        breakClassName={'break-me'}
-        pageCount={Math.ceil(total / rowsPerPage)}
-        marginPagesDisplayed={2}
-        pageRangeDisplayed={5}
-        onPageChange={handlePageClick}
-        containerClassName={'inline-flex mt-8 rounded border border-[#d5dce9]'}
-        pageClassName={'text-[#26395e] '}
-        pageLinkClassName={'py-2 px-4 inline-block'}
-        activeClassName={'bg-[#26395e] rounded text-white'}
-        previousLinkClassName={'py-2 px-4 inline-block text-[#26395e] '}
-        nextLinkClassName={'py-2 px-4 inline-block text-[#26395e] '}
-        disabledClassName={'opacity-50 cursor-not-allowed'}
-      />
+        <ReactPaginate
+          previousLabel={'<'}
+          nextLabel={'>'}
+          breakLabel={'...'}
+          breakClassName={'break-me'}
+          pageCount={Math.ceil(total / rowsPerPage)}
+          marginPagesDisplayed={2}
+          pageRangeDisplayed={5}
+          onPageChange={handlePageClick}
+          containerClassName={'inline-flex mt-8 rounded border border-[#d5dce9]'}
+          pageClassName={'text-[#26395e] '}
+          pageLinkClassName={'py-2 px-4 inline-block'}
+          activeClassName={'bg-[#26395e] rounded text-white'}
+          previousLinkClassName={'py-2 px-4 inline-block text-[#26395e] '}
+          nextLinkClassName={'py-2 px-4 inline-block text-[#26395e] '}
+          disabledClassName={'opacity-50 cursor-not-allowed'}
+        />
       </div>
 
       <Modal
@@ -119,17 +121,17 @@ const Page = () => {
         overlayClassName="w-full h-full fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center"
       >
 
-          <div className='flex items-center justify-between rounded-t-[20px] p-5  bg-[#283C63]  '>
+        <div className='flex items-center justify-between rounded-t-[20px] p-5  bg-[#283C63]  '>
           <h2 className="text-xl text-white font- ">Progress Notes</h2>
           <button onClick={() => setShowModal(false)} className="">
-           <CloseIcon/>
+            <CloseIcon />
           </button>
-          </div>
-          <div className='bg-white p-5 rounded-b-[20px] '>
-          <p>{selectedProgressNotes || "No notes available"}</p>
-          
         </div>
-       </Modal>
+        <div className='bg-white p-5 rounded-b-[20px] '>
+          <p>{selectedProgressNotes || "No notes available"}</p>
+
+        </div>
+      </Modal>
     </div>
   );
 };
