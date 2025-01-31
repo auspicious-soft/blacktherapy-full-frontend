@@ -1,10 +1,7 @@
 import React from 'react';
-import { Page, Text, View, Document, StyleSheet, pdf } from '@react-pdf/renderer';
-import { PutObjectCommand } from '@aws-sdk/client-s3';
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-import { createS3Client } from '@/config/s3';
-import { generateSignedUrlForPaymentInvoice, generateSignedUrlToUploadOn } from '@/actions';
-
+import { Page, Text, View, Document, StyleSheet, pdf, Image } from '@react-pdf/renderer';
+import { generateSignedUrlForPaymentInvoice } from '@/actions';
+import btnLogo from '@/assets/images/btn-logo.png';
 // Create styles
 const styles = StyleSheet.create({
     page: {
@@ -66,6 +63,10 @@ const PaymentInvoice = ({ appointment }: any) => {
         <Document>
             <Page size="A4" style={styles.page}>
                 <View style={styles.header}>
+                    {/* <Image
+                        src={btnLogo as any}
+                        style={{ width: 100, height: 50, marginBottom: 10 }}
+                    /> */}
                     <Text style={styles.title}>Payment Request Invoice</Text>
                     <Text>Invoice Date: {formatDate(new Date())}</Text>
                 </View>
@@ -135,7 +136,7 @@ export const uploadPaymentInvoiceOnAppointment = async (appointment: any) => {
             headers: {
                 'Content-Type': 'application/pdf'
             }
-        }) 
+        })
         return { key, signedUrl }
 
     } catch (error) {
