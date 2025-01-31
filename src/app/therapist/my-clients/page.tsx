@@ -6,12 +6,15 @@ import ReactPaginate from 'react-paginate';
 import useSWR from 'swr';
 import ReactLoading from 'react-loading';
 import { getTherapistClients } from '@/services/therapist/therapist-service.';
-
+import Image from 'next/image';
+import { getImageUrlOfS3 } from '@/utils';
+import profileAlt from '@/assets/images/profile.png';
 const Page = () => {
   const session = useSession();
   const [query, setQuery] = useState('');
   const { data, error, isLoading } = useSWR(`/therapist/my-clients/${session?.data?.user?.id}?${query}`, getTherapistClients);
   const clientsData: any = data?.data?.data;
+  console.log('clientsData: ', clientsData);
   const total = data?.data?.total;
   const rowsPerPage = data?.data?.limit;
 
@@ -30,10 +33,10 @@ const Page = () => {
           <thead>
             <tr className="">
               <th>Client</th>
-              <th>Date Assigned</th>
-              <th>Time Assigned</th>
-              <th>Phone Number</th>
               <th>Email Address</th>
+              <th>Phone Number</th>
+              <th>State</th>
+              <th>City</th>
             </tr>
           </thead>
           <tbody>
@@ -47,11 +50,14 @@ const Page = () => {
               clientsData?.length > 0 ? (
                 clientsData?.map((item: any) => (
                   <tr key={item._id}>
-                    <td>{item.firstName} {item.lastName}</td>
-                    <td>{new Date(item.appointmentDate).toLocaleDateString('en-US')}</td>
-                    <td>{item.appointmentTime}</td>
-                    <td>{item.phoneNumber}</td>
+                    <td><div className='flex items-center jutify-start gap-3'>
+                      <Image src={getImageUrlOfS3(item.profilePic).includes('undefined') ? profileAlt : getImageUrlOfS3(item.profilePic)} alt="profile" width={40} height={40} className='rounded-full w-9 h-9' />
+                      <p>{item.firstName} {item.lastName}</p>
+                    </div></td>
                     <td>{item.email}</td>
+                    <td>{item.phoneNumber}</td>
+                    <td>{item.state}</td>
+                    <td>{item.city}</td>
                   </tr>
                 ))
               ) : (
