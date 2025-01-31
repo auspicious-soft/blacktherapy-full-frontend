@@ -15,6 +15,7 @@ import ReactLoader from '@/components/ReactLoader';
 import { updateAppointmentData } from '@/services/admin/admin-service';
 import { toast } from 'sonner';
 import { set } from 'date-fns';
+import { uploadPaymentInvoiceOnAppointment } from '@/components/Pdf-template/payment-complete-invoice';
 
 const Page = () => {
   const [showModal, setShowModal] = useState(false);
@@ -55,6 +56,10 @@ const Page = () => {
       servicesProvided: selectedRow.servicesProvided,
       requestType: selectedRow.requestType,
       duration: selectedRow.duration
+    }
+    if (payload.status === 'Completed' && payload.duration) {
+      const { key } = await uploadPaymentInvoiceOnAppointment({ ...selectedRow, ...payload, therapistEmail: session?.data?.user?.email });
+      (payload as any).invoice = key
     }
     if (payload.duration && isNaN(Number(payload.duration))) {
       toast.error("Duration must be a number")
@@ -166,11 +171,15 @@ const Page = () => {
                       </td>
                       <td>
                         <p className={`font-gothamMedium inline-block text-center rounded-3xl py-[2px] px-[10px] text-[10px]
-    ${item.status === 'Completed'
-                            ? 'text-[#42A803] bg-[#CBFFB2]'
+                            ${item.status === 'Completed'
+                            ? 'text-[#4ec091] bg-[#cbffb2]'
                             : item.status === 'Pending'
-                              ? 'text-[#FFA234] bg-[#FFFCEC]'
-                              : 'text-gray-500 bg-gray-200'}`}>
+                              ? 'text-white bg-yellow-500'
+                              : item.status === 'Rejected'
+                                ? 'text-red-500 bg-red-200'
+                                : item.status === 'Approved'
+                                  ? 'text-indigo-500 bg-indigo-200'
+                                  : 'text-gray-500 bg-gray-200'}`}>
                           {item.status}
                         </p>
                       </td>

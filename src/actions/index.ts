@@ -113,11 +113,11 @@ export const generateSignedUrlOfProfilePicTherapist = async (fileName: string, f
 }
 
 export const generateSignedUrlOfAttachments = async (fileName: string, fileType: string, userEmail: string, identify: "client" | "therapist") => {
-    
+
     const key =
-    identify === "client"
-      ? `attachments/${userEmail}/clients/${fileName}`
-      : `attachments/${userEmail}/therapists/${fileName}`;
+        identify === "client"
+            ? `attachments/${userEmail}/clients/${fileName}`
+            : `attachments/${userEmail}/therapists/${fileName}`;
 
     const uploadParams = {
         Bucket: process.env.AWS_BUCKET_NAME,
@@ -127,7 +127,7 @@ export const generateSignedUrlOfAttachments = async (fileName: string, fileType:
     try {
         const command = new PutObjectCommand(uploadParams)
         const signedUrl = await getSignedUrl(await createS3Client(), command)
-        return {signedUrl, key: uploadParams.Key}
+        return { signedUrl, key: uploadParams.Key }
     } catch (error) {
         console.error("Error generating signed URL:", error);
         throw error
@@ -144,7 +144,7 @@ export const generateSignedUrlOfWellness = async (fileName: string, fileType: st
     try {
         const command = new PutObjectCommand(uploadParams)
         const signedUrl = await getSignedUrl(await createS3Client(), command)
-        return {signedUrl, key: uploadParams.Key}
+        return { signedUrl, key: uploadParams.Key }
     } catch (error) {
         console.error("Error generating signed URL:", error);
         throw error
@@ -161,7 +161,7 @@ export const generateSignedUrlOfTaskData = async (fileName: string, fileType: st
     try {
         const command = new PutObjectCommand(uploadParams)
         const signedUrl = await getSignedUrl(await createS3Client(), command)
-        return {signedUrl, key: uploadParams.Key}
+        return { signedUrl, key: uploadParams.Key }
     } catch (error) {
         console.error("Error generating signed URL:", error);
         throw error
@@ -200,7 +200,7 @@ export const generateSignedUrlOfAppointment = async (fileName: string, fileType:
     }
 }
 
-export const generateSignedUrlOfQueries = async(fileName: string, fileType: string, userEmail: string) => {
+export const generateSignedUrlOfQueries = async (fileName: string, fileType: string, userEmail: string) => {
     const uploadParams = {
         Bucket: process.env.AWS_BUCKET_NAME,
         Key: `queries/${userEmail}/my-queries-files/${fileName}`,
@@ -240,4 +240,20 @@ export const generateVideoSDKToken = async (roomId: string, participantId: strin
 
     const token = jwt.sign(payload, SECRET_KEY, options);
     return token
+}
+
+export const generateSignedUrlForPaymentInvoice = async (fileName: string, fileType: string, userEmail: string) => {
+    const uploadParams = {
+        Bucket: process.env.AWS_BUCKET_NAME,
+        Key: `invoices/${userEmail}/payment-invoices/${fileName}`,
+        ContentType: fileType
+    }
+    try {
+        const command = new PutObjectCommand(uploadParams)
+        const signedUrl = await getSignedUrl(await createS3Client(), command)
+        return { signedUrl, key: uploadParams.Key }
+    } catch (error) {
+        console.error("Error generating signed URL:", error);
+        throw error
+    }
 }
