@@ -72,25 +72,27 @@ const PreviousAppointments = (props: PreviousAppointmentsProps) => {
               </tr>
             ) : previousData?.length > 0 ? (
               previousData?.map((item: any) => {
+                const disableIfLessThan = new Date(item?.appointmentDate).toDateString() === new Date().toDateString() ? false : new Date(item?.appointmentDate) <= new Date()
                 return (
                   <tr key={item?._id}>
                     <td>{new Date(item?.appointmentDate?.split('T')[0]).toLocaleDateString('en-US')}</td>
                     <td>{item.appointmentTime}</td>
                     <td>
                       {message ? (
-                        <p
+                        <button
+                          disabled={disableIfLessThan || item?.status == 'Completed'}
                           onClick={() => handleChat(item._id)}
                           className={`font-gothamMedium cursor-pointer  inline-block text-center rounded-3xl py-[2px] px-[10px] text-[10px] ${isChatAllowed ? 'text-[#42A803] bg-[#CBFFB2]' : 'text-[#FFA234] bg-[#FFFCEC]'}`}
                         >
                           {isChatAllowed ? 'Start Chat' : 'Chat not allowed'}
-                        </p>
+                        </button>
                       ) : (
                         <p className="cursor-not-allowed">
                           No Chat
                         </p>
                       )}
                     </td>
-                    <td>{video ? <button disabled= {item?.status == 'Completed'} className={`cursor-pointer font-gothamMedium inline-block text-center rounded-3xl py-[2px] px-[10px] text-[10px] ${isVideoCount > 0 ? 'text-[#42A803] bg-[#CBFFB2]' : 'text-[#FFA234] bg-[#FFFCEC]'}`}>
+                    <td>{video ? <button disabled= {item?.status == 'Completed' || disableIfLessThan} className={`cursor-pointer font-gothamMedium inline-block text-center rounded-3xl py-[2px] px-[10px] text-[10px] ${isVideoCount > 0 ? 'text-[#42A803] bg-[#CBFFB2]' : 'text-[#FFA234] bg-[#FFFCEC]'}`}>
                       {isVideoCount > 0 ? <div onClick={() => window.location.href = `/customer/appointments/video-chat/${item?._id}`}>{`Start Video (${isVideoCount})`}</div> : 'Video chat limit reached for current plan'}
                     </button> : <p className="cursor-not-allowed">No Video</p>}</td>
                     <td>

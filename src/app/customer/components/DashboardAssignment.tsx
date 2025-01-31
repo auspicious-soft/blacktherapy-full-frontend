@@ -12,7 +12,6 @@ import { useRouter } from "next/navigation";
 import Modal from "react-modal";
 import { getImageUrlOfS3 } from "@/utils";
 import { toast } from "sonner";
-import Link from "next/link";
 
 
 const DashboardAssignment = (props: any) => {
@@ -72,39 +71,50 @@ const DashboardAssignment = (props: any) => {
                 <td colSpan={5} className="text-center text-red-500">Error loading data.</td>
               </tr>
             ) : data?.length > 0 ? (
-              data?.map((row: any) => (
-                <tr key={row?._id}>
-                  <td>{row?.appointmentDate ? new Date(row?.appointmentDate).toLocaleDateString('en-US') : 'No date Assigned'}</td>
-                  <td>{row?.appointmentTime ? (row?.appointmentTime) : 'Not Assigned Yet'}{Number(row?.appointmentTime?.split(':')[0]) < 12 ? ' AM' : ' PM'}</td>
-                  <td>
-                    {message ? (
-                      <button
-                        onClick={() => handleChat(row._id)}
-                        className={`font-gothamMedium cursor-pointer  inline-block text-center rounded-3xl py-[2px] px-[10px] text-[10px] ${isChatAllowed ? 'text-[#42A803] bg-[#CBFFB2]' : 'text-[#FFA234] bg-[#FFFCEC]'}`}
-                      >
-                        {isChatAllowed ? 'Start Chat' : 'Chat not allowed'}
+              data?.map((row: any) => {
+                const disableIfLessThan = new Date(row?.appointmentDate).toDateString() === new Date().toDateString() ? false : new Date(row?.appointmentDate) <= new Date()
+                return (  
+                  <tr key={row?._id}>
+                    <td>{row?.appointmentDate ? new Date(row?.appointmentDate).toLocaleDateString('en-US') : 'No date Assigned'}</td>
+                    <td>{row?.appointmentTime ? (row?.appointmentTime) : 'Not Assigned Yet'}{Number(row?.appointmentTime?.split(':')[0]) < 12 ? ' AM' : ' PM'}</td>
+                    <td>
+                      {message ? (
+                        <button
+                          disabled={row?.status === 'Completed' || disableIfLessThan}
+                          onClick={() => handleChat(row._id)}
+                          className={`font-gothamMedium cursor-pointer  inline-block text-center rounded-3xl py-[2px] px-[10px] text-[10px] ${isChatAllowed ? 'text-[#42A803] bg-[#CBFFB2]' : 'text-[#FFA234] bg-[#FFFCEC]'}`}
+                        >
+                          {isChatAllowed ? 'Start Chat' : 'Chat not allowed'}
+                        </button>
+                      ) : (
+                        <button className="cursor-not-allowed">
+                          No Chat
+                        </button>
+                      )}
+                    </td>
+                    <td>{video ?
+                      <button disabled={row?.status === 'Completed' || disableIfLessThan} className={`cursor-pointer font-gothamMedium inline-block text-center rounded-3xl py-[2px] px-[10px] text-[10px] ${isVideoCount > 0 ? 'text-[#42A803] bg-[#CBFFB2]' : 'text-[#FFA234] bg-[#FFFCEC]'}`}>
+                        {isVideoCount > 0 ?
+                          <button onClick={() => window.location.href = `/customer/appointments/video-chat/${row?._id}`}>
+                            {`Start Video (${isVideoCount})`}
+                          </button>
+                          :
+                          'Video chat limit reached for current plan'
+                        }
                       </button>
-                    ) : (
-                      <button className="cursor-not-allowed">
-                        No Chat
-                      </button>
-                    )}
-                  </td>
-                  <td>{video ? <button disabled={row?.status === 'Completed'} className={`cursor-pointer font-gothamMedium inline-block text-center rounded-3xl py-[2px] px-[10px] text-[10px] ${isVideoCount > 0 ? 'text-[#42A803] bg-[#CBFFB2]' : 'text-[#FFA234] bg-[#FFFCEC]'}`}>
-                    {isVideoCount > 0 ?
-                      <div onClick={() => window.location.href = `/customer/appointments/video-chat/${row?._id}`}>
-                        {`Start Video (${isVideoCount})`}
-                      </div> :
-                      'Video chat limit reached for current plan'}
-                  </button> : <p className="cursor-not-allowed">No Video</p>}</td>
-                  <td>
-                    <span className="cursor-pointer w-[26px] flex" onClick={() => handleViewTeam(row)}>
-                      <ViewIcon />
-                    </span>
-                  </td>
-                  <td>{new Date(row?.createdAt).toLocaleDateString('en-US')}</td>
-                </tr>
-              ))
+                      :
+                      <p className="cursor-not-allowed">No Video</p>
+                    }</td>
+                    <td>
+                      <span className="cursor-pointer w-[26px] flex" onClick={() => handleViewTeam(row)}>
+                        <ViewIcon />
+                      </span>
+                    </td>
+                    <td>{new Date(row?.createdAt).toLocaleDateString('en-US')}</td>
+                  </tr>
+                )
+              }
+              )
             ) : (
               <tr>
                 <td className='w-full flex justify-center p-3 items-center' colSpan={5} >No data found</td>
