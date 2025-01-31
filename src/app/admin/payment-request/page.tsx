@@ -19,6 +19,7 @@ interface PaymentApproveData {
   payoutMethod: string,
   statusChangedBy: string,
   detailsAboutPayment: string,
+  isLate?: boolean
 }
 
 const Page: React.FC = () => {
@@ -46,7 +47,7 @@ const Page: React.FC = () => {
     payoutMethod: "",
     statusChangedBy: userRole,
     detailsAboutPayment: "",
-
+    isLate: false
   });
   const [rejectNote, setRejectNote] = useState("");
 
@@ -78,6 +79,7 @@ const Page: React.FC = () => {
         payoutMethod: selectedPayment.payoutMethod || "",
         statusChangedBy: selectedPayment.statusChangedBy || "",
         detailsAboutPayment: selectedPayment.detailsAboutPayment || "",
+        isLate: selectedPayment.isLate || false,
       });
     }
 
@@ -363,6 +365,21 @@ const Page: React.FC = () => {
                   name="payoutMethod"
                   value={approveDetails.payoutMethod}
                   onChange={approvePaymentInput} />
+              </div>
+              <div className="flex items-center flex-start gap-2">
+                <input
+                  type="checkbox"
+                  name="isLate"
+                  checked={approveDetails.isLate}
+                  onChange={(e) =>
+                    setApproveDetails((prev) => ({
+                      ...prev,
+                      isLate: e.target.checked,
+                    }))
+                  }
+                  className="h-4 w-4"
+                />
+                <label className="block mb-2 pt-2">Is the payment late </label>
               </div>
               <div className="mb-4">
                 <label className="block mb-2">Details about Payment</label>
