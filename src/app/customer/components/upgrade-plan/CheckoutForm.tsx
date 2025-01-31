@@ -23,7 +23,7 @@ const CheckoutForm = ({ clientSecret }: CheckoutFormProps) => {
       const result = await stripe.confirmPayment({
         elements,
         confirmParams: {
-          return_url: `${window.location.origin}/customer/payment-confirmed?session_id=${clientSecret}`,
+          return_url: `${window.location.origin}/payment-confirmed?session_id=${clientSecret}`,
         },
       });
 

@@ -1,18 +1,10 @@
 
 import ResourceCards from "@/app/therapist/components/ResourceCards";
-import {
-  OverviewIcon1,
-  OverviewIcon2,
-  OverviewIcon3,
-  OverviewIcon4,
-  OverviewIcon5,
-  OverviewIcon6,
-} from "@/utils/svgicons";
+import { OverviewIcon2, OverviewIcon3, OverviewIcon4, OverviewIcon5, OverviewIcon6, } from "@/utils/svgicons";
 import WelcomeCard from "@/app/therapist/components/WelcomeCard";
 import { auth } from "@/auth";
 import { getTherapistDashboardStats, getTherapistsAlerts } from "@/services/therapist/therapist-service.";
 import { LottieNotification } from "@/components/notification-lottie";
-import useSWR from "swr";
 
 
 
