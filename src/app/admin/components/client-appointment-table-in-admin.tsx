@@ -19,7 +19,6 @@ const ClientsSpecificAppointmentsTab = (props: ClientProps) => {
         getClientAppointments,
         { revalidateOnFocus: false }
     );
-    console.log('appointmentsData: ', appointmentsData);
     const handlePageClick = (data: { selected: number }) => {
         setQuery(`page=${data.selected + 1}&limit=10`);
     }
