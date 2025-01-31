@@ -95,7 +95,7 @@ export const createVideoSDKMeeting = async (appointmentId: string, participantId
     }
     // Create a new meeting if it doesn't exist
     else {
-         console.log('Creating new room')
+        console.log('Creating new room')
         const response = await fetch('https://api.videosdk.live/v2/rooms', {
             method: 'POST',
             headers: {
@@ -115,4 +115,25 @@ export const createVideoSDKMeeting = async (appointmentId: string, participantId
             token
         }
     }
-};
+}
+
+export const downloadFileFromS3 = (subPath: string) => {
+    const extension = subPath.split('.').pop();
+    fetch(subPath)
+        .then(response => response.blob())
+        .then(blob => {
+            const file = new File([blob], `${Date.now()}| "document"}.${extension}`, {
+                type: "application/pdf",
+            });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.target = "_blank";
+            link.download = file.name;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        })
+        .catch(() => {
+            toast.error("Failed to download PDF");
+        });
+}

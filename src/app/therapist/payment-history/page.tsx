@@ -8,7 +8,8 @@ import { getPaymentsData } from '@/services/therapist/therapist-service.';
 import ReactLoading from 'react-loading';
 import Modal from "react-modal";
 import { CloseIcon } from '@/utils/svgicons';
-
+import { downloadFileFromS3, getImageUrlOfS3 } from '@/utils';
+import { IoIosDocument } from "react-icons/io";
 
 const Page = () => {
   const [showModal, setShowModal] = useState(false);
@@ -53,6 +54,7 @@ const Page = () => {
               <th>Submission Date</th>
               <th>Status</th>
               <th>Late Payment</th>
+              <th>Payment Invoice</th>
             </tr>
           </thead>
           <tbody>
@@ -62,33 +64,44 @@ const Page = () => {
                   <ReactLoading type={'spin'} color={'#26395e'} height={'20px'} width={'20px'} />
                 </td>
               </tr>
-            ) : (
-              paymentsData?.length > 0 ? (
-                paymentsData?.map((item: any) => (
-                  <tr key={item?._id}>
-                    <td>#{item?.identifier}</td>
-                    <td>{session?.data?.user?.name}</td>
-                    <td>{item?.requestType}</td>
-                    <td>{item?.servicesProvided}</td>
-                    <td>{item?.clientId?.firstName} {item?.clientId?.lastName}</td>
-                    {/* .toLocaleDateString('en-US')  {item?.progressNotes}*/}
-                    <td>{new Date(item?.serviceDate).toLocaleDateString('en-US')} {item?.serviceTime} </td>
-                    <td> <p className='cursor-pointer font-gothamMedium text-center rounded-xl text-[10px] py-[4px] text-[#fff] bg-[#26395E]' onClick={() => openModal(item?.progressNotes)}>View</p></td>
-                    <td>{item?.rejectedNote ? (item.detailsAboutPayment ? item.detailsAboutPayment : item.rejectedNote) : "No Note"}</td>
-                    <td>{new Date(item?.serviceDate).toLocaleDateString('en-US')}</td>
-                    <td> <p className={`capitalize font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px] ${item?.status === 'approved' ? 'text-[#42A803] bg-[#CBFFB2]' : ''}`}>{item?.status}</p> </td>
-                    <td>
-                        <p className={`capitalize font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px] ${item?.latePayment ? 'text-[#FF0000] bg-[#FFB2B2]' : 'text-[#42A803] bg-[#CBFFB2]'}`}>
+            ) : (paymentsData?.length > 0 ? (
+              paymentsData?.map((item: any) => (
+                <tr key={item?._id}>
+                  <td>#{item?.identifier}</td>
+                  <td>{session?.data?.user?.name}</td>
+                  <td>{item?.requestType}</td>
+                  <td>{item?.servicesProvided}</td>
+                  <td>{item?.clientId?.firstName} {item?.clientId?.lastName}</td>
+                  {/* .toLocaleDateString('en-US')  {item?.progressNotes}*/}
+                  <td>{new Date(item?.serviceDate).toLocaleDateString('en-US')} {item?.serviceTime} </td>
+                  <td> <p className='cursor-pointer font-gothamMedium text-center rounded-xl text-[10px] py-[4px] text-[#fff] bg-[#26395E]' onClick={() => openModal(item?.progressNotes)}>View</p></td>
+                  <td>{item?.rejectedNote ? (item.detailsAboutPayment ? item.detailsAboutPayment : item.rejectedNote) : "No Note"}</td>
+                  <td>{new Date(item?.serviceDate).toLocaleDateString('en-US')}</td>
+                  <td> <p className={`capitalize font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px] ${item?.status === 'approved' ? 'text-[#42A803] bg-[#CBFFB2]' : ''}`}>{item?.status}</p> </td>
+                  <td>
+                    <p className={`capitalize font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px] ${item?.latePayment ? 'text-[#FF0000] bg-[#FFB2B2]' : 'text-[#42A803] bg-[#CBFFB2]'}`}>
                       {item?.latePayment ? 'Yes' : 'No'}
-                      </p>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan={7} className='text-center'>No data found</td>
+                    </p>
+                  </td>
+                  <td>
+                    <button
+                      onClick={() => {
+                        if (item?.invoice) {
+                          downloadFileFromS3(getImageUrlOfS3(item?.invoice))
+                        }
+                      }}
+                      disabled={item?.invoice == null}
+                    >
+                      <IoIosDocument color='#26395e' size={20} />
+                    </button>
+                  </td>
                 </tr>
-              )
+              ))
+            ) : (
+              <tr>
+                <td colSpan={7} className='text-center'>No data found</td>
+              </tr>
+            )
             )}
           </tbody>
         </table>
