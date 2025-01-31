@@ -11,6 +11,7 @@ import ServiceAssignmentTab from "./ServiceAssignmentTab";
 import AttachmentsTabs from "./AttachmentsTabs";
 import ClientNotesTab from "./ClientNotesTab";
 import { getImageUrlOfS3 } from "@/utils";
+import ClientsSpecificAppointmentsTab from "./client-appointment-table-in-admin";
 
 interface ClientDetailsPopupProps {
   isOpen: boolean;
@@ -128,7 +129,7 @@ const ClientDetailsPopup = (props: ClientDetailsPopupProps) => {
         </div>
         <div className="mt-[30px]">
           {activeTab === "tab1" && <PersonalInformationTab row={row} mutate={mutate} />}
-          {/* {activeTab === "tab2" && <ClientsSpecificAppointmentsTab row={row} mutate={mutate} />} */}
+          {activeTab === "tab2" && <ClientsSpecificAppointmentsTab clientId={row._id}  />}
           {activeTab === "tab3" && <ClientsAssignmentsTab row={row} mutate={mutate} />}
           {activeTab === "tab4" && <ClientsInsurenceTab row={row} mutate={mutate} />}
           {activeTab === "tab5" && <BillingInformationTab rowId={row?._id} />}

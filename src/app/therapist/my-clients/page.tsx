@@ -30,18 +30,16 @@ const Page = () => {
           <thead>
             <tr className="">
               <th>Client</th>
+              <th>Date Assigned</th>
+              <th>Time Assigned</th>
               <th>Phone Number</th>
               <th>Email Address</th>
-              <th>Service Subscribed</th>
-              <th>Insurance Coverage</th>
-              <th>Organisation Name</th>
-              <th>Status</th>
             </tr>
           </thead>
           <tbody>
             {isLoading ? (
               <tr>
-                <td colSpan={9} className='text-center'>
+                <td colSpan={5} className='text-center'>
                   <ReactLoading type={'spin'} color={'#26395e'} height={'20px'} width={'20px'} />
                 </td>
               </tr>
@@ -50,17 +48,15 @@ const Page = () => {
                 clientsData?.map((item: any) => (
                   <tr key={item._id}>
                     <td>{item.firstName} {item.lastName}</td>
+                    <td>{new Date(item.appointmentDate).toLocaleDateString('en-US')}</td>
+                    <td>{item.appointmentTime}</td>
                     <td>{item.phoneNumber}</td>
                     <td>{item.email}</td>
-                    <td>{item.serviceSubscribed}</td>
-                    <td>{item.insuranceCoverage}</td>
-                    <td>{item.organisationName || 'N/A'}</td>
-                    <td>{item.status}</td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={9} className='text-center'>No data found</td>
+                  <td colSpan={5} className='text-center'>No data found</td>
                 </tr>
               )
             )}
