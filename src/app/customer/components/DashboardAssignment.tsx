@@ -1,13 +1,12 @@
 "use client";
-import React, { ReactNode, useState, CSSProperties } from "react";
+import React, { useState } from "react";
 import ReactPaginate from "react-paginate";
 import Image from "next/image";
 import PervIcon from "@/assets/images/pervicon.png";
 import NextIcon from "@/assets/images/nexticon.png";
 import { ViewIcon, ButtonArrow, CloseIcon } from "@/utils/svgicons";
-import demo from "@/assets/images/square.jpg";
+import profilePic from "@/assets/images/profile.png";
 import ReactLoading from "react-loading";
-import router, { Router } from "next/router";
 import { useRouter } from "next/navigation";
 import Modal from "react-modal";
 import { getImageUrlOfS3 } from "@/utils";
@@ -73,7 +72,7 @@ const DashboardAssignment = (props: any) => {
             ) : data?.length > 0 ? (
               data?.map((row: any) => {
                 const disableIfLessThan = new Date(row?.appointmentDate).toDateString() === new Date().toDateString() ? false : new Date(row?.appointmentDate) <= new Date()
-                return (  
+                return (
                   <tr key={row?._id}>
                     <td>{row?.appointmentDate ? new Date(row?.appointmentDate).toLocaleDateString('en-US') : 'No date Assigned'}</td>
                     <td>{row?.appointmentTime ? (row?.appointmentTime) : 'Not Assigned Yet'}{Number(row?.appointmentTime?.split(':')[0]) < 12 ? ' AM' : ' PM'}</td>
@@ -268,19 +267,22 @@ const DashboardAssignment = (props: any) => {
           <button onClick={handleCloseTeam}><CloseIcon /> </button>
         </div>
         <div className="bg-white px-5 pb-5 rounded-b-[20px]  grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-[20px] gap-y-[20px] lg:gap-y-[40px]">
-          {selectedAppointment?.map((therapist: any, index: number) => (
-            <div key={therapist.id} className="cursor-pointer">
-              <Image
-                onClick={() => viewProfile(therapist)}
-                src={therapist?.profilePic ? getImageUrlOfS3(therapist?.profilePic) : demo}
-                alt={therapist?.firstName}
-                width={200}
-                height={200}
-                className="rounded-[20px] w-full aspect-square cover"
-              />
-              <h4 className="mt-4 font-gotham">{therapist?.firstName} {therapist?.lastName} </h4>
-            </div>
-          ))}
+          {selectedAppointment?.map((therapist: any, index: number) => {
+            console.log('therapist: ', therapist?.profilePic);
+            return (
+              <div key={therapist.id} className="cursor-pointer">
+                <Image
+                  onClick={() => viewProfile(therapist)}
+                  src={therapist?.profilePic.includes('undefined') || !therapist?.profilePic ? profilePic : getImageUrlOfS3(therapist?.profilePic)}
+                  alt={therapist?.firstName}
+                  width={200}
+                  height={200}
+                  className="rounded-[20px] w-full aspect-square cover"
+                />
+                <h4 className="mt-4 font-gotham">{therapist?.firstName} {therapist?.lastName} </h4>
+              </div>
+            )
+          })}
         </div>
 
       </Modal>

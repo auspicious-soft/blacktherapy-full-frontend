@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import React from "react";
-import profileImage from "@/assets/images/clientpic.png";
+import profilePic from "@/assets/images/profile.png";
 import useSWR from "swr";
 import { GetEmployeeRecordsData } from "@/services/admin/admin-service";
 import { useRouter } from "next/navigation";
@@ -33,7 +33,7 @@ const Page = () => {
     <div>
       <div className="text-lg">
         <div className="mb-5 flex gap-5 items-center bg-white p-5 rounded-xl ">
-          <Image src={getImageUrlOfS3(employeeDetails?.profilePic)} alt="profile" width={150} height={150} className="object-contain "/>
+          <Image src={employeeDetails?.profilePic.includes('undefined') || !employeeDetails?.profilePic ? profilePic : getImageUrlOfS3(employeeDetails?.profilePic)} alt="profile" width={150} height={150} className="object-contain "/>
         <div>
         <h2 className="leading-[normal]">{firstName} {lastName} <span className="text-lg">({records?.position})</span></h2>
         <p>{employeeDetails?.about} </p>
