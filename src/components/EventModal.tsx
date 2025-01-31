@@ -21,13 +21,19 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, event, mutate }) =>
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isPending, startTransition] = useTransition();
     const [selectedRow, setSelectedRow] = useState<any>({})
+    const [isCompletedFieldsDisable, setIsCompletedFieldsDisable] = useState(false);
 
     useEffect(() => {
         setSelectedRow({
             appointmentDate: event.appointmentDate,
             appointmentTime: event.appointmentTime,
-            status: event.status
+            status: event.status,
+            progressNotes: event.progressNotes,
+            servicesProvided: event.servicesProvided,
+            requestType: event.requestType,
+            duration: event.duration
         });
+        setIsCompletedFieldsDisable(event.status === 'Completed');
     }, [isEditModalOpen, event]);
 
     if (!isOpen || !event) return null;
@@ -48,16 +54,23 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, event, mutate }) =>
         const payload = {
             appointmentDate: selectedRow.appointmentDate,
             appointmentTime: selectedRow.appointmentTime,
-            status: selectedRow.status
+            status: selectedRow.status,
+            progressNotes: selectedRow.progressNotes,
+            servicesProvided: selectedRow.servicesProvided,
+            requestType: selectedRow.requestType,
+            duration: selectedRow.duration
         };
+        if (payload.duration && isNaN(Number(payload.duration))) {
+            toast.error("Duration must be a number");
+            return;
+        }
         startTransition(async () => {
             try {
                 const response = await updateAppointmentData(`/admin/appointments/${event.id}`, payload);
                 if (response.status === 200) {
                     toast.success("Appointment updated successfully");
-                    mutate()
-                    onClose()
-
+                    mutate();
+                    onClose();
                 }
             } catch (error) {
                 toast.error("An error occurred while updating the assignment");
@@ -127,7 +140,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, event, mutate }) =>
                                         id="appointmentDate"
                                         value={selectedRow?.appointmentDate ? format(new Date(selectedRow.appointmentDate), "yyyy-MM-dd") : ""}
                                         onChange={(e) =>
-                                            setSelectedRow((prev:any) => ({
+                                            setSelectedRow((prev: any) => ({
                                                 ...prev,
                                                 appointmentDate: e.target.value,
                                             }))
@@ -147,7 +160,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, event, mutate }) =>
                                         id="appointmentTime"
                                         value={selectedRow.appointmentTime}
                                         onChange={(e) =>
-                                            setSelectedRow((prev:any) => ({
+                                            setSelectedRow((prev: any) => ({
                                                 ...prev,
                                                 appointmentTime: e.target.value,
                                             }))
@@ -165,13 +178,14 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, event, mutate }) =>
                                         id="status"
                                         value={selectedRow.status}
                                         onChange={(e) =>
-                                            setSelectedRow((prev:any) => ({
+                                            setSelectedRow((prev: any) => ({
                                                 ...prev,
                                                 status: e.target.value,
                                             }))
                                         }
                                         className="border p-2 rounded"
                                         required
+                                        disabled={isCompletedFieldsDisable}
                                     >
                                         <option value="Pending">Pending</option>
                                         <option value="Completed">Completed</option>
@@ -180,6 +194,100 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, event, mutate }) =>
                                         <option value="Rejected">Rejected</option>
                                     </select>
                                 </div>
+
+                                {
+                                    (selectedRow?.status === 'Completed' && !isCompletedFieldsDisable) && (
+                                        <div className="flex flex-col gap-3">
+                                            <label htmlFor="progressNotes" className="font-medium">
+                                                Progress Notes
+                                            </label>
+                                            <textarea
+                                                id="progressNotes"
+                                                value={selectedRow.progressNotes}
+                                                onChange={(e) =>
+                                                    setSelectedRow((prev: any) => ({
+                                                        ...prev,
+                                                        progressNotes: e.target.value
+                                                    }))
+                                                }
+                                                className="border p-2 rounded"
+                                                required
+                                            />
+                                            <div className="flex gap-3 w-full">
+                                                <div className='flex-1'>
+                                                    <label className="block mb-2">Services Provided</label>
+                                                    <select
+                                                        required
+                                                        name="assignedClinician"
+                                                        value={selectedRow.servicesProvided || ""}
+                                                        onChange={(e) =>
+                                                            setSelectedRow((prev: any) => ({
+                                                                ...prev,
+                                                                servicesProvided: e.target.value,
+                                                            }))
+                                                        }
+                                                        className="border p-2 rounded"
+                                                    >
+                                                        <option value="">--Select--</option>
+                                                        <option value="Psychiatric Diagnostic Evaluation (Assessment)">
+                                                            Psychiatric Diagnostic Evaluation (Assessment)
+                                                        </option>
+                                                        <option value="Psychotherapy (Individual)">Psychotherapy (Individual)</option>
+                                                        <option value="Peer Support Service">Peer Support Service</option>
+                                                        <option value="Psychotherapy (couple)">Psychotherapy (couple)</option>
+                                                        <option value="Psychotherapy (Group)">Psychotherapy (Group)</option>
+                                                        <option value="Nurse (RN) Assessment">Nurse (RN) Assessment</option>
+                                                        <option value="Peer Support">Peer Support</option>
+                                                        <option value="Personal Care Service">Personal Care Service</option>
+                                                        <option value="DWI Assessment">DWI Assessment</option>
+                                                        <option value="Intensive in-home Respite">Intensive in-home Respite</option>
+                                                        <option value="Other">Other</option>
+                                                    </select>
+                                                </div>
+                                                <div>
+                                                    <div className='flex-1'>
+                                                        <label className="block mb-2">Request Type</label>
+                                                        <select
+                                                            required
+                                                            name="requestType"
+                                                            value={selectedRow.requestType || ""}
+                                                            onChange={(e) =>
+                                                                setSelectedRow((prev: any) => ({
+                                                                    ...prev,
+                                                                    requestType: e.target.value,
+                                                                }))
+                                                            }
+                                                            className="border p-2 rounded"
+                                                        >
+                                                            <option value="">--Select--</option>
+                                                            <option value="Payment">Payment</option>
+                                                            <option value="Reimbursement">Reimbursement</option>
+                                                            <option value="Other Services Provided">Other Services Provided</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="md:w-[calc(20%-15px)] w-[calc(50%-15px)]">
+                                                <label className="block mb-2">Duration (Hours)</label>
+                                                <input
+                                                    required
+                                                    type="text"
+                                                    value={selectedRow.duration || ""}
+                                                    onChange={(e) =>
+                                                        setSelectedRow((prev: any) => ({
+                                                            ...prev,
+                                                            duration: e.target.value,
+                                                        }))
+                                                    }
+                                                    name="duration"
+                                                    id="duration"
+                                                    placeholder=""
+                                                    className="border p-2 rounded"
+                                                />
+                                            </div>
+                                        </div>
+                                    )
+                                }
                                 {/* Submit Button */}
                                 <div className="flex justify-end gap-2">
                                     <button className="text-black p-2 rounded-md font-semibold" onClick={() => setIsEditModalOpen(false)}>
