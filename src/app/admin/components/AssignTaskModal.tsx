@@ -142,6 +142,7 @@ const AssignTaskModal: React.FC<AssignTaskModalProps> = ({ isOpen, onRequestClos
               value={taskData.title}
               onChange={handleAssignTaskInput}
               className="w-full p-2 border rounded"
+              required
             />
           </div>
           <div>
@@ -152,17 +153,19 @@ const AssignTaskModal: React.FC<AssignTaskModalProps> = ({ isOpen, onRequestClos
               value={taskData.dueDate}
               onChange={handleAssignTaskInput}
               className="w-full p-2 border rounded"
+              required
             />
           </div>
           <div>
             <label className="block mb-2">Priority</label>
             <select
               name="priority"
+              required
               value={taskData.priority}
               onChange={handleAssignTaskInput}
               className="w-full p-2 border rounded"
             >
-              <option value="">select</option>
+              <option value="">Select the priority</option>
               <option value="High">High</option>
               <option value="Low">Low</option>
               <option value="Medium">Medium</option>

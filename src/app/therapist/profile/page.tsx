@@ -300,6 +300,7 @@ const Page = () => {
             </div>
             <div className="md:w-[25%] profile-state">
               <CustomSelect
+              required = {false}
                 name=""
                 value={
                   (USStates as any).find(
