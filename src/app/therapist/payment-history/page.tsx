@@ -38,7 +38,7 @@ const Page = () => {
     <div>
       <h1 className=' mb-[20px] md:mb-[50px]'>Payment History</h1>
       <div className='flex justify-end mb-[30px]'>
-        <SearchBar setQuery={setQuery} />
+        <SearchBar setQuery={setQuery} placeholder = {'Search By Id'} />
       </div>
       <div className="table-common overflo-custom">
         <table>
