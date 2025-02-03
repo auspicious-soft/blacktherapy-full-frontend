@@ -17,15 +17,15 @@ import { Tooltip } from 'react-tippy';
 
 interface TherapistsDataProps {
   therapistsData: any;
-  setQuery: any;
   error: any;
   isLoading: any;
   mutate: any;
 }
 
-const ClinicianTable: React.FC<TherapistsDataProps> = ({
+const ClinicianTable: React.FC<TherapistsDataProps & { setPage: any; currentPage: number; }> = ({
   therapistsData,
-  setQuery,
+  setPage,
+  currentPage,
   isLoading,
   error,
   mutate,
@@ -47,10 +47,10 @@ const ClinicianTable: React.FC<TherapistsDataProps> = ({
   const [tooltipContent, setTooltipContent] = useState<string | null>(null);
   const [hoveredRow, setHoveredRow] = useState<any>(null);
   const therapistsDataArray = therapistsData?.data;
-
   const rowsPerPage = 10;
+
   const handlePageClick = (selectedItem: { selected: number }) => {
-    setQuery(`page=${selectedItem.selected + 1}&limit=${rowsPerPage}`);
+    setPage(selectedItem.selected + 1)
   };
 
   const handleModalClose = () => {
@@ -330,27 +330,29 @@ const ClinicianTable: React.FC<TherapistsDataProps> = ({
           </tbody>
         </table>
       </div>
-      {Math.ceil(total / rowsPerPage) > 0 && <div className="text-right">
-        <ReactPaginate
-          previousLabel={"<"}
-          nextLabel={">"}
-          breakLabel={"..."}
-          breakClassName={"break-me"}
-          pageCount={Math.ceil(total / rowsPerPage)}
-          marginPagesDisplayed={2}
-          pageRangeDisplayed={5}
-          onPageChange={handlePageClick}
-          containerClassName={
-            "inline-flex mt-[34px] rounded-[5px] border border-[#d5dce9]"
-          }
-          pageClassName={"text-[#26395e] "} //list item
-          pageLinkClassName={"py-2 px-4 inline-block"} //anchor tag
-          activeClassName={"bg-[#26395e] rounded-[5px] text-white"} //active anchor
-          previousLinkClassName={"py-2 px-4 inline-block"}
-          nextLinkClassName={"py-2 px-4 inline-block"}
-          disabledClassName={"opacity-50 cursor-not-allowed"}
-        />
-      </div>}
+      {Math.ceil(total / rowsPerPage) > 0 && (
+        <div className="text-right">
+          <ReactPaginate
+            previousLabel={"<"}
+            nextLabel={">"}
+            breakLabel={"..."}
+            pageCount={Math.ceil(total / rowsPerPage)}
+            marginPagesDisplayed={2}
+            pageRangeDisplayed={5}
+            onPageChange={handlePageClick}
+            forcePage={currentPage - 1} // Ensure correct page selection
+            containerClassName={
+              "inline-flex mt-[34px] rounded-[5px] border border-[#d5dce9]"
+            }
+            pageClassName={"text-[#26395e] "} //list item
+            pageLinkClassName={"py-2 px-4 inline-block"} //anchor tag
+            activeClassName={"bg-[#26395e] rounded-[5px] text-white"} //active anchor
+            previousLinkClassName={"py-2 px-4 inline-block"}
+            nextLinkClassName={"py-2 px-4 inline-block"}
+            disabledClassName={"opacity-50 cursor-not-allowed"}
+          />
+        </div>
+      )}
       <Modal
         isOpen={isDeleteModalOpen}
         onRequestClose={handleModalClose}
