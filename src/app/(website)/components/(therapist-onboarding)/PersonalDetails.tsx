@@ -13,9 +13,9 @@ const personalDetailsQuestions = [
   { question: "Country", key: "country", type: "text", placeholder: "Country" },
   { question: "Zip Code", key: "zipCode", type: "number", placeholder: "Zip Code" },
   { question: "Address Line 1", key: "addressLine1", type: "text", placeholder: "Address Line" },
-  { question: "Address Line 2", key: "addressLine2", type: "text", placeholder: "Address Line" },
+  { question: "Address Line 2", key: "addressLine2", type: "text", placeholder: "N/A if not there" },
   { question: "How long at present address?", key: "howLongAtPresentAddress", type: "text", placeholder: "Value" },
-  { question: "Salary desired", key: "salaryDesired", type: "number", placeholder: "Value" },
+  { question: "Salary desired in $ (month)", key: "salaryDesired", type: "number", placeholder: "Value" },
 ];
 
 interface PersonalDetailsProps { 

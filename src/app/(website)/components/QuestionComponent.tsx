@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import clsx from 'clsx';
+import Link from 'next/link';
+import { IoIosDocument } from 'react-icons/io';
 
 interface ValidationRules {
   required?: boolean;
@@ -190,18 +192,37 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({
               ))}
             </div>
           ) : (
-            <input
-              type={type}
-              name={name}
-              value={type !== 'file' ? (formData[name] || '') : undefined}
-              onChange={handleChange}
-              placeholder={placeholder}
-              className={clsx( 
-                "text-[#686C78] w-full px-[18px] h-[45px] text-sm py-2 border rounded-[20px] focus:outline-none focus:ring-1",
-                error ? "border-red-500" : "border-[#dbe0eb] focus:border-[#283C63]"
-              )}
-              required={required}
-            />
+            <>
+              <input
+                type={type}
+                name={name}
+                id="Filetext"
+                value={type !== 'file' ? (formData[name] || '') : undefined}
+                onChange={handleChange}
+                placeholder={placeholder}
+                className={clsx(
+                  "text-[#686C78] w-full px-[18px] h-[45px] text-sm py-2 border rounded-[20px] focus:outline-none focus:ring-1",
+                  error ? "border-red-500" : "border-[#dbe0eb] focus:border-[#283C63]",
+                  type === 'file' && 'text-transparent',
+                  type === 'file' && formData[name] && 'hidden'
+                )}
+                required={required}
+              />
+            </>
+          )}
+          {type === 'file' && formData[name] && (
+            <div className="mt-2 flex items-center gap-2">
+              <Link href={URL.createObjectURL(formData[name])} target="_blank" rel="noopener noreferrer" className='flex gap-3 items-center'>
+                <IoIosDocument color='#26395e' size={20} /> {formData[name].name}
+              </Link>
+              <button
+                type="button"
+                onClick={() => setFormData((prevData: any) => ({ ...prevData, [name]: null }))}
+                className="text-red-500 hover:text-red-700"
+              >
+                ✖
+              </button>
+            </div>
           )}
           {error && (
             <p className="absolute -bottom-6 left-0 text-red-500 text-xs">
