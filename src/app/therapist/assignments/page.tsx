@@ -58,7 +58,7 @@ const Page = () => {
       duration: selectedRow.duration
     }
     if (payload.status === 'Completed' && payload.duration) {
-      const { key } = await uploadPaymentInvoiceOnAppointment({ ...selectedRow, ...payload, therapistEmail: session?.data?.user?.email });
+      const { key } = await uploadPaymentInvoiceOnAppointment({ ...selectedRow, ...payload, therapistEmail: session?.data?.user?.email, therapistName: session?.data?.user?.name });
       (payload as any).invoice = key
     }
     if (payload.duration && isNaN(Number(payload.duration))) {

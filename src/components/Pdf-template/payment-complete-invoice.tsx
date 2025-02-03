@@ -98,7 +98,17 @@ const PaymentInvoice = ({ appointment }: any) => {
                         <Text style={styles.value}>{appointment.clientId.email}</Text>
                     </View>
                 </View>
-
+                <View style={styles.section}>
+                    <Text style={{ fontSize: 14, marginBottom: 10 }}>Therapist Information</Text> {/* Reduced font size */}
+                    <View style={styles.row}>
+                        <Text style={styles.label}>Therapist Name:</Text>
+                        <Text style={styles.value}>{appointment.therapistName}</Text>
+                    </View>
+                    <View style={styles.row}>
+                        <Text style={styles.label}>Email:</Text>
+                        <Text style={styles.value}>{appointment.therapistEmail}</Text>
+                    </View>
+                </View>
                 <View style={styles.section}>
                     <Text style={{ fontSize: 14, marginBottom: 10 }}>Service Details</Text> {/* Reduced font size */}
                     <View style={styles.row}>
