@@ -61,11 +61,11 @@ const TableComponent: React.FC = () => {
   const getPriorityColor = (priority: 'High' | 'Medium' | 'Low'): string => {
     switch (priority) {
       case 'High':
-        return 'text-[#A85C03] bg-[#FFFDD1]';
-      case 'Medium':
         return 'text-[#C00] bg-[#FFD9D9]';
+      case 'Medium':
+        return 'text-[#42A803] bg-[#CBFFB2] ';
       case 'Low':
-        return 'text-[#42A803] bg-[#CBFFB2]';
+        return 'text-[#A85C03] bg-[#FFFDD1] ';
       default:
         return '';
     }
@@ -83,10 +83,10 @@ const TableComponent: React.FC = () => {
         <table className="">
           <thead>
             <tr>
+              <th>Title</th>
               <th>Status</th>
               <th>From</th>
               <th>To</th>
-              <th>Title</th>
               <th>Due Date</th>
               <th>Priority</th>
               <th>Attachment</th>
@@ -110,12 +110,12 @@ const TableComponent: React.FC = () => {
             ) : taskData?.length > 0 ? (
               taskData?.map((row: any) => (
                 <tr key={row?._id}>
+                  <td>{row?.title}</td>
                   <td>
                     <p className={`px-[10px] py-[2px] text-[10px] text-center rounded-3xl ${getStatusColor(row?.status)}`}>{row?.status}</p>
                   </td>
                   <td>Admin</td>
                   <td>{row?.therapistId?.firstName} {row?.therapistId?.lastName}</td>
-                  <td>{row?.title}</td>
                   <td>{new Date(row?.dueDate).toLocaleDateString('en-US')}</td>
                   <td>
                     <p className={`px-[10px] py-[2px] text-[10px] text-center rounded-3xl ${getPriorityColor(row?.priority)}`}>{row?.priority}</p>

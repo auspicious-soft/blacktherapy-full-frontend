@@ -30,11 +30,11 @@ const Page = () => {
   const [disabledDates, setDisabledDates] = useState<Date[]>([]);
   const [availableTimes, setAvailableTimes] = useState<string[]>([]);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const videoCountAndChatFinished = user?.data?.data?.videoCount == 0 
+  const videoCountAndChatFinished = user?.data?.data?.videoCount == 0
   const isChatAllowed = user?.data?.data?.chatAllowed == false
   const currentPlan = user?.data?.data?.planOrSubscriptionId == null
   const isVideoAllowed = user?.data?.data?.video == false
-  const disableRequest = currentPlan || videoCountAndChatFinished || isVideoAllowed  || isChatAllowed
+  const disableRequest = currentPlan || videoCountAndChatFinished || isVideoAllowed || isChatAllowed
   useEffect(() => {
     if (activeTab === "Previous Appointments" || activeTab === "Upcoming Appointments") {
       setQuery(`appointmentType=${activeTab === "Previous Appointments" ? "past" : "upcoming"}&page=1&limit=10`);
@@ -186,7 +186,7 @@ const Page = () => {
       </h1>
       <div>
         <div className="flex items-center justify-between mb-5">
-          <div className="tabs flex flex-wrap gap-[5px] lg:gap-[20px]">
+          <div className="tabs flex flex-wrap gap-[5px] lg:gap-[20px] w-full justify-start">
             {["Previous Appointments", "Upcoming Appointments"].map((tab) => (
               <button
                 key={tab}
@@ -199,18 +199,18 @@ const Page = () => {
                 {tab}
               </button>
             ))}
+          <button
+            disabled={disableRequest}
+            className="button !mt-0 ml-auto"
+            onClick={() => {
+              userMutate();
+              setOpenModal(true);
+            }}
+          >
+            Request Appointment
+          </button>
           </div>
           <div>
-            <button
-              disabled={disableRequest}
-              className="button !mt-0"
-              onClick={() => {
-                userMutate();
-                setOpenModal(true);
-              }}
-            >
-              Request Appointment
-            </button>
           </div>
         </div>
         <div className="tab-content">{renderTabContent()}</div>

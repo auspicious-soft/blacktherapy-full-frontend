@@ -1,7 +1,7 @@
 "use client"
 import React, { useState, useTransition } from 'react';
 import ReactPaginate from 'react-paginate';
-import { DeleteIcon, TicketTableIcon } from '@/utils/svgicons';
+import { TicketTableIcon } from '@/utils/svgicons';
 import SearchBar from '@/app/admin/components/SearchBar';
 import {  getAdminTicketsData, updateAdminTicketsData } from '@/services/admin/admin-service';
 import useSWR from 'swr';
@@ -63,7 +63,7 @@ const Page: React.FC = () => {
       Tickets
       </h1>
       <div className='flex justify-end mb-5'>
-          <SearchBar setQuery={setQuery} />
+          <SearchBar setQuery={setQuery} placeholder='Search ticket Id'/>
       </div>
       <div className='table-common overflo-custom'>
         <table className="">
@@ -100,7 +100,7 @@ const Page: React.FC = () => {
                   <td>{row?.title}</td>
                   <td>{new Date(row?.createdAt).toLocaleDateString('en-US')}</td>
                   
-                  <td> <p className={`px-[10px] py-[2px] text-[10px] text-center rounded-3xl ${getStatusColor(row?.status)}`}>{row?.status}</p>
+                  <td> <p className={`px-[10px] py-[2px] w-20 text-[10px] text-center rounded-3xl ${getStatusColor(row?.status)}`}>{row?.status}</p>
                   </td>
 
                   <td><button onClick={()=>handleChat(row?.roomId)}><TicketTableIcon/> </button> </td>

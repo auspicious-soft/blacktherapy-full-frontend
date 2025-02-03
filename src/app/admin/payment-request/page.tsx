@@ -156,7 +156,7 @@ const Page: React.FC = () => {
         Payment Requests
       </h1>
       <div className="grid gap-4 md:gap-0 md:flex md:space-x-5 mb-4 justify-between">
-        <div className="flex space-x-5">
+        <div className="flex gap-5 flex-wrap">
           <button
             className={`h-[46px] py-3 px-4 text-sm rounded-[5px] border border-[#283c63] ${activeTab === 'pending' ? 'active bg-[#283c63] !text-white' : ''} text-[#26395e]`}
             onClick={() => setActiveTab("pending")}
@@ -177,7 +177,7 @@ const Page: React.FC = () => {
           </button>
         </div>
         <div>
-          <SearchBar setQuery={setQuery} /> {/* Add the SearchBar component */}
+          <SearchBar setQuery={setQuery} placeholder="Search by Id"/> {/* Add the SearchBar component */}
         </div>
       </div>
       <div className="table-common overflo-custom">

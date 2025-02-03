@@ -13,6 +13,7 @@ import { updateAppointmentData } from "@/services/admin/admin-service";
 import { KeyedMutator } from "swr";
 import { AxiosResponse } from "axios";
 import ReactLoader from "@/components/ReactLoader";
+import { nonMilitaryTime } from "@/utils";
 
 interface EventModalProps {
   event?: CalendarEvent | null;
@@ -94,13 +95,23 @@ const EventModal = ({ event, isOpen, onClose, events, mutate }: EventModalProps)
                   <td >{relatedEvent.clientName}</td>
                   <td>
                     <span className={`px-2 py-1 rounded-full text-black`} >
-                      {relatedEvent.status}
+                      <span className={`px-2 py-1 rounded-full text-black ${relatedEvent.status === 'Completed'
+                        ? 'text-[#4ec091] bg-[#cbffb2]'
+                        : relatedEvent.status === 'Pending'
+                          ? 'text-white bg-yellow-500'
+                          : relatedEvent.status === 'Rejected'
+                            ? 'text-red-500 bg-red-200'
+                            : relatedEvent.status === 'Approved'
+                              ? 'text-indigo-500 bg-indigo-200'
+                              : 'text-gray-500 bg-gray-200'}`}>
+                        {relatedEvent.status}
+                      </span>
                     </span>
                   </td>
                   <td >{format(new Date((relatedEvent.appointmentDate)), "MM/dd/yyyy")}</td>
-                  <td >{(relatedEvent.appointmentTime)}</td>
+                  <td >{nonMilitaryTime(relatedEvent.appointmentTime)}</td>
                   <td>
-                    <button onClick={() => openEditModal(relatedEvent)} className="">
+                    <button onClick={() => openEditModal(relatedEvent)} className="flex items-center justify-center">
                       <EditIcon />
                     </button>
                   </td>
