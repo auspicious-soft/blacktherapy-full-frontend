@@ -356,8 +356,8 @@ const Page = () => {
          isOpen={assignTaskModalOpen}
          onRequestClose={handleAssignTaskModalClose}
          contentLabel="Assign Task"
-         className="modal max-w-[584px] mx-auto bg-white rounded-xl w-full p-5"
-         overlayClassName="overlay"
+        className="rounded-lg w-full max-w-4xl mx-auto bg-white shadow-lg max-h-[90vh] overflow-auto"
+      overlayClassName="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center"
        >
         <button type="button" onClick={handleAssignTaskModalClose}
           className="float-right py-[5px] px-3 bg-[#CC0000] text-white rounded">X </button>    
