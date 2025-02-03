@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
         borderColor: '#333333',
     },
     title: {
-        fontSize: 24,
+        fontSize: 20, // Reduced font size
         marginBottom: 10,
         color: '#333333'
     },
@@ -40,11 +40,13 @@ const styles = StyleSheet.create({
     label: {
         width: 150,
         fontWeight: 'bold',
-        color: '#555555'
+        color: '#555555',
+        fontSize: 10 // Reduced font size
     },
     value: {
         flex: 1,
-        color: '#333333'
+        color: '#333333',
+        fontSize: 10 // Reduced font size
     },
     logo: {
         width: '100%', // Adjust as needed
@@ -59,7 +61,8 @@ const styles = StyleSheet.create({
         color: '#666666',
         borderTop: 1,
         borderColor: '#333333',
-        paddingTop: 10
+        paddingTop: 10,
+        fontSize: 10 // Reduced font size
     }
 });
 
@@ -85,7 +88,7 @@ const PaymentInvoice = ({ appointment }: any) => {
                 </View>
 
                 <View style={styles.section}>
-                    <Text style={{ fontSize: 18, marginBottom: 10 }}>Client Information</Text>
+                    <Text style={{ fontSize: 14, marginBottom: 10 }}>Client Information</Text> {/* Reduced font size */}
                     <View style={styles.row}>
                         <Text style={styles.label}>Client Name:</Text>
                         <Text style={styles.value}>{appointment.clientName}</Text>
@@ -97,7 +100,7 @@ const PaymentInvoice = ({ appointment }: any) => {
                 </View>
 
                 <View style={styles.section}>
-                    <Text style={{ fontSize: 18, marginBottom: 10 }}>Service Details</Text>
+                    <Text style={{ fontSize: 14, marginBottom: 10 }}>Service Details</Text> {/* Reduced font size */}
                     <View style={styles.row}>
                         <Text style={styles.label}>Service Date:</Text>
                         <Text style={styles.value}>{formatDate(appointment.appointmentDate)}</Text>
@@ -121,8 +124,8 @@ const PaymentInvoice = ({ appointment }: any) => {
                 </View>
 
                 <View style={styles.section}>
-                    <Text style={{ fontSize: 18, marginBottom: 10 }}>Progress Notes</Text>
-                    <Text>{appointment.progressNotes}</Text>
+                    <Text style={{ fontSize: 14, marginBottom: 10 }}>Progress Notes</Text> {/* Reduced font size */}
+                    <Text style={{ fontSize: 10 }}>{appointment.progressNotes}</Text> {/* Reduced font size */}
                 </View>
 
                 <View style={styles.footer}>
