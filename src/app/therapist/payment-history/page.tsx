@@ -10,11 +10,12 @@ import Modal from "react-modal";
 import { CloseIcon } from '@/utils/svgicons';
 import { downloadFileFromS3, getImageUrlOfS3 } from '@/utils';
 import { IoIosDocument } from "react-icons/io";
+import ReactLoader from '@/components/ReactLoader';
 
 const Page = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedProgressNotes, setSelectedProgressNotes] = useState<string | null>(null);
-
+  const [downloading, setDownloading] = useState(false);
   const session = useSession()
   const [query, setQuery] = useState('page=1&limit=10')
   const { data, error, isLoading, mutate } = useSWR(`/therapist/payment-requests/${session?.data?.user?.id}?${query}`, getPaymentsData);
@@ -53,8 +54,8 @@ const Page = () => {
               <th>Notes</th>
               <th>Submission Date</th>
               <th>Status</th>
-              <th>Late Payment</th>
               <th>Payment Invoice</th>
+              <th>Late Payment</th>
             </tr>
           </thead>
           <tbody>
@@ -79,21 +80,23 @@ const Page = () => {
                   <td>{new Date(item?.serviceDate).toLocaleDateString('en-US')}</td>
                   <td> <p className={`capitalize font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px] ${item?.status === 'approved' ? 'text-[#42A803] bg-[#CBFFB2]' : ''}`}>{item?.status}</p> </td>
                   <td>
-                    <p className={`capitalize font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px] ${item?.latePayment ? 'text-[#FF0000] bg-[#FFB2B2]' : 'text-[#42A803] bg-[#CBFFB2]'}`}>
-                      {item?.latePayment ? 'Yes' : 'No'}
-                    </p>
-                  </td>
-                  <td>
                     <button
                       onClick={() => {
+                        setDownloading(true)
                         if (item?.invoice) {
                           downloadFileFromS3(getImageUrlOfS3(item?.invoice))
+                          setDownloading(false)
                         }
                       }}
                       disabled={item?.invoice == null}
                     >
-                      <IoIosDocument color='#26395e' size={20} />
+                      {!downloading ? <IoIosDocument color='#26395e' size={20} /> : <ReactLoader />}
                     </button>
+                  </td>
+                  <td>
+                    <p className={`capitalize font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px] ${item?.latePayment ? 'text-[#FF0000] bg-[#FFB2B2]' : 'text-[#42A803] bg-[#CBFFB2]'}`}>
+                      {item?.latePayment ? 'Yes' : 'No'}
+                    </p>
                   </td>
                 </tr>
               ))
