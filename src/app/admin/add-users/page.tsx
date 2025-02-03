@@ -91,8 +91,11 @@ const Page = () => {
         } else {
           toast.error("Failed to add User Data");
         }
-      } catch (error) {
-        console.error("Error adding User Data:", error);
+      } catch (error: any) {
+        if (error.status === 400) {
+          toast.error("User already exists");
+          return
+        }
         toast.error("An error occurred while adding the User Data");
       }
     });
@@ -176,7 +179,8 @@ const Page = () => {
         } else {
           console.error("Failed to assign task.");
         }
-      } catch (error) {
+      } catch (error: any) {
+        console.log('error: ', error.status);
         console.error("An error occurred while assigning the task:", error);
       }
     });
