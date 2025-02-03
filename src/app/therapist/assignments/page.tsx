@@ -258,7 +258,7 @@ const Page = () => {
             isOpen={isEditModalOpen}
             onRequestClose={() => setIsEditModalOpen(false)}
             contentLabel="Edit Event"
-            className={`overflow-auto max-w-2xl child-modal bottom-0 !bg-white rounded-lg w-full p-5 shadow-lg z-[2000] h-auto !top-auto ${isEditModalOpen ? 'modal-open' : ''}`}
+            className={`overflow-auto max-w-2xl overflo-custom max-h-[95vh] child-modal bottom-0 !bg-white rounded-lg w-full p-5 shadow-lg z-[2000] h-auto !top-auto ${isEditModalOpen ? 'modal-open' : ''}`}
             overlayClassName="overlay fixed inset-0 bg-black bg-opacity-50 z-[2000]"
           >
             <h3 className="font-semibold">Edit Appointment Details</h3>
