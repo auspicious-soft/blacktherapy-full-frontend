@@ -16,6 +16,7 @@ import DeclarationStep from "@/app/(website)/components/(therapist-onboarding)/D
 import { submitForm } from "@/utils/onboarding-submit";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import ReactLoader from "@/components/ReactLoader";
 
 const steps = [
   { component: WelcomeProcess, requiresValidation: false },
@@ -33,10 +34,11 @@ const steps = [
 ];
 
 const OnboardingForm = (props: any) => {
+  const [isPending, startTransition] = React.useTransition();
   const router = useRouter();
-  const  session  = useSession()
+  const session = useSession()
   const currentStepDefault = (session as any)?.data?.user?.onboardingCompleted === 'true' ? 13 : 1
-  const userEmail= session?.data?.user?.email;
+  const userEmail = session?.data?.user?.email;
   const [currentStep, setCurrentStep] = useState(currentStepDefault)
   const [formData, setFormData] = useState<any>({
     licenceType: "",
@@ -110,7 +112,7 @@ const OnboardingForm = (props: any) => {
     againConsentSignature: "",
   });
 
-   const [isValid, setIsValid] = useState(false);
+  const [isValid, setIsValid] = useState(false);
 
   const nextStep = () => {
     const step = steps[currentStep - 1];
@@ -125,11 +127,13 @@ const OnboardingForm = (props: any) => {
 
   const prevStep = () => {
     if (currentStep > 1) {
-      setCurrentStep((prevStep) => prevStep - 1); 
+      setCurrentStep((prevStep) => prevStep - 1);
     }
   };
-  const handleSubmit = async () => { 
-     await submitForm(formData, userEmail as string, router);
+  const handleSubmit = async () => {
+    startTransition(async () => {
+      await submitForm(formData, userEmail as string, router);
+    })
   };
 
   const renderStep = () => {
@@ -190,7 +194,7 @@ const OnboardingForm = (props: any) => {
             Next &gt;&gt;
           </button>
         )}
-        {currentStep === 12 && (<button className="button" onClick={handleSubmit} style={buttonStyle}>Submit </button>)}
+        {currentStep === 12 && (<>{!isPending ? <button className="button" onClick={handleSubmit} style={buttonStyle}>Submit </button> : <ReactLoader />}</>)}
       </div>
       {renderStep()}
     </div>

@@ -85,7 +85,6 @@ export const submitForm = async (
 
     if (response?.status === 201) {
       toast.success("Therapist data added successfully");
-      // redirect("/onboarding");
       router.push('/login');
     
     } 

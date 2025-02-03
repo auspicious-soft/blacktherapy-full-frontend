@@ -1,7 +1,5 @@
 "use client";
 import React, { useState, useTransition } from "react";
-import Link from "next/link";
-import ReactPlayer from "react-player";
 import { ButtonSvg, LogoIcon } from "@/utils/svgicons";
 import InputField from "@/app/(website)/components/InputField";
 import Image from "next/image";
@@ -9,6 +7,7 @@ import animate from "@/assets/images/loginslide.png"
 import { toast } from "sonner";
 import { signUpTherapistService } from "@/services/therapist/therapist-service.";
 import { useRouter } from "next/navigation";
+import ReactLoader from "@/components/ReactLoader";
 
 const Page: React.FC = () => {
   const router = useRouter();
@@ -22,7 +21,7 @@ const Page: React.FC = () => {
     startTransition(async () => {
       try {
         const response = await signUpTherapistService({ firstName, lastName, phoneNumber, email, password })
-        if(response?.data?.success) {
+        if (response?.data?.success) {
           toast.success("Signup Successful")
           router.push('/accountcreated')
         }
@@ -82,7 +81,10 @@ const Page: React.FC = () => {
                   required
                   onChange={(e) => setPassword(e.target.value)}
                 />
-                <p className="button w-full cursor-pointer" onClick={handleSignup}>Submit <ButtonSvg /></p>
+                {!isPending ? <div className="button w-full cursor-pointer" onClick={handleSignup}>Submit <ButtonSvg /></div>
+                  :
+                  <ReactLoader />
+                }
               </div>
             </div>
           </div>
