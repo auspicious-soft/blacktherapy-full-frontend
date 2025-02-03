@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { PreviousAppointmentsProps } from "./PreviousAppointments";
 import { ViewIcon } from "@/utils/svgicons";
 import Modal from 'react-modal';
-import { getImageUrlOfS3 } from "@/utils";
+import { getImageUrlOfS3, nonMilitaryTime } from "@/utils";
 import profilePic from "@/assets/images/profile.png";
 
 const UpcomingAppointments = (props: PreviousAppointmentsProps) => {
@@ -65,11 +65,11 @@ const UpcomingAppointments = (props: PreviousAppointmentsProps) => {
                 return (
                   <tr key={item?._id}>
                     <td>{new Date(item?.appointmentDate?.split('T')[0]).toLocaleDateString('en-US')}</td>
-                    <td>{item.appointmentTime}</td>
+                    <td>{nonMilitaryTime(item.appointmentTime)}</td>
                     <td>
                       {message ? (
                         <button
-                        disabled={item?.status === 'Completed' || disableIfLessThan}
+                          disabled={item?.status === 'Completed' || disableIfLessThan}
                           onClick={() => handleChat(item._id)}
                           className={`font-gothamMedium cursor-pointer  inline-block text-center rounded-3xl py-[2px] px-[10px] text-[10px] ${isChatAllowed ? 'text-[#42A803] bg-[#CBFFB2]' : 'text-[#FFA234] bg-[#FFFCEC]'}`}
                         >

@@ -5,7 +5,7 @@ import PervIcon from "@/assets/images/pervicon.png";
 import NextIcon from "@/assets/images/nexticon.png";
 import { ViewIcon } from "@/utils/svgicons";
 import Modal from 'react-modal';
-import { getImageUrlOfS3 } from "@/utils";
+import { getImageUrlOfS3, nonMilitaryTime } from "@/utils";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import profilePic from "@/assets/images/profile.png";
@@ -77,7 +77,7 @@ const PreviousAppointments = (props: PreviousAppointmentsProps) => {
                 return (
                   <tr key={item?._id}>
                     <td>{new Date(item?.appointmentDate?.split('T')[0]).toLocaleDateString('en-US')}</td>
-                    <td>{item.appointmentTime}</td>
+                    <td>{nonMilitaryTime(item.appointmentTime)}</td>
                     <td>
                       {message ? (
                         <button

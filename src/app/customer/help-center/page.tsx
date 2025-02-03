@@ -22,7 +22,6 @@ const TableComponent: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [title, setTitle] = useState('');
   const [message, setMessage] = useState('');
-
   const ticketsData = data?.data?.data?.data;
   const total = data?.data?.total ?? 0;
   const rowsPerPage = 10;
@@ -108,7 +107,7 @@ const TableComponent: React.FC = () => {
                   <td>{row?.title}</td>
                   <td>{new Date(row?.createdAt).toLocaleDateString('en-US')}</td>
                   <td>
-                    <p className={`px-[10px] py-[2px] text-[10px] text-center rounded-3xl ${getStatusColor(row?.status)}`}>{row?.status}</p>
+                    <p className={`px-[10px] max-w-20 py-[2px] text-[10px] text-center rounded-3xl ${getStatusColor(row?.status)}`}>{row?.status}</p>
                   </td>
 
                   <td>

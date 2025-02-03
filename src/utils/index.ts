@@ -137,3 +137,8 @@ export const downloadFileFromS3 = (subPath: string) => {
             toast.error("Failed to download PDF");
         });
 }
+
+export const nonMilitaryTime = (time: string) => {
+    const [hours, minutes] = time.split(':');
+    return `${parseInt(hours) % 12 || 12}:${minutes} ${parseInt(hours) >= 12 ? 'PM' : 'AM'}`;
+}

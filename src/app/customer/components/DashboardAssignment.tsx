@@ -9,7 +9,7 @@ import profilePic from "@/assets/images/profile.png";
 import ReactLoading from "react-loading";
 import { useRouter } from "next/navigation";
 import Modal from "react-modal";
-import { getImageUrlOfS3 } from "@/utils";
+import { getImageUrlOfS3, nonMilitaryTime } from "@/utils";
 import { toast } from "sonner";
 
 
@@ -75,7 +75,7 @@ const DashboardAssignment = (props: any) => {
                 return (
                   <tr key={row?._id}>
                     <td>{row?.appointmentDate ? new Date(row?.appointmentDate).toLocaleDateString('en-US') : 'No date Assigned'}</td>
-                    <td>{row?.appointmentTime ? (row?.appointmentTime) : 'Not Assigned Yet'}{Number(row?.appointmentTime?.split(':')[0]) < 12 ? ' AM' : ' PM'}</td>
+                    <td>{row?.appointmentTime ? nonMilitaryTime(row?.appointmentTime) : 'Not Assigned Yet'}</td>
                     <td>
                       {message ? (
                         <button
