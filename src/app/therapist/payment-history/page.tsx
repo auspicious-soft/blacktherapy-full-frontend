@@ -11,6 +11,7 @@ import { CloseIcon } from '@/utils/svgicons';
 import { downloadFileFromS3, getImageUrlOfS3 } from '@/utils';
 import { IoIosDocument } from "react-icons/io";
 import ReactLoader from '@/components/ReactLoader';
+import { toast } from 'sonner';
 
 const Page = () => {
   const [showModal, setShowModal] = useState(false);
@@ -38,7 +39,7 @@ const Page = () => {
     <div>
       <h1 className=' mb-[20px] md:mb-[50px]'>Payment History</h1>
       <div className='flex justify-end mb-[30px]'>
-        <SearchBar setQuery={setQuery} placeholder = {'Search By Id'} />
+        <SearchBar setQuery={setQuery} placeholder={'Search By Id'} />
       </div>
       <div className="table-common overflo-custom">
         <table>
@@ -78,14 +79,16 @@ const Page = () => {
                   <td> <p className='cursor-pointer font-gothamMedium text-center rounded-xl text-[10px] py-[4px] text-[#fff] bg-[#26395E]' onClick={() => openModal(item?.progressNotes)}>View</p></td>
                   <td>{item?.rejectedNote ? (item.detailsAboutPayment ? item.detailsAboutPayment : item.rejectedNote) : "No Note"}</td>
                   <td>{new Date(item?.serviceDate).toLocaleDateString('en-US')}</td>
-                  <td> <p className={`capitalize font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px] ${item?.status === 'approved' ? 'text-[#42A803] bg-[#CBFFB2]' : ''}`}>{item?.status}</p> </td>
+                  <td> <p className={`capitalize font-gothamMedium text-center rounded-3xl py-[2px] px-[10px] text-[10px] ${item?.status === 'approved' ? 'text-[#42A803] bg-[#CBFFB2]' : item?.status === 'pending' ? 'bg-yellow-500 text-black' : 'text-red-800 bg-red-500'}`}>{item?.status}</p> </td>
                   <td>
                     <button
+                      className='flex items-center justify-center'
                       onClick={() => {
                         setDownloading(true)
                         if (item?.invoice) {
                           downloadFileFromS3(getImageUrlOfS3(item?.invoice))
                           setDownloading(false)
+                          toast.success('Payment Invoice downloaded successfully', { position: 'top-right' })
                         }
                       }}
                       disabled={item?.invoice == null}
