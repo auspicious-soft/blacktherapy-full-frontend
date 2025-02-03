@@ -12,7 +12,7 @@ import useSWR from "swr";
 import Notification from "../components/Notification";
 import { toast } from "sonner";
 import { notEqual } from "assert";
- 
+
 interface FormData {
   fullName: string;
   email: string;
@@ -24,7 +24,7 @@ interface TaskData {
   dueDate: string,
   priority: string,
   note: string,
-  attachment : string,
+  attachment: string,
 }
 
 const Page = () => {
@@ -34,13 +34,13 @@ const Page = () => {
     password: "",
     role: "",
   });
-  const [taskData, setTaskData]= useState<TaskData>(
+  const [taskData, setTaskData] = useState<TaskData>(
     {
-    title: "",
-    dueDate: "",
-    priority: "",
-    note: "",
-    attachment : "",
+      title: "",
+      dueDate: "",
+      priority: "",
+      note: "",
+      attachment: "",
     }
   )
   const [isPending, startTransition] = useTransition();
@@ -66,10 +66,10 @@ const Page = () => {
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
-    const { name, value } = e.target; 
+    const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
-      [name]: value, 
+      [name]: value,
     }));
   };
 
@@ -78,7 +78,7 @@ const Page = () => {
 
     startTransition(async () => {
       try {
-        const response = await AddNewUser(formData); 
+        const response = await AddNewUser(formData);
         if (response?.status === 201) {
           setNotification("User Added Successfully");
           // toast.success("Wellness entry added successfully");
@@ -96,7 +96,7 @@ const Page = () => {
         toast.error("An error occurred while adding the User Data");
       }
     });
-    
+
   };
 
   const handleDelete = (id: string) => {
@@ -114,9 +114,9 @@ const Page = () => {
   };
 
   const handleDeleteConfirm = async (id: string) => {
-    const route = `/admin/users/${id}`; 
+    const route = `/admin/users/${id}`;
     try {
-      const response = await DeleteUser(route); 
+      const response = await DeleteUser(route);
       if (response.status === 200) {
         setIsDeleteModalOpen(false);
         toast.success("User deleted successfully");
@@ -127,7 +127,7 @@ const Page = () => {
       console.error("Error deleting User:", error);
       toast.error("An error occurred while deleting the User");
     }
-   
+
     mutate()
   };
 
@@ -135,7 +135,7 @@ const Page = () => {
     setAssignTaskId(id);
     setAssignTaskModalOpen(true);
   };
- 
+
   const handleAssignTaskModalClose = () => {
     setAssignTaskModalOpen(false);
     setAssignTaskId(null);
@@ -149,44 +149,44 @@ const Page = () => {
     }));
   };
 
- const handleAssignTaskSubmit = async (e: FormEvent<HTMLFormElement>) => {
-  e.preventDefault();
+  const handleAssignTaskSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
-  startTransition(async () => {
-    try {
-      const formattedDueDate = new Date(taskData.dueDate).toISOString();
+    startTransition(async () => {
+      try {
+        const formattedDueDate = new Date(taskData.dueDate).toISOString();
 
-      const taskPayload = {
-        ...taskData,
-        dueDate: formattedDueDate, 
-        attachment: "http://example.com/attachments/static-task-file.pdf", 
-        priority: "High", 
-      };
-      const response = await AssignTaskToUser(`/admin/users/${assignTaskId}`, taskPayload);
-      if (response?.status === 201) {
-        toast.success("Task assigned successfully");
-        setAssignTaskModalOpen(false);
-        setTaskData({
-          title: "",
-          dueDate: "",
-          priority: "",
-          note: "",
-          attachment: "",
-        });
-      } else {
-        console.error("Failed to assign task.");
+        const taskPayload = {
+          ...taskData,
+          dueDate: formattedDueDate,
+          attachment: "http://example.com/attachments/static-task-file.pdf",
+          priority: "High",
+        };
+        const response = await AssignTaskToUser(`/admin/users/${assignTaskId}`, taskPayload);
+        if (response?.status === 201) {
+          toast.success("Task assigned successfully");
+          setAssignTaskModalOpen(false);
+          setTaskData({
+            title: "",
+            dueDate: "",
+            priority: "",
+            note: "",
+            attachment: "",
+          });
+        } else {
+          console.error("Failed to assign task.");
+        }
+      } catch (error) {
+        console.error("An error occurred while assigning the task:", error);
       }
-    } catch (error) {
-      console.error("An error occurred while assigning the task:", error);
-    }
-  });
-};
+    });
+  };
 
 
   return (
     <>
       <h1 className="font-antic text-[#283C63] text-[30px] leading-[1.2em] mb-[25px] lg:text-[40px] lg:mb-[50px]">Add Users</h1>
-      
+
       <div className="bg-white rounded-[10px] w-full p-5">
         <form onSubmit={handleSubmit}>
           <div className="grid md:flex flex-wrap gap-[30px]">
@@ -246,7 +246,7 @@ const Page = () => {
             </div>
           </div>
           <div className="mt-[30px] flex justify-end ">
-          <button type="submit" className="button px-[30px]" disabled={isPending}>
+            <button type="submit" className="button px-[30px]" disabled={isPending}>
               {isPending ? 'Submitting...' : 'Submit'}<ButtonArrow />
             </button>
           </div>
@@ -254,10 +254,10 @@ const Page = () => {
       </div>
       <div className="md:mt-[50px] mt-[30px]">
         <div className="mb-5">
-            <h2 className="mb-[30px]">All Users</h2>
-            <div className="flex justify-end">
-                <SearchBar setQuery={setQuery}/>
-            </div>
+          <h2 className="mb-[30px]">All Users</h2>
+          <div className="flex justify-end">
+            <SearchBar setQuery={setQuery} />
+          </div>
         </div>
         <div className="table-common overflo-custom">
           <table className="">
@@ -272,40 +272,40 @@ const Page = () => {
               </tr>
             </thead>
             <tbody>
-            {isLoading ? (
-      <tr>
-        <td colSpan={5} className="">
-          Loading... 
-        </td>
-      </tr>
-    ) : error ? (
-      <tr>
-        <td colSpan={5} className="text-center text-red-500">
-          Error loading data.
-        </td>
-      </tr>
-    ) :getUserData?.length > 0 ? (
-      getUserData?.map((row: any) => (
-                <tr key={row?._id}>
-                  <td>{row?._id}</td>
-                  <td>{row?.fullName}</td>
-                  <td>{row?.role}</td>
-                  <td>{row?.email}</td>
-                  <td>
-               <button onClick={() => handleAssignTask(row?._id)} className="font-gothamMedium rounded-3xl py-[2px] px-[10px] text-[#26395E] bg-[#CCDDFF] text-[10px]">Assign Task</button>
-                  </td>
-                   <td>
-                    <button onClick={() => handleDelete(row?._id)}>
-                      <DeleteIcon />
-                    </button>
+              {isLoading ? (
+                <tr>
+                  <td colSpan={5} className="">
+                    Loading...
                   </td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td className='w-full flex justify-center p-3 items-center' colSpan={5} >No data found</td>
-              </tr>
-            )}
+              ) : error ? (
+                <tr>
+                  <td colSpan={5} className="text-center text-red-500">
+                    Error loading data.
+                  </td>
+                </tr>
+              ) : getUserData?.length > 0 ? (
+                getUserData?.map((row: any) => (
+                  <tr key={row?._id}>
+                    <td>{row?._id}</td>
+                    <td>{row?.fullName}</td>
+                    <td>{row?.role}</td>
+                    <td>{row?.email}</td>
+                    <td>
+                      <button onClick={() => handleAssignTask(row?._id)} className="font-gothamMedium rounded-3xl py-[2px] px-[10px] text-[#26395E] bg-[#CCDDFF] text-[10px]">Assign Task</button>
+                    </td>
+                    <td>
+                      <button onClick={() => handleDelete(row?._id)}>
+                        <DeleteIcon />
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td className='w-full flex justify-center p-3 items-center' colSpan={5} >No data found</td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
@@ -321,7 +321,7 @@ const Page = () => {
             onPageChange={handlePageClick}
             containerClassName={'inline-flex mt-[34px] rounded-[5px] border border-[#d5dce9]'}
             pageClassName={'text-[#26395e] '}  //list item
-            pageLinkClassName ={'py-2 px-4 inline-block'} //anchor tag
+            pageLinkClassName={'py-2 px-4 inline-block'} //anchor tag
             activeClassName={'bg-[#26395e] rounded-[5px] text-white'} //active anchor
             previousLinkClassName={'py-2 px-4 inline-block'}
             nextLinkClassName={'py-2 px-4 inline-block'}
@@ -336,73 +336,75 @@ const Page = () => {
           overlayClassName="overlay"
         >
           <Image src={deleteCross} alt='delete' height={174} width={174} className="mx-auto" />
-        <h2 className="text-[20px] text-center leading-normal mt-[-20px]">Are you sure you want to Delete?</h2>
-  <div className="flex items-center justify-center gap-6 mt-8">
-  <button 
-         type="button"
-         onClick={() => handleDeleteConfirm(deleteItemId as string)}
-         className="py-[10px] px-8 bg-[#CC0000] text-white rounded"
-       >
-         Yes, Delete
-       </button>
-       <button 
-       type="button"
-       onClick={handleDeleteCancel}
-       className='py-[10px] px-8 bg-[#283C63] text-white rounded'>No </button>
-   </div>
-       </Modal>
+          <h2 className="text-[20px] text-center leading-normal mt-[-20px]">Are you sure you want to Delete?</h2>
+          <div className="flex items-center justify-center gap-6 mt-8">
+            <button
+              type="button"
+              onClick={() => handleDeleteConfirm(deleteItemId as string)}
+              className="py-[10px] px-8 bg-[#CC0000] text-white rounded"
+            >
+              Yes, Delete
+            </button>
+            <button
+              type="button"
+              onClick={handleDeleteCancel}
+              className='py-[10px] px-8 bg-[#283C63] text-white rounded'>No </button>
+          </div>
+        </Modal>
 
-       <Modal  
-         isOpen={assignTaskModalOpen}
-         onRequestClose={handleAssignTaskModalClose}
-         contentLabel="Assign Task"
-        className="rounded-lg w-full max-w-4xl mx-auto bg-white shadow-lg max-h-[90vh] overflow-auto"
-      overlayClassName="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center"
-       >
-        <button type="button" onClick={handleAssignTaskModalClose}
-          className="float-right py-[5px] px-3 bg-[#CC0000] text-white rounded">X </button>    
-         <h2>Assign Task </h2>
+        <Modal
+          isOpen={assignTaskModalOpen}
+          onRequestClose={handleAssignTaskModalClose}
+          contentLabel="Assign Task"
+          className="rounded-lg w-full max-w-4xl mx-auto bg-white shadow-lg max-h-[90vh] overflow-auto"
+          overlayClassName="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center"
+        >
+          <div className="p-3">
+            <button type="button" onClick={handleAssignTaskModalClose}
+              className="float-right py-[5px] px-3 bg-[#CC0000] text-white rounded">X </button>
+            <h2>Assign Task </h2>
 
-         <form onSubmit={handleAssignTaskSubmit}>
-         <label htmlFor="">Title</label>
-         <input type="text" name="title"
-           value={taskData.title}
-           onChange={handleAssignTaskInput} id="" />
+            <form onSubmit={handleAssignTaskSubmit}>
+              <label htmlFor="">Title</label>
+              <input type="text" name="title"
+                value={taskData.title}
+                onChange={handleAssignTaskInput} id="" />
 
-          <label htmlFor="">Due Date</label>
-         <input type="date" name="dueDate"
-           value={taskData.dueDate} 
-           onChange={handleAssignTaskInput} id="" />
+              <label htmlFor="">Due Date</label>
+              <input type="date" name="dueDate"
+                value={taskData.dueDate}
+                onChange={handleAssignTaskInput} id="" />
 
-         <label htmlFor="">Priority</label>
-         <input type="text" name="priority"
-           value={taskData.priority}
-           onChange={handleAssignTaskInput} id="" />
+              <label htmlFor="">Priority</label>
+              <input type="text" name="priority"
+                value={taskData.priority}
+                onChange={handleAssignTaskInput} id="" />
 
-         <label htmlFor="">Add File</label>
-         <input type="file" name="attachment"
-           value={taskData.attachment}
-           onChange={handleAssignTaskInput} id="" />
+              <label htmlFor="">Add File</label>
+              <input type="file" name="attachment"
+                value={taskData.attachment}
+                onChange={handleAssignTaskInput} id="" />
 
-         <label htmlFor="">Note</label>
-         <textarea name="note" value={taskData.note} onChange={handleAssignTaskInput} rows={3}>
+              <label htmlFor="">Note</label>
+              <textarea name="note" value={taskData.note} onChange={handleAssignTaskInput} rows={3}>
 
-         </textarea>
-      
-         <div className="flex justify-end mt-4">
-          
-           <button
-             type="submit"
-             className="button"
-           >Submit <ButtonArrow /></button>
-           
-         </div>
-         </form>
-       </Modal>
-       <Notification message={notification} onClose={() => setNotification(null)} />
-     </div>
-   </>
- );
+              </textarea>
+
+              <div className="flex justify-end mt-4">
+
+                <button
+                  type="submit"
+                  className="button"
+                >Submit <ButtonArrow /></button>
+
+              </div>
+            </form>
+          </div>
+        </Modal>
+        <Notification message={notification} onClose={() => setNotification(null)} />
+      </div>
+    </>
+  );
 };
 
 export default Page;
