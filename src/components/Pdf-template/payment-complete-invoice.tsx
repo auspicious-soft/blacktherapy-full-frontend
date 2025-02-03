@@ -8,11 +8,21 @@ const styles = StyleSheet.create({
         padding: 30,
         backgroundColor: '#ffffff'
     },
+    header1: {
+        marginBottom: 20,
+        padding: 10,
+        borderBottom: 1,
+        borderColor: '#333333',
+        display: 'flex',
+        flexDirection: 'row',
+        width: '100%',
+        justifyContent: 'space-between'
+    },
     header: {
         marginBottom: 20,
         padding: 10,
         borderBottom: 1,
-        borderColor: '#333333'
+        borderColor: '#333333',
     },
     title: {
         fontSize: 24,
@@ -35,6 +45,10 @@ const styles = StyleSheet.create({
     value: {
         flex: 1,
         color: '#333333'
+    },
+    logo: {
+        width: '100%', // Adjust as needed
+        height: 'auto', // Adjust as needed
     },
     footer: {
         position: 'absolute',
@@ -62,11 +76,10 @@ const PaymentInvoice = ({ appointment }: any) => {
     return (
         <Document>
             <Page size="A4" style={styles.page}>
+                <View style={styles.header1}>
+                    <Image style={styles.logo} src={btnLogo.src} />
+                </View>
                 <View style={styles.header}>
-                    {/* <Image
-                        src={btnLogo as any}
-                        style={{ width: 100, height: 50, marginBottom: 10 }}
-                    /> */}
                     <Text style={styles.title}>Payment Request Invoice</Text>
                     <Text>Invoice Date: {formatDate(new Date())}</Text>
                 </View>
