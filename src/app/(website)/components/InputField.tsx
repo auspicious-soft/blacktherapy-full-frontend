@@ -12,7 +12,7 @@ const InputField: FC<InputFieldProps> = ({ type, value, placeholder, onChange , 
   return (
     <div className='mb-[15px]'>
       <input
-      className='h-[42px] md:h-[58px] w-full px-4 md:px-7 text-sm md:text-base rounded-[20px] border border-[#dbe0eb]'
+      className='h-[42px] md:h-[58px] w-full px-4 md:px-7 text-sm md:text-base rounded-[20px] border border-[#dbe0eb] text-black'
       type={type}
       value={value}
       placeholder={placeholder}

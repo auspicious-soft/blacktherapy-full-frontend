@@ -14,7 +14,6 @@ import BackgroundChecks from "@/app/(website)/components/(therapist-onboarding)/
 import UploadDocuments from "@/app/(website)/components/(therapist-onboarding)/UploadDocuments";
 import DeclarationStep from "@/app/(website)/components/(therapist-onboarding)/DeclarationStep";
 import { submitForm } from "@/utils/onboarding-submit";
-import { toast } from "sonner";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
@@ -29,7 +28,7 @@ const steps = [
   { component: References, requiresValidation: true },
   { component: QualifiedStep, requiresValidation: true },
   { component: BackgroundChecks, requiresValidation: true },
-  { component: UploadDocuments, requiresValidation: true },
+  { component: UploadDocuments, requiresValidation: false },
   { component: ApplicationCompleted, requiresValidation: false },
 ];
 

@@ -25,26 +25,12 @@ const UploadDocuments: React.FC<UploadDocumentProps> = ({
   nextStep,
 }) => {
   const validateStep = useCallback(() => {
-    const isValid = UploadDocumentQuestions.every(q => {
-      const value = formData[q.key];
-      
-      // Check if value is a string and if it's not empty after trimming
-      if (typeof value === 'string') {
-        return value.trim() !== "";
-      }
-  
-      // For other types (like number, boolean), just check if they're not falsy
-      return value !== undefined && value !== null && value !== "";
-    });
-  
-    setIsValid(isValid);
-  }, [formData, setIsValid]);
-  
+    // Always set isValid to true since the upload is optional
+    setIsValid(true);
+  }, [setIsValid]);
   
   const handleContinue = () => {
-    if (UploadDocumentQuestions.every(q => formData[q.key])) {
-      nextStep();
-    }
+    nextStep();
   };
 
   return (
@@ -55,6 +41,7 @@ const UploadDocuments: React.FC<UploadDocumentProps> = ({
       <div className="bg-white rounded-[20px] p-5 md:p-[50px]">
         {UploadDocumentQuestions.map((q, index) => (
           <QuestionComponent
+            required = {false}
             key={index}
             name={q.key}
             question={q.question}
