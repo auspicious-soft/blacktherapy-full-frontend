@@ -8,6 +8,7 @@ import Modal from 'react-modal';
 import { getImageUrlOfS3 } from "@/utils";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import profilePic from "@/assets/images/profile.png";
 
 export interface PreviousAppointmentsProps {
   data: any;
@@ -92,7 +93,7 @@ const PreviousAppointments = (props: PreviousAppointmentsProps) => {
                         </p>
                       )}
                     </td>
-                    <td>{video ? <button disabled= {item?.status == 'Completed' || disableIfLessThan} className={`cursor-pointer font-gothamMedium inline-block text-center rounded-3xl py-[2px] px-[10px] text-[10px] ${isVideoCount > 0 ? 'text-[#42A803] bg-[#CBFFB2]' : 'text-[#FFA234] bg-[#FFFCEC]'}`}>
+                    <td>{video ? <button disabled={item?.status == 'Completed' || disableIfLessThan} className={`cursor-pointer font-gothamMedium inline-block text-center rounded-3xl py-[2px] px-[10px] text-[10px] ${isVideoCount > 0 ? 'text-[#42A803] bg-[#CBFFB2]' : 'text-[#FFA234] bg-[#FFFCEC]'}`}>
                       {isVideoCount > 0 ? <div onClick={() => window.location.href = `/customer/appointments/video-chat/${item?._id}`}>{`Start Video (${isVideoCount})`}</div> : 'Video chat limit reached for current plan'}
                     </button> : <p className="cursor-not-allowed">No Video</p>}</td>
                     <td>
@@ -153,8 +154,7 @@ const PreviousAppointments = (props: PreviousAppointmentsProps) => {
           {careTeam?.map((therapist: any) => (
             <div key={therapist._id} className="">
               <Image
-                src={getImageUrlOfS3(therapist?.profilePic) || './assets/images/therapist1.jpg'}
-                alt={therapist?.firstName}
+                src={therapist?.profilePic.includes('undefined') || !therapist?.profilePic ? profilePic : getImageUrlOfS3(therapist?.profilePic)} alt={therapist?.firstName}
                 width={200}
                 height={200}
                 className="rounded-[20px] w-full aspect-square cover"

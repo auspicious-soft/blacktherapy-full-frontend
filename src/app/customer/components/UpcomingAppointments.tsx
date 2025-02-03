@@ -9,6 +9,7 @@ import { PreviousAppointmentsProps } from "./PreviousAppointments";
 import { ViewIcon } from "@/utils/svgicons";
 import Modal from 'react-modal';
 import { getImageUrlOfS3 } from "@/utils";
+import profilePic from "@/assets/images/profile.png";
 
 const UpcomingAppointments = (props: PreviousAppointmentsProps) => {
   const { data, error, setQuery, isChatAllowed, isVideoCount, video, message } = props;
@@ -139,7 +140,7 @@ const UpcomingAppointments = (props: PreviousAppointmentsProps) => {
           {careTeam?.map((therapist: any) => (
             <div key={therapist._id} className="">
               <Image
-                src={getImageUrlOfS3(therapist?.profilePic) || './assets/images/therapist1.jpg'}
+                src={therapist?.profilePic.includes('undefined') || !therapist?.profilePic ? profilePic : getImageUrlOfS3(therapist?.profilePic)}
                 alt={therapist?.firstName}
                 width={200}
                 height={200}
