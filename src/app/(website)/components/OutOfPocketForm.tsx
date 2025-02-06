@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import PersonalInfoForm from "@/app/(website)/components/PersonalInfoForm";
 import IntroSection from "@/app/(website)/components/IntroSection";
 import { submitClientForm } from "@/utils/client-signup";
+import ReactLoader from "@/components/ReactLoader";
 
 
 interface OutOfPocketFormProps {
@@ -74,10 +75,10 @@ const outOfPocketQuestions = [
     placeholder: "",
   },
 ];
-const questionDistribution = [ 1, 1, 1, 1, 1, 1];
+const questionDistribution = [1, 1, 1, 1, 1, 1];
 const OutOfPocketForm: React.FC<OutOfPocketFormProps> = ({ onBack, formData, setFormData }) => {
   const [currentStep, setCurrentStep] = useState(0);
-  const totalSteps = questionDistribution.length + 2; 
+  const totalSteps = questionDistribution.length + 2;
   const handleAnswerChange = (name: string, value: string) => {
     setFormData((prevData: any) => ({
       ...prevData,
@@ -108,7 +109,7 @@ const OutOfPocketForm: React.FC<OutOfPocketFormProps> = ({ onBack, formData, set
     return { startIndex, endIndex };
   };
 
-const validateCurrentStep = () => {
+  const validateCurrentStep = () => {
     const { startIndex, endIndex } = getQuestionIndicesForStep(currentStep);
 
     for (let i = startIndex; i < endIndex; i++) {
@@ -124,75 +125,77 @@ const validateCurrentStep = () => {
     const { startIndex, endIndex } = getQuestionIndicesForStep(currentStep);
     return outOfPocketQuestions.slice(startIndex, endIndex).map((question, index) => (
       <div key={question.key} className="grid mb-4">
-      <label className="text-[15px] md:text-lg text-[#283C63] mb-2">{question.question}</label>
-      {question.type === "textarea" ? (
-        <textarea
-        required
-          name={question.key}
-          placeholder={question.placeholder}
-          className="py-[10px] px-4 border border-[#dbe0eb] rounded-[20px]"
-          value={formData[question.key] || ""}
-          onChange={(e) =>
-            handleAnswerChange(question.key, e.target.value)
-          }
-        />
-      ) : question.type === "select" ? (
-        <select
-        required
-          name={question.key}
-          className="text-[#686C78] border border-[#dbe0eb] rounded-[20px] px-4 py-3"
-          value={formData[question.key] || ""}
-          onChange={(e) =>
-            handleAnswerChange(question.key, e.target.value)
-          }
-        >
-          <option value="">Select an option</option>
-          {question.options?.map((option, i) => (
-            <option key={i} value={option}>
-              {option}
-            </option>
-          ))}
-        </select>
-      ) : question.type === "radio" ? (
-        <div className="flex flex-col">
-          {question.options?.map((option, i) => (
-            <label key={i} className="text-[15px] md:text-lg custom-radio step-form-radio relative flex items-center mb-2">
-              <input
-                required
-                type="radio"
-                name={question.key}
-                value={option}
-                checked={formData[question.key] === option}
-                onChange={() =>
-                  handleAnswerChange(question.key, option)
-                }
-                className="mr-2"
-              />
-              <span className="text-sm md:text-base w-full text-[#283C63] py-[10px] px-4 border border-[#dbe0eb] rounded-[20px]">
+        <label className="text-[15px] md:text-lg text-[#283C63] mb-2">{question.question}</label>
+        {question.type === "textarea" ? (
+          <textarea
+            required
+            name={question.key}
+            placeholder={question.placeholder}
+            className="py-[10px] px-4 border border-[#dbe0eb] rounded-[20px]"
+            value={formData[question.key] || ""}
+            onChange={(e) =>
+              handleAnswerChange(question.key, e.target.value)
+            }
+          />
+        ) : question.type === "select" ? (
+          <select
+            required
+            name={question.key}
+            className="text-[#686C78] border border-[#dbe0eb] rounded-[20px] px-4 py-3"
+            value={formData[question.key] || ""}
+            onChange={(e) =>
+              handleAnswerChange(question.key, e.target.value)
+            }
+          >
+            <option value="">Select an option</option>
+            {question.options?.map((option, i) => (
+              <option key={i} value={option}>
                 {option}
-              </span>
-            </label>
-          ))}
-        </div>
-      ) : (
-        <input
-        required
-          type={question.type}
-          name={question.key}
-          placeholder={question.placeholder}
-          className="text-sm md:text-base py-[10px] px-4 border border-[#dbe0eb] rounded-[20px] text-[#686C78]"
-          value={formData[question.key] || ""}
-          onChange={(e) =>
-            handleAnswerChange(question.key, e.target.value)
-          }
-        />
-      )}
-    </div>
+              </option>
+            ))}
+          </select>
+        ) : question.type === "radio" ? (
+          <div className="flex flex-col">
+            {question.options?.map((option, i) => (
+              <label key={i} className="text-[15px] md:text-lg custom-radio step-form-radio relative flex items-center mb-2">
+                <input
+                  required
+                  type="radio"
+                  name={question.key}
+                  value={option}
+                  checked={formData[question.key] === option}
+                  onChange={() =>
+                    handleAnswerChange(question.key, option)
+                  }
+                  className="mr-2"
+                />
+                <span className="text-sm md:text-base w-full text-[#283C63] py-[10px] px-4 border border-[#dbe0eb] rounded-[20px]">
+                  {option}
+                </span>
+              </label>
+            ))}
+          </div>
+        ) : (
+          <input
+            required
+            type={question.type}
+            name={question.key}
+            placeholder={question.placeholder}
+            className="text-sm md:text-base py-[10px] px-4 border border-[#dbe0eb] rounded-[20px] text-[#686C78]"
+            value={formData[question.key] || ""}
+            onChange={(e) =>
+              handleAnswerChange(question.key, e.target.value)
+            }
+          />
+        )}
+      </div>
     ));
   };
-
+  const [isPending, startTransition] = React.useTransition();
   const clientFormSubmit = async () => {
-    await submitClientForm(formData, setFormData);
+    startTransition(async () => {
+      await submitClientForm(formData, setFormData);
+    })
   };
 
   return (
@@ -201,23 +204,23 @@ const validateCurrentStep = () => {
       {currentStep < questionDistribution.length
         ? renderQuestions()
         : (currentStep === questionDistribution.length
-            ? <IntroSection onContinue={handleContinue} />
-            : <PersonalInfoForm formData={formData} setFormData={setFormData} />
-          )
+          ? <IntroSection onContinue={handleContinue} />
+          : <PersonalInfoForm formData={formData} setFormData={setFormData} />
+        )
       }
       <div className="flex justify-between mt-4">
         <button onClick={handleBack} className="button">
           Back
         </button>
         {currentStep < totalSteps - 1 ? (
-        <button onClick={handleContinue} className="button">
-          Continue
-        </button>
-      ) : (
-        <button onClick={clientFormSubmit} className="button">
-          Submit
-        </button>
-      )}
+          <button onClick={handleContinue} className="button">
+            Continue
+          </button>
+        ) : (
+          <button disabled={isPending} onClick={clientFormSubmit} className="button">
+            {!isPending ? 'Submit' : <ReactLoader />}
+          </button>
+        )}
       </div>
     </div>
   );

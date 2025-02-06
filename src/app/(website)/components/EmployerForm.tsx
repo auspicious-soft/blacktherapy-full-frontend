@@ -76,7 +76,8 @@ const employerQuestions = [
   },
   // Add more questions as needed
 ];
-const questionDistribution = [2, 1, 1, 1, 1, 1, 1];
+const questionDistribution = [2, 1, 1, 1, 1, 1, 1]
+
 const EmployerForm: React.FC<EmployerFormProps> = ({ onBack, formData, setFormData }) => {
   const [currentStep, setCurrentStep] = useState(0);
   const totalSteps = questionDistribution.length + 2; 
@@ -111,7 +112,6 @@ const EmployerForm: React.FC<EmployerFormProps> = ({ onBack, formData, setFormDa
   };
 
 
-
   const validateCurrentStep = () => {
     const { startIndex, endIndex } = getQuestionIndicesForStep(currentStep);
 
@@ -124,9 +124,9 @@ const EmployerForm: React.FC<EmployerFormProps> = ({ onBack, formData, setFormDa
     return true;
   };
 
-  const clientFormSubmit = async () => {
-    await submitClientForm(formData, setFormData);
-  };
+  // const clientFormSubmit = async () => {
+  //   await submitClientForm(formData, setFormData);
+  // };
 
   const renderQuestions = () => {
     const { startIndex, endIndex } = getQuestionIndicesForStep(currentStep);
@@ -210,7 +210,7 @@ const EmployerForm: React.FC<EmployerFormProps> = ({ onBack, formData, setFormDa
           : <PersonalInfoForm formData={formData} setFormData={setFormData} />
         )
     }
-    <div className="flex justify-between mt-4">
+    {/* <div className="flex justify-between mt-4">
       <button onClick={handleBack} className="button">
         Back
       </button>
@@ -220,10 +220,10 @@ const EmployerForm: React.FC<EmployerFormProps> = ({ onBack, formData, setFormDa
         </button>
       ) : (
         <button onClick={clientFormSubmit} className="button">
-          Submit
+          Submit 1  
         </button>
       )}
-    </div>
+    </div> */}
   </div>
   );
 };

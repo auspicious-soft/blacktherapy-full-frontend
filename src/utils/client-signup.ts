@@ -40,7 +40,7 @@ export const submitClientForm = async (
     //     delete formattedData[key];
     //   }
     // }
-    //);
+    // );
 
     const response = await addClientSignupData('/client/signup', formattedData);
     if (response?.status === 201) {

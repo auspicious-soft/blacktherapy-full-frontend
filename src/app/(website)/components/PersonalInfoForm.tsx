@@ -26,6 +26,7 @@ const PersonalInfoForm: React.FC<PerfonalInfoFormProps> = ({formData, setFormDat
   return (
     <div>
       <h2 className='section-title text-center mb-4'>Fill Personal Information</h2>
+      
       <div className="personal-profile grid grid-cols-1 md:grid-cols-2 gap-[10px] md:gap-4">
         <InputField required name="firstName" label="First Name" value={formData.firstName} onChange={handleChange} />
         <InputField required name="lastName" label="Last Name" value={formData.lastName} onChange={handleChange} />

@@ -38,7 +38,7 @@ const Page = () => {
         zipCode: '',
         addressLine1: '',
         addressLine2: '',
-        // status: true,
+        status: 'Active Client',
         // isOnline: false,
         // profilePic: ''
     });
