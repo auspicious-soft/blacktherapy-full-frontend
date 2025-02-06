@@ -60,6 +60,7 @@ const Page: React.FC = () => {
         heading={heading}
         imageUrl={imageUrl}
       />
+      <title> FAQ | Black Therapy Network</title>
     <div className="about-dropdown container py-[40px] md:py-[100px]">
       <div className='pb-[40px] md:pb-[100px]'>
         <h2 className='section-title mb-3 md:mb-5'>Issues of Psychological Therapy by Expert</h2>

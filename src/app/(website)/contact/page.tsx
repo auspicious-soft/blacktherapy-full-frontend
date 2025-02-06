@@ -73,6 +73,7 @@ const ContactForm: React.FC = () => {
 
   return (
     <div className='contact-outer'>
+      <title>Contact | Black Therapy Network </title>
       <div className='container'>
         <div className='bg-white border-[1px] border-[#7FAEB5] py-[30px] px-[20px] rounded-[20px] mt-[40px] lg:mt-[100px] lg:p-[50px]'>
           <h2 className='section-title text-center text-[#283C63] mb-[25px] lg:mb-[50px]'>Fill In the form below</h2>

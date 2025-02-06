@@ -37,6 +37,7 @@ const Page: React.FC = () => {
 
   return (
     <div>
+      <title>About | Black Therapy Network</title>
       <BannerSection
         breadcrumbs={breadcrumbs}
         heading={heading}
