@@ -215,7 +215,7 @@ const Page = () => {
                 disabled={true}
                 className="button !mt-0 ml-auto disabled:opacity-100 cursor-not-allowed"
                 >
-                No Therapist Assigned Yet, Kindly wait for the assignment
+                No Therapist Assigned Yet, Kindly wait for the assignment 
                 </button>}
           </div>
           <div>
