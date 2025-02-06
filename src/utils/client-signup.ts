@@ -50,12 +50,17 @@ export const submitClientForm = async (
         window.location.href = "/client-signup-success";
       }, 2000);
       return true;
-    } else {
+    } 
+    
+    else {
       toast.error("Failed to add client data");
       return false;
     }
-  } catch (error) {
-    console.error("Error submitting form data:", error);
+  } catch (error:any) {
+    if(error.status == 400) {
+      toast.error("Email already exists");
+      return false;
+    }
     toast.error("An error occurred while adding the client data");
     return false;
   }
