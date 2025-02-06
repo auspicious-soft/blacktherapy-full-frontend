@@ -2,6 +2,7 @@
 import { generateSignedUrlToUploadOn } from "@/actions";
 import { addOnboardingFormData } from "@/services/therapist/therapist-service.";
 import { toast } from "sonner";
+import { signOut } from "next-auth/react";
 
 // const session = await auth()
 // Helper to convert string to boolean
@@ -25,9 +26,9 @@ const booleanFields = [
 
 export const submitForm = async (
   formData: any,
-  userEmail: string ,
+  userEmail: string,
   router: any
-) => { 
+) => {
   if (!userEmail) {
     toast.error("User email is required.");
     return;
@@ -78,20 +79,20 @@ export const submitForm = async (
           return;
         }
       }
-    } 
+    }
 
     //delete formattedData.signature;
     const response = await addOnboardingFormData("/therapist/onboarding", formattedData);
 
     if (response?.status === 201) {
       toast.success("Therapist data added successfully");
+      await signOut({ redirect: false })
       router.push('/login');
-    
-    } 
+    }
     else {
       toast.error("Failed to add Therapist Data");
     }
-  } 
+  }
   catch (error) {
     console.error("Error adding Therapist Data:", error);
     toast.error("An error occurred while adding the Therapist Data");
