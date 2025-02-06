@@ -62,6 +62,7 @@ const Page: React.FC = () => {
 
   return (
     <div className="container">
+      <title>Black Therapy Network | Login</title>
       <div className="grid md:grid-cols-2 gap-8 md:gap-3 lg:gap-0 lg:grid-cols-[minmax(0,_7fr)_minmax(0,_5fr)] items-center pt-6 pb-10">
         <div className="video lg:pr-[125px] overflow-hidden">
           <div className="scrolling md:h-[600px] h-[300px] lg:h-[800px]">
