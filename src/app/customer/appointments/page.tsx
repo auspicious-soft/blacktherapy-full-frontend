@@ -32,6 +32,7 @@ const Page = () => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const videoCountAndChatFinished = user?.data?.data?.videoCount == 0
   const isChatAllowed = user?.data?.data?.chatAllowed == false
+  const haveTherapist = user?.data?.data?.therapistId == null
   const currentPlan = user?.data?.data?.planOrSubscriptionId == null
   const isVideoAllowed = user?.data?.data?.video == false
   const disableRequest = currentPlan || videoCountAndChatFinished || isVideoAllowed || isChatAllowed
@@ -199,16 +200,23 @@ const Page = () => {
                 {tab}
               </button>
             ))}
-          <button
-            disabled={disableRequest}
-            className="button !mt-0 ml-auto"
-            onClick={() => {
-              userMutate();
-              setOpenModal(true);
-            }}
-          >
-            Request Appointment
-          </button>
+            {!haveTherapist ? <button
+              disabled={disableRequest}
+              className="button !mt-0 ml-auto"
+              onClick={() => {
+                userMutate();
+                setOpenModal(true);
+              }}
+            >
+              Request Appointment
+            </button>
+              :
+                <button
+                disabled={true}
+                className="button !mt-0 ml-auto disabled:opacity-100 cursor-not-allowed"
+                >
+                No Therapist Assigned Yet, Kindly wait for the assignment
+                </button>}
           </div>
           <div>
           </div>
