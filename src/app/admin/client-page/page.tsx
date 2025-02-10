@@ -1,19 +1,32 @@
 "use client";
 import ClientTable from "@/app/admin/components/ClientTable";
 import { getClientsPageData } from "@/services/admin/admin-service";
-import { useEffect, useState } from "react";
+import { useState, useMemo } from "react";
 import useSWR from "swr";
 import SearchBar from "../components/SearchBar";
 import { useSession } from "next-auth/react";
 
 const Page: React.FC = () => {
     const { data: session } = useSession();
-    const [query, setQuery] = useState('page=1&limit=10')
+    const [query, setQuery] = useState('page=1&limit=10');
     const [status, setStatus] = useState('');
-    const filterStr = `${query ? `${query}` : ''}${query && status ? '&' : ''}${status ? `status=${status}` : ''}`;
-    const { data, error, isLoading, mutate } = useSWR(`/admin/clients${filterStr ? `?${filterStr}` : ''}`, getClientsPageData);
+    const baseQuery = 'page=1&limit=10';
+
+    // Always use a query value – fallback to baseQuery if empty.
+    const filterStr = useMemo(() => {
+        const effectiveQuery = query || baseQuery;
+        const params = [effectiveQuery];
+        if (status) params.push(`status=${status}`);
+        return params.filter(Boolean).join('&');
+    }, [query, status]);
+
+    const url = `/admin/clients${filterStr ? `?${filterStr}` : ''}`;
+    const { data, error, isLoading, mutate } = useSWR(url, getClientsPageData, {
+        // revalidateOnMount: false,
+        revalidateOnFocus: false
+    });
     const clientsData: any = data?.data;
-    const userRole = (session as any)?.user?.role;  
+    const userRole = (session as any)?.user?.role;
 
     const handleFilters = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setStatus(e.target.value);
@@ -30,7 +43,8 @@ const Page: React.FC = () => {
                     <select
                         value={status}
                         onChange={handleFilters}
-                        className="w-auto border border-[#26395E] text-[#26395E] text-sm h-[46px] px-5 bg-transparent p-0">
+                        className="w-auto border border-[#26395E] text-[#26395E] text-sm h-[46px] px-5 bg-transparent p-0"
+                    >
                         <option value="">Status</option>
                         <option value="Active Client">Active Client</option>
                         <option value="Pending">Pending</option>
@@ -59,7 +73,14 @@ const Page: React.FC = () => {
                     </select>
                 </div>
             </div>
-            <ClientTable clientsData={clientsData} mutate={mutate} error={error} isLoading={isLoading} setQuery={setQuery} role={userRole} />
+            <ClientTable
+                clientsData={clientsData}
+                mutate={mutate}
+                error={error}
+                isLoading={isLoading}
+                setQuery={setQuery}
+                role={userRole}
+            />
         </>
     );
 };
