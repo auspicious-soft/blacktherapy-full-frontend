@@ -257,3 +257,20 @@ export const generateSignedUrlForPaymentInvoice = async (fileName: string, fileT
         throw error
     }
 }
+
+
+export const onboardingPdfGenerate = async (fileName: string) => {
+    const uploadParams = {
+        Bucket: process.env.AWS_BUCKET_NAME,
+        Key: fileName,
+        ContentType: 'application/pdf'
+    }
+    try {
+        const command = new PutObjectCommand(uploadParams)
+        const signedUrl = await getSignedUrl(await createS3Client(), command)
+        return { signedUrl, key: uploadParams.Key }
+    } catch (error) {
+        console.error("Error generating signed URL:", error);
+        throw error
+    }
+}

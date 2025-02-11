@@ -3,6 +3,8 @@ import { generateSignedUrlToUploadOn } from "@/actions";
 import { addOnboardingFormData } from "@/services/therapist/therapist-service.";
 import { toast } from "sonner";
 import { signOut } from "next-auth/react";
+import { validUSPhoneNumber } from ".";
+import { uploadTherapistOnboardingDetails } from "@/components/Pdf-template/therapist-onboarding-details";
 
 // const session = await auth()
 // Helper to convert string to boolean
@@ -24,15 +26,12 @@ const booleanFields = [
   "againConsentAgreement",
 ];
 
-export const submitForm = async (
-  formData: any,
-  userEmail: string,
-  router: any
-) => {
+export const submitForm = async (formData: any, userEmail: string, router: any) => {
   if (!userEmail) {
     toast.error("User email is required.");
     return;
   }
+
   try {
     const formattedData = { ...formData };
 
@@ -81,7 +80,10 @@ export const submitForm = async (
       }
     }
 
-    //delete formattedData.signature;
+    const { key } = await uploadTherapistOnboardingDetails(formattedData, userEmail);
+    formattedData.onboardingPdfKey = key
+    delete formattedData.signature  // AS THIS IS UNNECESSARY
+    // Call the API to add pdf to aws
     const response = await addOnboardingFormData("/therapist/onboarding", formattedData);
 
     if (response?.status === 201) {

@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/alt-text */
 import React from 'react';
 import { Page, Text, View, Document, StyleSheet, pdf, Image } from '@react-pdf/renderer';
 import { generateSignedUrlForPaymentInvoice } from '@/actions';
