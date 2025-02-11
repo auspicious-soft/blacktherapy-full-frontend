@@ -71,7 +71,7 @@ const Header = () => {
           </div>
           <div onClick={() => handleLogout()} className="right flex items-center gap-6">
             <p  className="text-white  cursor-pointer text-xs">
-              Login/Sign Up
+              Login
             </p>
           </div>
         </div>
@@ -103,7 +103,7 @@ const Header = () => {
           </li>
           <li className="md:hidden mt-4" onClick={() => handleLogout(true)}>
             <p  className="text-white cursor-pointer text-sm bg-[#283C63] rounded-[30px] px-[30px] py-[13px]">
-              Login/Sign Up
+              Login
             </p>
           </li>
         </ul>
