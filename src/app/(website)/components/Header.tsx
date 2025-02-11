@@ -2,14 +2,10 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { PhoneIcon, MailIcon, LogoIcon, ToggleIcon, ToggleClose } from '@/utils/svgicons';
-import Image from 'next/image';
-import logo from "@/assets/logo.png";
 import { signOut } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
 
 const Header = () => {
   const [isToggleOpen, setIsToggleOpen] = useState(false);
-  const router = useRouter();
   const handleToggleOpen = () => {
     setIsToggleOpen(!isToggleOpen);
   };
