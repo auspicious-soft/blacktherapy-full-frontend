@@ -5,9 +5,11 @@ import CheckoutForm from '../components/upgrade-plan/CheckoutForm'
 import { loadStripe, Stripe } from "@stripe/stripe-js";
 import { getClientSecretToShowPaymentIntentService } from '@/services/client/client-service';
 import { getStripePk } from '@/actions';
-import { useSession } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import { toast } from 'sonner';
 import ReactLoading from 'react-loading';
+import { LogOut } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 const ViewPlans = (props: any) => {
   const { modalRef } = props;
@@ -19,7 +21,7 @@ const ViewPlans = (props: any) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showCheckout, setShowCheckout] = useState(false);
-
+  const router = useRouter();
   const initializeStripe = async () => {
     try {
       const publishableKey = await getStripePk();
@@ -114,10 +116,20 @@ const ViewPlans = (props: any) => {
       </div>
     );
   }
-
+  
+    const handleLogout = async () => {
+      await signOut({ redirect: false })
+      router.push('/login');
+    };
   return (
     <div className="ma" ref={modalRef}>
-      <h2 className='mb-5'>Select your Plan</h2>
+      <div className='flex justify-between items-center'>
+        <h2 className='mb-5'>Select your Plan</h2>
+        <a onClick={handleLogout} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <LogOut className='text-black'/>
+          <span className="text-[#283C63] text-[600]">Log Out</span>
+        </a>
+      </div>
       <div className='gap-[30px] grid grid-cols-2'>
         {/* Stay Rooted Plan */}
         <div className='bg-white rounded-[20px]'>
