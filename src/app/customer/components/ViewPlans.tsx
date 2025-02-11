@@ -127,7 +127,7 @@ const ViewPlans = (props: any) => {
         <h2 className='mb-5'>Select your Plan</h2>
         <a onClick={handleLogout} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px' }}>
           <LogOut className='text-black'/>
-          <span className="text-[#283C63] text-[600]">Log Out</span>
+          <span className="text-[#283C63] text-[600] font-bold">Log Out</span>
         </a>
       </div>
       <div className='gap-[30px] grid grid-cols-2'>
