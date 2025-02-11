@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { signUpTherapistService } from "@/services/therapist/therapist-service.";
 import { useRouter } from "next/navigation";
 import ReactLoader from "@/components/ReactLoader";
+import { validUSPhoneNumber } from "@/utils";
 
 const Page: React.FC = () => {
   const router = useRouter();
@@ -18,9 +19,14 @@ const Page: React.FC = () => {
   const [password, setPassword] = useState("");
   const [isPending, startTransition] = useTransition()
   const handleSignup = async () => {
+    const isValid = validUSPhoneNumber(phoneNumber)
+    if (!isValid) {
+      toast.warning("Invalid Phone Number")
+      return
+    }
     startTransition(async () => {
       try {
-        const response = await signUpTherapistService({ firstName, lastName, phoneNumber, email, password })
+        const response = await signUpTherapistService({ firstName, lastName, phoneNumber: `+1${phoneNumber}`, email, password })
         if (response?.data?.success) {
           toast.success("Signup Successful")
           router.push('/accountcreated')
@@ -63,7 +69,7 @@ const Page: React.FC = () => {
                 <InputField
                   type="number"
                   value={phoneNumber}
-                  placeholder="Mobile Number"
+                  placeholder="Mobile Number without US code"
                   required
                   onChange={(e) => setPhoneNumber(e.target.value)}
                 />
@@ -83,7 +89,9 @@ const Page: React.FC = () => {
                 />
                 {!isPending ? <div className="button w-full cursor-pointer" onClick={handleSignup}>Submit <ButtonSvg /></div>
                   :
-                  <ReactLoader />
+                  <div className="flex justify-center  w-full">
+                    <ReactLoader />
+                  </div>
                 }
               </div>
             </div>
