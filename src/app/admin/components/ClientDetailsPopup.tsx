@@ -2,7 +2,7 @@ import { CloseIcon } from "@/utils/svgicons";
 import React, { act, useState } from "react";
 import Modal from "react-modal";
 import Image from "next/image";
-import Client from "@/assets/images/clientpic.png";
+import profilePic from '@/assets/images/profile.png'
 import PersonalInformationTab from "./PersonalInformationTab";
 import ClientsAssignmentsTab from "./ClientsAssignmentsTab";
 import ClientsInsurenceTab from "./ClientsInsurenceTab";
@@ -47,7 +47,7 @@ const ClientDetailsPopup = (props: ClientDetailsPopupProps) => {
       </div>
       <div className=" bg-white p-5 md:py-[30px] md:px-[35px] ">
         <div className="flex items-center gap-[23px] mb-5 md:mb-10">
-          <div><Image src={getImageUrlOfS3(row?.profilePic) ?? ''} height={100} width={100} alt="Profile picture" className="rounded-full w-[100px] object-cover aspect-square " /> </div>
+          <div><Image src={row?.profilePic ? getImageUrlOfS3(row?.profilePic) : profilePic} height={100} width={100} alt="Profile picture" className="rounded-full w-[100px] object-cover aspect-square " /> </div>
           <div>
             <h3 className="font-gothamBold">{row?.firstName} {row?.lastName}</h3>
             <p>{row?._id}</p>
@@ -56,8 +56,8 @@ const ClientDetailsPopup = (props: ClientDetailsPopupProps) => {
         <div className="mobile-scroll flex justify-between items-center gap-3 border-b border-[#CDE3F1] ">
           <button
             className={`font-gothamMedium pb-[15px] px-[5px] text-sm  ${activeTab === "tab1"
-                ? "active !text-[#283c63]  border-b-2 border-[#283c63]"
-                : ""
+              ? "active !text-[#283c63]  border-b-2 border-[#283c63]"
+              : ""
               } text-[#969696]`}
             onClick={() => handleTabClick("tab1")}
           >
@@ -65,8 +65,8 @@ const ClientDetailsPopup = (props: ClientDetailsPopupProps) => {
           </button>
           <button
             className={`font-gothamMedium pb-[15px] px-[5px] text-sm  ${activeTab === "tab2"
-                ? "active !text-[#283c63]  border-b-2 border-[#283c63]"
-                : ""
+              ? "active !text-[#283c63]  border-b-2 border-[#283c63]"
+              : ""
               } text-[#969696]`}
             onClick={() => handleTabClick("tab2")}
           >
@@ -74,8 +74,8 @@ const ClientDetailsPopup = (props: ClientDetailsPopupProps) => {
           </button>
           <button
             className={`font-gothamMedium pb-[15px] px-[5px] text-sm ${activeTab === "tab3"
-                ? "active !text-[#283c63]  border-b-2 border-[#283c63]"
-                : ""
+              ? "active !text-[#283c63]  border-b-2 border-[#283c63]"
+              : ""
               } text-[#969696]`}
             onClick={() => handleTabClick("tab3")}
           >
@@ -83,8 +83,8 @@ const ClientDetailsPopup = (props: ClientDetailsPopupProps) => {
           </button>
           <button
             className={`font-gothamMedium pb-[15px] px-[5px] text-sm  ${activeTab === "tab4"
-                ? "active !text-[#283c63]  border-b-2 border-[#283c63]"
-                : ""
+              ? "active !text-[#283c63]  border-b-2 border-[#283c63]"
+              : ""
               } text-[#969696]`}
             onClick={() => handleTabClick("tab4")}
           >
@@ -92,8 +92,8 @@ const ClientDetailsPopup = (props: ClientDetailsPopupProps) => {
           </button>
           <button
             className={`font-gothamMedium pb-[15px] px-[5px] text-sm ${activeTab === "tab5"
-                ? "active !text-[#283c63]  border-b-2 border-[#283c63]"
-                : ""
+              ? "active !text-[#283c63]  border-b-2 border-[#283c63]"
+              : ""
               } text-[#969696]`}
             onClick={() => handleTabClick("tab5")}
           >
@@ -101,8 +101,8 @@ const ClientDetailsPopup = (props: ClientDetailsPopupProps) => {
           </button>
           <button
             className={`font-gothamMedium pb-[15px] px-[5px] text-sm  ${activeTab === "tab6"
-                ? "active !text-[#283c63]  border-b-2 border-[#283c63]"
-                : ""
+              ? "active !text-[#283c63]  border-b-2 border-[#283c63]"
+              : ""
               } text-[#969696]`}
             onClick={() => handleTabClick("tab6")}
           >
@@ -110,8 +110,8 @@ const ClientDetailsPopup = (props: ClientDetailsPopupProps) => {
           </button>
           <button
             className={`font-gothamMedium pb-[15px] px-[5px] text-sm ${activeTab === "tab7"
-                ? "active !text-[#283c63]  border-b-2 border-[#283c63]"
-                : ""
+              ? "active !text-[#283c63]  border-b-2 border-[#283c63]"
+              : ""
               } text-[#969696]`}
             onClick={() => handleTabClick("tab7")}
           >
@@ -119,8 +119,8 @@ const ClientDetailsPopup = (props: ClientDetailsPopupProps) => {
           </button>
           <button
             className={`font-gothamMedium pb-[15px] px-[5px] text-sm  ${activeTab === "tab8"
-                ? "active !text-[#283c63]  border-b-2 border-[#283c63]"
-                : ""
+              ? "active !text-[#283c63]  border-b-2 border-[#283c63]"
+              : ""
               } text-[#969696]`}
             onClick={() => handleTabClick("tab8")}
           >
@@ -129,7 +129,7 @@ const ClientDetailsPopup = (props: ClientDetailsPopupProps) => {
         </div>
         <div className="mt-[30px]">
           {activeTab === "tab1" && <PersonalInformationTab row={row} mutate={mutate} />}
-          {activeTab === "tab2" && <ClientsSpecificAppointmentsTab clientId={row._id}  />}
+          {activeTab === "tab2" && <ClientsSpecificAppointmentsTab clientId={row._id} />}
           {activeTab === "tab3" && <ClientsAssignmentsTab row={row} mutate={mutate} />}
           {activeTab === "tab4" && <ClientsInsurenceTab row={row} mutate={mutate} />}
           {activeTab === "tab5" && <BillingInformationTab rowId={row?._id} />}
