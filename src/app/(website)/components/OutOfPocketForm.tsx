@@ -209,17 +209,21 @@ const OutOfPocketForm: React.FC<OutOfPocketFormProps> = ({ onBack, formData, set
         )
       }
       <div className="flex justify-between mt-4">
-        <button onClick={handleBack} className="button">
+        <button onClick={handleBack} className="button" disabled={isPending}>
           Back
         </button>
         {currentStep < totalSteps - 1 ? (
-          <button onClick={handleContinue} className="button">
+          <button onClick={handleContinue} className="button" disabled={isPending}>
             Continue
           </button>
         ) : (
-          <button disabled={isPending} onClick={clientFormSubmit} className="button">
-            {!isPending ? 'Submit' : <ReactLoader />}
-          </button>
+          !isPending ? (
+            <button disabled={isPending} onClick={clientFormSubmit} className="button">Submit</button>
+          ) : (
+            <div className="p-3">
+              <ReactLoader />
+            </div>
+          )
         )}
       </div>
     </div>
