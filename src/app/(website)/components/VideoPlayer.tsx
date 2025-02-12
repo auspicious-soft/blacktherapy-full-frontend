@@ -21,12 +21,13 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ url, muted = true, controls =
         width='100%'
         height='100%'
         controls={controls}
+        playsinline
         config={{
-          file: {
-            attributes: {
-              playsInline: true,
+            file: {
+              attributes: {
+                playsInline: true,
+              },
             },
-          },
         }}
       />
     </div>
