@@ -12,6 +12,10 @@ import { DeleteClinician, GetEmployeeRecordsData, UpdateTherapistData, } from "@
 import { toast } from "sonner";
 import { useSession } from "next-auth/react";
 import { Tooltip } from 'react-tippy';
+import ReactLoader from "@/components/ReactLoader";
+import { EyeIcon } from "lucide-react";
+import { getImageUrlOfS3 } from "@/utils";
+import Link from "next/link";
 
 
 
@@ -180,13 +184,14 @@ const ClinicianTable: React.FC<TherapistsDataProps & { setPage: any; currentPage
               <th>Actions</th>
               <th>Assign Task</th>
               <th>Action Status</th>
+              <th>Onboarding</th>
             </tr>
           </thead>
           <tbody>
             {isLoading ? (
               <tr>
                 <td colSpan={5} className="">
-                  Loading...
+                  <ReactLoader />
                 </td>
               </tr>
             ) : error ? (
@@ -196,127 +201,132 @@ const ClinicianTable: React.FC<TherapistsDataProps & { setPage: any; currentPage
                 </td>
               </tr>
             ) : therapistsDataArray?.length > 0 ? (
-              therapistsDataArray?.map((row: any) => (
-                <tr key={row?._id}>
-                  <td onClick={() => openClinicianPopup(row)} className="hover:underline hover:font-bold relative"
-                    data-tip
-                    title={(tooltipContent && tooltipContent as string) ?? ''}
-                    data-for={`tooltip-${row?._id}`}
-                    onMouseEnter={() => {
-                      setHoveredRow(row._id)
-                      fetchPositionData(row?._id)
-                    }}
-                    onMouseLeave={() => {
-                      setHoveredRow(null)
-                      setTooltipContent(null)
-                    }}
-                  >
-                    <p className={`cursor-pointer`}
-                    >{row?.firstName} {row?.lastName}</p>
-                    {(tooltipContent && tooltipContent as string) && (
-                      <Tooltip
-                        title="Welcome to React"
-                        position="bottom"
-                        trigger="focus"
-                      >
-                        {/* <p>
+              therapistsDataArray?.map((row: any) => {
+                return (
+                  <tr key={row?._id}>
+                    <td onClick={() => openClinicianPopup(row)} className="hover:underline hover:font-bold relative"
+                      data-tip
+                      title={(tooltipContent && tooltipContent as string) ?? ''}
+                      data-for={`tooltip-${row?._id}`}
+                      onMouseEnter={() => {
+                        setHoveredRow(row._id)
+                        fetchPositionData(row?._id)
+                      }}
+                      onMouseLeave={() => {
+                        setHoveredRow(null)
+                        setTooltipContent(null)
+                      }}
+                    >
+                      <p className={`cursor-pointer`}
+                      >{row?.firstName} {row?.lastName}</p>
+                      {(tooltipContent && tooltipContent as string) && (
+                        <Tooltip
+                          title="Welcome to React"
+                          position="bottom"
+                          trigger="focus"
+                        >
+                          {/* <p>
                           Click here to show popup
                         </p> */}
-                      </Tooltip>
-                    )}
+                        </Tooltip>
+                      )}
 
-                  </td>
-
-
-                  <td>
-                    <p className=" inline-block font-gothamMedium text-center leading-[normal] rounded-3xl py-[3px] px-[10px] text-[#26395E] bg-[#CCDDFF] text-[10px] ">
-                      {row?.otherDetailsOfTherapist?.status ??
-                        "Background Check Pending"}
-                    </p>
-                  </td>
-                  <td>
-                    <p className=" font-gothamMedium text-center leading-[normal] rounded-3xl py-[3px] px-[10px] text-[#A85C03] bg-[#fffdd1] text-[10px] ">
-                      {row?.training}
-                    </p>
-                  </td>
+                    </td>
 
 
+                    <td>
+                      <p className=" inline-block font-gothamMedium text-center leading-[normal] rounded-3xl py-[3px] px-[10px] text-[#26395E] bg-[#CCDDFF] text-[10px] ">
+                        {row?.otherDetailsOfTherapist?.status ??
+                          "Background Check Pending"}
+                      </p>
+                    </td>
+                    <td>
+                      <p className=" font-gothamMedium text-center leading-[normal] rounded-3xl py-[3px] px-[10px] text-[#A85C03] bg-[#fffdd1] text-[10px] ">
+                        {row?.training}
+                      </p>
+                    </td>
 
-                  <td>{row?.phoneNumber}</td>
-                  <td>
-                    {row?.otherDetailsOfTherapist?.addressLine1}
-                    {row?.otherDetailsOfTherapist?.addressLine2},
-                    {row?.otherDetailsOfTherapist?.state}
-                  </td>
-                  <td>{new Date(row?.createdAt).toLocaleDateString('en-US')}</td>
-                  <td>{row?.appointments.length}</td>
-                  <td>
-                    <div className="flex gap-2">
-                      <button onClick={() => openEditModal(row)} className="">
-                        {" "}
-                        <EditIcon />
-                      </button>
+                    <td>{row?.phoneNumber}</td>
+                    <td>
+                      {row?.otherDetailsOfTherapist?.addressLine1}
+                      {row?.otherDetailsOfTherapist?.addressLine2},
+                      {row?.otherDetailsOfTherapist?.state}
+                    </td>
+                    <td>{new Date(row?.createdAt).toLocaleDateString('en-US')}</td>
+                    <td>{row?.appointments.length}</td>
+                    <td>
+                      <div className="flex gap-2">
+                        <button onClick={() => openEditModal(row)} className="">
+                          {" "}
+                          <EditIcon />
+                        </button>
+                        <button
+                          disabled={(session as any)?.user?.role !== "admin"}
+                          onClick={() => handleDelete(row?._id)}
+                        >
+                          {" "}
+                          <DeleteIcon />
+                        </button>
+                      </div>
+                    </td>
+                    <td>
                       <button
-                        disabled={(session as any)?.user?.role !== "admin"}
-                        onClick={() => handleDelete(row?._id)}
+                        onClick={() => openAssignTaskModal(row)}
+                        className="font-gothamMedium rounded-3xl py-[2px] px-[10px] text-[#26395E] bg-[#CCDDFF] text-[10px] "
                       >
-                        {" "}
-                        <DeleteIcon />
+                        Assign Task
                       </button>
-                    </div>
-                  </td>
-                  <td>
-                    <button
-                      onClick={() => openAssignTaskModal(row)}
-                      className="font-gothamMedium rounded-3xl py-[2px] px-[10px] text-[#26395E] bg-[#CCDDFF] text-[10px] "
-                    >
-                      Assign Task
-                    </button>
-                  </td>
-                  <td>
-                    <select
-                      name="status"
-                      value={row?.otherDetailsOfTherapist?.status}
-                      onChange={(event) => handleInputChange(event, row?._id)}
-                      className="w-auto border-none h-auto bg-transparent p-0"
-                    >
-                      <option value="Applicant Reviewed">
-                        Applicant Reviewed
-                      </option>
-                      <option value="Interview Pending">
-                        Interview Pending
-                      </option>
-                      <option value="Incomplete Application">
-                        Incomplete Application
-                      </option>
-                      <option value="Doesn't Meet Qualifications">
-                        {" "}
-                        Doesnt Meet Qualifications
-                      </option>
-                      <option value="Withdrawn">Withdrawn</option>
-                      <option value="Follow-Up">Follow-Up</option>
-                      <option value="Offer Sent">Offer Sent</option>
-                      <option value="Offer Accepted">Offer Accepted</option>
-                      <option value="Background Check Pending">
-                        Background Check Pending
-                      </option>
-                      <option value="Credentialing Pending">
-                        Credentialing Pending
-                      </option>
-                      <option value="Active">Active</option>
-                      <option value="Terminated">Terminated</option>
-                      <option value="Leave of Absence">Leave of Absence</option>
-                      <option value="Vacation">Vacation</option>
-                      <option value="Suspended">Suspended</option>
-                      <option value="Pending Termination">
-                        Pending Termination
-                      </option>
-                      <option value="Probationary">Probationary</option>
-                      <option value="Welcome Letter">Welcome Letter</option>
-                    </select>
-                  </td>
-                </tr>
-              ))
+                    </td>
+                    <td>
+                      <select
+                        name="status"
+                        value={row?.otherDetailsOfTherapist?.status}
+                        onChange={(event) => handleInputChange(event, row?._id)}
+                        className="w-auto border-none h-auto bg-transparent p-0"
+                      >
+                        <option value="Applicant Reviewed">
+                          Applicant Reviewed
+                        </option>
+                        <option value="Interview Pending">
+                          Interview Pending
+                        </option>
+                        <option value="Incomplete Application">
+                          Incomplete Application
+                        </option>
+                        <option value="Doesn't Meet Qualifications">
+                          {" "}
+                          Doesnt Meet Qualifications
+                        </option>
+                        <option value="Withdrawn">Withdrawn</option>
+                        <option value="Follow-Up">Follow-Up</option>
+                        <option value="Offer Sent">Offer Sent</option>
+                        <option value="Offer Accepted">Offer Accepted</option>
+                        <option value="Background Check Pending">
+                          Background Check Pending
+                        </option>
+                        <option value="Credentialing Pending">
+                          Credentialing Pending
+                        </option>
+                        <option value="Active">Active</option>
+                        <option value="Terminated">Terminated</option>
+                        <option value="Leave of Absence">Leave of Absence</option>
+                        <option value="Vacation">Vacation</option>
+                        <option value="Suspended">Suspended</option>
+                        <option value="Pending Termination">
+                          Pending Termination
+                        </option>
+                        <option value="Probationary">Probationary</option>
+                        <option value="Welcome Letter">Welcome Letter</option>
+                      </select>
+                    </td>
+                    <td className="text-center flex justify-center">
+                      <Link href={getImageUrlOfS3(row?.otherDetailsOfTherapist?.onboardingPdfKey)} target="_blank">
+                        <EyeIcon className="bg-[#26395e] text-white rounded-md px-1" />
+                      </Link>
+                    </td>
+                  </tr>
+                )
+              })
             ) : (
               <tr>
                 <td
