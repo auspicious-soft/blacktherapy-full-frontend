@@ -27,7 +27,7 @@ const Page = async ({ searchParams }: { searchParams?: { [key: string]: string |
                     <VideoPlayer url="/tut-btn.mp4" muted={false} controls />
                     <p className="font-bold">This is how you book an appointment</p>
                 </div>
-                <div className="bg-white p-8 rounded-lg shadow-md text-center max-w-md w-full sm:h-full flex flex-col">
+                <div className="bg-white mr-4 p-8 rounded-lg shadow-md text-center max-w-md w-full sm:h-full flex flex-col">
                     {/* Image */}
                     <div className="mb-6">
                         <Image
