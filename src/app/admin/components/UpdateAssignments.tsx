@@ -49,8 +49,8 @@ const UpdateAssignments: React.FC<AssignmentProps> = ({ isOpen, onRequestClose, 
     }, [row, isOpen, mutate]);
 
     const checkStateMatch = (state: string) => {
-        if (state === nameState) {
-            toast.warning('The Client state matches with the client.',
+        if (state !== nameState) {
+            toast.warning('Client and therapist are not in the same state',
                 {
                     position: "top-right",
                     duration: 5000,
