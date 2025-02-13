@@ -21,7 +21,7 @@ const Page = () => {
   const stripeCustomerId = userData?.data?.data?.stripeCustomerId
   const planOrSubscriptionId = userData?.data?.data?.planOrSubscriptionId
   const { data, error, isLoading } = useSWR(stripeCustomerId ? `${stripeCustomerId}` : null, getCustomerSubscriptionDetails, { revalidateOnFocus: false });
-  const { data: currentSubscriptionData, error: currentSubscriptionError, isLoading: currentSubscriptionLoading } = useSWR(planOrSubscriptionId ? `${planOrSubscriptionId}` : null, getSubscriptionById, { revalidateOnFocus: false });
+  const { data: currentSubscriptionData } = useSWR(planOrSubscriptionId ? `${planOrSubscriptionId}` : null, getSubscriptionById, { revalidateOnFocus: false });
   if (isLoading) return <ReactLoading type={'spin'} color={'#26395e'} height={'50px'} width={'50px'} />
   if (userLoading) return <ReactLoading type={'spin'} color={'#26395e'} height={'50px'} width={'50px'} />
   if (error) return toast.error('Error loading subscription details')
