@@ -57,6 +57,7 @@ const DashboardAssignment = (props: any) => {
               <th>Chat With Clinician</th>
               <th>Video Chat</th>
               <th>Care Team</th>
+              <th>Status</th>
               <th>Created At</th>
             </tr>
           </thead>
@@ -92,10 +93,11 @@ const DashboardAssignment = (props: any) => {
                       )}
                     </td>
                     <td>{video ?
-                      <button disabled={row?.status === 'Completed' || disableIfLessThan} className={`cursor-pointer font-gothamMedium inline-block text-center rounded-3xl py-[2px] px-[10px] text-[10px] ${isVideoCount > 0 ? 'text-[#42A803] bg-[#CBFFB2]' : 'text-[#FFA234] bg-[#FFFCEC]'}`}>
-                        {isVideoCount > 0 ?
+                      <button disabled={row?.status === 'Completed' || disableIfLessThan || row?.status === 'Pending' || row?.status === 'Rejected'} className={`cursor-pointer font-gothamMedium inline-block text-center rounded-3xl py-[2px] px-[10px] text-[10px] ${(isVideoCount > 0 || !disableIfLessThan) ? 'text-[#42A803] bg-[#CBFFB2]' : 'text-[#FFA234] bg-[#FFFCEC]'}`}>
+                        {(isVideoCount > 0 || !disableIfLessThan)
+                          ?
                           <button onClick={() => window.location.href = `/customer/appointments/video-chat/${row?._id}`}>
-                            {`Start Video (${isVideoCount})`}
+                            {`Start Video`}
                           </button>
                           :
                           'Video chat limit reached for current plan'
@@ -107,6 +109,11 @@ const DashboardAssignment = (props: any) => {
                     <td>
                       <span className="cursor-pointer w-[26px] flex" onClick={() => handleViewTeam(row)}>
                         <ViewIcon />
+                      </span>
+                    </td>
+                    <td>
+                      <span className={`font-gothamMedium inline-block text-center rounded-3xl py-[2px] px-[10px] text-[10px]`}>
+                        {row?.status}
                       </span>
                     </td>
                     <td>{new Date(row?.createdAt).toLocaleDateString('en-US')}</td>

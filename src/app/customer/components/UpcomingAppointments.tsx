@@ -43,6 +43,7 @@ const UpcomingAppointments = (props: PreviousAppointmentsProps) => {
               <th>Appt Time</th>
               <th>Chat With Clinician</th>
               <th>Video Chat</th>
+              <th>Status</th>
               <th>Care Team</th>
             </tr>
           </thead>
@@ -81,9 +82,17 @@ const UpcomingAppointments = (props: PreviousAppointmentsProps) => {
                         </p>
                       )}
                     </td>
-                    <td>{video ? <button disabled={item?.status == 'Completed' || disableIfLessThan} className={`cursor-pointer font-gothamMedium inline-block text-center rounded-3xl py-[2px] px-[10px] text-[10px] ${isVideoCount > 0 ? 'text-[#42A803] bg-[#CBFFB2]' : 'text-[#FFA234] bg-[#FFFCEC]'}`}>
-                      {isVideoCount > 0 ? <div onClick={() => window.location.href = `/customer/appointments/video-chat/${item?._id}`}>{`Start Video (${isVideoCount})`}</div> : 'Video chat limit reached for current plan'}
-                    </button> : <p className="cursor-not-allowed">No Video</p>}</td>
+                    <td>{video
+                      ?
+                      <button disabled={item?.status === 'Completed' || disableIfLessThan || item?.status === 'Pending' || item?.status === 'Rejected'} className={`cursor-pointer font-gothamMedium inline-block text-center rounded-3xl py-[2px] px-[10px] text-[10px] ${(isVideoCount > 0 || !disableIfLessThan) ? 'text-[#42A803] bg-[#CBFFB2]' : 'text-[#FFA234] bg-[#FFFCEC]'}`}>
+                        {(isVideoCount > 0 || !disableIfLessThan) ?
+                          <div onClick={() => window.location.href = `/customer/appointments/video-chat/${item?._id}`}>{`Start Video`}</div>
+                          :
+                          'Video chat limit reached for current plan'}
+                      </button> : <p className="cursor-not-allowed">No Video</p>}</td>
+                      <td>
+                        {item?.status}
+                      </td>
                     <td>
                       <span className="cursor-pointer w-[26px] flex" onClick={() => handleViewTeam(item?.peerSupportIds)}>
                         <ViewIcon />
