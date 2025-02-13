@@ -290,6 +290,7 @@ const Page = () => {
                     Time
                   </label>
                   <select
+                    disabled={!selectedDate}
                     required
                     id="appointment-time"
                     name="appointment-time"
