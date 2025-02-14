@@ -101,7 +101,21 @@ const Page = () => {
         currentTime.setMinutes(currentTime.getMinutes() + 30);
       }
       availableTimeSet.add(endTimeDate.toTimeString().substring(0, 5));
-      setAvailableTimes(Array.from(availableTimeSet));
+
+      // If selectedDate is today, filter out time slots that are before current time + 1 hour.
+      if (selectedDate && selectedDate.toDateString() === new Date().toDateString()) {
+        const now = new Date();
+        now.setHours(now.getHours() + 1);
+        const filteredTimes = Array.from(availableTimeSet).filter(time => {
+          const [hour, minute] = time.split(":");
+          const timeDate = new Date();
+          timeDate.setHours(parseInt(hour), parseInt(minute), 0, 0);
+          return timeDate > now;
+        });
+        setAvailableTimes(filteredTimes);
+      } else {
+        setAvailableTimes(Array.from(availableTimeSet));
+      }
 
       const disabledDatesTimesMap: { [key: string]: string[] } = {};
       therapistAppointment?.data?.data?.forEach((appointment: any) => {
@@ -125,15 +139,13 @@ const Page = () => {
       setDisabledTimes(disabledDatesTimesMap);
 
       setDisabledDates((prev) => {
-        const newDisabledDates = [];
+        const newDisabledDates: Date[] = [];
         const today = new Date();
         for (let i = 0; i < 30; i++) {
           const date = new Date(today);
           date.setDate(today.getDate() + i);
           const dayOfWeek = date.getDay();
-          const dayString = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"][
-            dayOfWeek
-          ];
+          const dayString = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"][dayOfWeek];
 
           if (!availability.includes(dayString)) {
             newDisabledDates.push(date);
@@ -142,7 +154,7 @@ const Page = () => {
         return [...prev, ...newDisabledDates];
       });
     }
-  }, [therapistData, therapistAppointment]);
+  }, [therapistData, therapistAppointment, selectedDate]);
 
   const handleRequestAppointment = async (e: any) => {
     e.preventDefault();
@@ -211,12 +223,12 @@ const Page = () => {
               Request Appointment
             </button>
               :
-                <button
+              <button
                 disabled={true}
                 className="button !mt-0 ml-auto disabled:opacity-100 cursor-not-allowed"
-                >
-                No Therapist Assigned Yet, Kindly wait for the assignment 
-                </button>}
+              >
+                No Therapist Assigned Yet, Kindly wait for the assignment
+              </button>}
           </div>
           <div>
           </div>
@@ -298,7 +310,7 @@ const Page = () => {
                     defaultValue={""}
                   >
                     <option value=''>
-                      Select a time
+                      Select the available time
                     </option>
                     {availableTimes.map((time, index) => {
                       console.log('time: ', time);
