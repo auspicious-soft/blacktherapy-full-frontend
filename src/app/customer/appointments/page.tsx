@@ -83,8 +83,8 @@ const Page = () => {
   };
 
   const { data: appointmentsData, isLoading: appointmentsIsLoading, mutate: appointmentsMutate, error } = useSWR(shouldFetchAppointments && session?.data?.user?.id ? `/client/appointment/${session?.data?.user?.id}?${query}` : null, getClientAppointments, { revalidateOnFocus: false });
-  const { data: therapistData, isLoading, mutate: therapistMutate } = useSWR(therapistId ? `/therapist/${therapistId}` : null, getTherapistAssignments);
-  const { data: therapistAppointment, mutate: therapistApptMutate } = useSWR(therapistId ? `/therapist/${therapistId}/clients` : null, getTherapistAssignments);
+  const { data: therapistData } = useSWR(therapistId ? `/therapist/${therapistId}` : null, getTherapistAssignments);
+  const { data: therapistAppointment } = useSWR(therapistId ? `/therapist/${therapistId}/clients` : null, getTherapistAssignments);
 
   useEffect(() => {
     if (therapistData?.data?.data?.currentAvailability) {
@@ -92,16 +92,20 @@ const Page = () => {
       const availableTimeSet: Set<string> = new Set();
       const startTime = therapistData.data.data.startTime;
       const endTime = therapistData.data.data.endTime;
-
+  
+      // Adjust end time by subtracting one hour
+      let adjustedEndTimeDate = new Date(`1970-01-01T${endTime}`);
+      adjustedEndTimeDate.setHours(adjustedEndTimeDate.getHours() - 1);
+  
       let currentTime = new Date(`1970-01-01T${startTime}`);
-      const endTimeDate = new Date(`1970-01-01T${endTime}`);
-
-      while (currentTime < endTimeDate) {
+      // Use the adjusted end time in the while loop
+      while (currentTime < adjustedEndTimeDate) {
         availableTimeSet.add(currentTime.toTimeString().substring(0, 5));
         currentTime.setMinutes(currentTime.getMinutes() + 30);
       }
-      availableTimeSet.add(endTimeDate.toTimeString().substring(0, 5));
-
+      // Add the adjusted end time to the set
+      availableTimeSet.add(adjustedEndTimeDate.toTimeString().substring(0, 5));
+  
       // If selectedDate is today, filter out time slots that are before current time + 1 hour.
       if (selectedDate && selectedDate.toDateString() === new Date().toDateString()) {
         const now = new Date();
@@ -116,7 +120,7 @@ const Page = () => {
       } else {
         setAvailableTimes(Array.from(availableTimeSet));
       }
-
+  
       const disabledDatesTimesMap: { [key: string]: string[] } = {};
       therapistAppointment?.data?.data?.forEach((appointment: any) => {
         const appointmentDateTime = `${appointment.appointmentDate} ${appointment.appointmentTime}`;
@@ -125,19 +129,17 @@ const Page = () => {
           disabledDatesTimesMap[date] = [];
         }
         disabledDatesTimesMap[date].push(time);
-
-        // Add the next 2 time slots with a 30-minute gap
+  
+        // Add the next time slot with a 30-minute gap
         let nextTime = new Date(`1970-01-01T${time}`);
-        for (let i = 0; i < 1; i++) {
-          nextTime.setMinutes(nextTime.getMinutes() + 30);
-          const nextTimeString = nextTime.toTimeString().substring(0, 5);
-          if (!disabledDatesTimesMap[date].includes(nextTimeString)) {
-            disabledDatesTimesMap[date].push(nextTimeString);
-          }
+        nextTime.setMinutes(nextTime.getMinutes() + 30);
+        const nextTimeString = nextTime.toTimeString().substring(0, 5);
+        if (!disabledDatesTimesMap[date].includes(nextTimeString)) {
+          disabledDatesTimesMap[date].push(nextTimeString);
         }
       });
       setDisabledTimes(disabledDatesTimesMap);
-
+  
       setDisabledDates((prev) => {
         const newDisabledDates: Date[] = [];
         const today = new Date();
@@ -146,7 +148,7 @@ const Page = () => {
           date.setDate(today.getDate() + i);
           const dayOfWeek = date.getDay();
           const dayString = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"][dayOfWeek];
-
+  
           if (!availability.includes(dayString)) {
             newDisabledDates.push(date);
           }
