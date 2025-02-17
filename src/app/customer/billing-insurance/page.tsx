@@ -45,7 +45,7 @@ const Page = () => {
           <h6 className="text-[#686868]">Plan Details</h6>
           <div className="flex justify-between items-center gap-10 mt-[10px]">
             <p className="font-gothamMedium">Plan Name</p>
-            <h5 className="font-bold">{userData?.data?.data?.planType === 'glowUp' ? 'Glow Up': 'Stay Rooted'}</h5>
+            <h5 className="font-bold">{userData?.data?.data?.planType === 'glowUp' ? 'Glow Up' : 'Stay Rooted'}</h5>
 
           </div>
           <div className="flex justify-between items-center gap-10 mt-[10px]">
@@ -59,7 +59,7 @@ const Page = () => {
           </div>
           {currentSubscriptionData && <button className="renew-btn flex items-center gap-[15px] text-[#fff] font-bold mt-6 bg-red-800 p-[10px] rounded-lg" onClick={() => setOpenCancelPlanModal(true)}>Cancel Subscription</button>}
         </div>
-        <div className="bg-[#FFBBCD]   carg-bg rounded-[10px] py-6 px-[15px] lg:px-[30px]">
+        <div className="bg-[#FFBBCD]  flex flex-col carg-bg rounded-[10px] py-6 px-[15px] lg:px-[30px]">
           <h6 className="text-lg font-bold">Our Plans</h6>
           <div className="flex justify-between items-center gap-10 mt-[10px]">
             <h5 className="text-base">Stay Rooted Plan</h5>
@@ -69,7 +69,9 @@ const Page = () => {
             <h5 className="text-base">Glow Up Plan</h5>
             <p className="font-gothamMedium font-bold">Weekly, Monthly</p>
           </div>
-          <button onClick={() => setOpenPlansModal(true)} className="button !h-10">View Details</button>
+          <div className="mt-auto">
+            <button onClick={() => setOpenPlansModal(true)} className="button !h-10">View Details</button>
+          </div>
         </div>
       </div>
 
