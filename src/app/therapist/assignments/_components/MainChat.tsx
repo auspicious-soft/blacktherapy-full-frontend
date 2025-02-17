@@ -5,11 +5,11 @@ import { CloseIcon, FileAttachment, FileUpload, MessageSend, PhotoUpload } from 
 import { getImageUrlOfS3 } from '@/utils';
 import Link from 'next/link';
 import { CiFileOn } from "react-icons/ci";
+import ReactLoader from '@/components/ReactLoader';
 
 
 const MainChat = (props: any) => {
   const { isRecieverOnline, imagePreview, setImagePreview, filePreview, setFilePreview, prompt, setPrompt, isPending, file, setFile, handleSendMessage, handleTyping, handleStopTyping, messages, userId, roomId, containerRef, recieverDetails } = props
-
 
   useEffect(() => {
     if (file) {
@@ -39,7 +39,7 @@ const MainChat = (props: any) => {
   }
 
   let lastDate: string | null = null;
-
+  if (recieverDetails === null) return <ReactLoader />
   return (
     <div className="flex flex-grow rel relative overflow-hidden flex-col  bg-white border rounded-[20px]">
       {/* Header */}

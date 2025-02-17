@@ -5,12 +5,11 @@ import { CloseIcon, FileAttachment, FileUpload, MessageSend, PhotoUpload } from 
 import { formatDate, getImageUrlOfS3 } from '@/utils';
 import Link from 'next/link';
 import { CiFileOn } from "react-icons/ci";
+import ReactLoader from '@/components/ReactLoader';
 
 
 const MainChat = (props: any) => {
-  const {titleText, isRecieverOnline, imagePreview, setImagePreview, filePreview, setFilePreview, prompt, setPrompt, isPending, file, setFile, handleSendMessage, handleTyping, handleStopTyping, messages, userId, roomId, containerRef, recieverDetails } = props
- 
-
+  const { titleText, isRecieverOnline, imagePreview, setImagePreview, filePreview, setFilePreview, prompt, setPrompt, isPending, file, setFile, handleSendMessage, handleTyping, handleStopTyping, messages, userId, roomId, containerRef, recieverDetails } = props
 
   useEffect(() => {
     if (file) {
@@ -27,7 +26,7 @@ const MainChat = (props: any) => {
 
 
   let lastDate: string | null = null;
-
+  if (recieverDetails === null) return <ReactLoader />
   return (
     <div className="flex flex-grow rel relative overflow-hidden flex-col  bg-white border rounded-[20px]">
       {/* Header */}
@@ -37,7 +36,7 @@ const MainChat = (props: any) => {
             alt="User Avatar" className="w-10 h-10 rounded-full" />
           <div>
             <h2 className="text-lg font-semibold text-white"> {titleText || `${recieverDetails?.firstName} ${recieverDetails?.lastName}`.trim()}</h2>
-         {  <p className="text-sm text-white ">{isRecieverOnline ? 'Active Now' : 'Offline'}</p>}
+            {<p className="text-sm text-white ">{isRecieverOnline ? 'Active Now' : 'Offline'}</p>}
           </div>
         </div>
         {/* <div className="ml-auto">
@@ -94,8 +93,8 @@ const MainChat = (props: any) => {
           <input
             required
             type="text"
-            placeholder={recieverDetails 
-              ? `Message to ${recieverDetails?.firstName} ${recieverDetails?.lastName}...` 
+            placeholder={recieverDetails
+              ? `Message to ${recieverDetails?.firstName} ${recieverDetails?.lastName}...`
               : 'Messages...'}
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}

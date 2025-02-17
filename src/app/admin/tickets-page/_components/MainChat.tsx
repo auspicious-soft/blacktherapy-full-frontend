@@ -8,10 +8,7 @@ import { CiFileOn } from "react-icons/ci";
 
 
 const MainChat = (props: any) => {
-  const {titleText, isRecieverOnline, imagePreview, setImagePreview, filePreview, setFilePreview, prompt, setPrompt, isPending, file, setFile, handleSendMessage, handleTyping, handleStopTyping, messages, userId, roomId, containerRef, recieverDetails } = props
- 
-
-
+  const { titleText, isRecieverOnline, imagePreview, setImagePreview, filePreview, setFilePreview, prompt, setPrompt, isPending, file, setFile, handleSendMessage, handleTyping, handleStopTyping, messages, userId, roomId, containerRef, recieverDetails } = props
   useEffect(() => {
     if (file) {
       if (file.type.includes('image')) {

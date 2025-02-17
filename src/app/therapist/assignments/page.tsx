@@ -10,11 +10,9 @@ import ReactLoading from 'react-loading';
 import Modal from "react-modal";
 import { useRouter } from "next/navigation";
 import { CloseIcon, EditIcon } from '@/utils/svgicons';
-import Link from 'next/link';
 import ReactLoader from '@/components/ReactLoader';
 import { updateAppointmentData } from '@/services/admin/admin-service';
 import { toast } from 'sonner';
-import { set } from 'date-fns';
 import { uploadPaymentInvoiceOnAppointment } from '@/components/Pdf-template/payment-complete-invoice';
 import { nonMilitaryTime } from '@/utils';
 
