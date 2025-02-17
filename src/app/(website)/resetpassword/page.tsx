@@ -35,7 +35,8 @@ const Page = () => {
             toast.error("Something went wrong");
           }
         } catch (err: any) {
-          if (err.status === 404) toast.error("Email not found");
+          if (err.status === 400) toast.error(err.response.data.message);
+          else if (err.status === 404) toast.error("Email not found");
           else toast.error("Something went wrong");
         }
       }
