@@ -92,11 +92,11 @@ const Page = () => {
       const availableTimeSet: Set<string> = new Set();
       const startTime = therapistData.data.data.startTime;
       const endTime = therapistData.data.data.endTime;
-  
+
       // Adjust end time by subtracting one hour
       let adjustedEndTimeDate = new Date(`1970-01-01T${endTime}`);
       adjustedEndTimeDate.setHours(adjustedEndTimeDate.getHours() - 1);
-  
+
       let currentTime = new Date(`1970-01-01T${startTime}`);
       // Use the adjusted end time in the while loop
       while (currentTime < adjustedEndTimeDate) {
@@ -105,7 +105,7 @@ const Page = () => {
       }
       // Add the adjusted end time to the set
       availableTimeSet.add(adjustedEndTimeDate.toTimeString().substring(0, 5));
-  
+
       // If selectedDate is today, filter out time slots that are before current time + 1 hour.
       if (selectedDate && selectedDate.toDateString() === new Date().toDateString()) {
         const now = new Date();
@@ -120,7 +120,7 @@ const Page = () => {
       } else {
         setAvailableTimes(Array.from(availableTimeSet));
       }
-  
+
       const disabledDatesTimesMap: { [key: string]: string[] } = {};
       therapistAppointment?.data?.data?.forEach((appointment: any) => {
         const appointmentDateTime = `${appointment.appointmentDate} ${appointment.appointmentTime}`;
@@ -129,7 +129,7 @@ const Page = () => {
           disabledDatesTimesMap[date] = [];
         }
         disabledDatesTimesMap[date].push(time);
-  
+
         // Add the next time slot with a 30-minute gap
         let nextTime = new Date(`1970-01-01T${time}`);
         nextTime.setMinutes(nextTime.getMinutes() + 30);
@@ -139,7 +139,7 @@ const Page = () => {
         }
       });
       setDisabledTimes(disabledDatesTimesMap);
-  
+
       setDisabledDates((prev) => {
         const newDisabledDates: Date[] = [];
         const today = new Date();
@@ -148,7 +148,7 @@ const Page = () => {
           date.setDate(today.getDate() + i);
           const dayOfWeek = date.getDay();
           const dayString = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"][dayOfWeek];
-  
+
           if (!availability.includes(dayString)) {
             newDisabledDates.push(date);
           }
@@ -223,6 +223,7 @@ const Page = () => {
               }}
             >
               Request Appointment
+              <span>{`(${isVideoCountByPaymentStatus})`} left</span>
             </button>
               :
               <button
@@ -356,6 +357,7 @@ const Page = () => {
               <div className="flex items-center text-lg text-black gap-5 justify-between mt-5">
                 <button
                   className="button"
+                  disabled={isPending}
                   onClick={() => {
                     setOpenModal(false);
                     setSelectedDate(null);  // Clear selected date when modal is canceled
@@ -363,7 +365,7 @@ const Page = () => {
                 >
                   Cancel
                 </button>
-                <button type="submit" className="button">
+                <button type="submit" className="button" disabled={isPending}>
                   {isPending ? "Requesting..." : "Request"}
                   <ButtonArrow />
                 </button>
