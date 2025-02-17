@@ -132,7 +132,7 @@ const EventModal = ({ event, isOpen, onClose, events, mutate }: EventModalProps)
             isOpen={isEditModalOpen}
             onRequestClose={() => setIsEditModalOpen(false)}
             contentLabel="Edit Event"
-            className={`overflow-auto child-modal bottom-0 !bg-white rounded-t-lg w-full p-5 shadow-lg z-[2000] h-[560px] !top-auto ${isEditModalOpen ? 'modal-open' : ''}`}
+            className={`overflow-auto child-modal bottom-0 !bg-white rounded-t-lg w-full p-5 shadow-lg z-[2000] h-[560px] !top-auto ${isEditModalOpen ? 'modal-open' : ''} overflow-auto`}
             overlayClassName="overlay fixed inset-0 bg-black bg-opacity-50 z-[2000]"
           >
             <h3 className="font-semibold">Appointment Details</h3>
