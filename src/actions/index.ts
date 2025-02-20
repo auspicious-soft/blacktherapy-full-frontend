@@ -259,7 +259,7 @@ export const generateSignedUrlForPaymentInvoice = async (fileName: string, fileT
 }
 
 
-export const onboardingPdfGenerate = async (fileName: string) => {
+export const customFileUrlSigner = async (fileName: string) => {
     const uploadParams = {
         Bucket: process.env.AWS_BUCKET_NAME,
         Key: fileName,

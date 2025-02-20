@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/alt-text */
 import React from 'react';
 import { Page, Text, View, Document, StyleSheet, pdf, Image, Link } from '@react-pdf/renderer';
-import { onboardingPdfGenerate } from '@/actions';
+import { customFileUrlSigner } from '@/actions';
 import btnLogo from '@/assets/images/btn-logo.png';
 import { getImageUrlOfS3 } from '@/utils';
 
@@ -351,7 +351,7 @@ export const uploadTherapistOnboardingDetails = async (formData: any, userEmail:
         const pdfBlob = await pdf(onboardingDoc).toBlob();
         const fileName = `therapists/${userEmail}/onboarding/onboarding-details-${new Date().getTime()}.pdf`;
 
-        const { signedUrl, key } = await onboardingPdfGenerate(fileName);
+        const { signedUrl, key } = await customFileUrlSigner(fileName);
 
         await fetch(signedUrl, {
             method: 'PUT',

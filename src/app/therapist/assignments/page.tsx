@@ -1,8 +1,8 @@
 "use client"
 import SearchBar from '@/app/admin/components/SearchBar';
-import { getTherapistAssignments } from '@/services/therapist/therapist-service.';
+import { getTherapistAssignments, getTherapistsProfileData } from '@/services/therapist/therapist-service.';
 import { useSession } from 'next-auth/react';
-import { useState, useTransition } from 'react';
+import { useEffect, useState, useTransition } from 'react';
 import { format } from 'date-fns';
 import ReactPaginate from 'react-paginate';
 import useSWR from 'swr';
@@ -14,8 +14,9 @@ import ReactLoader from '@/components/ReactLoader';
 import { updateAppointmentData } from '@/services/admin/admin-service';
 import { toast } from 'sonner';
 import { uploadPaymentInvoiceOnAppointment } from '@/components/Pdf-template/payment-complete-invoice';
-import { nonMilitaryTime } from '@/utils';
+import { getImageUrlOfS3, nonMilitaryTime } from '@/utils';
 import ExtraFields from '@/components/extra-completed-fields';
+import { uploadSoapNoteOnAppointment } from '@/components/Pdf-template/soap-note-pdf';
 
 const Page = () => {
   const [showModal, setShowModal] = useState(false);
@@ -24,7 +25,7 @@ const Page = () => {
   const [isPending, startTransition] = useTransition()
   const session = useSession()
   const [query, setQuery] = useState('')
-  const { data, error, isLoading, mutate } = useSWR(`/therapist/${session?.data?.user?.id}/clients?${query}`, getTherapistAssignments);
+  const { data, isLoading } = useSWR(`/therapist/${session?.data?.user?.id}/clients?${query}`, getTherapistAssignments)
   const clientsData: any = data?.data?.data
   const page = data?.data?.page
   const total = data?.data?.total
@@ -33,7 +34,8 @@ const Page = () => {
   const handlePageClick = (selectedItem: { selected: number }) => {
     setQuery(`page=${selectedItem.selected + 1}&limit=${rowsPerPage}`);
   }
-
+  const { data: therapistData } = useSWR(`/therapist/${session?.data?.user?.id}`, getTherapistsProfileData)
+  const therapistSignatures = getImageUrlOfS3(therapistData?.data?.data?.consentSignature)
   const openModal = (note: string) => {
     setSessionNotes(note);
     setShowModal(true);
@@ -43,7 +45,6 @@ const Page = () => {
     router.push(`/therapist/assignments/chats/${id}`);
   };
   const [selectedRow, setSelectedRow] = useState<any>({})
-
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
 
   const handleSubmit = async (e: any) => {
@@ -57,30 +58,52 @@ const Page = () => {
       requestType: selectedRow.requestType,
       duration: selectedRow.duration
     }
-    if (payload.status === 'Completed' && payload.duration) {
-      const { key } = await uploadPaymentInvoiceOnAppointment({ ...selectedRow, ...payload, therapistEmail: session?.data?.user?.email, therapistName: session?.data?.user?.name });
-      (payload as any).invoice = key
-    }
-    if (payload.duration && isNaN(Number(payload.duration))) {
-      toast.error("Duration must be a number")
-      return
-    }
     startTransition(async () => {
-      try {
-        const response = await updateAppointmentData(`/admin/appointments/${selectedRow?._id}`, payload);
-        if (response.status === 200) {
-          toast.success("Appointment updated successfully")
-          mutate()
-          setSelectedRow({})
-          setIsEditModalOpen(false)
+      if (payload.status === 'Completed' && payload.duration) {
+        try {
+          // Generate payment invoice
+          const { key } = await uploadPaymentInvoiceOnAppointment({
+            ...selectedRow,
+            ...payload,
+            therapistEmail: session?.data?.user?.email,
+            therapistName: session?.data?.user?.name
+          });
+          (payload as any).invoice = key;
 
+          // Generate SOAP note with proper Key value
+          const { uploadedKey } = await uploadSoapNoteOnAppointment({
+            ...selectedRow, _id: selectedRow._id, clientId: {
+              ...selectedRow.clientId,
+              email: selectedRow.clientId.email
+            },
+            signature: therapistSignatures
+          });
+          (payload as any).sessionNotes = uploadedKey;
+        } catch (error) {
+          console.error('Error generating documents:', error);
+          toast.error("Error generating documents");
+          return;
         }
       }
-      catch (error) {
-        toast.error("An error occurred while updating the assignment");
-      } finally {
-        setIsEditModalOpen(false);
+
+      if (payload.duration && isNaN(Number(payload.duration))) {
+        toast.error("Duration must be a number")
+        return
       }
+
+      // try {
+      //     const response = await updateAppointmentData(`/admin/appointments/${selectedRow?._id}`, payload);
+      //     if (response.status === 200) {
+      //         toast.success("Appointment updated successfully")
+      //         mutate()
+      //         setSelectedRow({})
+      //         setIsEditModalOpen(false)
+      //     }
+      // } catch (error) {
+      //     toast.error("An error occurred while updating the assignment");
+      // } finally {
+      //     setIsEditModalOpen(false);
+      // }
     })
   }
 
@@ -277,44 +300,45 @@ const Page = () => {
                     required
                   />
                 </div>
+                <div className="flex-1 flex w-full gap-3">
+                  <div className="flex flex-1 flex-col">
+                    <label htmlFor="appointmentDate" className="font-medium">
+                      Appointment Date
+                    </label>
+                    <input
+                      type="date"
+                      id="appointmentDate"
+                      value={selectedRow?.appointmentDate ? format(new Date(selectedRow.appointmentDate), "yyyy-MM-dd") : ""}
+                      onChange={(e) =>
+                        setSelectedRow((prev: any) => ({
+                          ...prev,
+                          appointmentDate: e.target.value,
+                        }))
+                      }
+                      className="border p-2 rounded"
+                      required
+                    />
+                  </div>
 
-                <div className="flex flex-col">
-                  <label htmlFor="appointmentDate" className="font-medium">
-                    Appointment Date
-                  </label>
-                  <input
-                    type="date"
-                    id="appointmentDate"
-                    value={selectedRow?.appointmentDate ? format(new Date(selectedRow.appointmentDate), "yyyy-MM-dd") : ""}
-                    onChange={(e) =>
-                      setSelectedRow((prev: any) => ({
-                        ...prev,
-                        appointmentDate: e.target.value,
-                      }))
-                    }
-                    className="border p-2 rounded"
-                    required
-                  />
-                </div>
-
-                {/* Appointment Time */}
-                <div className="flex flex-col">
-                  <label htmlFor="appointmentTime" className="font-medium">
-                    Appointment Time
-                  </label>
-                  <input
-                    type="time"
-                    id="appointmentTime"
-                    value={selectedRow.appointmentTime}
-                    onChange={(e) =>
-                      setSelectedRow((prev: any) => ({
-                        ...prev,
-                        appointmentTime: e.target.value,
-                      }))
-                    }
-                    className="border p-2 rounded"
-                    required
-                  />
+                  {/* Appointment Time */}
+                  <div className="flex flex-1 flex-col">
+                    <label htmlFor="appointmentTime" className="font-medium">
+                      Appointment Time
+                    </label>
+                    <input
+                      type="time"
+                      id="appointmentTime"
+                      value={selectedRow.appointmentTime}
+                      onChange={(e) =>
+                        setSelectedRow((prev: any) => ({
+                          ...prev,
+                          appointmentTime: e.target.value,
+                        }))
+                      }
+                      className="border p-2 rounded"
+                      required
+                    />
+                  </div>
                 </div>
                 {/* Status */}
                 <div className="flex flex-col">
