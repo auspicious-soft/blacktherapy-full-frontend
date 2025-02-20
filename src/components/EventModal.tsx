@@ -201,11 +201,11 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, event, mutate }) =>
 
                                 {
                                     (selectedRow?.status === 'Completed' && !isCompletedFieldsDisable) && (
-                                        <ExtraFields selectedRow={selectedRow} setSelectedRow={setSelectedRow} notesType={notesType} setNotesType={setNotesType}/>
+                                        <ExtraFields selectedRow={selectedRow} setSelectedRow={setSelectedRow} notesType={notesType} setNotesType={setNotesType} />
                                     )
                                 }
                                 {/* Submit Button */}
-                                <div className="flex justify-end gap-2 absolute bg-white border bottom-0 ">
+                                <div className="sticky !-bottom-5 left-0 right-0 bg-white p-4 border-t border-gray-200 flex justify-end gap-2">
                                     <button className="text-black p-2 rounded-md font-semibold" onClick={() => setIsEditModalOpen(false)}>
                                         Close
                                     </button>

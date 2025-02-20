@@ -21,7 +21,7 @@ const ExtraFields = (props: ISelectedRow) => {
                 case "Mental Status Exam":
                     return <MedicalStatusExam   {...props} />
                 case "Biopsychosocial Assessment":
-                    return <BiopsychosocialAssessment />
+                    return <BiopsychosocialAssessment {...props} />
                 case "Pie Note":
                     return <PieNote  {...props} />
                 default:
