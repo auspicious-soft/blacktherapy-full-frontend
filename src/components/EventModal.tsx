@@ -23,6 +23,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, event, mutate }) =>
     const [isPending, startTransition] = useTransition();
     const [selectedRow, setSelectedRow] = useState<any>({})
     const [isCompletedFieldsDisable, setIsCompletedFieldsDisable] = useState(false);
+    const [notesType, setNotesType] = useState<"SOAP Note" | "Mental Status Exam" | "Biopsychosocial Assessment" | "Pie Note" | "">("")
 
     useEffect(() => {
         setSelectedRow({
@@ -43,12 +44,12 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, event, mutate }) =>
         hour: '2-digit',
         minute: '2-digit',
         hour12: true,
-    });
+    })
     const endTime = event.end.toLocaleTimeString('en-US', {
         hour: '2-digit',
         minute: '2-digit',
         hour12: true,
-    });
+    })
 
     const handleSubmit = async (e: any) => {
         e.preventDefault();
@@ -79,7 +80,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, event, mutate }) =>
                 setIsEditModalOpen(false);
             }
         });
-    };
+    }
 
     return (
         <>
@@ -200,7 +201,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, event, mutate }) =>
 
                                 {
                                     (selectedRow?.status === 'Completed' && !isCompletedFieldsDisable) && (
-                                        <ExtraFields selectedRow={selectedRow} setSelectedRow={setSelectedRow} />
+                                        <ExtraFields selectedRow={selectedRow} setSelectedRow={setSelectedRow} notesType={notesType} setNotesType={setNotesType}/>
                                     )
                                 }
                                 {/* Submit Button */}

@@ -1,6 +1,7 @@
 import React from 'react'
+import { SoapInterface } from './soap'
 
-const MedicalStatusExam = () => {
+const MedicalStatusExam = (props: SoapInterface) => {
   return (
     <div>MedicalStatusExam</div>
   )

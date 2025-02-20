@@ -7,21 +7,23 @@ import PieNote from './clinician-notes/pie.note'
 interface ISelectedRow {
     selectedRow: any
     setSelectedRow: (value: any) => void
+    notesType: "SOAP Note" | "Mental Status Exam" | "Biopsychosocial Assessment" | "Pie Note" | ""
+    setNotesType: (value: "SOAP Note" | "Mental Status Exam" | "Biopsychosocial Assessment" | "Pie Note" | "") => void
 }
+
 const ExtraFields = (props: ISelectedRow) => {
-    const { selectedRow, setSelectedRow } = props
-    const [notesType, setNotesType] = useState<"SOAP Note" | "Mental Status Exam" | "Biopsychosocial Assessment" | "Pie Note" | "">("")
+    const { selectedRow, setSelectedRow, notesType, setNotesType } = props
     const renderExtraFields = (notesType: "SOAP Note" | "Mental Status Exam" | "Biopsychosocial Assessment" | "Pie Note" | "") => {
         if (notesType !== "") {
             switch (notesType) {
                 case "SOAP Note":
                     return <SoapNote {...props} />
                 case "Mental Status Exam":
-                    return <MedicalStatusExam />
+                    return <MedicalStatusExam   {...props} />
                 case "Biopsychosocial Assessment":
                     return <BiopsychosocialAssessment />
                 case "Pie Note":
-                    return <PieNote />
+                    return <PieNote  {...props} />
                 default:
                     return null
             }

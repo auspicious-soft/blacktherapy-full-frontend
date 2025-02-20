@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-interface SoapInterface {
+export interface SoapInterface {
     selectedRow: any
     setSelectedRow: (value: any) => void
 }

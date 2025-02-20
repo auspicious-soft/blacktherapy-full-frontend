@@ -2,7 +2,7 @@
 import SearchBar from '@/app/admin/components/SearchBar';
 import { getTherapistAssignments, getTherapistsProfileData } from '@/services/therapist/therapist-service.';
 import { useSession } from 'next-auth/react';
-import { useEffect, useState, useTransition } from 'react';
+import { useState, useTransition } from 'react';
 import { format } from 'date-fns';
 import ReactPaginate from 'react-paginate';
 import useSWR from 'swr';
@@ -17,10 +17,10 @@ import { uploadPaymentInvoiceOnAppointment } from '@/components/Pdf-template/pay
 import { getImageUrlOfS3, nonMilitaryTime } from '@/utils';
 import ExtraFields from '@/components/extra-completed-fields';
 import { uploadSoapNoteOnAppointment } from '@/components/Pdf-template/soap-note-pdf';
+import { uploadPieNoteOnAppointment } from '@/components/Pdf-template/pie-note-pdf';
 
 const Page = () => {
   const [showModal, setShowModal] = useState(false);
-  const [sessionNotes, setSessionNotes] = useState<string | null>(null);
   const router = useRouter();
   const [isPending, startTransition] = useTransition()
   const session = useSession()
@@ -36,10 +36,7 @@ const Page = () => {
   }
   const { data: therapistData } = useSWR(`/therapist/${session?.data?.user?.id}`, getTherapistsProfileData)
   const therapistSignatures = getImageUrlOfS3(therapistData?.data?.data?.consentSignature)
-  const openModal = (note: string) => {
-    setSessionNotes(note);
-    setShowModal(true);
-  };
+  const [notesType, setNotesType] = useState<"SOAP Note" | "Mental Status Exam" | "Biopsychosocial Assessment" | "Pie Note" | "">("")
 
   const handleChat = (id: string) => {
     router.push(`/therapist/assignments/chats/${id}`);
@@ -61,24 +58,22 @@ const Page = () => {
     startTransition(async () => {
       if (payload.status === 'Completed' && payload.duration) {
         try {
-          // Generate payment invoice
-          const { key } = await uploadPaymentInvoiceOnAppointment({
-            ...selectedRow,
-            ...payload,
-            therapistEmail: session?.data?.user?.email,
-            therapistName: session?.data?.user?.name
-          });
+          const { key } = await uploadPaymentInvoiceOnAppointment({ ...selectedRow, ...payload, therapistEmail: session?.data?.user?.email, therapistName: session?.data?.user?.name });
           (payload as any).invoice = key;
 
-          // Generate SOAP note with proper Key value
-          const { uploadedKey } = await uploadSoapNoteOnAppointment({
-            ...selectedRow, _id: selectedRow._id, clientId: {
-              ...selectedRow.clientId,
-              email: selectedRow.clientId.email
-            },
-            signature: therapistSignatures
-          });
-          (payload as any).sessionNotes = uploadedKey;
+          switch (notesType) {
+            case 'SOAP Note': {
+              const { uploadedKey } = await uploadSoapNoteOnAppointment({ ...selectedRow, _id: selectedRow._id, clientId: { ...selectedRow.clientId, email: selectedRow.clientId.email }, signature: therapistSignatures });
+              (payload as any).sessionNotes = uploadedKey;
+              break;
+            }
+            case 'Pie Note': {
+              const { uploadedKey } = await uploadPieNoteOnAppointment({ ...selectedRow, _id: selectedRow._id, clientId: { ...selectedRow.clientId, email: selectedRow.clientId.email }, signature: therapistSignatures });
+              (payload as any).sessionNotes = uploadedKey;
+              break;
+            }
+          }
+
         } catch (error) {
           console.error('Error generating documents:', error);
           toast.error("Error generating documents");
@@ -268,10 +263,6 @@ const Page = () => {
             <CloseIcon />
           </button>
         </div>
-        <div className='bg-white p-5 rounded-b-[20px] '>
-          <p>{sessionNotes || "No notes available"}</p>
-
-        </div>
       </Modal>}
 
       {
@@ -282,7 +273,7 @@ const Page = () => {
             contentLabel="Edit Event"
             shouldCloseOnEsc={false}
             shouldCloseOnOverlayClick={false}
-            className={`overflow-auto max-w-2xl overflo-custom max-h-[95vh] child-modal bottom-0 !bg-white rounded-lg w-full p-5 shadow-lg z-[2000] h-auto !top-auto ${isEditModalOpen ? 'modal-open' : ''}`}
+            className={`overflow-auto border-none outline-none max-w-2xl overflo-custom max-h-[95vh] child-modal bottom-0 !bg-white rounded-lg w-full p-5 shadow-lg z-[2000] h-auto !top-auto ${isEditModalOpen ? 'modal-open' : ''}`}
             overlayClassName="overlay fixed inset-0 bg-black bg-opacity-50 z-[2000]"
           >
             <h3 className="font-semibold">Edit Appointment Details</h3>
@@ -369,7 +360,7 @@ const Page = () => {
 
                 {
                   (selectedRow?.status === 'Completed' && !isCompletedFieldsDisable) && (
-                    <ExtraFields selectedRow={selectedRow} setSelectedRow={setSelectedRow} />
+                    <ExtraFields selectedRow={selectedRow} setSelectedRow={setSelectedRow} notesType={notesType} setNotesType={setNotesType} />
                   )
                 }
                 {/* Submit Button */}
