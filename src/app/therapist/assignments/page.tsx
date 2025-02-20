@@ -258,7 +258,7 @@ const Page = () => {
         isOpen={showModal}
         onRequestClose={() => setShowModal(false)}
         contentLabel="Notes "
-        className=" w-[90%] max-w-[500px] max-h-[90vh]  overflow-auto overflo-custom   "
+        className=" w-[90%] max-w-[500px] max-h-[90vh]  overflow-auto overflo-custom "
         overlayClassName="w-full h-full fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center"
       >
 
@@ -274,13 +274,14 @@ const Page = () => {
         </div>
       </Modal>}
 
-
       {
         isEditModalOpen && (
           <Modal
             isOpen={isEditModalOpen}
             onRequestClose={() => setIsEditModalOpen(false)}
             contentLabel="Edit Event"
+            shouldCloseOnEsc={false}
+            shouldCloseOnOverlayClick={false}
             className={`overflow-auto max-w-2xl overflo-custom max-h-[95vh] child-modal bottom-0 !bg-white rounded-lg w-full p-5 shadow-lg z-[2000] h-auto !top-auto ${isEditModalOpen ? 'modal-open' : ''}`}
             overlayClassName="overlay fixed inset-0 bg-black bg-opacity-50 z-[2000]"
           >
@@ -372,8 +373,12 @@ const Page = () => {
                   )
                 }
                 {/* Submit Button */}
-                <div className="flex justify-end gap-2">
-                  <button className="text-black p-2 rounded-md font-semibold" onClick={() => setIsEditModalOpen(false)}>
+                <div className="sticky -bottom-5 left-0 right-0 bg-white p-4 border-t border-gray-200 flex justify-end gap-2">
+                  <button
+                    type="button"
+                    className="text-black p-2 rounded-md font-semibold"
+                    onClick={() => setIsEditModalOpen(false)}
+                  >
                     Close
                   </button>
                   <button

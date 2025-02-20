@@ -110,7 +110,9 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, event, mutate }) =>
                         isOpen={isEditModalOpen}
                         onRequestClose={() => setIsEditModalOpen(false)}
                         contentLabel="Edit Event"
-                        className={`overflo-custom max-h-[95vh] max-w-xl child-modal bottom-0 !bg-white rounded-lg w-full p-5 shadow-lg z-[2000] h-auto !top-auto ${isEditModalOpen ? 'modal-open' : ''} overflow-auto`}
+                        shouldCloseOnEsc={false}
+                        shouldCloseOnOverlayClick={false}
+                        className={`overflow-auto max-w-2xl overflo-custom max-h-[95vh] child-modal bottom-0 !bg-white rounded-lg w-full p-5 shadow-lg z-[2000] h-auto !top-auto ${isEditModalOpen ? 'modal-open' : ''}`}
                         overlayClassName="overlay fixed inset-0 bg-black bg-opacity-50 z-[2000]"
                     >
                         <h3 className="font-semibold">Edit Appointment Details</h3>
@@ -202,7 +204,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, event, mutate }) =>
                                     )
                                 }
                                 {/* Submit Button */}
-                                <div className="flex justify-end gap-2">
+                                <div className="flex justify-end gap-2 absolute bg-white border bottom-0 ">
                                     <button className="text-black p-2 rounded-md font-semibold" onClick={() => setIsEditModalOpen(false)}>
                                         Close
                                     </button>

@@ -99,7 +99,7 @@ const ExtraFields = (props: ISelectedRow) => {
                     </div>
                 </div>
             </div>
-            <div className="flex-1 flex w-full gap-3">
+            <div className="flex-1 flex w-full gap-3 items-center">
                 <div className="md:w-[calc(20%-15px)] w-[calc(50%-15px)]">
                     <label className="block mb-2">Duration (Hours)</label>
                     <input
