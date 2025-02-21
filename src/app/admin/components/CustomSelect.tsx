@@ -8,10 +8,10 @@ interface CustomSelectProps<OptionType> {
     actionMeta: ActionMeta<OptionType>
   ) => void;
   options: OptionsOrGroups<OptionType, GroupBase<OptionType>>;
-  isMulti?: true; 
-  placeholder?: string; 
-  isSearchable?: boolean; 
-  name?: string; 
+  isMulti?: true;
+  placeholder?: string;
+  isSearchable?: boolean;
+  name?: string;
   required?: boolean;
 }
 interface OptionType {
@@ -23,13 +23,13 @@ const customStyles: StylesConfig<any, true> = {
   control: (styles: any) => ({
     ...styles,
     backgroundColor: "white",
-    height: "50px",
+    height: "auto",
     borderColor: "#CDE3F1", // Set the border color
     boxShadow: "none", // Remove default box shadow
     ":hover": {
       borderColor: "#CDE3F1",
     },
-    padding: "0 10px", // Adjust horizontal padding
+    padding: "3px 10px", // Adjust horizontal padding
     borderRadius: "10px",
     alignItems: "center", // Vertically center content
   }),
@@ -90,9 +90,9 @@ const CustomSelect: React.FC<CustomSelectProps<OptionType>> = ({
   options,
   isMulti,
   placeholder = "Select...",
-  isSearchable = true, 
+  isSearchable = true,
   name,
-  required = true, 
+  required = true,
 }) => {
   const handleChange = (selectedOption: SingleValue<OptionType> | MultiValue<OptionType>, actionMeta: ActionMeta<OptionType>) => {
     const event = {
@@ -100,14 +100,14 @@ const CustomSelect: React.FC<CustomSelectProps<OptionType>> = ({
         name,
         value: selectedOption,
       },
-    } as unknown as React.ChangeEvent<HTMLInputElement>; 
+    } as unknown as React.ChangeEvent<HTMLInputElement>;
 
-    onChange(selectedOption, actionMeta); 
+    onChange(selectedOption, actionMeta);
   };
 
   return (
-    <div className="state-select">
-    { name && <label htmlFor={name} className="block mb-2">
+    <div className="state-select h-auto">
+      {name && <label htmlFor={name} className="block mb-2">
         {name}
       </label>}
       <Select

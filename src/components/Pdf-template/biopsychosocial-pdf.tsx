@@ -118,6 +118,7 @@ const formatDate = (date: any) => {
 
 // PDF Document Component for Biopsychosocial Assessment
 const BiopsychosocialAssessmentPdf = ({ formData }: any) => {
+    const therapistSignatures = formData.signature || '';
     return (
         <Document>
             <Page size="A4" style={styles.page}>
@@ -357,6 +358,24 @@ const BiopsychosocialAssessmentPdf = ({ formData }: any) => {
                     </View>
                 </View>
 
+                {/* Therapist Signature */}
+                <View style={{ ...styles.section, marginTop: 100 }}>
+                    <Text style={styles.sectionTitle}>Therapist Signature</Text>
+                    <View style={styles.infoGrid}>
+                        <View style={styles.row}>
+                            <Text style={styles.label}>Therapist Name:</Text>
+                            <Text style={styles.value}>{formData.clinicianName}</Text>
+                        </View>
+                        <View style={styles.row}>
+                            <Text style={styles.label}>Signature:</Text>
+                            <Image style={{ width: 250, height: 60 }} src={therapistSignatures} />
+                        </View>
+                        <View style={styles.row}>
+                            <Text style={styles.label}>Date:</Text>
+                            <Text style={styles.value}>{formatDate(new Date())}</Text>
+                        </View>
+                    </View>
+                </View>
                 {/* Footer */}
                 <View style={styles.footer}>
                     <Text>
@@ -380,7 +399,7 @@ export const uploadBiopsychosocialAssessment = async (formData: any) => {
         link.click();
         document.body.removeChild(link);
         URL.revokeObjectURL(url);
-        const fileName = `assessments/${formData.clientName || 'No'}/biopsychosocial-assessment-${new Date().getTime()}.pdf`;
+        const fileName = `appointments/${formData.clientId.email}/my-appointment-files/biopsychosocial-assessment-${new Date().getTime()}.pdf`;
         const { signedUrl, key } = await customFileUrlSigner(fileName);
         const uploadResponse = await fetch(signedUrl, {
             method: 'PUT',

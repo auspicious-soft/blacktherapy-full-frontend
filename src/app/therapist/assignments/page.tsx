@@ -19,6 +19,7 @@ import ExtraFields from '@/components/extra-completed-fields';
 import { uploadSoapNoteOnAppointment } from '@/components/Pdf-template/soap-note-pdf';
 import { uploadPieNoteOnAppointment } from '@/components/Pdf-template/pie-note-pdf';
 import { uploadBiopsychosocialAssessment } from '@/components/Pdf-template/biopsychosocial-pdf';
+import { uploadMentalStatusExam } from '@/components/Pdf-template/medical-status-pdf';
 
 const Page = () => {
   const [showModal, setShowModal] = useState(false);
@@ -26,7 +27,7 @@ const Page = () => {
   const [isPending, startTransition] = useTransition()
   const session = useSession()
   const [query, setQuery] = useState('')
-  const { data, isLoading } = useSWR(`/therapist/${session?.data?.user?.id}/clients?${query}`, getTherapistAssignments)
+  const { data, isLoading, mutate } = useSWR(`/therapist/${session?.data?.user?.id}/clients?${query}`, getTherapistAssignments)
   const clientsData: any = data?.data?.data
   const page = data?.data?.page
   const total = data?.data?.total
@@ -56,9 +57,14 @@ const Page = () => {
       requestType: selectedRow.requestType,
       duration: selectedRow.duration
     }
+    if (payload.duration && isNaN(Number(payload.duration))) {
+      toast.error("Duration must be a number")
+      return
+    }
+
     startTransition(async () => {
-      if (payload.status === 'Completed' && payload.duration) {
-        try {
+      try {
+        if (payload.status === 'Completed' && payload.duration) {
           const { key } = await uploadPaymentInvoiceOnAppointment({ ...selectedRow, ...payload, therapistEmail: session?.data?.user?.email, therapistName: session?.data?.user?.name });
           (payload as any).invoice = key;
 
@@ -78,36 +84,27 @@ const Page = () => {
               (payload as any).sessionNotes = uploadedKey;
               break;
             }
+            case 'Mental Status Exam': {
+              const { uploadedKey } = await uploadMentalStatusExam({ ...selectedRow, _id: selectedRow._id, clientId: { ...selectedRow.clientId, email: selectedRow.clientId.email }, signature: therapistSignatures });
+              (payload as any).sessionNotes = uploadedKey;
+            }
           }
-
-        } catch (error) {
-          console.error('Error generating documents:', error);
-          toast.error("Error generating documents");
-          return;
+        }
+        const response = await updateAppointmentData(`/admin/appointments/${selectedRow?._id}`, payload);
+        if (response.status === 200) {
+          toast.success("Appointment updated successfully")
+          mutate()
+          setSelectedRow({})
+          setIsEditModalOpen(false)
         }
       }
-
-      if (payload.duration && isNaN(Number(payload.duration))) {
-        toast.error("Duration must be a number")
-        return
+      catch (error) {
+        toast.error("An error occurred while updating the assignment");
+      } finally {
+        setIsEditModalOpen(false);
       }
-
-      // try {
-      //     const response = await updateAppointmentData(`/admin/appointments/${selectedRow?._id}`, payload);
-      //     if (response.status === 200) {
-      //         toast.success("Appointment updated successfully")
-      //         mutate()
-      //         setSelectedRow({})
-      //         setIsEditModalOpen(false)
-      //     }
-      // } catch (error) {
-      //     toast.error("An error occurred while updating the assignment");
-      // } finally {
-      //     setIsEditModalOpen(false);
-      // }
     })
   }
-
 
   return (
     <div className="">
@@ -369,7 +366,7 @@ const Page = () => {
                     <ExtraFields selectedRow={selectedRow} setSelectedRow={setSelectedRow} notesType={notesType} setNotesType={setNotesType} />
                   )
                 }
-                {/* Submit Button */}
+
                 <div className="sticky -bottom-5 left-0 right-0 bg-white p-4 border-t border-gray-200 flex justify-end gap-2">
                   <button
                     type="button"
@@ -379,6 +376,7 @@ const Page = () => {
                     Close
                   </button>
                   <button
+                    disabled={isPending}
                     type="submit"
                     className="bg-[#283C63] text-white px-4 py-2 rounded"
                   >
