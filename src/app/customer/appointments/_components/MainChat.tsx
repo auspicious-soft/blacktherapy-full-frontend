@@ -138,7 +138,8 @@ const MainChat = (props: any) => {
                 </div>
               )}
             </div>
-            <button disabled={isPending} onClick={handleSendMessage}> <MessageSend /></button>
+            {!isPending ? <button disabled={isPending} onClick={handleSendMessage}> <MessageSend /></button> :
+              <ReactLoader />}
           </div>
         </div>
       </form>

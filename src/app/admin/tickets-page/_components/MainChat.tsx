@@ -5,6 +5,7 @@ import { CloseIcon, FileAttachment, FileUpload, MessageSend, PhotoUpload } from 
 import { formatDate, getImageUrlOfS3 } from '@/utils';
 import Link from 'next/link';
 import { CiFileOn } from "react-icons/ci";
+import ReactLoader from '@/components/ReactLoader';
 
 
 const MainChat = (props: any) => {
@@ -139,7 +140,9 @@ const MainChat = (props: any) => {
                 </div>
               )}
             </div>
-            <button disabled={isPending} onClick={handleSendMessage}> <MessageSend /></button>
+            {!isPending ? <button disabled={isPending} onClick={handleSendMessage}> <MessageSend /></button>
+              :
+              <ReactLoader />}
           </div>
         </div>
       </form>
