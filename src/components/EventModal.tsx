@@ -81,7 +81,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, event, mutate }) =>
             }
         });
     }
-
+    const isBioT = notesType !== 'Biopsychosocial Assessment' ? 'max-w-2xl' : 'max-w-4xl'
     return (
         <>
             <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center z-50">
@@ -113,7 +113,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, event, mutate }) =>
                         contentLabel="Edit Event"
                         shouldCloseOnEsc={false}
                         shouldCloseOnOverlayClick={false}
-                        className={`overflow-auto max-w-2xl overflo-custom max-h-[95vh] child-modal bottom-0 !bg-white rounded-lg w-full p-5 shadow-lg z-[2000] h-auto !top-auto ${isEditModalOpen ? 'modal-open' : ''}`}
+                        className={`overflow-auto ${isBioT ? 'max-w-2xl' : 'max-w-4xl'} overflo-custom max-h-[95vh] child-modal bottom-0 !bg-white rounded-lg w-full p-5 shadow-lg z-[2000] h-auto !top-auto ${isEditModalOpen ? 'modal-open' : ''}`}
                         overlayClassName="overlay fixed inset-0 bg-black bg-opacity-50 z-[2000]"
                     >
                         <h3 className="font-semibold">Edit Appointment Details</h3>

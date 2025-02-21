@@ -237,15 +237,6 @@ export const uploadSoapNoteOnAppointment = async (appointment: any) => {
         }
         const soapDoc = <SoapNotePdf appointment={appointment} />;
         const pdfBlob = await pdf(soapDoc).toBlob();
-        // Create temporary download link
-        // const url = URL.createObjectURL(pdfBlob);
-        // const link = document.createElement('a');
-        // link.href = url;
-        // link.download = `soapnote-${appointment._id}.pdf`;
-        // document.body.appendChild(link);
-        // link.click();
-        // document.body.removeChild(link);
-        // URL.revokeObjectURL(url);
         const fileName = `appointments/${appointment.clientId.email}/my-appointment-files/soapnote-${appointment._id}-${new Date().getTime()}.pdf`;
         const { signedUrl, key } = await customFileUrlSigner(fileName);
         const uploadResponse = await fetch(signedUrl, {

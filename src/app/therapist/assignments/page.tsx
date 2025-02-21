@@ -18,6 +18,7 @@ import { getImageUrlOfS3, nonMilitaryTime } from '@/utils';
 import ExtraFields from '@/components/extra-completed-fields';
 import { uploadSoapNoteOnAppointment } from '@/components/Pdf-template/soap-note-pdf';
 import { uploadPieNoteOnAppointment } from '@/components/Pdf-template/pie-note-pdf';
+import { uploadBiopsychosocialAssessment } from '@/components/Pdf-template/biopsychosocial-pdf';
 
 const Page = () => {
   const [showModal, setShowModal] = useState(false);
@@ -69,6 +70,11 @@ const Page = () => {
             }
             case 'Pie Note': {
               const { uploadedKey } = await uploadPieNoteOnAppointment({ ...selectedRow, _id: selectedRow._id, clientId: { ...selectedRow.clientId, email: selectedRow.clientId.email }, signature: therapistSignatures });
+              (payload as any).sessionNotes = uploadedKey;
+              break;
+            }
+            case 'Biopsychosocial Assessment': {
+              const { uploadedKey } = await uploadBiopsychosocialAssessment({ ...selectedRow, _id: selectedRow._id, clientId: { ...selectedRow.clientId, email: selectedRow.clientId.email }, signature: therapistSignatures });
               (payload as any).sessionNotes = uploadedKey;
               break;
             }
@@ -273,7 +279,7 @@ const Page = () => {
             contentLabel="Edit Event"
             shouldCloseOnEsc={false}
             shouldCloseOnOverlayClick={false}
-            className={`overflow-auto border-none outline-none max-w-2xl overflo-custom max-h-[95vh] child-modal bottom-0 !bg-white rounded-lg w-full p-5 shadow-lg z-[2000] h-auto !top-auto ${isEditModalOpen ? 'modal-open' : ''}`}
+            className={`overflow-auto border-none outline-none ${notesType !== 'Biopsychosocial Assessment' ? 'max-w-2xl' : 'max-w-4xl'} overflo-custom max-h-[95vh] child-modal bottom-0 !bg-white rounded-lg w-full p-5 shadow-lg z-[2000] h-auto !top-auto ${isEditModalOpen ? 'modal-open' : ''}`}
             overlayClassName="overlay fixed inset-0 bg-black bg-opacity-50 z-[2000]"
           >
             <h3 className="font-semibold">Edit Appointment Details</h3>

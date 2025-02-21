@@ -1,301 +1,609 @@
-import React, { useState } from 'react';
-import { SoapInterface } from './soap';
-
-interface FormData {
-  // Basic Information
-  clientName: string;
-  assessmentDate: string;
-  startTime: string;
-  clinicianName: string;
-  individualsPresent: string;
-  introductions: string;
-
-  // Safety Assessment
-  wishDead: string;
-  familyBetterOff: string;
-  suicidalThoughts: string;
-  suicideAttempt: string;
-  suicideAttemptDetails: string;
-  suicideAttemptWhen: string;
-  currentSuicidalThoughts: string;
-  currentSuicidalThoughtsDetails: string;
-
-  // Current Situation
-  presentingProblem: string;
-  currentConcerns: string;
-  signsSymptoms: string;
-  treatmentHistory: string;
-  counselingHistory: string;
-  mentalHealthHistory: string;
-  traumaHistory: string;
-  treatmentGoals: string;
-
-  // Psychosocial
-  livingCondition: string;
-  familyRelationships: string;
-  familyMentalHealth: string;
-  legalIssues: string;
-  leisure: string;
-  school: string;
-  schoolProblems: string;
-  schoolSupport: string;
-  partTimeJob: string;
-  substanceUse: string;
-  supportSystems: string;
-  ongoingStressors: string;
-
-  // Medical History
-  medicalCondition: string;
-  medicalConditionDetails: string;
-  medications: string;
-  sleep: string;
-  movement: string;
-  substanceUseHistory: string;
-  culturalInfo: string;
-  orientationGender: string;
-  employmentInfo: string;
-
-  // Strengths
-  copingStrategies: string;
-  supportNetwork: string;
-  personalStrengths: string;
-}
-
+import React from 'react';
 interface BiopsychosocialAssessmentProps {
-  selectedRow: any
-  setSelectedRow: (value: any) => void
-  notesType: "" | "SOAP Note" | "Mental Status Exam" | "Biopsychosocial Assessment" | "Pie Note"
-  setNotesType: (value: "" | "SOAP Note" | "Mental Status Exam" | "Biopsychosocial Assessment" | "Pie Note") => void
+  selectedRow: any;
+  setSelectedRow: (value: any) => void;
 }
 
 const BiopsychosocialAssessment = (props: BiopsychosocialAssessmentProps) => {
-  const [formData, setFormData] = useState<FormData>({
-    clientName: '',
-    assessmentDate: '',
-    startTime: '',
-    clinicianName: '',
-    individualsPresent: '',
-    introductions: '',
-    wishDead: 'No',
-    familyBetterOff: 'No',
-    suicidalThoughts: 'No',
-    suicideAttempt: 'No',
-    suicideAttemptDetails: '',
-    suicideAttemptWhen: '',
-    currentSuicidalThoughts: 'No',
-    currentSuicidalThoughtsDetails: '',
-    presentingProblem: '',
-    currentConcerns: '',
-    signsSymptoms: '',
-    treatmentHistory: '',
-    counselingHistory: '',
-    mentalHealthHistory: '',
-    traumaHistory: '',
-    treatmentGoals: '',
-    livingCondition: '',
-    familyRelationships: '',
-    familyMentalHealth: '',
-    legalIssues: '',
-    leisure: '',
-    school: '',
-    schoolProblems: '',
-    schoolSupport: '',
-    partTimeJob: '',
-    substanceUse: '',
-    supportSystems: '',
-    ongoingStressors: '',
-    medicalCondition: 'No',
-    medicalConditionDetails: '',
-    medications: '',
-    sleep: '',
-    movement: '',
-    substanceUseHistory: '',
-    culturalInfo: '',
-    orientationGender: '',
-    employmentInfo: '',
-    copingStrategies: '',
-    supportNetwork: '',
-    personalStrengths: '',
-  });
+  const { selectedRow: formData, setSelectedRow: setFormData } = props;
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev: any) => ({ ...prev, [name]: value }));
   };
 
-  const FormSection = ({ title, children }: { title: string; children: React.ReactNode }) => (
-    <section className="mb-8 p-6 bg-gray-50 rounded-lg">
-      <h3 className="text-xl font-semibold mb-4 text-gray-800">{title}</h3>
-      <div className="space-y-4">{children}</div>
-    </section>
-  );
-
-  const TextInput = ({ label, name, value, type = "text" }: { label: string; name: string; value: string; type?: string }) => (
-    <div>
-      <label className="block mb-2 text-sm font-medium text-gray-700">{label}</label>
-      <input
-        type={type}
-        name={name}
-        value={value}
-        onChange={handleInputChange}
-        className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500"
-      />
-    </div>
-  );
-
-  const TextArea = ({ label, name, value }: { label: string; name: string; value: string }) => (
-    <div>
-      <label className="block mb-2 text-sm font-medium text-gray-700">{label}</label>
-      <textarea
-        name={name}
-        value={value}
-        onChange={handleInputChange}
-        className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 h-32"
-      />
-    </div>
-  );
-
-  const Select = ({ label, name, value, options }: { label: string; name: string; value: string; options: string[] }) => (
-    <div>
-      <label className="block mb-2 text-sm font-medium text-gray-700">{label}</label>
-      <select
-        name={name}
-        value={value}
-        onChange={handleInputChange}
-        className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500"
-      >
-        {options.map((option) => (
-          <option key={option} value={option}>
-            {option}
-          </option>
-        ))}
-      </select>
-    </div>
-  );
-
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow">
+    <div className="max-w-4xl mx-auto p-3 bg-white shadow-md rounded-lg">
       <h2 className="text-2xl font-bold mb-6 text-gray-800">Biopsychosocial Assessment</h2>
 
-      <FormSection title="Basic Information">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <TextInput label="Client Name" name="clientName" value={formData.clientName} />
-          <TextInput label="Assessment Date" name="assessmentDate" value={formData.assessmentDate} type="date" />
-          <TextInput label="Start Time" name="startTime" value={formData.startTime} type="time" />
-          <TextInput label="Clinician Name" name="clinicianName" value={formData.clinicianName} />
-          <TextInput label="Individuals Present" name="individualsPresent" value={formData.individualsPresent} />
-          <TextArea label="Introductions (names/preferred names and pronouns/identities)" name="introductions" value={formData.introductions} />
+      {/* Basic Information */}
+      <section className="mb-8 p-4 bg-gray-50 rounded-lg">
+        <h3 className="text-xl font-semibold mb-4 text-gray-800">Basic Information</h3>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Client Name</label>
+            <input
+              type="text"
+              name="clientName"
+              value={formData.clientName}
+              onChange={handleChange}
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-[#283c63] focus:border-[#283c63] sm:text-sm"
+              placeholder="Enter client name"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Assessment Date</label>
+            <input
+              type="date"
+              name="assessmentDate"
+              value={formData.assessmentDate}
+              onChange={handleChange}
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-[#283c63] focus:border-[#283c63] sm:text-sm"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Start Time</label>
+            <input
+              type="time"
+              name="startTime"
+              value={formData.startTime}
+              onChange={handleChange}
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-[#283c63] focus:border-[#283c63] sm:text-sm"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Clinician Name</label>
+            <input
+              type="text"
+              name="clinicianName"
+              value={formData.clinicianName}
+              onChange={handleChange}
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-[#283c63] focus:border-[#283c63] sm:text-sm"
+              placeholder="Enter clinician name"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Individuals Present</label>
+            <input
+              type="text"
+              name="individualsPresent"
+              value={formData.individualsPresent}
+              onChange={handleChange}
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-[#283c63] focus:border-[#283c63] sm:text-sm"
+              placeholder="Enter names"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Introductions (names/preferred names and pronouns/identities)
+            </label>
+            <textarea
+              name="introductions"
+              value={formData.introductions}
+              onChange={handleChange}
+              rows={3}
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-[#283c63] focus:border-[#283c63] sm:text-sm"
+              placeholder="Enter introductions"
+            ></textarea>
+          </div>
         </div>
-      </FormSection>
+      </section>
 
-      <FormSection title="Safety Assessment">
-        <div className="mb-4">
+      {/* Safety Assessment */}
+      <section className="mb-8 p-4 bg-gray-50 rounded-lg">
+        <h3 className="text-xl font-semibold mb-4 text-gray-800">Safety Assessment</h3>
+        <p className="mb-4 text-sm text-gray-700">
           Complete ASQ assessment and safety plan if any questions are answered &quot;Yes&quot;
-        </div>
-        <div className="space-y-4">
-          <Select 
-            label="In the past few weeks have you wished you were dead?" 
-            name="wishDead" 
-            value={formData.wishDead}
-            options={['No', 'Yes']}
-          />
-          <Select 
-            label="In the past few weeks, have you felt that you or your family would be better off if you were dead?" 
-            name="familyBetterOff"
-            value={formData.familyBetterOff}
-            options={['No', 'Yes']}
-          />
-          <Select 
-            label="In the past week, have you been having thoughts about killing yourself?" 
-            name="suicidalThoughts"
-            value={formData.suicidalThoughts}
-            options={['No', 'Yes']}
-          />
-          <Select 
-            label="Have you ever tried to kill yourself?" 
-            name="suicideAttempt"
-            value={formData.suicideAttempt}
-            options={['No', 'Yes']}
-          />
+        </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              In the past few weeks have you wished you were dead?
+            </label>
+            <select
+              name="wishDead"
+              value={formData.wishDead}
+              onChange={handleChange}
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-[#283c63] focus:border-[#283c63] sm:text-sm"
+            >
+              <option>No</option>
+              <option>Yes</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              In the past few weeks, have you felt that you or your family would be better off if you were dead?
+            </label>
+            <select
+              name="familyBetterOff"
+              value={formData.familyBetterOff}
+              onChange={handleChange}
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-[#283c63] focus:border-[#283c63] sm:text-sm"
+            >
+              <option>No</option>
+              <option>Yes</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              In the past week, have you been having thoughts about killing yourself?
+            </label>
+            <select
+              name="suicidalThoughts"
+              value={formData.suicidalThoughts}
+              onChange={handleChange}
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-[#283c63] focus:border-[#283c63] sm:text-sm"
+            >
+              <option>No</option>
+              <option>Yes</option>
+            </select>
+          </div>
+          <div className="md:col-span-2">
+            <label className="block text-sm font-medium text-gray-700">Have you ever tried to kill yourself?</label>
+            <select
+              name="suicideAttempt"
+              value={formData.suicideAttempt}
+              onChange={handleChange}
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-[#283c63] focus:border-[#283c63] sm:text-sm"
+            >
+              <option>No</option>
+              <option>Yes</option>
+            </select>
+          </div>
           {formData.suicideAttempt === 'Yes' && (
             <>
-              <TextArea label="If yes, how?" name="suicideAttemptDetails" value={formData.suicideAttemptDetails} />
-              <TextInput label="When?" name="suicideAttemptWhen" value={formData.suicideAttemptWhen} />
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700">If yes, how?</label>
+                <textarea
+                  name="suicideAttemptDetails"
+                  value={formData.suicideAttemptDetails}
+                  onChange={handleChange}
+                  rows={3}
+                  className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-[#283c63] focus:border-[#283c63] sm:text-sm"
+                  placeholder="Describe the attempt"
+                ></textarea>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">When?</label>
+                <input
+                  type="text"
+                  name="suicideAttemptWhen"
+                  value={formData.suicideAttemptWhen}
+                  onChange={handleChange}
+                  className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-[#283c63] focus:border-[#283c63] sm:text-sm"
+                  placeholder="Enter the time or date"
+                />
+              </div>
             </>
           )}
-          <Select 
-            label="Are you having thoughts of killing yourself right now?" 
-            name="currentSuicidalThoughts"
-            value={formData.currentSuicidalThoughts}
-            options={['No', 'Yes']}
-          />
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Are you having thoughts of killing yourself right now?
+            </label>
+            <select
+              name="currentSuicidalThoughts"
+              value={formData.currentSuicidalThoughts}
+              onChange={handleChange}
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-[#283c63] focus:border-[#283c63] sm:text-sm"
+            >
+              <option>No</option>
+              <option>Yes</option>
+            </select>
+          </div>
           {formData.currentSuicidalThoughts === 'Yes' && (
-            <TextArea 
-              label="Please describe:" 
-              name="currentSuicidalThoughtsDetails" 
-              value={formData.currentSuicidalThoughtsDetails} 
-            />
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700">Please describe:</label>
+              <textarea
+                name="currentSuicidalThoughtsDetails"
+                value={formData.currentSuicidalThoughtsDetails}
+                onChange={handleChange}
+                rows={3}
+                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-[#283c63] focus:border-[#283c63] sm:text-sm"
+                placeholder="Describe your thoughts"
+              ></textarea>
+            </div>
           )}
         </div>
-      </FormSection>
+      </section>
 
-      <FormSection title="Current Situation">
-        <TextArea label="What got us here to this moment?" name="presentingProblem" value={formData.presentingProblem} />
-        <TextArea label="Current concerns" name="currentConcerns" value={formData.currentConcerns} />
-        <TextArea label="Signs and symptoms" name="signsSymptoms" value={formData.signsSymptoms} />
-        <TextArea label="Treatment history" name="treatmentHistory" value={formData.treatmentHistory} />
-        <TextArea label="Counseling history & diagnoses" name="counselingHistory" value={formData.counselingHistory} />
-        <TextArea label="Mental health history" name="mentalHealthHistory" value={formData.mentalHealthHistory} />
-        <TextArea label="History of trauma and abuse" name="traumaHistory" value={formData.traumaHistory} />
-        <TextArea label="Treatment goals" name="treatmentGoals" value={formData.treatmentGoals} />
-      </FormSection>
+      {/* Current Situation */}
+      <section className="mb-8 p-4 bg-gray-50 rounded-lg">
+        <h3 className="text-xl font-semibold mb-4 text-gray-800">Biological</h3>
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700">What got us here to this moment?</label>
+            <textarea
+              name="presentingProblem"
+              value={formData.presentingProblem}
+              onChange={handleChange}
+              rows={3}
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-[#283c63] focus:border-[#283c63] sm:text-sm"
+              placeholder="Enter details"
+            ></textarea>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Current concerns</label>
+            <textarea
+              name="currentConcerns"
+              value={formData.currentConcerns}
+              onChange={handleChange}
+              rows={3}
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-[#283c63] focus:border-[#283c63] sm:text-sm"
+              placeholder="Enter concerns"
+            ></textarea>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Signs and symptoms</label>
+            <textarea
+              name="signsSymptoms"
+              value={formData.signsSymptoms}
+              onChange={handleChange}
+              rows={3}
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-[#283c63] focus:border-[#283c63] sm:text-sm"
+              placeholder="Describe signs and symptoms"
+            ></textarea>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Treatment history</label>
+            <textarea
+              name="treatmentHistory"
+              value={formData.treatmentHistory}
+              onChange={handleChange}
+              rows={3}
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-[#283c63] focus:border-[#283c63] sm:text-sm"
+              placeholder="Enter treatment history"
+            ></textarea>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Counseling history & diagnoses</label>
+            <textarea
+              name="counselingHistory"
+              value={formData.counselingHistory}
+              onChange={handleChange}
+              rows={3}
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-[#283c63] focus:border-[#283c63] sm:text-sm"
+              placeholder="Enter history and diagnoses"
+            ></textarea>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Mental health history</label>
+            <textarea
+              name="mentalHealthHistory"
+              value={formData.mentalHealthHistory}
+              onChange={handleChange}
+              rows={3}
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-[#283c63] focus:border-[#283c63] sm:text-sm"
+              placeholder="Enter mental health history"
+            ></textarea>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">History of trauma and abuse</label>
+            <textarea
+              name="traumaHistory"
+              value={formData.traumaHistory}
+              onChange={handleChange}
+              rows={3}
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-[#283c63] focus:border-[#283c63] sm:text-sm"
+              placeholder="Describe any trauma"
+            ></textarea>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Treatment goals</label>
+            <textarea
+              name="treatmentGoals"
+              value={formData.treatmentGoals}
+              onChange={handleChange}
+              rows={3}
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-[#283c63] focus:border-[#283c63] sm:text-sm"
+              placeholder="Enter treatment goals"
+            ></textarea>
+          </div>
+        </div>
+      </section>
 
-      <FormSection title="Psychosocial">
-        <TextArea label="Current living condition" name="livingCondition" value={formData.livingCondition} />
-        <TextArea label="Family & significant relationships" name="familyRelationships" value={formData.familyRelationships} />
-        <TextArea label="Family mental health history including substance use" name="familyMentalHealth" value={formData.familyMentalHealth} />
-        <TextArea label="Criminal/legal issues" name="legalIssues" value={formData.legalIssues} />
-        <TextArea label="Leisure/recreation: What do you like to do with your friends/for fun?" name="leisure" value={formData.leisure} />
-        <TextInput label="Where do you go to school and what is your grade?" name="school" value={formData.school} />
-        <TextArea label="Do you have any problems at school?" name="schoolProblems" value={formData.schoolProblems} />
-        <TextArea label="Who is supportive at school?" name="schoolSupport" value={formData.schoolSupport} />
-        <TextInput label="Do you have a part-time job?" name="partTimeJob" value={formData.partTimeJob} />
-        <TextArea label="What substances have you used?" name="substanceUse" value={formData.substanceUse} />
-        <TextArea label="Support systems" name="supportSystems" value={formData.supportSystems} />
-        <TextArea label="Ongoing stressors/challenges" name="ongoingStressors" value={formData.ongoingStressors} />
-      </FormSection>
+      {/* Psychosocial */}
+      <section className="mb-8 p-4 bg-gray-50 rounded-lg">
+        <h3 className="text-xl font-semibold mb-4 text-gray-800">Psychosocial</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Current living condition</label>
+            <textarea
+              name="livingCondition"
+              value={formData.livingCondition}
+              onChange={handleChange}
+              rows={3}
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-[#283c63] focus:border-[#283c63] sm:text-sm"
+              placeholder="Describe living condition"
+            ></textarea>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Family & significant relationships</label>
+            <textarea
+              name="familyRelationships"
+              value={formData.familyRelationships}
+              onChange={handleChange}
+              rows={3}
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-[#283c63] focus:border-[#283c63] sm:text-sm"
+              placeholder="Describe relationships"
+            ></textarea>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Family mental health history including substance use
+            </label>
+            <textarea
+              name="familyMentalHealth"
+              value={formData.familyMentalHealth}
+              onChange={handleChange}
+              rows={3}
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-[#283c63] focus:border-[#283c63] sm:text-sm"
+              placeholder="Enter family mental health history"
+            ></textarea>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Criminal/legal issues</label>
+            <textarea
+              name="legalIssues"
+              value={formData.legalIssues}
+              onChange={handleChange}
+              rows={3}
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-[#283c63] focus:border-[#283c63] sm:text-sm"
+              placeholder="Enter legal issues (if any)"
+            ></textarea>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Leisure/recreation: What do you like to do with your friends/for fun?
+            </label>
+            <textarea
+              name="leisure"
+              value={formData.leisure}
+              onChange={handleChange}
+              rows={3}
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-[#283c63] focus:border-[#283c63] sm:text-sm"
+              placeholder="Enter leisure activities"
+            ></textarea>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Where do you go to school and what is your grade?</label>
+            <input
+              type="text"
+              name="school"
+              value={formData.school}
+              onChange={handleChange}
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-[#283c63] focus:border-[#283c63] sm:text-sm"
+              placeholder="Enter school name and grade"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Do you have any problems at school?</label>
+            <textarea
+              name="schoolProblems"
+              value={formData.schoolProblems}
+              onChange={handleChange}
+              rows={3}
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-[#283c63] focus:border-[#283c63] sm:text-sm"
+              placeholder="Describe any problems"
+            ></textarea>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Who is supportive at school?</label>
+            <textarea
+              name="schoolSupport"
+              value={formData.schoolSupport}
+              onChange={handleChange}
+              rows={3}
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-[#283c63] focus:border-[#283c63] sm:text-sm"
+              placeholder="Enter support details"
+            ></textarea>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Do you have a part-time job?</label>
+            <input
+              type="text"
+              name="partTimeJob"
+              value={formData.partTimeJob}
+              onChange={handleChange}
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-[#283c63] focus:border-[#283c63] sm:text-sm"
+              placeholder="Yes/No or details"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">What substances have you used?</label>
+            <textarea
+              name="substanceUse"
+              value={formData.substanceUse}
+              onChange={handleChange}
+              rows={3}
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-[#283c63] focus:border-[#283c63] sm:text-sm"
+              placeholder="List substances"
+            ></textarea>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Support systems</label>
+            <textarea
+              name="supportSystems"
+              value={formData.supportSystems}
+              onChange={handleChange}
+              rows={3}
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-[#283c63] focus:border-[#283c63] sm:text-sm"
+              placeholder="Describe support systems"
+            ></textarea>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Ongoing stressors/challenges</label>
+            <textarea
+              name="ongoingStressors"
+              value={formData.ongoingStressors}
+              onChange={handleChange}
+              rows={3}
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-[#283c63] focus:border-[#283c63] sm:text-sm"
+              placeholder="Describe stressors"
+            ></textarea>
+          </div>
+        </div>
+      </section>
 
-      <FormSection title="Medical History">
-        <Select 
-          label="Are you being treated for a physical medical condition?" 
-          name="medicalCondition"
-          value={formData.medicalCondition}
-          options={['No', 'Yes']}
-        />
-        {formData.medicalCondition === 'Yes' && (
-          <TextArea label="If yes, please describe" name="medicalConditionDetails" value={formData.medicalConditionDetails} />
-        )}
-        <TextArea label="Medications" name="medications" value={formData.medications} />
-        <TextArea label="Sleep" name="sleep" value={formData.sleep} />
-        <TextArea label="Movement" name="movement" value={formData.movement} />
-        <TextArea label="Substance use history" name="substanceUseHistory" value={formData.substanceUseHistory} />
-        <TextArea label="Cultural/ethnic strengths, supports, challenges" name="culturalInfo" value={formData.culturalInfo} />
-        <TextArea label="Orientation and gender identity information" name="orientationGender" value={formData.orientationGender} />
-        <TextArea label="Employment or school information (strengths, supports, stressors/challenges)" name="employmentInfo" value={formData.employmentInfo} />
-      </FormSection>
+      {/* Medical History */}
+      <section className="mb-8 p-4 bg-gray-50 rounded-lg">
+        <h3 className="text-xl font-semibold mb-4 text-gray-800">Medical History</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Are you being treated for a physical medical condition?
+            </label>
+            <select
+              name="medicalCondition"
+              value={formData.medicalCondition}
+              onChange={handleChange}
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-[#283c63] focus:border-[#283c63] sm:text-sm"
+            >
+              <option>No</option>
+              <option>Yes</option>
+            </select>
+          </div>
+          {formData.medicalCondition === 'Yes' && (
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700">If yes, please describe</label>
+              <textarea
+                name="medicalConditionDetails"
+                value={formData.medicalConditionDetails}
+                onChange={handleChange}
+                rows={3}
+                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-[#283c63] focus:border-[#283c63] sm:text-sm"
+                placeholder="Describe condition"
+              ></textarea>
+            </div>
+          )}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Medications</label>
+            <textarea
+              name="medications"
+              value={formData.medications}
+              onChange={handleChange}
+              rows={3}
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-[#283c63] focus:border-[#283c63] sm:text-sm"
+              placeholder="List medications"
+            ></textarea>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Sleep</label>
+            <textarea
+              name="sleep"
+              value={formData.sleep}
+              onChange={handleChange}
+              rows={3}
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-[#283c63] focus:border-[#283c63] sm:text-sm"
+              placeholder="Describe sleep patterns"
+            ></textarea>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Movement</label>
+            <textarea
+              name="movement"
+              value={formData.movement}
+              onChange={handleChange}
+              rows={3}
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-[#283c63] focus:border-[#283c63] sm:text-sm"
+              placeholder="Physical movement details"
+            ></textarea>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Substance use history</label>
+            <textarea
+              name="substanceUseHistory"
+              value={formData.substanceUseHistory}
+              onChange={handleChange}
+              rows={3}
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-[#283c63] focus:border-[#283c63] sm:text-sm"
+              placeholder="Describe history"
+            ></textarea>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Cultural/ethnic strengths, supports, challenges
+            </label>
+            <textarea
+              name="culturalInfo"
+              value={formData.culturalInfo}
+              onChange={handleChange}
+              rows={3}
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-[#283c63] focus:border-[#283c63] sm:text-sm"
+              placeholder="Describe cultural info"
+            ></textarea>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Orientation and gender identity information</label>
+            <textarea
+              name="orientationGender"
+              value={formData.orientationGender}
+              onChange={handleChange}
+              rows={3}
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-[#283c63] focus:border-[#283c63] sm:text-sm"
+              placeholder="Enter details"
+            ></textarea>
+          </div>
+          <div className="md:col-span-2">
+            <label className="block text-sm font-medium text-gray-700">
+              Employment or school information (strengths, supports, stressors/challenges)
+            </label>
+            <textarea
+              name="employmentInfo"
+              value={formData.employmentInfo}
+              onChange={handleChange}
+              rows={3}
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-[#283c63] focus:border-[#283c63] sm:text-sm"
+              placeholder="Enter details"
+            ></textarea>
+          </div>
+        </div>
+      </section>
 
-      <FormSection title="Strengths">
-        <TextArea label="What are some helpful ways you deal with problems or challenges?" name="copingStrategies" value={formData.copingStrategies} />
-        <TextArea label="Who do you turn to when you need help?" name="supportNetwork" value={formData.supportNetwork} />
-        <TextArea label="What are you good at? What do you like about yourself?" name="personalStrengths" value={formData.personalStrengths} />
-      </FormSection>
+      {/* Strengths */}
+      <section className="mb-8 p-4 bg-gray-50 rounded-lg">
+        <h3 className="text-xl font-semibold mb-4 text-gray-800">Strengths</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              What are some helpful ways you deal with problems or challenges?
+            </label>
+            <textarea
+              name="copingStrategies"
+              value={formData.copingStrategies}
+              onChange={handleChange}
+              rows={3}
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-[#283c63] focus:border-[#283c63] sm:text-sm"
+              placeholder="Enter coping strategies"
+            ></textarea>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Who do you turn to when you need help?</label>
+            <textarea
+              name="supportNetwork"
+              value={formData.supportNetwork}
+              onChange={handleChange}
+              rows={3}
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-[#283c63] focus:border-[#283c63] sm:text-sm"
+              placeholder="Enter support network"
+            ></textarea>
+          </div>
+          <div className="md:col-span-2">
+            <label className="block text-sm font-medium text-gray-700">
+              What are you good at? What do you like about yourself?
+            </label>
+            <textarea
+              name="personalStrengths"
+              value={formData.personalStrengths}
+              onChange={handleChange}
+              rows={3}
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-[#283c63] focus:border-[#283c63] sm:text-sm"
+              placeholder="Enter your personal strengths"
+            ></textarea>
+          </div>
+        </div>
+      </section>
     </div>
   );
 };
 
-export default BiopsychosocialAssessment;
+export default BiopsychosocialAssessment
