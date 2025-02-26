@@ -67,15 +67,18 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, event, mutate }) =>
 
     const handleSubmit = async (e: any) => {
         e.preventDefault();
-        const payload = {
-            appointmentDate: selectedRow.appointmentDate,
-            appointmentTime: selectedRow.appointmentTime,
-            status: selectedRow.status,
-            progressNotes: selectedRow.progressNotes,
-            servicesProvided: selectedRow.servicesProvided,
-            requestType: selectedRow.requestType,
-            duration: selectedRow.duration
+        const { appointmentDate, appointmentTime, status, progressNotes, servicesProvided, requestType, duration, ...rest } = selectedRow
+        const otherPayload = {
+            appointmentDate,
+            appointmentTime,
+            status,
+            progressNotes,
+            servicesProvided,
+            requestType,
+            duration,
         }
+        const payload = { ...otherPayload, sessionNotesData: rest }
+        delete payload.sessionNotesData.sessionNotesData
         if (payload.duration && isNaN(Number(payload.duration))) {
             toast.error("Duration must be a number")
             return
