@@ -228,13 +228,14 @@ const MyCalendar: React.FC = () => {
     }, [data]);
 
     const handleEventSelect = useCallback((event: CalendarEvent) => {
+        if ((event as any).status === "Rejected" || (event as any).status === "Completed") return;
         setSelectedEvent(event);
         setIsModalOpen(true);
     }, []);
 
     const groupEventsByHour = useMemo(() => {
         const grouped: { [key: string]: CalendarEvent[] } = {};
-    
+
         initialEvents.forEach((event) => {
             if (!event?.start || isNaN(new Date(event.start).getTime())) {
                 console.warn("Skipping event with invalid start:", event);
@@ -246,7 +247,7 @@ const MyCalendar: React.FC = () => {
             }
             grouped[hour].push(event);
         });
-    
+
         return grouped;
     }, [initialEvents]);
 
@@ -370,37 +371,37 @@ const MyCalendar: React.FC = () => {
                     step={60}
                     timeslots={1}
                     eventPropGetter={(event, start, end, isSelected) => {
-                            let newStyle = {
-                                backgroundColor: "lightgrey",
-                                color: 'black',
-                                borderRadius: "0px",
-                                border: "none"
-                            };
+                        let newStyle = {
+                            backgroundColor: "lightgrey",
+                            color: 'black',
+                            borderRadius: "0px",
+                            border: "none"
+                        };
 
-                            switch ((event as any).status) {
-                                case "Pending":
-                                    newStyle.backgroundColor = "#eab308";
-                                    break;
-                                case "Approved":
-                                    newStyle.backgroundColor = "#283c63";
-                                    break;
-                                case "Completed":
-                                    newStyle.backgroundColor = "darkgreen";
-                                    break;
-                                case "Not Attended":
-                                    newStyle.backgroundColor = "darkred";
-                                    break;
-                                case "Rejected":
-                                    newStyle.backgroundColor = "darkred";
-                                    break;
-                                default:
-                                    newStyle.backgroundColor = "darkgrey";
-                            }
-                            return {
-                                className: "",
-                                style: newStyle
-                            };
+                        switch ((event as any).status) {
+                            case "Pending":
+                                newStyle.backgroundColor = "#eab308";
+                                break;
+                            case "Approved":
+                                newStyle.backgroundColor = "#283c63";
+                                break;
+                            case "Completed":
+                                newStyle.backgroundColor = "darkgreen";
+                                break;
+                            case "Not Attended":
+                                newStyle.backgroundColor = "darkred";
+                                break;
+                            case "Rejected":
+                                newStyle.backgroundColor = "darkred";
+                                break;
+                            default:
+                                newStyle.backgroundColor = "darkgrey";
                         }
+                        return {
+                            className: "",
+                            style: newStyle
+                        };
+                    }
                     }
                 />
             </div>

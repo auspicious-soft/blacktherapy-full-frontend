@@ -91,7 +91,6 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, event, mutate }) =>
                         case 'SOAP Note': {
                             const { uploadedKey } = await uploadSoapNoteOnAppointment({ ...selectedRow, _id: selectedRow._id, clientId: { ...selectedRow.clientId, email: selectedRow.clientId.email }, signature: therapistSignatures });
                             (payload as any).sessionNotes = uploadedKey;
-                            console.log('(payload as any).sessionNotes: ', (payload as any).sessionNotes);
                             break;
                         }
                         case 'Pie Note': {
