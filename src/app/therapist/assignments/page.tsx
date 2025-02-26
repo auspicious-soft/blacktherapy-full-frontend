@@ -236,7 +236,6 @@ const Page = () => {
                           className='flex items-center justify-center'
                           onClick={() => {
                             setDownloading(true)
-                            console.log('getImageUrlOfS3(item?.sessionNotes): ', getImageUrlOfS3(item?.sessionNotes));
                             if (item?.sessionNotes) {
                               downloadFileFromS3(getImageUrlOfS3(item?.sessionNotes))
                               setDownloading(false)
