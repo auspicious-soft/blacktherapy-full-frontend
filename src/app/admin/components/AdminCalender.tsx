@@ -259,18 +259,21 @@ const AdminCalendar: React.FC = () => {
   // Modify the groupEventsByHour logic to be more precise
   const groupEventsByTime = useMemo(() => {
     const grouped: { [key: string]: CalendarEvent[] } = {};
-
+  
     initialEvents.forEach((event) => {
+      if (!event?.start || isNaN(new Date(event.start).getTime())) {
+        console.warn("Skipping event with invalid start:", event);
+        return;
+      }
       const timeKey = format(event.start, "yyyy-MM-dd HH:mm");
       if (!grouped[timeKey]) {
         grouped[timeKey] = [];
       }
       grouped[timeKey].push(event);
     });
-
+  
     return grouped;
   }, [initialEvents]);
-
   const handleEventSelect = useCallback((event: CalendarEvent) => {
     setSelectedEvent(event);
     setIsModalOpen(true);

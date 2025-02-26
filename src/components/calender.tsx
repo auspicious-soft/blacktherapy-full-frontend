@@ -233,15 +233,19 @@ const MyCalendar: React.FC = () => {
 
     const groupEventsByHour = useMemo(() => {
         const grouped: { [key: string]: CalendarEvent[] } = {};
-
+    
         initialEvents.forEach((event) => {
+            if (!event?.start || isNaN(new Date(event.start).getTime())) {
+                console.warn("Skipping event with invalid start:", event);
+                return;
+            }
             const hour = format(event.start, "yyyy-MM-dd HH");
             if (!grouped[hour]) {
                 grouped[hour] = [];
             }
             grouped[hour].push(event);
         });
-
+    
         return grouped;
     }, [initialEvents]);
 
