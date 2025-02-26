@@ -6,10 +6,7 @@ const PieNote = (props: SoapInterface) => {
 
   const handleChange = (e: any) => {
     const { name, value } = e.target;
-    setFormData((prevState: any) => ({
-      ...prevState,
-      [name]: value
-    }));
+    setFormData((prev: any) => ({ ...prev, [name]: value }));
   };
 
   return (

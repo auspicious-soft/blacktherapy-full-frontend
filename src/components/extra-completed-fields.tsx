@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect } from 'react'
 import SoapNote from './clinician-notes/soap'
 import MedicalStatusExam from './clinician-notes/medical-status-exam'
 import BiopsychosocialAssessment from './clinician-notes/biopsychosocial-assessment'
@@ -9,10 +9,19 @@ interface ISelectedRow {
     setSelectedRow: (value: any) => void
     notesType: "SOAP Note" | "Mental Status Exam" | "Biopsychosocial Assessment" | "Pie Note" | ""
     setNotesType: (value: "SOAP Note" | "Mental Status Exam" | "Biopsychosocial Assessment" | "Pie Note" | "") => void
+    isClinicianNotesEdit?: boolean
 }
 
 const ExtraFields = (props: ISelectedRow) => {
-    const { selectedRow, setSelectedRow, notesType, setNotesType } = props
+    const { selectedRow, setSelectedRow, notesType, setNotesType, isClinicianNotesEdit = true } = props
+    useEffect(() => {
+        setNotesType(selectedRow?.sessionNotesData?.notesType || "")
+        setSelectedRow((prev: any) => ({
+            ...prev,
+            ...selectedRow?.sessionNotesData
+        }))
+    }, [selectedRow?.sessionNotesData?.notesType])
+
     const renderExtraFields = (notesType: "SOAP Note" | "Mental Status Exam" | "Biopsychosocial Assessment" | "Pie Note" | "") => {
         if (notesType !== "") {
             switch (notesType) {
@@ -32,77 +41,79 @@ const ExtraFields = (props: ISelectedRow) => {
     }
     return (
         <div className="flex flex-col gap-3">
-            <label htmlFor="progressNotes" className="font-medium">
-                Progress Notes
-            </label>
-            <textarea
-                id="progressNotes"
-                value={selectedRow.progressNotes}
-                onChange={(e) =>
-                    setSelectedRow((prev: any) => ({
-                        ...prev,
-                        progressNotes: e.target.value
-                    }))
-                }
-                className="border p-2 rounded"
-                required
-            />
-            <div className="flex gap-3 w-full">
-                <div className='flex-1'>
-                    <label className="block mb-2">Services Provided</label>
-                    <select
-                        required
-                        name="assignedClinician"
-                        value={selectedRow.servicesProvided || ""}
-                        onChange={(e) =>
-                            setSelectedRow((prev: any) => ({
-                                ...prev,
-                                servicesProvided: e.target.value,
-                            }))
-                        }
-                        className="border p-2 rounded"
-                    >
-                        <option value="">--Select--</option>
-                        <option value="Psychiatric Diagnostic Evaluation (Assessment)">
-                            Psychiatric Diagnostic Evaluation (Assessment)
-                        </option>
-                        <option value="Psychotherapy (Individual)">Psychotherapy (Individual)</option>
-                        <option value="Peer Support Service">Peer Support Service</option>
-                        <option value="Psychotherapy (couple)">Psychotherapy (couple)</option>
-                        <option value="Psychotherapy (Group)">Psychotherapy (Group)</option>
-                        <option value="Nurse (RN) Assessment">Nurse (RN) Assessment</option>
-                        <option value="Peer Support">Peer Support</option>
-                        <option value="Personal Care Service">Personal Care Service</option>
-                        <option value="DWI Assessment">DWI Assessment</option>
-                        <option value="Intensive in-home Respite">Intensive in-home Respite</option>
-                        <option value="Other">Other</option>
-                    </select>
-                </div>
-                <div>
+            {(!isClinicianNotesEdit) && <div>
+                <label htmlFor="progressNotes" className="font-medium">
+                    Progress Notes
+                </label>
+                <textarea
+                    id="progressNotes"
+                    value={selectedRow.progressNotes}
+                    onChange={(e) =>
+                        setSelectedRow((prev: any) => ({
+                            ...prev,
+                            progressNotes: e.target.value
+                        }))
+                    }
+                    className="border p-2 rounded"
+                    required
+                />
+                <div className="flex gap-3 w-full">
                     <div className='flex-1'>
-                        <label className="block mb-2">Request Type</label>
+                        <label className="block mb-2">Services Provided</label>
                         <select
                             required
-                            name="requestType"
-                            value={selectedRow.requestType || ""}
+                            name="assignedClinician"
+                            value={selectedRow.servicesProvided || ""}
                             onChange={(e) =>
                                 setSelectedRow((prev: any) => ({
                                     ...prev,
-                                    requestType: e.target.value,
+                                    servicesProvided: e.target.value,
                                 }))
                             }
                             className="border p-2 rounded"
                         >
                             <option value="">--Select--</option>
-                            <option value="Payment">Payment</option>
-                            <option value="Reimbursement">Reimbursement</option>
-                            <option value="Other Services Provided">Other Services Provided</option>
+                            <option value="Psychiatric Diagnostic Evaluation (Assessment)">
+                                Psychiatric Diagnostic Evaluation (Assessment)
+                            </option>
+                            <option value="Psychotherapy (Individual)">Psychotherapy (Individual)</option>
+                            <option value="Peer Support Service">Peer Support Service</option>
+                            <option value="Psychotherapy (couple)">Psychotherapy (couple)</option>
+                            <option value="Psychotherapy (Group)">Psychotherapy (Group)</option>
+                            <option value="Nurse (RN) Assessment">Nurse (RN) Assessment</option>
+                            <option value="Peer Support">Peer Support</option>
+                            <option value="Personal Care Service">Personal Care Service</option>
+                            <option value="DWI Assessment">DWI Assessment</option>
+                            <option value="Intensive in-home Respite">Intensive in-home Respite</option>
+                            <option value="Other">Other</option>
                         </select>
                     </div>
+                    <div>
+                        <div className='flex-1'>
+                            <label className="block mb-2">Request Type</label>
+                            <select
+                                required
+                                name="requestType"
+                                value={selectedRow.requestType || ""}
+                                onChange={(e) =>
+                                    setSelectedRow((prev: any) => ({
+                                        ...prev,
+                                        requestType: e.target.value,
+                                    }))
+                                }
+                                className="border p-2 rounded"
+                            >
+                                <option value="">--Select--</option>
+                                <option value="Payment">Payment</option>
+                                <option value="Reimbursement">Reimbursement</option>
+                                <option value="Other Services Provided">Other Services Provided</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            </div>}
             <div className="flex-1 flex w-full gap-3 items-center">
-                <div className="md:w-[calc(20%-15px)] w-[calc(50%-15px)]">
+                {!isClinicianNotesEdit && <div className="md:w-[calc(20%-15px)] w-[calc(50%-15px)]">
                     <label className="block mb-2">Duration (Hours)</label>
                     <input
                         required
@@ -119,7 +130,7 @@ const ExtraFields = (props: ISelectedRow) => {
                         placeholder=""
                         className="border p-2 rounded"
                     />
-                </div>
+                </div>}
                 <div className="flex-1">
                     <label className="block mb-2">Notes Type</label>
                     <select

@@ -2,8 +2,8 @@
 import SearchBar from '@/app/admin/components/SearchBar';
 import { getTherapistAssignments, getTherapistsProfileData } from '@/services/therapist/therapist-service.';
 import { useSession } from 'next-auth/react';
-import { useState, useTransition } from 'react';
-import { format } from 'date-fns';
+import { useEffect, useState, useTransition } from 'react';
+import { format, set } from 'date-fns';
 import ReactPaginate from 'react-paginate';
 import useSWR from 'swr';
 import ReactLoading from 'react-loading';
@@ -21,7 +21,8 @@ import { uploadPieNoteOnAppointment } from '@/components/Pdf-template/pie-note-p
 import { uploadBiopsychosocialAssessment } from '@/components/Pdf-template/biopsychosocial-pdf';
 import { uploadMentalStatusExam } from '@/components/Pdf-template/medical-status-pdf';
 import { IoIosDocument } from 'react-icons/io';
-import { EyeIcon } from 'lucide-react';
+import { EyeIcon, PencilRuler } from 'lucide-react';
+import { deleteImageFromS3 } from '@/actions';
 
 const Page = () => {
   const [showModal, setShowModal] = useState(false);
@@ -36,6 +37,7 @@ const Page = () => {
   const total = data?.data?.total
   const rowsPerPage = data?.data?.limit
   const [isCompletedFieldsDisable, setIsCompletedFieldsDisable] = useState(false)
+  const [selectedRow, setSelectedRow] = useState<any>({})
   const handlePageClick = (selectedItem: { selected: number }) => {
     setQuery(`page=${selectedItem.selected + 1}&limit=${rowsPerPage}`);
   }
@@ -46,9 +48,8 @@ const Page = () => {
   const handleChat = (id: string) => {
     router.push(`/therapist/assignments/chats/${id}`);
   };
-  const [selectedRow, setSelectedRow] = useState<any>({})
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
-
+  const [isNotesEditModalOpen, setIsNotesEditModalOpen] = useState(false)
   const handleSubmit = async (e: any) => {
     e.preventDefault()
     const { appointmentDate, appointmentTime, status, progressNotes, servicesProvided, requestType, duration, ...rest } = selectedRow
@@ -61,7 +62,7 @@ const Page = () => {
       requestType,
       duration,
     }
-    const payload = { ...otherPayload, sessionNotesData: rest }
+    const payload = { ...otherPayload, sessionNotesData: { ...rest, notesType } }
     delete payload.sessionNotesData.sessionNotesData
 
     if (payload.duration && isNaN(Number(payload.duration))) {
@@ -71,29 +72,36 @@ const Page = () => {
 
     startTransition(async () => {
       try {
-        if (payload.status === 'Completed' && payload.duration) {
-          const { key } = await uploadPaymentInvoiceOnAppointment({ ...selectedRow, ...payload, therapistEmail: session?.data?.user?.email, therapistName: session?.data?.user?.name });
-          (payload as any).invoice = key;
+        if (payload.status === 'Completed') {
+          if (isEditModalOpen) {
+            const { key } = await uploadPaymentInvoiceOnAppointment({ ...selectedRow, ...payload, therapistEmail: session?.data?.user?.email, therapistName: session?.data?.user?.name });
+            (payload as any).invoice = key;
+          }
 
           switch (notesType) {
             case 'SOAP Note': {
               const { uploadedKey } = await uploadSoapNoteOnAppointment({ ...selectedRow, _id: selectedRow._id, clientId: { ...selectedRow.clientId, email: selectedRow.clientId.email }, signature: therapistSignatures });
               (payload as any).sessionNotes = uploadedKey;
+              isNotesEditModalOpen && await deleteImageFromS3(selectedRow?.sessionNotes)
               break;
             }
             case 'Pie Note': {
               const { uploadedKey } = await uploadPieNoteOnAppointment({ ...selectedRow, _id: selectedRow._id, clientId: { ...selectedRow.clientId, email: selectedRow.clientId.email }, signature: therapistSignatures });
               (payload as any).sessionNotes = uploadedKey;
+              isNotesEditModalOpen && await deleteImageFromS3(selectedRow?.sessionNotes)
               break;
             }
             case 'Biopsychosocial Assessment': {
               const { uploadedKey } = await uploadBiopsychosocialAssessment({ ...selectedRow, _id: selectedRow._id, clientId: { ...selectedRow.clientId, email: selectedRow.clientId.email }, signature: therapistSignatures });
               (payload as any).sessionNotes = uploadedKey;
+              isNotesEditModalOpen && await deleteImageFromS3(selectedRow?.sessionNotes)
               break;
             }
             case 'Mental Status Exam': {
               const { uploadedKey } = await uploadMentalStatusExam({ ...selectedRow, _id: selectedRow._id, clientId: { ...selectedRow.clientId, email: selectedRow.clientId.email }, signature: therapistSignatures });
               (payload as any).sessionNotes = uploadedKey;
+              isNotesEditModalOpen && await deleteImageFromS3(selectedRow?.sessionNotes)
+              break;
             }
           }
         }
@@ -102,13 +110,16 @@ const Page = () => {
           toast.success("Appointment updated successfully")
           mutate()
           setSelectedRow({})
-          setIsEditModalOpen(false)
+          isEditModalOpen && setIsEditModalOpen(false)
+          isNotesEditModalOpen && setIsNotesEditModalOpen(false)
         }
       }
       catch (error) {
         toast.error("An error occurred while updating the assignment");
-      } finally {
-        setIsEditModalOpen(false);
+      }
+      finally {
+        isEditModalOpen && setIsEditModalOpen(false)
+        isNotesEditModalOpen && setIsNotesEditModalOpen(false)
       }
     })
   }
@@ -235,6 +246,7 @@ const Page = () => {
                         >
                           {!downloading ? <EyeIcon color='#26395e' size={20} /> : <ReactLoader />}
                         </button>
+
                         <button
                           className='flex items-center justify-center'
                           onClick={() => {
@@ -248,6 +260,17 @@ const Page = () => {
                           disabled={!item?.sessionNotes}
                         >
                           {!downloading ? <IoIosDocument color='#26395e' size={20} /> : <ReactLoader />}
+                        </button>
+
+                        <button
+                          className='flex items-center justify-center cursor-pointer'
+                          onClick={() => {
+                            setSelectedRow(item)
+                            setIsNotesEditModalOpen(true)
+                          }}
+                          disabled={item?.isLocked || item?.status !== 'Completed'}
+                        >
+                          <PencilRuler size={20} />
                         </button>
                       </td>
                     </tr>
@@ -397,7 +420,7 @@ const Page = () => {
 
                 {
                   (selectedRow?.status === 'Completed' && !isCompletedFieldsDisable) && (
-                    <ExtraFields selectedRow={selectedRow} setSelectedRow={setSelectedRow} notesType={notesType} setNotesType={setNotesType} />
+                    <ExtraFields isClinicianNotesEdit={false} selectedRow={selectedRow} setSelectedRow={setSelectedRow} notesType={notesType} setNotesType={setNotesType} />
                   )
                 }
 
@@ -423,7 +446,40 @@ const Page = () => {
         )
       }
 
-    </div>
+      {
+        isNotesEditModalOpen && (
+          <Modal
+            isOpen={isNotesEditModalOpen}
+            onRequestClose={() => setIsNotesEditModalOpen(false)}
+            contentLabel="Edit Event"
+            className={`overflow-auto border-none outline-none ${notesType !== 'Biopsychosocial Assessment' ? 'max-w-2xl' : 'max-w-4xl'} overflo-custom max-h-[95vh] child-modal bottom-0 !bg-white rounded-lg w-full p-5 shadow-lg z-[2000] h-auto !top-auto ${isEditModalOpen ? 'modal-open' : ''}`}
+            overlayClassName="overlay fixed inset-0 bg-black bg-opacity-50 z-[2000]"
+          >
+            <h2>Edit Clinician Notes </h2>
+            <form onSubmit={(e) => handleSubmit(e)} >
+              <ExtraFields selectedRow={selectedRow} setSelectedRow={setSelectedRow} notesType={notesType} setNotesType={setNotesType} />
+              <div className="sticky -bottom-5 left-0 right-0 bg-white p-4 border-t border-gray-200 flex justify-end gap-2">
+                <button
+                  type="button"
+                  className="text-black p-2 rounded-md font-semibold"
+                  onClick={() => setIsNotesEditModalOpen(false)}
+                >
+                  Close
+                </button>
+                <button
+                  disabled={isPending}
+                  type="submit"
+                  className="bg-[#283C63] text-white px-4 py-2 rounded"
+                >
+                  {!isPending ? 'Save Changes' : <ReactLoader color="#fff" />}
+                </button>
+              </div>
+            </form>
+          </Modal>
+        )
+      }
+
+    </div >
   );
 };
 
