@@ -221,6 +221,7 @@ const MyCalendar: React.FC = () => {
                     status: appointment.status,
                     appointmentDate: appointment.appointmentDate,
                     appointmentTime: appointment.appointmentTime,
+                    clientId: appointment.clientId,
                 }
             }) || []
         );

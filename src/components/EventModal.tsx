@@ -6,11 +6,18 @@ import { EditIcon } from '@/utils/svgicons';
 import Modal from 'react-modal';
 import ReactLoader from './ReactLoader';
 import { toast } from 'sonner';
-import { KeyedMutator } from 'swr';
+import useSWR, { KeyedMutator } from 'swr';
 import { AxiosResponse } from 'axios';
 import { updateAppointmentData } from '@/services/admin/admin-service';
 import ExtraFields from './extra-completed-fields';
-
+import { uploadPaymentInvoiceOnAppointment } from '@/components/Pdf-template/payment-complete-invoice';
+import { uploadSoapNoteOnAppointment } from '@/components/Pdf-template/soap-note-pdf';
+import { uploadPieNoteOnAppointment } from '@/components/Pdf-template/pie-note-pdf';
+import { uploadBiopsychosocialAssessment } from '@/components/Pdf-template/biopsychosocial-pdf';
+import { uploadMentalStatusExam } from '@/components/Pdf-template/medical-status-pdf';
+import { getImageUrlOfS3 } from '@/utils';
+import { useSession } from 'next-auth/react';
+import { getTherapistsProfileData } from '@/services/therapist/therapist-service.';
 interface ModalProps {
     isOpen: boolean;
     onClose: () => void;
@@ -19,11 +26,15 @@ interface ModalProps {
 }
 
 const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, event, mutate }) => {
+    const session = useSession()
+    const therapistId = session?.data?.user?.id;
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isPending, startTransition] = useTransition();
     const [selectedRow, setSelectedRow] = useState<any>({})
     const [isCompletedFieldsDisable, setIsCompletedFieldsDisable] = useState(false);
     const [notesType, setNotesType] = useState<"SOAP Note" | "Mental Status Exam" | "Biopsychosocial Assessment" | "Pie Note" | "">("")
+    const { data: therapistData } = useSWR(`/therapist/${therapistId}`, getTherapistsProfileData)
+    const therapistSignatures = getImageUrlOfS3(therapistData?.data?.data?.consentSignature)
 
     useEffect(() => {
         setSelectedRow({
@@ -33,7 +44,10 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, event, mutate }) =>
             progressNotes: event.progressNotes,
             servicesProvided: event.servicesProvided,
             requestType: event.requestType,
-            duration: event.duration
+            duration: event.duration,
+            clientName: event.clientName,
+            clientId: event.clientId,
+            _id: event.id
         });
         setIsCompletedFieldsDisable(event.status === 'Completed');
     }, [isEditModalOpen, event]);
@@ -61,26 +75,58 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, event, mutate }) =>
             servicesProvided: selectedRow.servicesProvided,
             requestType: selectedRow.requestType,
             duration: selectedRow.duration
-        };
-        if (payload.duration && isNaN(Number(payload.duration))) {
-            toast.error("Duration must be a number");
-            return;
         }
+        if (payload.duration && isNaN(Number(payload.duration))) {
+            toast.error("Duration must be a number")
+            return
+        }
+
         startTransition(async () => {
             try {
-                const response = await updateAppointmentData(`/admin/appointments/${event.id}`, payload);
-                if (response.status === 200) {
-                    toast.success("Appointment updated successfully");
-                    mutate();
-                    onClose();
+                if (payload.status === 'Completed' && payload.duration) {
+                    const { key } = await uploadPaymentInvoiceOnAppointment({ ...selectedRow, ...payload, therapistEmail: session?.data?.user?.email, therapistName: session?.data?.user?.name });
+                    (payload as any).invoice = key;
+
+                    switch (notesType) {
+                        case 'SOAP Note': {
+                            const { uploadedKey } = await uploadSoapNoteOnAppointment({ ...selectedRow, _id: selectedRow._id, clientId: { ...selectedRow.clientId, email: selectedRow.clientId.email }, signature: therapistSignatures });
+                            (payload as any).sessionNotes = uploadedKey;
+                            console.log('(payload as any).sessionNotes: ', (payload as any).sessionNotes);
+                            break;
+                        }
+                        case 'Pie Note': {
+                            const { uploadedKey } = await uploadPieNoteOnAppointment({ ...selectedRow, _id: selectedRow._id, clientId: { ...selectedRow.clientId, email: selectedRow.clientId.email }, signature: therapistSignatures });
+                            (payload as any).sessionNotes = uploadedKey;
+                            break;
+                        }
+                        case 'Biopsychosocial Assessment': {
+                            const { uploadedKey } = await uploadBiopsychosocialAssessment({ ...selectedRow, _id: selectedRow._id, clientId: { ...selectedRow.clientId, email: selectedRow.clientId.email }, signature: therapistSignatures });
+                            (payload as any).sessionNotes = uploadedKey;
+                            break;
+                        }
+                        case 'Mental Status Exam': {
+                            const { uploadedKey } = await uploadMentalStatusExam({ ...selectedRow, _id: selectedRow._id, clientId: { ...selectedRow.clientId, email: selectedRow.clientId.email }, signature: therapistSignatures });
+                            (payload as any).sessionNotes = uploadedKey;
+                        }
+                    }
                 }
-            } catch (error) {
-                toast.error("An error occurred while updating the assignment");
-            } finally {
-                setIsEditModalOpen(false);
+                const response = await updateAppointmentData(`/admin/appointments/${selectedRow?._id}`, payload);
+                if (response.status === 200) {
+                    toast.success("Appointment updated successfully")
+                    mutate()
+                    setSelectedRow({})
+                    setIsEditModalOpen(false)
+                }
             }
-        });
+            catch (error) {
+                toast.error("An error occurred while updating the assignment");
+            }
+            //   finally {
+            //   setIsEditModalOpen(false);
+            // }
+        })
     }
+
     const isBioT = notesType !== 'Biopsychosocial Assessment' ? 'max-w-2xl' : 'max-w-4xl'
     return (
         <>

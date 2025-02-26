@@ -391,14 +391,6 @@ export const uploadBiopsychosocialAssessment = async (formData: any) => {
     try {
         const assessmentDoc = <BiopsychosocialAssessmentPdf formData={formData} />;
         const pdfBlob = await pdf(assessmentDoc).toBlob();
-        const url = URL.createObjectURL(pdfBlob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `biopsychosocial-assessment-${formData.clientName || 'No'}.pdf`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
         const fileName = `appointments/${formData.clientId.email}/my-appointment-files/biopsychosocial-assessment-${new Date().getTime()}.pdf`;
         const { signedUrl, key } = await customFileUrlSigner(fileName);
         const uploadResponse = await fetch(signedUrl, {
