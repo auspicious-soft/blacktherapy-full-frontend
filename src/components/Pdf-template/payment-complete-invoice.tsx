@@ -3,6 +3,7 @@ import React from 'react';
 import { Page, Text, View, Document, StyleSheet, pdf, Image } from '@react-pdf/renderer';
 import { generateSignedUrlForPaymentInvoice } from '@/actions';
 import btnLogo from '@/assets/images/btn-logo.png';
+import { nonMilitaryTime } from '@/utils';
 // Create styles
 const styles = StyleSheet.create({
     page: {
@@ -118,7 +119,7 @@ const PaymentInvoice = ({ appointment }: any) => {
                     </View>
                     <View style={styles.row}>
                         <Text style={styles.label}>Service Time:</Text>
-                        <Text style={styles.value}>{appointment.appointmentTime}</Text>
+                        <Text style={styles.value}>{nonMilitaryTime(appointment.appointmentTime)}</Text>
                     </View>
                     <View style={styles.row}>
                         <Text style={styles.label}>Duration:</Text>
