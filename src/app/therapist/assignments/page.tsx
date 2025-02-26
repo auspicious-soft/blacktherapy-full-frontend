@@ -14,15 +14,18 @@ import ReactLoader from '@/components/ReactLoader';
 import { updateAppointmentData } from '@/services/admin/admin-service';
 import { toast } from 'sonner';
 import { uploadPaymentInvoiceOnAppointment } from '@/components/Pdf-template/payment-complete-invoice';
-import { getImageUrlOfS3, nonMilitaryTime } from '@/utils';
+import { downloadFileFromS3, getImageUrlOfS3, nonMilitaryTime } from '@/utils';
 import ExtraFields from '@/components/extra-completed-fields';
 import { uploadSoapNoteOnAppointment } from '@/components/Pdf-template/soap-note-pdf';
 import { uploadPieNoteOnAppointment } from '@/components/Pdf-template/pie-note-pdf';
 import { uploadBiopsychosocialAssessment } from '@/components/Pdf-template/biopsychosocial-pdf';
 import { uploadMentalStatusExam } from '@/components/Pdf-template/medical-status-pdf';
+import { IoIosDocument } from 'react-icons/io';
+import { EyeIcon } from 'lucide-react';
 
 const Page = () => {
   const [showModal, setShowModal] = useState(false);
+  const [downloading, setDownloading] = useState(false)
   const router = useRouter();
   const [isPending, startTransition] = useTransition()
   const session = useSession()
@@ -127,6 +130,7 @@ const Page = () => {
               <th >Video Chat</th>
               <th >Status</th>
               <th>Actions</th>
+              <th>Clinician Notes</th>
             </tr>
           </thead>
           <tbody>
@@ -190,7 +194,7 @@ const Page = () => {
                           </button>
                         )}
                       </td>
-                      <td>
+                      <td >
                         <p className={`font-gothamMedium inline-block text-center rounded-3xl py-[2px] px-[10px] text-[10px]
                             ${item.status === 'Completed'
                             ? 'text-[#4ec091] bg-[#cbffb2]'
@@ -214,6 +218,34 @@ const Page = () => {
                             setIsCompletedFieldsDisable(item?.status === 'Completed')
                           }}>
                           <EditIcon />
+                        </button>
+                      </td>
+                      <td className='flex justify-start gap-3'>
+                        <button
+                          className='flex items-center justify-center'
+                          onClick={() => {
+                            if (item?.sessionNotes) {
+                              window.open(getImageUrlOfS3(item?.sessionNotes), "_blank")
+                            }
+                          }}
+                          disabled={!item?.sessionNotes}
+                        >
+                          {!downloading ? <EyeIcon color='#26395e' size={20} /> : <ReactLoader />}
+                        </button>
+                        <button
+                          className='flex items-center justify-center'
+                          onClick={() => {
+                            setDownloading(true)
+                            console.log('getImageUrlOfS3(item?.sessionNotes): ', getImageUrlOfS3(item?.sessionNotes));
+                            if (item?.sessionNotes) {
+                              downloadFileFromS3(getImageUrlOfS3(item?.sessionNotes))
+                              setDownloading(false)
+                              toast.success('Payment Invoice downloaded successfully', { position: 'top-right', duration: 1500 })
+                            }
+                          }}
+                          disabled={!item?.sessionNotes}
+                        >
+                          {!downloading ? <IoIosDocument color='#26395e' size={20} /> : <ReactLoader />}
                         </button>
                       </td>
                     </tr>
