@@ -9,7 +9,7 @@ import Modal from "react-modal";
 import useTherapists from "@/utils/useTherapists";
 import CustomSelect from "./CustomSelect";
 import { toast } from "sonner";
-import { updateAppointmentData } from "@/services/admin/admin-service";
+import { lockUnlockNote, updateAppointmentData } from "@/services/admin/admin-service";
 import useSWR, { KeyedMutator } from "swr";
 import { AxiosResponse } from "axios";
 import ReactLoader from "@/components/ReactLoader";
@@ -22,7 +22,7 @@ import { uploadBiopsychosocialAssessment } from "@/components/Pdf-template/biops
 import { uploadMentalStatusExam } from "@/components/Pdf-template/medical-status-pdf";
 import { getTherapistsProfileData } from "@/services/therapist/therapist-service.";
 import { IoIosDocument } from "react-icons/io";
-import {  EyeIcon } from "lucide-react";
+import { EyeIcon, LockIcon, UnlockIcon } from "lucide-react";
 
 interface EventModalProps {
   event?: CalendarEvent | null;
@@ -31,6 +31,7 @@ interface EventModalProps {
   events: CalendarEvent[];
   mutate: KeyedMutator<AxiosResponse<any, any>>
 }
+
 const EventModal = ({ event, isOpen, onClose, events, mutate }: EventModalProps) => {
   const { therapistData } = useTherapists(true);
   const [selectedRow, setSelectedRow] = useState<any>(null);
@@ -56,6 +57,40 @@ const EventModal = ({ event, isOpen, onClose, events, mutate }: EventModalProps)
   const handleSelectChange = (selectedOption: any) => {
     setSelectedClinician(selectedOption);
   }
+
+  // Handle lock/unlock functionality
+  const handleLockUnlockNote = async (appointmentId: string, isCurrentlyLocked: boolean, clientName: string, appointmentDate: string) => {
+    startTransition(async () => {
+      try {
+        const dueDate = new Date();
+        dueDate.setDate(dueDate.getDate() + 3);
+        const formattedDueDate = dueDate.toISOString().split('T')[0];
+
+        const formattedAppointmentDate = format(new Date(appointmentDate), "MM/dd/yyyy");
+
+        // Create request body
+        const requestBody = {
+          isLocked: !isCurrentlyLocked,
+          title: `Review notes for ${clientName}`,
+          note: `Please review the session notes for appointment on ${formattedAppointmentDate}`,
+          dueDate: formattedDueDate
+        };
+
+        const response = await lockUnlockNote(`admin/lock-unlock-note/${appointmentId}`, requestBody);
+
+        if (response.status === 200) {
+          toast.success(isCurrentlyLocked ? "Note unlocked successfully" : "Note locked successfully");
+          mutate(); // Refresh the data
+        } else {
+          toast.error("Failed to update note lock status");
+        }
+      }
+      catch (error) {
+        console.error("Error updating note lock status:", error);
+        toast.error("An error occurred while updating the note lock status");
+      }
+    });
+  };
 
   if (!event || !isOpen) return null;
 
@@ -228,20 +263,44 @@ const EventModal = ({ event, isOpen, onClose, events, mutate }: EventModalProps)
                       </button>
                     </td>
                     <td>
-                      <button
-                        onClick={() => {
-                          if (relatedEvent.status === 'Completed' && relatedEvent.sessionNotes) {
-                            window.open(getImageUrlOfS3(relatedEvent.sessionNotes), '_blank');
-                          } else {
-                            toast.error("No clinician notes available for this appointment");
-                          }
-                        }}
-                        className="flex items-center justify-center pl-3"
-                        disabled={!(relatedEvent.status === 'Completed' && relatedEvent.sessionNotes)}
-                        title={relatedEvent.status === 'Completed' && relatedEvent.sessionNotes ? "View Notes" : "No notes available"}
-                      >
-                        <EyeIcon color='#26395e' size={20} />
-                      </button>
+                      <div className="flex items-center justify-center gap-2">
+                        {/* View Notes Button */}
+                        <button
+                          onClick={() => {
+                            if (relatedEvent.status === 'Completed' && relatedEvent.sessionNotes) {
+                              window.open(getImageUrlOfS3(relatedEvent.sessionNotes), '_blank');
+                            } else {
+                              toast.error("No clinician notes available for this appointment");
+                            }
+                          }}
+                          className="flex items-center justify-center"
+                          disabled={!(relatedEvent.status === 'Completed' && relatedEvent.sessionNotes)}
+                          title={relatedEvent.status === 'Completed' && relatedEvent.sessionNotes ? "View Notes" : "No notes available"}
+                        >
+                          <EyeIcon color='#26395e' size={20} />
+                        </button>
+
+                        {/* Lock/Unlock Button - Only show for completed appointments with notes */}
+                        {relatedEvent.status === 'Completed' && relatedEvent.sessionNotes && (
+                          <button
+                            onClick={() => handleLockUnlockNote(
+                              relatedEvent._id,
+                              relatedEvent.isLocked || false,
+                              relatedEvent.clientName,
+                              relatedEvent.appointmentDate
+                            )}
+                            title={relatedEvent.isLocked ? "Unlock the note" : "Lock the note"}
+                            className="flex items-center justify-center"
+                            disabled={isPending}
+                          >
+                            {relatedEvent.isLocked ? (
+                              <LockIcon size={20} color="red" className="font-bold" />
+                            ) : (
+                              <UnlockIcon size={20} color="#4CAF50" className="font-bold" />
+                            )}
+                          </button>
+                        )}
+                      </div>
                     </td>
                     <td>
                       <button

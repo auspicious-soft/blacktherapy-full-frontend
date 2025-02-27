@@ -235,3 +235,9 @@ export const deleteSingleAlert = async (route: any) => {
   const axiosInstance = await getAxiosInstance();
   return axiosInstance.delete(route);
 }
+
+// Lock and unlock note
+export const lockUnlockNote = async (route: any, payload: any) => {
+  const axiosInstance = await getAxiosInstance();
+  return axiosInstance.patch(route, payload);
+}
