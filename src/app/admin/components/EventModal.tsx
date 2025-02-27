@@ -32,14 +32,33 @@ interface EventModalProps {
   mutate: KeyedMutator<AxiosResponse<any, any>>
 }
 
+interface TaskData {
+  title: string;
+  note: string;
+  dueDate: string;
+  appointmentId: string;
+  isCurrentlyLocked: boolean;
+  clientName: string;
+  appointmentDate: string;
+}
 const EventModal = ({ event, isOpen, onClose, events, mutate }: EventModalProps) => {
+  const [isUnlockModalOpen, setIsUnlockModalOpen] = useState(false);
+  const [taskData, setTaskData] = useState<TaskData>({
+    title: "",
+    note: "",
+    dueDate: "",
+    appointmentId: "",
+    isCurrentlyLocked: false,
+    clientName: "",
+    appointmentDate: ""
+  });
   const { therapistData } = useTherapists(true);
   const [selectedRow, setSelectedRow] = useState<any>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedClinician, setSelectedClinician] = useState<any>();
   const [isCompletedFieldsDisable, setIsCompletedFieldsDisable] = useState(false);
   const [notesType, setNotesType] = useState<"SOAP Note" | "Mental Status Exam" | "Biopsychosocial Assessment" | "Pie Note" | "">("");
-  const eventsToShowInModal = events.filter((ev: any) => (new Date(ev.appointmentDate).toLocaleDateString() === new Date(event!?.start).toLocaleDateString()) && (ev.appointmentTime === event?.start?.toTimeString().slice(0, 5)));
+  const eventsToShowInModal = events?.filter((ev: any) => (new Date(ev.appointmentDate).toLocaleDateString() === new Date(event!?.start).toLocaleDateString()) && (ev.appointmentTime === event?.start?.toTimeString().slice(0, 5)));
   const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
@@ -58,39 +77,72 @@ const EventModal = ({ event, isOpen, onClose, events, mutate }: EventModalProps)
     setSelectedClinician(selectedOption);
   }
 
-  // Handle lock/unlock functionality
-  const handleLockUnlockNote = async (appointmentId: string, isCurrentlyLocked: boolean, clientName: string, appointmentDate: string) => {
+  const handleUnlockConfirmSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     startTransition(async () => {
       try {
-        const dueDate = new Date();
-        dueDate.setDate(dueDate.getDate() + 3);
+        const dueDate = new Date(taskData.dueDate);
         const formattedDueDate = dueDate.toISOString().split('T')[0];
-
-        const formattedAppointmentDate = format(new Date(appointmentDate), "MM/dd/yyyy");
-
-        // Create request body
         const requestBody = {
-          isLocked: !isCurrentlyLocked,
-          title: `Review notes for ${clientName}`,
-          note: `Please review the session notes for appointment on ${formattedAppointmentDate}`,
+          isLocked: false,
+          title: taskData.title,
+          note: taskData.note,
           dueDate: formattedDueDate
         };
 
-        const response = await lockUnlockNote(`admin/lock-unlock-note/${appointmentId}`, requestBody);
+        const response = await lockUnlockNote(`admin/lock-unlock-note/${taskData.appointmentId}`, requestBody);
 
         if (response.status === 200) {
-          toast.success(isCurrentlyLocked ? "Note unlocked successfully" : "Note locked successfully");
-          mutate(); // Refresh the data
+          toast.success("Note unlocked successfully");
+          setIsUnlockModalOpen(false);
+          mutate()
         } else {
-          toast.error("Failed to update note lock status");
+          toast.error("Failed to unlock note");
         }
       }
       catch (error) {
-        console.error("Error updating note lock status:", error);
-        toast.error("An error occurred while updating the note lock status");
+        console.error("Error unlocking note:", error);
+        toast.error("An error occurred while unlocking the note");
       }
     });
   };
+
+  const handleLockUnlockNote = async (appointmentId: string, isCurrentlyLocked: boolean, clientName: string, appointmentDate: string, appointmentTime: string) => {
+
+    if (isCurrentlyLocked) {
+      setTaskData({
+        title: `Review notes for ${clientName}`,
+        note: `Please review the session notes for appointment on ${format(new Date(appointmentDate), "MM/dd/yyyy")} at ${nonMilitaryTime(appointmentTime)}`,
+        dueDate: new Date().toISOString().split('T')[0],
+        appointmentId,
+        isCurrentlyLocked,
+        clientName,
+        appointmentDate
+      });
+      setIsUnlockModalOpen(true);
+      return;
+    }
+
+    startTransition(async () => {
+      try {
+        const requestBody = { isLocked: true }
+        const response = await lockUnlockNote(`admin/lock-unlock-note/${appointmentId}`, requestBody);
+        if (response.status === 200) {
+          toast.success("Note unlocked successfully");
+          setIsUnlockModalOpen(false);
+          mutate()
+        } else {
+          toast.error("Failed to unlock note");
+        }
+      }
+      catch (error) {
+        console.error("Error unlocking note:", error);
+        toast.error("An error occurred while unlocking the note");
+      }
+    })
+
+  };
+
 
   if (!event || !isOpen) return null;
 
@@ -110,7 +162,6 @@ const EventModal = ({ event, isOpen, onClose, events, mutate }: EventModalProps)
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-
     // Prepare basic payload
     const payload: any = {
       therapistId: selectedClinician?.value,
@@ -161,34 +212,22 @@ const EventModal = ({ event, isOpen, onClose, events, mutate }: EventModalProps)
           // Generate appropriate notes based on selected type
           switch (notesType) {
             case 'SOAP Note': {
-              const { uploadedKey } = await uploadSoapNoteOnAppointment({
-                ...selectedRow,
-                signature: therapistSignatures
-              });
+              const { uploadedKey } = await uploadSoapNoteOnAppointment({ ...selectedRow, signature: therapistSignatures });
               payload.sessionNotes = uploadedKey;
               break;
             }
             case 'Pie Note': {
-              const { uploadedKey } = await uploadPieNoteOnAppointment({
-                ...selectedRow,
-                signature: therapistSignatures
-              });
+              const { uploadedKey } = await uploadPieNoteOnAppointment({ ...selectedRow, signature: therapistSignatures });
               payload.sessionNotes = uploadedKey;
               break;
             }
             case 'Biopsychosocial Assessment': {
-              const { uploadedKey } = await uploadBiopsychosocialAssessment({
-                ...selectedRow,
-                signature: therapistSignatures
-              });
+              const { uploadedKey } = await uploadBiopsychosocialAssessment({ ...selectedRow, signature: therapistSignatures });
               payload.sessionNotes = uploadedKey;
               break;
             }
             case 'Mental Status Exam': {
-              const { uploadedKey } = await uploadMentalStatusExam({
-                ...selectedRow,
-                signature: therapistSignatures
-              });
+              const { uploadedKey } = await uploadMentalStatusExam({ ...selectedRow, signature: therapistSignatures });
               payload.sessionNotes = uploadedKey;
               break;
             }
@@ -287,7 +326,8 @@ const EventModal = ({ event, isOpen, onClose, events, mutate }: EventModalProps)
                               relatedEvent._id,
                               relatedEvent.isLocked || false,
                               relatedEvent.clientName,
-                              relatedEvent.appointmentDate
+                              relatedEvent.appointmentDate,
+                              relatedEvent.appointmentTime
                             )}
                             title={relatedEvent.isLocked ? "Unlock the note" : "Lock the note"}
                             className="flex items-center justify-center"
@@ -466,6 +506,76 @@ const EventModal = ({ event, isOpen, onClose, events, mutate }: EventModalProps)
           </Modal>
         )
       }
+      {/* Unlock Confirmation Modal */}
+      {isUnlockModalOpen && (
+        <Modal
+          isOpen={isUnlockModalOpen}
+          onRequestClose={() => setIsUnlockModalOpen(false)}
+          contentLabel="Unlock Note"
+          shouldCloseOnEsc={false}
+          shouldCloseOnOverlayClick={false}
+          className="overflow-auto max-w-3xl max-h-[95vh] bottom-0 !bg-white rounded-lg w-full p-5 shadow-lg z-[2000] h-auto !top-auto"
+          overlayClassName="overlay fixed inset-0 bg-black bg-opacity-50 z-[2000]"
+        >
+          <h3 className="font-semibold">Unlock Note Confirmation</h3>
+          <div className="p-3">
+            <form onSubmit={handleUnlockConfirmSubmit} className="space-y-4">
+              <div className="flex flex-col">
+                <label htmlFor="title" className="font-medium">Title</label>
+                <input
+                  type="text"
+                  id="title"
+                  value={taskData.title}
+                  onChange={(e) => setTaskData(prev => ({ ...prev, title: e.target.value }))}
+                  className="border p-2 rounded"
+                  required
+                />
+              </div>
+
+              <div className="flex flex-col">
+                <label htmlFor="note" className="font-medium">Note</label>
+                <textarea
+                  id="note"
+                  value={taskData.note}
+                  onChange={(e) => setTaskData(prev => ({ ...prev, note: e.target.value }))}
+                  className="border p-2 rounded"
+                  rows={4}
+                  required
+                />
+              </div>
+
+              <div className="flex flex-col">
+                <label htmlFor="dueDate" className="font-medium">Due Date</label>
+                <input
+                  type="date"
+                  id="dueDate"
+                  value={taskData.dueDate}
+                  onChange={(e) => setTaskData(prev => ({ ...prev, dueDate: e.target.value }))}
+                  className="border p-2 rounded"
+                  required
+                />
+              </div>
+
+              <div className="sticky !-bottom-5 left-0 right-0 bg-white p-4 border-t border-gray-200 flex justify-end gap-2">
+                <button
+                  type="button"
+                  className="text-black p-2 rounded-md font-semibold"
+                  onClick={() => setIsUnlockModalOpen(false)}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="bg-[#283C63] text-white px-4 py-2 rounded"
+                  disabled={isPending}
+                >
+                  {!isPending ? 'Confirm Unlock' : <ReactLoader color="#fff" />}
+                </button>
+              </div>
+            </form>
+          </div>
+        </Modal>
+      )}
     </div>
   );
 };
