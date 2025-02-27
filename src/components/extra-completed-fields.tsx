@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect } from 'react'
 import SoapNote from './clinician-notes/soap'
 import MedicalStatusExam from './clinician-notes/medical-status-exam'
