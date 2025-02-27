@@ -21,6 +21,8 @@ import { uploadPieNoteOnAppointment } from "@/components/Pdf-template/pie-note-p
 import { uploadBiopsychosocialAssessment } from "@/components/Pdf-template/biopsychosocial-pdf";
 import { uploadMentalStatusExam } from "@/components/Pdf-template/medical-status-pdf";
 import { getTherapistsProfileData } from "@/services/therapist/therapist-service.";
+import { IoIosDocument } from "react-icons/io";
+import {  EyeIcon } from "lucide-react";
 
 interface EventModalProps {
   event?: CalendarEvent | null;
@@ -183,55 +185,89 @@ const EventModal = ({ event, isOpen, onClose, events, mutate }: EventModalProps)
           <h2 className="pb-3">Details for {event.title} |  {format(event.start, "MM/dd/yyyy")} | {event.start?.toTimeString().slice(0, 5)}</h2>
           <button className="bg-[#26395e] p-2 rounded-md" onClick={onClose}>Close</button>
         </div>
-        <table className="table-common border-2 !min-w-[6rem] overflow-auto">
-          <thead>
-            <tr>
-              <th>Therapist Assigned</th>
-              <th>Client Name</th>
-              <th>Status</th>
-              <th>Date</th>
-              <th>Time</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {eventsToShowInModal.length > 0 ? eventsToShowInModal?.map((relatedEvent: any) => {
-              return (
-                <tr key={relatedEvent.id}>
-                  <td >{relatedEvent.therapistId?.firstName} {relatedEvent.therapistId?.lastName}</td>
-                  <td >{relatedEvent.clientName}</td>
-                  <td>
-                    <span className={`px-2 py-1 rounded-full text-black`} >
-                      <span className={`px-2 py-1 rounded-full text-black ${relatedEvent.status === 'Completed'
-                        ? 'text-[#4ec091] bg-[#cbffb2]'
-                        : relatedEvent.status === 'Pending'
-                          ? 'text-white bg-yellow-500'
-                          : relatedEvent.status === 'Rejected'
-                            ? 'text-red-500 bg-red-200'
-                            : relatedEvent.status === 'Approved'
-                              ? 'text-indigo-500 bg-indigo-200'
-                              : 'text-gray-500 bg-gray-200'}`}>
-                        {relatedEvent.status}
-                      </span>
-                    </span>
-                  </td>
-                  <td >{format(new Date((relatedEvent.appointmentDate)), "MM/dd/yyyy")}</td>
-                  <td >{nonMilitaryTime(relatedEvent.appointmentTime)}</td>
-                  <td>
-                    <button onClick={() => openEditModal(relatedEvent)} className="flex items-center justify-center">
-                      <EditIcon />
-                    </button>
-                  </td>
-                </tr>
-              )
-            })
-              :
+        <div className="overflow-x-auto">
+          <table className="table-common border-2 !min-w-[6rem]">
+            <thead>
               <tr>
-                <td colSpan={6} className="text-center">No appointments scheduled for this time</td>
+                <th>Therapist Assigned</th>
+                <th>Client Name</th>
+                <th>Status</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Action</th>
+                <th>Clinician Notes</th>
+                <th>Payment Invoice</th>
               </tr>
-            }
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="border-2">
+              {eventsToShowInModal.length > 0 ? eventsToShowInModal?.map((relatedEvent: any) => {
+                return (
+                  <tr key={relatedEvent.id}>
+                    <td>{relatedEvent.therapistId?.firstName} {relatedEvent.therapistId?.lastName}</td>
+                    <td>{relatedEvent.clientName}</td>
+                    <td>
+                      <span className={`px-2 py-1 rounded-full text-black`}>
+                        <span className={`px-2 py-1 rounded-full text-black ${relatedEvent.status === 'Completed'
+                          ? 'text-[#4ec091] bg-[#cbffb2]'
+                          : relatedEvent.status === 'Pending'
+                            ? 'text-white bg-yellow-500'
+                            : relatedEvent.status === 'Rejected'
+                              ? 'text-red-500 bg-red-200'
+                              : relatedEvent.status === 'Approved'
+                                ? 'text-indigo-500 bg-indigo-200'
+                                : 'text-gray-500 bg-gray-200'}`}>
+                          {relatedEvent.status}
+                        </span>
+                      </span>
+                    </td>
+                    <td>{format(new Date((relatedEvent.appointmentDate)), "MM/dd/yyyy")}</td>
+                    <td>{nonMilitaryTime(relatedEvent.appointmentTime)}</td>
+                    <td>
+                      <button onClick={() => openEditModal(relatedEvent)} className="flex items-center justify-center">
+                        <EditIcon />
+                      </button>
+                    </td>
+                    <td>
+                      <button
+                        onClick={() => {
+                          if (relatedEvent.status === 'Completed' && relatedEvent.sessionNotes) {
+                            window.open(getImageUrlOfS3(relatedEvent.sessionNotes), '_blank');
+                          } else {
+                            toast.error("No clinician notes available for this appointment");
+                          }
+                        }}
+                        className="flex items-center justify-center pl-3"
+                        disabled={!(relatedEvent.status === 'Completed' && relatedEvent.sessionNotes)}
+                        title={relatedEvent.status === 'Completed' && relatedEvent.sessionNotes ? "View Notes" : "No notes available"}
+                      >
+                        <EyeIcon color='#26395e' size={20} />
+                      </button>
+                    </td>
+                    <td>
+                      <button
+                        className='flex items-center justify-center'
+                        onClick={() => {
+                          const paymentInvoice: any = relatedEvent?.paymentRequest?.invoice
+                          if (paymentInvoice) {
+                            window.open(getImageUrlOfS3(paymentInvoice), '_blank');
+                          }
+                        }}
+                        disabled={!(relatedEvent?.paymentRequest?.invoice)}
+                      >
+                        <IoIosDocument color='#26395e' size={20} /><span className='pl-1'>{`${relatedEvent?.paymentRequest?.identifier ? `#${relatedEvent?.paymentRequest?.identifier}` : ''}`}</span>
+                      </button>
+                    </td>
+                  </tr>
+                )
+              })
+                :
+                <tr>
+                  <td colSpan={8} className="text-center">No appointments scheduled for this time</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
       </div>
       {
         isEditModalOpen && (
