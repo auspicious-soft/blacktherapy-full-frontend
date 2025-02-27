@@ -108,7 +108,7 @@ export const LottieNotification: React.FC<LottieProps> = ({ data, id }) => {
                     <div className='flex justify-between w-full gap-3'>
                       <div>
                         {row?.message}
-                        <span className='min-w-[20%] '>{new Date(row?.createdAt).toLocaleDateString('en-US')}</span>
+                        <span className='min-w-[20%] pl-3'>{new Date(row?.createdAt).toLocaleDateString('en-US')}</span>
                       </div>
                     <button onClick={() => handleDelete(row._id)} className='mr-2 text-red-500'>
                       <MdDelete size={20} />
