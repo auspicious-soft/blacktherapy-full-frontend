@@ -49,7 +49,7 @@ export const WelcomeProcess = ({
         <b>About The Black Therapy Network: </b>
         The Black Therapy Network is dedicated to meeting the mental health needs of the African American community. We offer flexible remote opportunities that allow you to balance personal commitments with professional growth.
         <br />
-        Our parent company, The Ship Group Services LLC, and administrative offices are based in Charlotte, North Carolina.
+        Our parent company, The Ship Group Technologies LLC, and administrative offices are based in Charlotte, North Carolina.
         <b>What We Offer:</b>
         <ul className="list-disc pl-8 my-5">
           <li>Competitive compensation based on experience and qualifications.</li>

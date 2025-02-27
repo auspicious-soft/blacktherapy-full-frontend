@@ -118,7 +118,7 @@ const Footer: React.FC = () =>{
                           Mailing Address
                         </p>
                         <p className="leading-5 text-[#CACACA] text-xs md:text-sm">
-                          The Ship Group Services , P.O. BOX 42915 ,<br />
+                          The Ship Group Technologies , P.O. BOX 42915 ,<br />
                           Charlotte, North Carolina 28215
                         </p>
                       </div>

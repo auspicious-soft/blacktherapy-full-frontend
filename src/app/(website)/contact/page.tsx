@@ -155,7 +155,7 @@ const ContactInfo: React.FC = () => {
           text={
             <>
               <p>P.O. BOX 42915 Charlotte, NC 28215</p>
-              <p>The Ship Group Services The Black Therapy Network 3126 Milton Road, Ste 222B Charlotte, NC 28215</p>
+              <p>The Ship Group Technologies The Black Therapy Network 3126 Milton Road, Ste 222B Charlotte, NC 28215</p>
             </>
           }
         />
