@@ -140,12 +140,12 @@ const Page = () => {
               <th >Time Assigned</th>
               <th >Phone Number</th>
               <th >Email Address</th>
-              {/* <th >Session Notes</th> */}
               <th >Chat Client</th>
               <th >Video Chat</th>
               <th >Status</th>
               <th>Actions</th>
               <th>Clinician Notes</th>
+              <th>Payment Invoice</th>
             </tr>
           </thead>
           <tbody>
@@ -166,7 +166,6 @@ const Page = () => {
                       <td>{nonMilitaryTime(item.appointmentTime)}</td>
                       <td>{item.clientId.phoneNumber}</td>
                       <td>{item.clientId.email}</td>
-                      {/* <td> <p className='cursor-pointer font-gothamMedium text-center rounded-xl text-[10px] py-[4px] text-[#fff] bg-[#26395E]' onClick={()=>openModal(item?.notes)}>View</p></td> */}
 
                       <td>
                         {item?.clientId?.message ? (
@@ -234,6 +233,7 @@ const Page = () => {
                           <EditIcon />
                         </button>
                       </td>
+
                       <td className='flex justify-start gap-3'>
                         <button
                           className='flex items-center justify-center'
@@ -273,6 +273,25 @@ const Page = () => {
                           <PencilRuler size={20} />
                         </button>
                       </td>
+
+                      <td>
+                        <button
+                          className='flex items-center justify-center'
+                          onClick={() => {
+                            const paymentInvoice: any = item?.paymentRequest?.invoice
+                            setDownloading(true)
+                            if (paymentInvoice) {
+                              downloadFileFromS3(getImageUrlOfS3(paymentInvoice))
+                              setDownloading(false)
+                              toast.success('Payment Invoice downloaded successfully', { position: 'top-right', duration: 1500 })
+                            }
+                          }}
+                          disabled={!item?.paymentRequest?.invoice}
+                        >
+                          {!downloading ? <IoIosDocument color='#26395e' size={20} /> : <ReactLoader />} <span className='pl-1'>{`${item?.paymentRequest?.identifier ? `#${item?.paymentRequest?.identifier}` : ''}`}</span>
+                        </button>
+                      </td>
+
                     </tr>
                   )
                 }

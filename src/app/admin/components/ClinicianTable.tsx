@@ -363,11 +363,11 @@ const ClinicianTable: React.FC<TherapistsDataProps & { setPage: any; currentPage
           />
         </div>
       )}
-      <Modal
+      {isDeleteModalOpen && <Modal
         isOpen={isDeleteModalOpen}
         onRequestClose={handleModalClose}
         contentLabel="Delete Clinician"
-        className="rounded-lg w-full max-w-4xl mx-auto bg-white shadow-lg max-h-[90vh] overflow-auto"
+        className="rounded-lg w-full p-14 max-w-4xl mx-auto bg-white shadow-lg max-h-[90vh] overflow-auto"
         overlayClassName="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center"
       >
         <Image
@@ -396,7 +396,7 @@ const ClinicianTable: React.FC<TherapistsDataProps & { setPage: any; currentPage
             No
           </button>
         </div>
-      </Modal>
+      </Modal>}
 
       {selectedRow && (
         <EditClinicianModal
