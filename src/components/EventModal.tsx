@@ -123,9 +123,9 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, event, mutate }) =>
             catch (error) {
                 toast.error("An error occurred while updating the assignment");
             }
-            //   finally {
-            //   setIsEditModalOpen(false);
-            // }
+            finally {
+                setIsEditModalOpen(false);
+            }
         })
     }
 
@@ -249,7 +249,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, event, mutate }) =>
 
                                 {
                                     (selectedRow?.status === 'Completed' && !isCompletedFieldsDisable) && (
-                                        <ExtraFields selectedRow={selectedRow} setSelectedRow={setSelectedRow} notesType={notesType} setNotesType={setNotesType} />
+                                        <ExtraFields isClinicianNotesEdit={false} selectedRow={selectedRow} setSelectedRow={setSelectedRow} notesType={notesType} setNotesType={setNotesType} />
                                     )
                                 }
                                 {/* Submit Button */}
