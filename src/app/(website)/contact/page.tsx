@@ -135,7 +135,7 @@ const ContactInfo: React.FC = () => {
           icon={<EmailIcon />}
           text={
             <>
-              <p>hello@theblacktherapynetwork.com</p>
+              <p>support@blacktherapy.n</p>
             </>
           }
         />

@@ -105,7 +105,7 @@ const Footer: React.FC = () =>{
                       <div className="">
                         <p className="text-[#8C8C8C] text-xs">Email</p>
                         <p className="text-[#CACACA] text-xs md:text-sm">
-                          hello@theblacktherapynetwork.com
+                          support@blacktherapy.n
                         </p>
                       </div>
                     </div>
