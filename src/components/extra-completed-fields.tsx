@@ -21,7 +21,7 @@ const ExtraFields = (props: ISelectedRow) => {
             ...prev,
             ...selectedRow?.sessionNotesData
         }))
-    }, [selectedRow?.sessionNotesData?.notesType])
+    }, [])
 
     const renderExtraFields = (notesType: "SOAP Note" | "Mental Status Exam" | "Biopsychosocial Assessment" | "Pie Note" | "") => {
         if (notesType !== "") {

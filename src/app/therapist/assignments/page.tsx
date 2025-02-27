@@ -2,7 +2,7 @@
 import SearchBar from '@/app/admin/components/SearchBar';
 import { getTherapistAssignments, getTherapistsProfileData } from '@/services/therapist/therapist-service.';
 import { useSession } from 'next-auth/react';
-import { useEffect, useState, useTransition } from 'react';
+import { useState, useTransition } from 'react';
 import { format, set } from 'date-fns';
 import ReactPaginate from 'react-paginate';
 import useSWR from 'swr';
@@ -50,6 +50,7 @@ const Page = () => {
   };
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [isNotesEditModalOpen, setIsNotesEditModalOpen] = useState(false)
+
   const handleSubmit = async (e: any) => {
     e.preventDefault()
     const { appointmentDate, appointmentTime, status, progressNotes, servicesProvided, requestType, duration, ...rest } = selectedRow

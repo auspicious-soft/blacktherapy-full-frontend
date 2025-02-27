@@ -112,7 +112,7 @@ const EventModal = ({ event, isOpen, onClose, events, mutate }: EventModalProps)
     if (isCurrentlyLocked) {
       setTaskData({
         title: `Review notes for ${clientName}`,
-        note: `Please review the session notes for appointment on ${format(new Date(appointmentDate), "MM/dd/yyyy")} at ${nonMilitaryTime(appointmentTime)}`,
+        note: `Please review the session notes for appointment on ${format(new Date(appointmentDate), "MM/dd/yyyy")} at ${nonMilitaryTime(appointmentTime)} , as ..`,
         dueDate: new Date().toISOString().split('T')[0],
         appointmentId,
         isCurrentlyLocked,
@@ -128,7 +128,7 @@ const EventModal = ({ event, isOpen, onClose, events, mutate }: EventModalProps)
         const requestBody = { isLocked: true }
         const response = await lockUnlockNote(`admin/lock-unlock-note/${appointmentId}`, requestBody);
         if (response.status === 200) {
-          toast.success("Note unlocked successfully");
+          toast.success("Note locked successfully");
           setIsUnlockModalOpen(false);
           mutate()
         } else {
