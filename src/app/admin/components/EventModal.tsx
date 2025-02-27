@@ -10,10 +10,17 @@ import useTherapists from "@/utils/useTherapists";
 import CustomSelect from "./CustomSelect";
 import { toast } from "sonner";
 import { updateAppointmentData } from "@/services/admin/admin-service";
-import { KeyedMutator } from "swr";
+import useSWR, { KeyedMutator } from "swr";
 import { AxiosResponse } from "axios";
 import ReactLoader from "@/components/ReactLoader";
-import { nonMilitaryTime } from "@/utils";
+import { nonMilitaryTime, getImageUrlOfS3 } from "@/utils";
+import ExtraFields from "@/components/extra-completed-fields";
+import { uploadPaymentInvoiceOnAppointment } from "@/components/Pdf-template/payment-complete-invoice";
+import { uploadSoapNoteOnAppointment } from "@/components/Pdf-template/soap-note-pdf";
+import { uploadPieNoteOnAppointment } from "@/components/Pdf-template/pie-note-pdf";
+import { uploadBiopsychosocialAssessment } from "@/components/Pdf-template/biopsychosocial-pdf";
+import { uploadMentalStatusExam } from "@/components/Pdf-template/medical-status-pdf";
+import { getTherapistsProfileData } from "@/services/therapist/therapist-service.";
 
 interface EventModalProps {
   event?: CalendarEvent | null;
@@ -24,51 +31,151 @@ interface EventModalProps {
 }
 const EventModal = ({ event, isOpen, onClose, events, mutate }: EventModalProps) => {
   const { therapistData } = useTherapists(true);
-  const [selectedRow, setSelectedRow] = useState<any>(null)
+  const [selectedRow, setSelectedRow] = useState<any>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [selectedClinician, setSelectedClinician] = useState<any>()
+  const [selectedClinician, setSelectedClinician] = useState<any>();
+  const [isCompletedFieldsDisable, setIsCompletedFieldsDisable] = useState(false);
+  const [notesType, setNotesType] = useState<"SOAP Note" | "Mental Status Exam" | "Biopsychosocial Assessment" | "Pie Note" | "">("");
   const eventsToShowInModal = events.filter((ev: any) => (new Date(ev.appointmentDate).toLocaleDateString() === new Date(event!?.start).toLocaleDateString()) && (ev.appointmentTime === event?.start?.toTimeString().slice(0, 5)));
-  const [isPending, startTransition] = useTransition()
+  const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
     if (Object.keys(therapistData).length > 0) {
-      setSelectedClinician(therapistData.find((therapist: any) => therapist.value === selectedRow?.therapistId?._id))
+      setSelectedClinician(therapistData.find((therapist: any) => therapist.value === selectedRow?.therapistId?._id));
     }
   }, [selectedRow?.therapistId?._id, isEditModalOpen])
+
+  useEffect(() => {
+    if (selectedRow) {
+      setIsCompletedFieldsDisable(selectedRow.status === 'Completed' && selectedRow.sessionNotes);
+    }
+  }, [selectedRow]);
 
   const handleSelectChange = (selectedOption: any) => {
     setSelectedClinician(selectedOption);
   }
 
   if (!event || !isOpen) return null;
+
   const openEditModal = (row: any) => {
-    setSelectedRow(row);
+    // Prepare the selected row with all necessary fields for notes
+    setSelectedRow({
+      ...row,
+      _id: row._id,
+      clientId: row.clientId || { email: '' }, // Ensure clientId exists with email property
+      progressNotes: row.progressNotes || '',
+      servicesProvided: row.servicesProvided || '',
+      requestType: row.requestType || '',
+      duration: row.duration || ''
+    });
     setIsEditModalOpen(true);
   }
+
   const handleSubmit = async (e: any) => {
-    e.preventDefault()
-    const payload = {
+    e.preventDefault();
+
+    // Prepare basic payload
+    const payload: any = {
       therapistId: selectedClinician?.value,
       appointmentDate: selectedRow.appointmentDate,
       appointmentTime: selectedRow.appointmentTime,
       status: selectedRow.status
+    };
+
+    // Add session notes data if status is Completed
+    if (selectedRow.status === 'Completed') {
+      const { appointmentDate, appointmentTime, status, progressNotes, servicesProvided, requestType, duration, ...rest } = selectedRow;
+
+      // Add the notes fields to the payload
+      payload.progressNotes = progressNotes;
+      payload.servicesProvided = servicesProvided;
+      payload.requestType = requestType;
+      payload.duration = duration;
+      payload.sessionNotesData = { ...rest, notesType };
+
+      // Validate duration
+      if (payload.duration && isNaN(Number(payload.duration))) {
+        toast.error("Duration must be a number");
+        return;
+      }
+
+      // Delete any nested sessionNotesData to avoid circular references
+      if (payload.sessionNotesData.sessionNotesData) {
+        delete payload.sessionNotesData.sessionNotesData;
+      }
     }
+
     startTransition(async () => {
       try {
-        const response = await updateAppointmentData(`/admin/appointments/${selectedRow._id}`, payload)
+        if (payload.status === 'Completed' && !isCompletedFieldsDisable) {
+          // Get therapist's signature for PDF documents
+          const { data: therapistData } = await getTherapistsProfileData(`/therapist/${selectedRow.therapistId._id}`)
+          const therapistSignatures = getImageUrlOfS3(therapistData?.data?.consentSignature);
+
+          // Generate invoice
+          const { key } = await uploadPaymentInvoiceOnAppointment({
+            ...selectedRow,
+            ...payload,
+            therapistEmail: selectedRow.therapistId?.email || '',
+            therapistName: `${selectedRow.therapistId?.firstName || ''} ${selectedRow.therapistId?.lastName || ''}`
+          });
+          payload.invoice = key;
+
+          // Generate appropriate notes based on selected type
+          switch (notesType) {
+            case 'SOAP Note': {
+              const { uploadedKey } = await uploadSoapNoteOnAppointment({
+                ...selectedRow,
+                signature: therapistSignatures
+              });
+              payload.sessionNotes = uploadedKey;
+              break;
+            }
+            case 'Pie Note': {
+              const { uploadedKey } = await uploadPieNoteOnAppointment({
+                ...selectedRow,
+                signature: therapistSignatures
+              });
+              payload.sessionNotes = uploadedKey;
+              break;
+            }
+            case 'Biopsychosocial Assessment': {
+              const { uploadedKey } = await uploadBiopsychosocialAssessment({
+                ...selectedRow,
+                signature: therapistSignatures
+              });
+              payload.sessionNotes = uploadedKey;
+              break;
+            }
+            case 'Mental Status Exam': {
+              const { uploadedKey } = await uploadMentalStatusExam({
+                ...selectedRow,
+                signature: therapistSignatures
+              });
+              payload.sessionNotes = uploadedKey;
+              break;
+            }
+          }
+        }
+
+        // Submit the updated appointment data
+        const response = await updateAppointmentData(`/admin/appointments/${selectedRow._id}`, payload);
         if (response.status === 200) {
-          toast.success("Appointment updated successfully")
-          mutate()
+          toast.success("Appointment updated successfully");
+          mutate();
         }
       }
       catch (error) {
-        toast.error("An error occurred while updating the assignment");
+        toast.error("An error occurred while updating the appointment");
+        console.error(error);
       }
       finally {
-        setIsEditModalOpen(false)
+        setIsEditModalOpen(false);
       }
-    })
+    });
   }
+
+
   return (
     <div className="modal table-common overflo-custom">
       <div className="modal-content">
@@ -132,10 +239,12 @@ const EventModal = ({ event, isOpen, onClose, events, mutate }: EventModalProps)
             isOpen={isEditModalOpen}
             onRequestClose={() => setIsEditModalOpen(false)}
             contentLabel="Edit Event"
-            className={`overflow-auto child-modal bottom-0 !bg-white rounded-t-lg w-full p-5 shadow-lg z-[2000] h-[560px] !top-auto ${isEditModalOpen ? 'modal-open' : ''} overflow-auto`}
+            shouldCloseOnEsc={false}
+            shouldCloseOnOverlayClick={false}
+            className={`overflow-auto  max-h-[95vh] child-modal bottom-0 !bg-white rounded-lg w-full p-5 shadow-lg z-[2000] h-auto !top-auto ${isEditModalOpen ? 'modal-open' : ''}`}
             overlayClassName="overlay fixed inset-0 bg-black bg-opacity-50 z-[2000]"
           >
-            <h3 className="font-semibold">Appointment Details</h3>
+            <h3 className="font-semibold">Edit Appointment Details</h3>
             <div className="p-3">
               <form onSubmit={(e) => handleSubmit(e)}
                 className="space-y-4"
@@ -149,12 +258,6 @@ const EventModal = ({ event, isOpen, onClose, events, mutate }: EventModalProps)
                     type="text"
                     id="clientName"
                     value={selectedRow?.clientName || ""}
-                    onChange={(e) =>
-                      setSelectedRow((prev: any) => ({
-                        ...prev,
-                        clientName: e.target.value,
-                      }))
-                    }
                     className="border p-2 rounded"
                     required
                   />
@@ -211,6 +314,7 @@ const EventModal = ({ event, isOpen, onClose, events, mutate }: EventModalProps)
                     required
                   />
                 </div>
+
                 {/* Status */}
                 <div className="flex flex-col">
                   <label htmlFor="status" className="font-medium">
@@ -227,6 +331,7 @@ const EventModal = ({ event, isOpen, onClose, events, mutate }: EventModalProps)
                     }
                     className="border p-2 rounded"
                     required
+                    disabled={isCompletedFieldsDisable}
                   >
                     <option value="Pending">Pending</option>
                     <option value="Completed">Completed</option>
@@ -235,8 +340,22 @@ const EventModal = ({ event, isOpen, onClose, events, mutate }: EventModalProps)
                     <option value="Rejected">Rejected</option>
                   </select>
                 </div>
+
+                {/* Clinician Notes - Show when status is completed */}
+                {
+                  (selectedRow?.status === 'Completed' && !isCompletedFieldsDisable) && (
+                    <ExtraFields
+                      isClinicianNotesEdit={false}
+                      selectedRow={selectedRow}
+                      setSelectedRow={setSelectedRow}
+                      notesType={notesType}
+                      setNotesType={setNotesType}
+                    />
+                  )
+                }
+
                 {/* Submit Button */}
-                <div className="flex justify-end gap-2">
+                <div className="sticky !-bottom-5 left-0 right-0 bg-white p-4 border-t border-gray-200 flex justify-end gap-2">
                   <button className="text-black p-2 rounded-md font-semibold" onClick={() => setIsEditModalOpen(false)}>
                     Close
                   </button>
