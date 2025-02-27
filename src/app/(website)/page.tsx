@@ -5,7 +5,7 @@ import gridImg2 from "@/assets/images/img2.png";
 import gridImg3 from "@/assets/images/img3.png";
 import gridImg4 from "@/assets/images/img4.png";
 import gridImg5 from "@/assets/images/img5.png";
-import gridImg6 from "@/assets/images/img6.png";
+import gridImg6 from "@/assets/images/img6.jpg";
 import gridImg7 from "@/assets/images/img7.png";
 import cardsData from "@/data/CardsData";
 import Card from "@/app/(website)/components/Card";

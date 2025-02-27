@@ -61,7 +61,7 @@ const Header = () => {
             <div style={iconstyle}>
               <span><MailIcon /></span>
               <p>
-                support@blacktherapy.n
+                support@blacktherapy.net
               </p>
             </div>
           </div>

@@ -55,7 +55,7 @@ const Footer: React.FC = () =>{
             <div className="text-center md:text-left">
               <h2 className="section-title mb-[10px] md:mb-5">Stay Connected</h2>
               <p className="max-w-[489px] text-gray-500 md:text-base text-sm mx-auto md:mx-0">
-                Subscribe to get occasional emails from Rico. You can
+                Subscribe to get occasional emails from Black Therapy Network. You can
                 unsubscribe at any time and we won&#39;t share your info.
               </p>
             </div>
@@ -105,7 +105,7 @@ const Footer: React.FC = () =>{
                       <div className="">
                         <p className="text-[#8C8C8C] text-xs">Email</p>
                         <p className="text-[#CACACA] text-xs md:text-sm">
-                          support@blacktherapy.n
+                          support@blacktherapy.net
                         </p>
                       </div>
                     </div>
@@ -118,8 +118,8 @@ const Footer: React.FC = () =>{
                           Mailing Address
                         </p>
                         <p className="leading-5 text-[#CACACA] text-xs md:text-sm">
-                          The Ship Group Technologies , P.O. BOX 42915 ,<br />
-                          Charlotte, North Carolina 28215
+                          The Ship Group Technologies ,<br /> P.O. BOX 42915 ,<br />
+                          Charlotte,,<br /> North Carolina 28215
                         </p>
                       </div>
                     </div>
