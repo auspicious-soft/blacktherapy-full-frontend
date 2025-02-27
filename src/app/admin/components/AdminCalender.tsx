@@ -254,7 +254,6 @@ const AdminCalendar: React.FC = () => {
       }) || []
     )
   }, [data]);
-  // Add new state for timeslot selection
 
   // Modify the groupEventsByHour logic to be more precise
   const groupEventsByTime = useMemo(() => {
