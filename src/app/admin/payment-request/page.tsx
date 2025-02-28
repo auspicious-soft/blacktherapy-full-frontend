@@ -9,6 +9,8 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useSession } from "next-auth/react";
 import SearchBar from "../components/SearchBar";
+import { getImageUrlOfS3 } from "@/utils";
+import { EyeIcon } from "lucide-react";
 
 interface PaymentApproveData {
   progressNotes: string,
@@ -177,7 +179,7 @@ const Page: React.FC = () => {
           </button>
         </div>
         <div>
-          <SearchBar setQuery={setQuery} placeholder="Search by Id"/> {/* Add the SearchBar component */}
+          <SearchBar setQuery={setQuery} placeholder="Search by Id" /> {/* Add the SearchBar component */}
         </div>
       </div>
       <div className="table-common overflo-custom">
@@ -192,6 +194,8 @@ const Page: React.FC = () => {
               <th>Service Date</th>
               <th>Duration Hours</th>
               <th>Payment Status</th>
+              <th>Invoice</th>
+              <th>Clinician Notes</th>
               <th>Submission Date</th>
               {activeTab === "rejected" && <th>Note</th>}
               {(activeTab === "pending" || activeTab === "rejected" || activeTab === "approved") && <th>Action</th>}
@@ -236,6 +240,24 @@ const Page: React.FC = () => {
                         : payment?.status}
                     </p>
                   </td>
+                  <td>
+                    <a
+                      href={getImageUrlOfS3(payment?.invoice)}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="bg-[#283C63] text-white justify-end p-2 rounded-lg"
+                    >
+                      View
+                    </a>
+                  </td>
+                  <td> <a
+                    href={getImageUrlOfS3(payment?.appointmentId?.sessionNotes)}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="rounded-lg text-center text-[#283C63]"
+                  >
+                    <EyeIcon size={20}/>
+                  </a></td>
                   <td>{new Date(payment?.createdAt).toLocaleDateString('en-US')}</td>
                   {activeTab === "rejected" && <td>{payment?.rejectNote}</td>}
                   {(activeTab === "pending" || activeTab === "approved") && (
