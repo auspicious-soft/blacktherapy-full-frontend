@@ -34,7 +34,7 @@ const MainChat = (props: any) => {
           <Image src={imgg} height={200} width={200}
             alt="User Avatar" className="w-10 h-10 rounded-full" />
           <div>
-            <h2 className="text-lg font-semibold text-white"> {`${titleText?.clientName}`}</h2>
+            <h2 className="text-lg font-semibold text-white"> {`${titleText?.sender?.firstName} ${titleText?.sender?.lastName}`}</h2>
             {/* <p className="text-sm text-white ">{isRecieverOnline ? 'Active Now' : 'Offline'}</p> */}
           </div>
         </div>
