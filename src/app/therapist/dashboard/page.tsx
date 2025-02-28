@@ -64,6 +64,7 @@ const OverviewData = [
 export default async function Home() {
   const session = await auth();
   const response = await getTherapistDashboardStats(`/therapist/dashboard/${session?.user?.id}`);
+  const name  = session?.user?.name;
   const CardsData = await response?.data?.data;
   const alerts = await getTherapistsAlerts(`/therapist/notifications/${session?.user?.id}`);
   const alertsData = await alerts.data?.data;
@@ -91,7 +92,7 @@ export default async function Home() {
   return (
     <div>
       <div className="flex justify-between items-center ">
-        <h1 className="text-[40px]">Welcome</h1>
+        <h1 className="text-[40px]">Welcome {name} 👋</h1>
         <LottieNotification data={alertsData} id={session?.user?.id} />
       </div>
       <div className="grid md:grid-cols-3 gap-[25px] my-[50px]">
