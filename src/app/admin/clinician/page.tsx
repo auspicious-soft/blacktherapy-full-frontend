@@ -33,7 +33,7 @@ const Page: React.FC = () => {
             onChange={handlefilters}
             className="w-auto border border-[#26395E] text-[#26395E] text-sm h-[46px] px-5 bg-transparent p-0"
           >
-            <option value="">Status</option>
+            <option value="">No Filter</option>
             <option value="Applicant Reviewed">Applicant Reviewed</option>
             <option value="Interview Pending">Interview Pending</option>
             <option value="Incomplete Application">Incomplete Application</option>

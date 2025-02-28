@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import previmg2 from "@/assets/images/previmg.png";
+import previmg2 from "@/assets/images/profile.png";
 import { ButtonArrow, EditImgIcon } from "@/utils/svgicons";
 import success from "@/assets/images/succes.png";
 import {

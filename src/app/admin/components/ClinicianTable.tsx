@@ -176,7 +176,6 @@ const ClinicianTable: React.FC<TherapistsDataProps & { setPage: any; currentPage
             <tr>
               <th title={(tooltipContent && tooltipContent as string) ?? ''}>Name</th>
               <th>Status</th>
-              <th>Training</th>
               <th>Contact</th>
               <th>Address</th>
               <th>Member Since</th>
@@ -238,11 +237,6 @@ const ClinicianTable: React.FC<TherapistsDataProps & { setPage: any; currentPage
                       <p className=" inline-block font-gothamMedium text-center leading-[normal] rounded-3xl py-[3px] px-[10px] text-[#26395E] bg-[#CCDDFF] text-[10px] ">
                         {row?.otherDetailsOfTherapist?.status ??
                           "Background Check Pending"}
-                      </p>
-                    </td>
-                    <td>
-                      <p className=" font-gothamMedium text-center leading-[normal] rounded-3xl py-[3px] px-[10px] text-[#A85C03] bg-[#fffdd1] text-[10px] ">
-                        {row?.training}
                       </p>
                     </td>
 
