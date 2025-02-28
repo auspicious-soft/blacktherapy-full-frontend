@@ -53,11 +53,11 @@ const Home = () => {
     });
   }
   const PreviousAppointment = apData?.filter((item: any) => item?.status !== 'Pending' && (item?.updatedAt < new Date().toISOString()))
-    .sort((a: any, b: any) => new Date(b.updatedAt).getDate() - new Date(a.updatedAt).getDate()) || [];
-
+  .sort((a: any, b: any) => new Date(b.updatedAt).getDate() - new Date(a.updatedAt).getDate()) || [];
+  
   const NextAppointment = apData?.filter((item: any) => item?.status === 'Pending')
-    .sort((a: any, b: any) => new Date(a.updatedAt).getDate() - new Date(b.updatedAt).getDate()) || [];
-
+  .sort((a: any, b: any) => new Date(a.updatedAt).getDate() - new Date(b.updatedAt).getDate()) || [];
+  
   const nextAppointment = NextAppointment.length > 0 ? {
     date: new Date(NextAppointment[0]?.appointmentDate).toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' }),
     chat: NextAppointment[0]?.message ? 'Yes' : 'No',
@@ -80,6 +80,7 @@ const Home = () => {
 
   let previousBilled = {
     amount: 'N/A',
+    planName: 'N/A',
   }
   const userPlanOrSubscriptionId = user?.data?.data?.planOrSubscriptionId
   const isChatAllowed = user?.data?.data?.chatAllowed
@@ -87,7 +88,8 @@ const Home = () => {
   const video = user?.data?.data?.video
   const message = user?.data?.data?.message
   const { data: subsData } = useSWR(userPlanOrSubscriptionId ? `${userPlanOrSubscriptionId}` : null, getSubscriptionById)
-  previousBilled.amount = String(`$${(subsData as any)?.plan.amount / 100}`)
+  previousBilled.amount = String(`$${(subsData as any)?.plan.amount / 100}`);
+  previousBilled.planName = String(subsData?.metadata?.planType)
 
   const handleDelete = async (id: string) => {
     try {

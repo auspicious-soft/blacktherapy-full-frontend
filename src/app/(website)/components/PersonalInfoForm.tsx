@@ -35,14 +35,14 @@ const PersonalInfoForm: React.FC<PerfonalInfoFormProps> = ({formData, setFormDat
         <InputField required type="password" name="password" label="Password" value={formData.password} onChange={handleChange} />
         <InputField required type="password" name="confirmPassword" label="Confirm Password" value={formData.confirmPassword} onChange={handleChange} />
         <InputField required type="email" name="email" label="Email" value={formData.email} onChange={handleChange} />
+        <InputField required name="addressLine1" label="Address Line 1" value={formData.addressLine1} onChange={handleChange} />
+        <InputField required name="addressLine2" label="Address Line 2" value={formData.addressLine2} onChange={handleChange} />
         <InputField required name="city" label="City" value={formData.city} onChange={handleChange} />
         <CustomSelect  required name="State" value={ (USStates as any).find((option: any) => option.value === formData?.state) || null }
         options={USStates as any} onChange={handleSelectChange} placeholder="Select State" />
+        <InputField required name="zipCode" label="Zip Code" value={formData.zipCode} onChange={handleChange} />
 
         {/* <SelectField name="location" label="Location" value={formData.location} onChange={handleChange} options={['Guam', 'Location2', 'Location3']} /> */}
-        <InputField required name="zipCode" label="Zip Code" value={formData.zipCode} onChange={handleChange} />
-        <InputField required name="addressLine1" label="Address Line 1" value={formData.addressLine1} onChange={handleChange} />
-        <InputField required name="addressLine2" label="Address Line 2" value={formData.addressLine2} onChange={handleChange} />
       </div>
       {/* <button onClick={clientFormSubmit} className=" button absolute right-0 bottom-[-56px] md:bottom-[-70px] ">Finish</button> */}
       </div>
