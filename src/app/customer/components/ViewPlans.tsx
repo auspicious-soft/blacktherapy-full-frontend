@@ -48,7 +48,7 @@ const ViewPlans = (props: any) => {
       // Add a small delay to ensure all content is rendered, including Stripe elements
       setTimeout(() => {
         const container = modalRef.current;
-        const scrollDistance = container.scrollHeight - container.clientHeight;
+        const scrollDistance = container?.scrollHeight - container?.clientHeight;
         container.scrollTo({
           top: scrollDistance,
           behavior: 'smooth'
