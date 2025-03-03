@@ -14,7 +14,7 @@ const ToShowPlanModal = () => {
     const userPlanOrSubscriptionId = user?.data?.data?.planOrSubscriptionId
 
     useEffect(() => {
-        if (!isLoading && userPlanOrSubscriptionId == null) {
+        if (!isLoading && (userPlanOrSubscriptionId == null || userPlanOrSubscriptionId == '' || !userPlanOrSubscriptionId || userPlanOrSubscriptionId == 'undefined')) {
             setOpenPlansModal(true)
         }
     }, [userPlanOrSubscriptionId, isLoading])
