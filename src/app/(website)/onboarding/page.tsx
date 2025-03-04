@@ -15,6 +15,7 @@ const Page = async () => {
 
     return (
         <div className='container pt-[50px] pb-[80px] relative '>
+            <title>BTN | Onboarding</title>
             <OnboardingForm/>
         </div>
     )
