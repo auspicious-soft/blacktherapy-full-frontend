@@ -201,11 +201,13 @@ const OutOfPocketForm: React.FC<OutOfPocketFormProps> = ({ onBack, formData, set
   return (
     <div className="max-w-[800px] mx-auto rounded-[20px] bg-white p-5 md:p-[40px]">
       {/* Render questions for steps within questionDistribution */}
-      {currentStep < questionDistribution.length
-        ? renderQuestions()
-        : (currentStep === questionDistribution.length
-          ? <IntroSection onContinue={handleContinue} />
-          : <PersonalInfoForm formData={formData} setFormData={setFormData} />
+      {currentStep < questionDistribution.length ?
+        renderQuestions()
+        :
+        (
+          // currentStep === questionDistribution.length ? <IntroSection onContinue={handleContinue} />
+          //   :
+            <PersonalInfoForm formData={formData} setFormData={setFormData} />
         )
       }
       <div className="flex justify-between mt-4">

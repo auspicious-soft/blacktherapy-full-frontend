@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { FaqTitle, GettingStart } from '@/utils/svgicons';
 import GetStartedImage from '@/assets/images/started-banner.jpg';
 import MainForm from '@/app/(website)/components/MainForm';
+import OutOfPocketForm from '../components/OutOfPocketForm';
 
 const Page = () => {
     const [showMainForm, setShowMainForm] = useState(false);
@@ -47,11 +48,15 @@ const Page = () => {
         setFormData((prev: any) => ({ ...prev, serviceSubscribed: serviceType }));
         setShowMainForm(true);
     };
+    const handleBack = () => {
+        setShowMainForm(false);
+      };
 
     return (
         <div className="container pt-[50px] py-[40px] md:pb-[100px]">
             {showMainForm ? (
-                <MainForm formData={formData} setFormData={setFormData} />
+                // <MainForm formData={formData} setFormData={setFormData} />
+                <OutOfPocketForm formData={formData} setFormData={setFormData} onBack={handleBack} />
             ) : (
                 <div className="grid md:grid-cols-2 items-center gap-5">
                     <div className="order-2 md:order-none">
