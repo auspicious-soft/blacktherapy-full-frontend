@@ -95,8 +95,11 @@ export const submitForm = async (formData: any, userEmail: string, router: any) 
       toast.error("Failed to add Therapist Data");
     }
   }
-  catch (error) {
-    console.error("Error adding Therapist Data:", error);
+  catch (error:any) {
+    if(error?.status == 403) {
+      toast.error("An application with this email already exists")
+      return
+    }
     toast.error("An error occurred while adding the Therapist Data");
   }
 };

@@ -57,6 +57,10 @@ const styles = StyleSheet.create({
         width: '100%',
         height: 'auto',
     },
+    signatureLogo: {
+        width: 200,
+        height: 50
+    },
     footer: {
         position: 'absolute',
         bottom: 30,
@@ -78,7 +82,7 @@ const renderAttachment = (fieldValue: string) => {
     const parts = fieldValue.split('/');
     const filename = parts[parts.length - 1];
     return (
-        <Link break src={url}  style={{ color: 'blue', textDecoration: 'underline' }}>
+        <Link break src={url} style={{ color: 'blue', textDecoration: 'underline' }}>
             {filename}
         </Link>
     );
@@ -86,6 +90,7 @@ const renderAttachment = (fieldValue: string) => {
 
 // PDF Document Component for Therapist Onboarding Details
 const TherapistOnboardingDetails = ({ formData }: any) => {
+
     const formatDate = (date: any) => {
         return new Date(date).toLocaleDateString('en-US', {
             year: 'numeric',
@@ -93,7 +98,8 @@ const TherapistOnboardingDetails = ({ formData }: any) => {
             day: 'numeric'
         });
     };
-
+    const consentSignature = getImageUrlOfS3(formData.consentSignature);
+    const againConsentSignature = getImageUrlOfS3(formData.againConsentSignature);
     return (
         <Document>
             <Page size="A4" style={styles.page}>
@@ -321,7 +327,9 @@ const TherapistOnboardingDetails = ({ formData }: any) => {
                     <Text style={{ fontSize: 14, marginBottom: 10 }}>Attachments</Text>
                     <View style={styles.row}>
                         <Text style={styles.label}>Consent Signature:</Text>
-                        <Text style={styles.value}>{renderAttachment(formData.consentSignature)}</Text>
+                        <View style={styles.value}>
+                            <Image style={styles.signatureLogo} src={consentSignature} />
+                        </View>
                     </View>
                     <View style={styles.row}>
                         <Text style={styles.label}>Current Resume:</Text>
@@ -333,7 +341,9 @@ const TherapistOnboardingDetails = ({ formData }: any) => {
                     </View>
                     <View style={styles.row}>
                         <Text style={styles.label}>Again Consent Signature:</Text>
-                        <Text style={styles.value}>{renderAttachment(formData.againConsentSignature)}</Text>
+                        <View style={styles.value}>
+                            <Image style={styles.signatureLogo} src={againConsentSignature} />
+                        </View>
                     </View>
                 </View>
 
