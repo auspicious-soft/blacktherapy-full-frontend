@@ -100,6 +100,7 @@ const MainChat = (props: any) => {
             onChange={(e) => setPrompt(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
+                e.preventDefault()
                 handleSendMessage()
               }
             }}

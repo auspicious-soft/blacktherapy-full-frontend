@@ -2,25 +2,17 @@
 import DashboardCard from "@/app/admin/components/DashboardCard";
 import { deleteSingleAlert, getAdminAlerts, getAdminDashboardStats, updateAdminAlerts } from "@/services/admin/admin-service";
 import {
-  NotificationIcon,
-  OverviewIcon1,
-  OverviewIcon2,
-  OverviewIcon3,
-  OverviewIcon4,
-  OverviewIcon5,
-  OverviewIcon6,
-  OverviewIcon7,
-  OverviewIcon8,
+  OverviewIcon1, OverviewIcon2, OverviewIcon3, OverviewIcon4, OverviewIcon5, OverviewIcon6, OverviewIcon7, OverviewIcon8,
 } from "@/utils/svgicons";
 import { useSession } from "next-auth/react";
 import useSWR from "swr";
 import ReactLoading from 'react-loading';
 import AlertsTable from "../components/AlertsTable";
-import { useState, useTransition } from "react";
-import { LottieNotification } from "@/components/notification-lottie";
+import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { ClientNotifications } from "@/components/ClientNotifications";
+
 const Home = () => {
   const session = useSession()
   const [isPending, startTransition] = useTransition();
@@ -42,7 +34,7 @@ const Home = () => {
         const response = await updateAdminAlerts(`/admin/notifications`, unreadAlertIds);
 
         if (response?.status === 200) {
-          const updatedAlerts = alertsArray.map((alert: any) => ({
+          alertsArray.map((alert: any) => ({
             ...alert,
             read: true
           }));

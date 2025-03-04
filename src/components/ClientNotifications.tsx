@@ -77,12 +77,12 @@ export const ClientNotifications: React.FC<NotificationProps> = ({ alerts = [], 
                   <div key={row._id} className={`border-b border-[#D9DCE2] mb- last:border-b-0  px-3 py-2 *:${row.read ? ' ' : 'font-bold bg-[#CCE9FA] '}`}>
                     <div className='flex items-center'>
                       <div className='flex justify-between w-full'>
-                        <div>
-                          <h4 className='text-base'>{row?.sender?.firstName} {row?.sender?.lastName} <span className='text-sm underline'> {row?.sender?.role}</span> </h4>
-                          <p className={`flex justify-between w-full text-sm text-[#686c78] ${row.read ? ' ' : ' bg-[#CCE9FA] '}`}>
-                            {row?.message}
-                            <span className='min-w-[20%] '>{new Date(row?.createdAt).toLocaleDateString('en-US')} </span>
-                          </p>
+                        <div className="w-full">
+                          <h4 className='text-base'>{row?.sender?.firstName} {row?.sender?.lastName} <span className='text-sm underline pl-3'> {row?.sender?.role}</span> </h4>
+                          <div className={`flex  justify-between w-[90%] text-sm text-[#686c78] ${row.read ? ' ' : ' bg-[#CCE9FA] '}`}>
+                            <p className="font-semibold">{row?.message}</p>
+                            <p className='min-w-[20%] '>{new Date(row?.createdAt).toLocaleDateString('en-US')} </p>
+                          </div>
                         </div>
                         <button onClick={() => handleDelete && handleDelete(row._id)} className='mr-2 text-red-500'>
                           <MdDelete size={20} />
