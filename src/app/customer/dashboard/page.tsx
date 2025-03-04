@@ -3,7 +3,7 @@ import DashboardAssignment from "@/app/customer/components/DashboardAssignment";
 import DashboardCard from "@/app/customer/components/DashboardCard";
 import { ClientNotifications } from "@/components/ClientNotifications";
 import { deleteSingleAlert } from "@/services/admin/admin-service";
-import { getClientAppointments, getClientsAlerts, getProfileService, getSubscriptionById, updateClientReadStatus } from "@/services/client/client-service";
+import { clearAllAlerts, getClientAppointments, getClientsAlerts, getProfileService, getSubscriptionById, updateClientReadStatus } from "@/services/client/client-service";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
@@ -53,11 +53,11 @@ const Home = () => {
     });
   }
   const PreviousAppointment = apData?.filter((item: any) => item?.status !== 'Pending' && (item?.updatedAt < new Date().toISOString()))
-  .sort((a: any, b: any) => new Date(b.updatedAt).getDate() - new Date(a.updatedAt).getDate()) || [];
-  
+    .sort((a: any, b: any) => new Date(b.updatedAt).getDate() - new Date(a.updatedAt).getDate()) || [];
+
   const NextAppointment = apData?.filter((item: any) => item?.status === 'Pending')
-  .sort((a: any, b: any) => new Date(a.updatedAt).getDate() - new Date(b.updatedAt).getDate()) || [];
-  
+    .sort((a: any, b: any) => new Date(a.updatedAt).getDate() - new Date(b.updatedAt).getDate()) || [];
+
   const nextAppointment = NextAppointment.length > 0 ? {
     date: new Date(NextAppointment[0]?.appointmentDate).toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' }),
     chat: NextAppointment[0]?.message ? 'Yes' : 'No',
@@ -105,6 +105,21 @@ const Home = () => {
       toast.error('An error occurred while deleting notification');
     }
   }
+  const handleClearAll = async () => {
+    try {
+      const response = await clearAllAlerts(`/client/notifications/${session?.data?.user?.id}/clearNotifications`);
+      if (response?.status === 200) {
+        toast.success('All notifications deleted successfully');
+        mutate();
+      }
+      else {
+        toast.error('Failed to delete notifications');
+      }
+    } catch (error) {
+      console.error('Error deleting notification:', error);
+      toast.error('An error occurred while deleting notification {error}');
+    }
+  }
   return (
     <>
       <div className="flex justify-between items-center mb-[25px] lg:mb-[50px]">
@@ -116,6 +131,7 @@ const Home = () => {
           handleRead={handleRead}
           isLoading={isPending}
           handleDelete={handleDelete}
+          handleClearAll={handleClearAll}
         />
       </div>
       <div className="banner-client rounded-[10px]">

@@ -47,7 +47,7 @@ export const getCustomerSubscriptionDetails = async (stripeCustomerId: string) =
         customer: stripeCustomerId,
         status: 'paid',
         limit: 1000
-    } )
+    })
 }
 export const getSubscriptionById = async (planOrSubscriptionId: string) => {
     return await stripe.subscriptions.retrieve(planOrSubscriptionId)
@@ -68,7 +68,7 @@ export const getClientsAlerts = async (route: string) => {
     const axiosInstance = await getAxiosInstance()
     return axiosInstance.get(route)
 }
-export const updateClientReadStatus = async (route: string,  payload: any) => {
+export const updateClientReadStatus = async (route: string, payload: any) => {
     const axiosInstance = await getAxiosInstance()
     return axiosInstance.patch(route, payload)
 }
@@ -84,4 +84,9 @@ export const addClientsTickets = async (route: string, payload: any) => {
 export const contactUsForm = async (route: string, payload: any) => {
     const axiosInstance = await getAxiosInstance()
     return axiosInstance.post(route, payload)
+}
+
+export const clearAllAlerts = async (route: string) => {
+    const axiosInstance = await getAxiosInstance()
+    return axiosInstance.delete(route)
 }

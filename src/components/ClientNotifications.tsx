@@ -13,9 +13,10 @@ interface NotificationProps {
   handleRead?: () => void;
   handleDelete?: (id: string) => void;
   isLoading?: boolean;
+  handleClearAll?: () => void;
 }
 
-export const ClientNotifications: React.FC<NotificationProps> = ({ alerts = [], handleRead, handleDelete, isLoading = false }) => {
+export const ClientNotifications: React.FC<NotificationProps> = ({ alerts = [], handleRead, handleDelete, isLoading = false, handleClearAll }) => {
   const [showAlertModal, setShowAlertModal] = useState(false);
   const [hasUnreadAlerts, setHasUnreadAlerts] = useState(false);
 
@@ -48,7 +49,7 @@ export const ClientNotifications: React.FC<NotificationProps> = ({ alerts = [], 
       </div>
 
       {showAlertModal && (
-        <div className='absolute right-0 top-full mt-2 w-[300px] bg-white rounded-lg z-10 shadow-md border'>
+        <div className='absolute right-0 top-full mt-2 w-[340px] bg-white rounded-lg z-10 shadow-md border'>
           <div className="max-h-[500px] overflow-y-auto overflo-custom ">
 
             <div className='bg-[#283C63] rounded-t-lg flex justify-between items-center px-3 py-3 border-b border-[#ccc]'>
@@ -57,22 +58,33 @@ export const ClientNotifications: React.FC<NotificationProps> = ({ alerts = [], 
                 {/* {unreadAlerts.length} */}
               </h5>
               {handleRead && (
-                <button
-                  onClick={() => {
-                    handleRead()
-                    setShowAlertModal(!showAlertModal)
-                  }}
-                  disabled={isLoading}
-                  className="text-xs text-[#fff] underline disabled:opacity-50"
-                >
-                  {isLoading ? 'Updating...' : 'Mark all as Read'}
-                </button>
+                <>
+                  <button
+                    onClick={() => {
+                      handleRead()
+                      setShowAlertModal(!showAlertModal)
+                    }}
+                    disabled={isLoading}
+                    className="text-xs text-[#fff] underline disabled:opacity-50"
+                  >
+                    {isLoading ? 'Updating...' : 'Mark all as Read'}
+                  </button>
+                  <button
+                    onClick={() => {
+                      handleClearAll && handleClearAll()
+                    }}
+                    disabled={isLoading}
+                    className="text-xs text-[#fff] underline disabled:opacity-50"
+                  >
+                    {isLoading ? 'Deleting...' : 'Delete All'}
+                  </button>
+                </>
               )}
             </div>
 
             {/* Notifications List */}
             {Array.isArray(alerts) && alerts.length > 0 ? (
-              <div className='my-2'>
+              <div className=''>
                 {alerts.map((row: any) => (
                   <div key={row._id} className={`border-b border-[#D9DCE2] mb- last:border-b-0  px-3 py-2 *:${row.read ? ' ' : 'font-bold bg-[#CCE9FA] '}`}>
                     <div className='flex items-center'>
@@ -97,7 +109,8 @@ export const ClientNotifications: React.FC<NotificationProps> = ({ alerts = [], 
             )}
           </div>
         </div>
-      )}
-    </div>
+      )
+      }
+    </div >
   );
 };
