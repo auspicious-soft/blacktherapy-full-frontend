@@ -13,6 +13,12 @@ interface OutOfPocketFormProps {
 
 const outOfPocketQuestions = [
   {
+    key: "mainIssueBrief",
+    question: "Briefly describe the main issues or concerns that bring you to therapy?",
+    type: "textarea",
+    placeholder: "",
+  },
+  {
     key: "reasonForLookingHelp",
     question: "To begin, tell us why you're looking for help today.",
     type: "radio",
@@ -27,6 +33,58 @@ const outOfPocketQuestions = [
     ],
   },
   {
+    question: "Have you had therapy before?",
+    key: "seenTherapistBefore",
+    type: "radio",
+    options: [
+      "Yes, and it was helpful",
+      "Yes, but it wasn’t helpful",
+      "No, this is my first time",
+      "No, but I’ve tried self-help or other support methods",
+    ]
+  },
+  {
+    question: "Have you ever been diagnosed with a mental health condition?",
+    key: "diagnosedWithMentalHealthCondition",
+    type: "radio",
+    options: [
+      "Yes",
+      "No",
+      "Not Sure"
+    ]
+  },
+  {
+    question: "Do you have a history of suicidal thoughts or self-harm?",
+    key: "historyOfSuicidalThoughts",
+    type: "radio",
+    options: [
+      "Yes, within the past year",
+      "Yes, more than a year ago",
+      "No"
+    ]
+  },
+  {
+    question: "What kind of therapy style works best for you?",
+    key: "therapyStyle",
+    type: "radio",
+    options: [
+      "I prefer structured therapy (goal-oriented, cognitive-behavioral therapy, solutions-focused)",
+      "I prefer a safe space to talk openly without structure",
+      "I’m not sure yet (help me find the best approach!)",
+    ]
+  },
+  {
+    question: "How do you prefer to communicate with your therapist?",
+    key: "communicationPreference",
+    type: "radio",
+    options: [
+      "Video sessions",
+      "Phone calls",
+      "Chat messaging",
+      "No preference",
+    ]
+  },
+  {
     key: "rateSleepingHabits",
     question: "How would you rate your sleeping habits?",
     type: "radio",
@@ -37,21 +95,6 @@ const outOfPocketQuestions = [
     question: "How would you rate your current physical health?",
     type: "radio",
     options: ["Excellent", "Good", "Fair", "Poor"],
-  },
-  {
-    key: "howYouKnewUs",
-    question: "How did you hear about us?",
-    type: "radio",
-    options: [
-      "My doctor",
-      "Search Engine/Online",
-      "Insurance provider",
-      "Previous therapist",
-      "Court",
-      "Friend/Family",
-      "Community Organization",
-      "Media/Ad",
-    ],
   },
   {
     key: "gender",
@@ -69,13 +112,57 @@ const outOfPocketQuestions = [
     ],
   },
   {
-    key: "mainIssueBrief",
-    question: "Briefly describe the main issues or concerns that bring you to therapy?",
-    type: "textarea",
-    placeholder: "",
+    question: "What is your current relationship status",
+    key: "relationshipStatus",
+    type: "radio",
+    options: [
+      "Single",
+      "In a relationship",
+      "Married",
+      "Separated/divorced",
+      "Widowed",
+    ]
+  },
+  {
+    question: "Do you currently live with others?",
+    key: "liveWithOthers",
+    type: "radio",
+    options: [
+      "Yes, with family/partner",
+      "Yes, with roommates",
+      "No, I live alone",
+    ]
+  },
+  // {
+  //   question: ""
+  // },
+  {
+    question: "Would you like to add unlimited messaging with your therapist?",
+    key: "unlimitedMessaging",
+    type: "radio",
+    options: [
+      "Yes",
+      "No, just live sessions for now",
+    ]
+  },
+  {
+    key: "howYouKnewUs",
+    question: "How did you hear about us?",
+    type: "radio",
+    options: [
+      "Search Engine (Google, Bing, etc.)",
+      "Social Media (Facebook, Instagram, Twitter)",
+      "Friend/Family Referral",
+      "Previous therapist",
+      "Community Organization",
+      "Podcast/YouTube/Media",
+      "Court or Legal Referral",
+      "Other (open text field)",
+    ],
   },
 ];
-const questionDistribution = [1, 1, 1, 1, 1, 1];
+
+const questionDistribution = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
 const OutOfPocketForm: React.FC<OutOfPocketFormProps> = ({ onBack, formData, setFormData }) => {
   const [currentStep, setCurrentStep] = useState(0);
   const totalSteps = questionDistribution.length + 2;
@@ -207,7 +294,7 @@ const OutOfPocketForm: React.FC<OutOfPocketFormProps> = ({ onBack, formData, set
         (
           // currentStep === questionDistribution.length ? <IntroSection onContinue={handleContinue} />
           //   :
-            <PersonalInfoForm formData={formData} setFormData={setFormData} />
+          <PersonalInfoForm formData={formData} setFormData={setFormData} />
         )
       }
       <div className="flex justify-between mt-4">
