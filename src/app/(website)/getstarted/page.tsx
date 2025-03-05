@@ -2,7 +2,8 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { FaqTitle, GettingStart } from '@/utils/svgicons';
-import GetStartedImage from '@/assets/images/started-banner.jpg';
+// import GetStartedImage from '@/assets/images/started-banner.jpg';
+import GetStartedImage from '@/assets/images/starter-banner.jpg';
 import MainForm from '@/app/(website)/components/MainForm';
 import OutOfPocketForm from '../components/OutOfPocketForm';
 

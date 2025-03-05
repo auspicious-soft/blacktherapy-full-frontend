@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import profilePic from "@/assets/images/profile.png";
 
 import TherapyCard from "@/app/(website)/components/TherapyCard";
@@ -11,7 +11,16 @@ import ReactLoader from "@/components/ReactLoader";
 
 
 const OurTherapist: React.FC = () => {
-  const { data, error, isLoading, mutate } = useSWR(`/admin/therapists`, GetTherapistsData)
+  const { data, error, mutate } = useSWR(`/admin/therapists`, GetTherapistsData)
+  const [isLoading, setLoading] = useState(false)
+  useEffect(() => {
+    if (!data || data == undefined) {
+      setLoading(true)
+    }
+    if (data) {
+      setLoading(false)
+    }
+  }, [data])
   const therapistsData = data?.data?.data
   const [visibleItems, setVisibleItems] = useState(4);
 
@@ -25,13 +34,7 @@ const OurTherapist: React.FC = () => {
         <div className="grid md:grid-cols-4 grid-cols-2 md:gap-x-5 gap-x-3 gap-y-5 md:gap-y-10 ">
           {therapistsData?.slice(0, visibleItems).map((item: any) => {
             return (
-              <>
-                {!isLoading ?
-                  <TherapyCard key={item.id} image={item?.otherDetailsOfTherapist?.profilePic ? getImageUrlOfS3(item?.otherDetailsOfTherapist?.profilePic) : profilePic} text={item.firstName+ ' ' + item.lastName} profilelink={item.profilelink} />
-                  :
-                  <ReactLoader />
-                }
-              </>
+              <TherapyCard isLoading={isLoading} key={item.id} image={item?.otherDetailsOfTherapist?.profilePic ? getImageUrlOfS3(item?.otherDetailsOfTherapist?.profilePic) : profilePic} text={item.firstName + ' ' + item.lastName} profilelink={item.profilelink} />
             )
           })}
         </div>
