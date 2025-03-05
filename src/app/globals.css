@@ -341,7 +341,7 @@ input.file-inputs {
 
 @media (min-width: 768px) {
   .card-wrapper:hover .text-button {
-    bottom: 19px;
+    bottom: 80px;
     transition: 0.7s;
   }
   .questions:nth-last-child(2) .after-line::after {

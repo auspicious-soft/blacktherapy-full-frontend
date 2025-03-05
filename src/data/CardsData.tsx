@@ -7,23 +7,26 @@ const cardsData = [
     {
         id: 1,
         title: "Individual",
-        buttonText: "Get Started",
+        buttonText: "Start My Healing Journey",
         buttonLink: "/getstarted",
         imgSrc: cardImg1,
+        desc: 'Personalized, one-on-one therapy for self-growth and emotional well-being'
       },
       { 
         id: 2,
         title: "Couples", 
-        buttonText: "Get Started",
+        buttonText: "Start My Healing Journey",
         buttonLink: "/getstarted",
         imgSrc: cardImg2,
+        desc: 'Strengthen your relationship with culturally competent guidance'
       },
       {
         id: 3,
         title: "Teens",
-        buttonText: "Get Started",
+        buttonText: "Start My Healing Journey",
         buttonLink: "/getstarted",
         imgSrc: cardImg3,
+        desc: 'Supporting Black teens in navigating emotions, identity, and stress.'
       },
   // Add more objects as needed
 ];

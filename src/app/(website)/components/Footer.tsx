@@ -20,7 +20,7 @@ interface Props {
   className?: string;
 }
 
-const Footer: React.FC = () =>{
+const Footer: React.FC = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
@@ -48,25 +48,25 @@ const Footer: React.FC = () =>{
     <div className="main-footer">
       <div className="relative z-[1]">
         <div className="container ">
-           <div
-             className="grid md:grid-cols-2 items-center py-[40px] md:py-[50px] px-[15px] md:px-[100px] rounded-[20px] bg-[#fff] shadow-xs"
-             style={{ boxShadow: '0px -6px 24px 0px rgba(0, 0, 0, 0.10)' }}
-             >
+          <div
+            className="grid md:grid-cols-2 items-center py-[40px] md:py-[50px] px-[15px] md:px-[100px] rounded-[20px] bg-[#fff] shadow-xs"
+            style={{ boxShadow: '0px -6px 24px 0px rgba(0, 0, 0, 0.10)' }}
+          >
             <div className="text-center md:text-left">
-              <h2 className="section-title mb-[10px] md:mb-5">Stay Connected</h2>
+              <h2 className="section-title mb-[10px] md:mb-5">Join Our Community & Get Exclusive Mental Health Tips!</h2>
               <p className="max-w-[489px] text-gray-500 md:text-base text-sm mx-auto md:mx-0">
-                Subscribe to get occasional emails from Black Therapy Network. You can
-                unsubscribe at any time and we won&#39;t share your info.
+                ✓ Sign up to receive therapy resources, self-care guides, and exclusive updates
               </p>
+              <p> ✓<b> FREE Incentive</b>: 📌Sign up today & get a free mental health self-care checklist!</p>
             </div>
-          <div className="mt-[30px] md:mt-0 text-center">
-            <label htmlFor="" className="w-full max-w-[259px] md:max-w-full md:text-right text-center inline-block relative">
-            <input type="text" placeholder="Email" 
-            className="w-full max-w-[259px] md:max-w-[319px] border border-solid border-[#686C78] rounded-[24px] md:h-[55px] px-[30px] py-[9px] md:py-[10px] text-sm md:text-base text-[#686C78] "
-            />
-            <button className="button-arrow p-2 absolute right-5 md:right-6 top-2 md:top-4"> <ButtonSvg/></button>
-            </label>
-          </div>
+            <div className="mt-[30px] md:mt-0 text-center">
+              <label htmlFor="" className="w-full max-w-[259px] md:max-w-full md:text-right text-center inline-block relative">
+                <input type="text" placeholder="Email"
+                  className="w-full max-w-[259px] md:max-w-[319px] border border-solid border-[#686C78] rounded-[24px] md:h-[55px] px-[30px] py-[9px] md:py-[10px] text-sm md:text-base text-[#686C78] "
+                />
+                <button className="button-arrow p-2 absolute right-5 md:right-6 top-2 md:top-4"> <ButtonSvg /></button>
+              </label>
+            </div>
           </div>
         </div>
       </div>
@@ -118,7 +118,7 @@ const Footer: React.FC = () =>{
                           Mailing Address
                         </p>
                         <p className="leading-5 text-[#CACACA] text-xs md:text-sm">
-                          The Ship Group Technologies ,<br /> P.O. BOX 42915 ,<br />
+                          The Black Therapy Network ,<br /> P.O. BOX 42915 ,<br />
                           Charlotte,,<br /> North Carolina 28215
                         </p>
                       </div>
@@ -128,39 +128,38 @@ const Footer: React.FC = () =>{
               </div>
               <div className="Column-22 footer-items md:w-[25%] mt-10 md:mt-0">
                 <h3 className="footer-dropdowns capitalize text-white text-lg mb-6"
-                onClick={isMobile ? toggleDropdown : undefined}>
+                  onClick={isMobile ? toggleDropdown : undefined}>
                   Explore
                 </h3>
                 {(isMobile && isDropdownOpen) || !isMobile ? (
-                <div  className={`transition-max-height duration-300 ease-in-out overflow-hidden ${
-                  isMobile ? (isDropdownOpen ? 'max-h-screen' : 'max-h-0') : 'max-h-screen'
-                } mb-8`}>
-               <ul className="flex flex-col items-start gap-5 pl-[9px] md:pl-0">
-                  <li>
-                    <Link href="/about">About us</Link>
-                  </li>
-                  <li>
-                    <Link href="#">Book Appointment</Link>
-                  </li>
-                  <li>
-                    <Link href="#">Letest News</Link>
-                  </li>
-                  <li>
-                    <Link href="/ourtherapist">Our Therapist</Link>
-                  </li>
-                  <li>
-                    <Link href="/faq" rel="noreferrer">
-                      FAQ
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="/contact" rel="noreferrer">
-                      Contact
-                    </Link>
-                  </li>
-                </ul>
-               </div>
-              ) : null}
+                  <div className={`transition-max-height duration-300 ease-in-out overflow-hidden ${isMobile ? (isDropdownOpen ? 'max-h-screen' : 'max-h-0') : 'max-h-screen'
+                    } mb-8`}>
+                    <ul className="flex flex-col items-start gap-5 pl-[9px] md:pl-0">
+                      <li>
+                        <Link href="/about">About us</Link>
+                      </li>
+                      <li>
+                        <Link href="#">Book Appointment</Link>
+                      </li>
+                      <li>
+                        <Link href="#">Latest News</Link>
+                      </li>
+                      <li>
+                        <Link href="/ourtherapist">Our Therapist</Link>
+                      </li>
+                      <li>
+                        <Link href="/faq" rel="noreferrer">
+                          FAQ
+                        </Link>
+                      </li>
+                      <li>
+                        <Link href="/contact" rel="noreferrer">
+                          Contact
+                        </Link>
+                      </li>
+                    </ul>
+                  </div>
+                ) : null}
               </div>
             </div>
             <div className="copyright mt-[66px]">
@@ -173,15 +172,15 @@ const Footer: React.FC = () =>{
                   <a href="" className="bg-icons"><WhatsappIcon /></a>
                 </div>
                 <div className="md:absolute bottom-[90px] right-[40px] pt-[40px] pb-5 md:py-0">
-               <Image
-                  src={footergif}
-                  unoptimized
-                  width={138}
-                  height={138}
-                  alt="Comp1one"
-                  className="h-[138px] w-[138px] mx-auto self-end object-cover"
-                />
-               </div>
+                  <Image
+                    src={footergif}
+                    unoptimized
+                    width={138}
+                    height={138}
+                    alt="Comp1one"
+                    className="h-[138px] w-[138px] mx-auto self-end object-cover"
+                  />
+                </div>
                 <div className="md:text-right text-center">
                   <p className="text-neutral-400 text-xs md:text-sm">© 2000-2024, All Rights Reserved</p>
                 </div>
