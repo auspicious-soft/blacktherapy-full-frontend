@@ -20,17 +20,23 @@ const outOfPocketQuestions = [
   },
   {
     key: "reasonForLookingHelp",
-    question: "To begin, tell us why you're looking for help today.",
+    question: "To begin, tell us why you're looking for help today. (Select all that apply)",
     type: "radio",
     options: [
       "I'm feeling anxious or panicky",
       "I'm having difficulty in my relationship",
-      "A traumatic experience [past or present]",
+      "A traumatic experience (past or present)",
       "I'm navigating addiction or difficulty with substance abuse",
-      "I'm feeling down or depressed.",
+      "I'm feeling down or depressed",
       "I'm dealing with stress at work or school",
-      "Something else",
+      "I'm struggling with self-esteem or confidence",
+      "I'm experiencing grief or loss",
+      "I'm struggling with anger management",
+      "I'm having difficulty with family dynamics",
+      "I'm exploring personal growth and self-improvement",
+      "Something else (open text field)"
     ],
+    isMulti: true
   },
   {
     question: "Have you had therapy before?",
@@ -85,6 +91,37 @@ const outOfPocketQuestions = [
     ]
   },
   {
+    question: "Are you currently experiencing major life changes? (Select all that apply)",
+    key: "majorLifeChanges",
+    type: "radio",
+    options: [
+      "Recent breakup or divorce",
+      "Job loss or career change",
+      "Loss of a loved one",
+      "Moving to a new place",
+      "Becoming a parent",
+      "Health issues",
+      "Financial stress",
+      "None of the above"
+    ],
+    isMulti: true
+  },
+  {
+    question: "“How do you typically manage stress? (Select all that apply)",
+    key: "manageStress",
+    type: "radio",
+    options: [
+      "Exercise or physical activity",
+      "Talking to friends/family",
+      "Prayer/meditation",
+      "Journaling or creative expression",
+      "Avoiding or distracting myself (TV, social media, etc.)",
+      "Drinking or using substances",
+      "I struggle to manage stress"
+    ],
+    isMulti: true
+  },
+  {
     key: "rateSleepingHabits",
     question: "How would you rate your sleeping habits?",
     type: "radio",
@@ -133,9 +170,18 @@ const outOfPocketQuestions = [
       "No, I live alone",
     ]
   },
-  // {
-  //   question: ""
-  // },
+  {
+    question: "What days/times are you available for therapy? (Select all that apply)",
+    key: "availableTimes",
+    type: "radio",
+    options: [
+      "Weekdays – mornings",
+      "Weekdays – afternoons",
+      "Weekdays – evenings",
+      "Weekends"
+    ],
+    isMulti: true
+  },
   {
     question: "Would you like to add unlimited messaging with your therapist?",
     key: "unlimitedMessaging",
@@ -162,15 +208,37 @@ const outOfPocketQuestions = [
   },
 ];
 
-const questionDistribution = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
+const questionDistribution = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
 const OutOfPocketForm: React.FC<OutOfPocketFormProps> = ({ onBack, formData, setFormData }) => {
   const [currentStep, setCurrentStep] = useState(0);
   const totalSteps = questionDistribution.length + 2;
+
   const handleAnswerChange = (name: string, value: string) => {
     setFormData((prevData: any) => ({
       ...prevData,
       [name]: value,
     }));
+  };
+
+  // New handler for multi-select options
+  const handleMultiAnswerChange = (name: string, value: string) => {
+    setFormData((prevData: any) => {
+      // Initialize an empty array if the field doesn't exist yet
+      const currentValues = prevData[name] || [];
+
+      // If the value is already selected, remove it; otherwise, add it
+      if (currentValues.includes(value)) {
+        return {
+          ...prevData,
+          [name]: currentValues.filter((item: string) => item !== value)
+        };
+      } else {
+        return {
+          ...prevData,
+          [name]: [...currentValues, value]
+        };
+      }
+    });
   };
 
   const handleContinue = () => {
@@ -180,7 +248,6 @@ const OutOfPocketForm: React.FC<OutOfPocketFormProps> = ({ onBack, formData, set
       alert("Please fill in all required fields before continuing.");
     }
   };
-
 
   const handleBack = () => {
     if (currentStep > 0) {
@@ -200,8 +267,16 @@ const OutOfPocketForm: React.FC<OutOfPocketFormProps> = ({ onBack, formData, set
     const { startIndex, endIndex } = getQuestionIndicesForStep(currentStep);
 
     for (let i = startIndex; i < endIndex; i++) {
-      const questionKey = outOfPocketQuestions[i].key;
-      if (!formData[questionKey]) {
+      const question = outOfPocketQuestions[i];
+      const questionKey: any = question.key;
+
+      // For multi-select questions, check if at least one option is selected
+      if (question.isMulti) {
+        const selectedOptions = formData[questionKey] || [];
+        if (selectedOptions.length === 0) {
+          return false;
+        }
+      } else if (!formData[questionKey]) {
         return false;
       }
     }
@@ -210,7 +285,7 @@ const OutOfPocketForm: React.FC<OutOfPocketFormProps> = ({ onBack, formData, set
 
   const renderQuestions = () => {
     const { startIndex, endIndex } = getQuestionIndicesForStep(currentStep);
-    return outOfPocketQuestions.slice(startIndex, endIndex).map((question, index) => (
+    return outOfPocketQuestions.slice(startIndex, endIndex).map((question: any, index) => (
       <div key={question.key} className="grid mb-4">
         <label className="text-[15px] md:text-lg text-[#283C63] mb-2">{question.question}</label>
         {question.type === "textarea" ? (
@@ -235,46 +310,70 @@ const OutOfPocketForm: React.FC<OutOfPocketFormProps> = ({ onBack, formData, set
             }
           >
             <option value="">Select an option</option>
-            {question.options?.map((option, i) => (
+            {question.options?.map((option: any, i: any) => (
               <option key={i} value={option}>
                 {option}
               </option>
             ))}
           </select>
-        ) : question.type === "radio" ? (
-          <div className="flex flex-col">
-            {question.options?.map((option, i) => (
-              <label key={i} className="text-[15px] md:text-lg custom-radio step-form-radio relative flex items-center mb-2">
-                <input
-                  required
-                  type="radio"
-                  name={question.key}
-                  value={option}
-                  checked={formData[question.key] === option}
-                  onChange={() =>
-                    handleAnswerChange(question.key, option)
-                  }
-                  className="mr-2"
-                />
-                <span className="text-sm md:text-base w-full text-[#283C63] py-[10px] px-4 border border-[#dbe0eb] rounded-[20px]">
-                  {option}
-                </span>
-              </label>
-            ))}
-          </div>
-        ) : (
-          <input
-            required
-            type={question.type}
-            name={question.key}
-            placeholder={question.placeholder}
-            className="text-sm md:text-base py-[10px] px-4 border border-[#dbe0eb] rounded-[20px] text-[#686C78]"
-            value={formData[question.key] || ""}
-            onChange={(e) =>
-              handleAnswerChange(question.key, e.target.value)
-            }
-          />
-        )}
+        ) :
+          question.type === "radio" && question.isMulti ? (
+            <div className="flex flex-col">
+              {question.options?.map((option: any, i: any) => {
+                const selectedOptions = formData[question.key] || [];
+                return (
+                  <label key={i} className="text-[15px] md:text-lg custom-checkbox step-form-checkbox relative flex items-center mb-2">
+                    <input
+                      type="checkbox"
+                      name={question.key}
+                      value={option}
+                      checked={selectedOptions.includes(option)}
+                      onChange={() =>
+                        handleMultiAnswerChange(question.key, option)
+                      }
+                      className="mr-2"
+                    />
+                    <span className="text-sm md:text-base !w-full text-[#283C63] py-[10px] px-4 border-2 !border-[#e3e7ef] !rounded-2xl">
+                      {option}
+                    </span>
+                  </label>
+                );
+              })}
+            </div>
+          ) : question.type === "radio" ? (
+            <div className="flex flex-col">
+              {question.options?.map((option: any, i: any) => (
+                <label key={i} className="text-[15px] md:text-lg custom-radio step-form-radio relative flex items-center mb-2">
+                  <input
+                    required
+                    type="radio"
+                    name={question.key}
+                    value={option}
+                    checked={formData[question.key] === option}
+                    onChange={() =>
+                      handleAnswerChange(question.key, option)
+                    }
+                    className="mr-2"
+                  />
+                    <span className="text-sm md:text-base w-full !select-none ![-webkit-user-select:none] text-[#283C63] py-[10px] px-4 border border-[#dbe0eb] rounded-[20px]">
+                    {option}
+                    </span>
+                </label>
+              ))}
+            </div>
+          ) : (
+            <input
+              required
+              type={question.type}
+              name={question.key}
+              placeholder={question.placeholder}
+              className="text-sm md:text-base py-[10px] px-4 border border-[#dbe0eb] rounded-[20px] text-[#686C78]"
+              value={formData[question.key] || ""}
+              onChange={(e) =>
+                handleAnswerChange(question.key, e.target.value)
+              }
+            />
+          )}
       </div>
     ));
   };
@@ -301,7 +400,7 @@ const OutOfPocketForm: React.FC<OutOfPocketFormProps> = ({ onBack, formData, set
         <button onClick={handleBack} className="button" disabled={isPending}>
           Back
         </button>
-        {currentStep < totalSteps - 1 ? (
+        {currentStep < totalSteps - 2 ? (
           <button onClick={handleContinue} className="button" disabled={isPending}>
             Continue
           </button>

@@ -57,8 +57,8 @@ const customStyles: StylesConfig<any, true> = {
           ? "#283C63"
           : undefined,
     color: isDisabled ? "#ccc" : isSelected ? "white" : "black",
-    cursor: isDisabled ? "not-allowed" : "default",
-    padding: 2,
+    cursor: isDisabled ? "not-allowed" : "pointer",
+    padding: 4,
     ":active": {
       ...styles[":active"],
       backgroundColor: !isDisabled
@@ -69,7 +69,8 @@ const customStyles: StylesConfig<any, true> = {
     },
     ":hover": {
       color: "white",
-    }
+    },
+    borderRadius: "8px",
   }),
   multiValue: (styles: any) => ({
     ...styles,
@@ -81,6 +82,20 @@ const customStyles: StylesConfig<any, true> = {
     color: "white",
     padding: 6,
     borderRadius: "2rem",
+  }),
+  menuList: (styles: any) => ({
+    ...styles,
+    padding: '8px',
+    borderRadius: '16px',
+    backgroundColor: 'white',
+    cursor: 'pointer',
+  }),
+  menu: (styles: any) => ({
+    ...styles,
+    borderRadius: '10px',
+    cursor: 'pointer',
+    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+    zIndex: 100
   }),
 };
 
