@@ -57,7 +57,8 @@ const outOfPocketQuestions = [
       "Yes",
       "No",
       "Not Sure"
-    ]
+    ],
+    isExapandable: true
   },
   {
     question: "Do you have a history of suicidal thoughts or self-harm?",
@@ -276,7 +277,11 @@ const OutOfPocketForm: React.FC<OutOfPocketFormProps> = ({ onBack, formData, set
         if (selectedOptions.length === 0) {
           return false;
         }
-      } else if (!formData[questionKey]) {
+      }
+      else if (!formData[questionKey]) {
+        return false;
+      }
+      else if (question.isExapandable && formData["diagnosedWithMentalHealthCondition"] === "Yes" && !formData["diagnosedWithMentalHealthConditionYes"]) {
         return false;
       }
     }
@@ -340,40 +345,65 @@ const OutOfPocketForm: React.FC<OutOfPocketFormProps> = ({ onBack, formData, set
                 );
               })}
             </div>
-          ) : question.type === "radio" ? (
-            <div className="flex flex-col">
-              {question.options?.map((option: any, i: any) => (
-                <label key={i} className="text-[15px] md:text-lg custom-radio step-form-radio relative flex items-center mb-2">
-                  <input
-                    required
-                    type="radio"
-                    name={question.key}
-                    value={option}
-                    checked={formData[question.key] === option}
-                    onChange={() =>
-                      handleAnswerChange(question.key, option)
-                    }
-                    className="mr-2"
-                  />
-                    <span className="text-sm md:text-base w-full !select-none ![-webkit-user-select:none] text-[#283C63] py-[10px] px-4 border border-[#dbe0eb] rounded-[20px]">
-                    {option}
-                    </span>
-                </label>
-              ))}
-            </div>
-          ) : (
-            <input
-              required
-              type={question.type}
-              name={question.key}
-              placeholder={question.placeholder}
-              className="text-sm md:text-base py-[10px] px-4 border border-[#dbe0eb] rounded-[20px] text-[#686C78]"
-              value={formData[question.key] || ""}
-              onChange={(e) =>
-                handleAnswerChange(question.key, e.target.value)
-              }
-            />
-          )}
+          ) :
+            question.type === "radio" ? (
+              <div className="flex flex-col">
+                {question.options?.map((option: any, i: any) => {
+                  return (
+                    <>
+                      <label key={i} className="text-[15px] md:text-lg custom-radio step-form-radio relative flex items-center mb-2">
+                        <input
+                          required
+                          type="radio"
+                          name={question.key}
+                          value={option}
+                          checked={formData[question.key] === option}
+                          onChange={() => {
+                            handleAnswerChange(question.key, option);
+                            if (question.isExapandable && (option === "No" || option === "Not Sure")) {
+                              setFormData((prevData: any) => ({
+                                ...prevData,
+                                diagnosedWithMentalHealthConditionYes: ""
+                              }));
+                            }
+                          }}
+                          className="mr-2"
+                        />
+                        <span className="text-sm md:text-base w-full !select-none ![-webkit-user-select:none] text-[#283C63] py-[10px] px-4 border border-[#dbe0eb] rounded-[20px]">
+                          {option}
+                        </span>
+                      </label>
+
+                      {(question.isExapandable) && (formData[question.key] === "Yes") && (i == 0) && <textarea
+                        required
+                        name="diagnosedWithMentalHealthConditionYes"
+                        placeholder="Which condition"
+                        className="py-[10px] px-4 border border-[#dbe0eb] rounded-[20px] my-4"
+                        value={formData["diagnosedWithMentalHealthConditionYes"] || ""}
+                        onChange={(e) => {
+                          setFormData((prevData: any) => ({
+                            ...prevData,
+                            diagnosedWithMentalHealthConditionYes: e.target.value
+                          }))
+                        }}
+                      />}
+                    </>
+                  )
+                })}
+              </div>
+            ) : (
+              <input
+                required
+                type={question.type}
+                name={question.key}
+                placeholder={question.placeholder}
+                className="text-sm md:text-base py-[10px] px-4 border border-[#dbe0eb] rounded-[20px] text-[#686C78]"
+                value={formData[question.key] || ""}
+                onChange={(e) =>
+                  handleAnswerChange(question.key, e.target.value)
+                }
+              />
+            )}
       </div>
     ));
   };
