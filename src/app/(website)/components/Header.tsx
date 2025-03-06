@@ -1,15 +1,16 @@
 "use client";
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useTransition } from 'react';
 import { PhoneIcon, MailIcon, LogoIcon, ToggleIcon, ToggleClose } from '@/utils/svgicons';
 import { signOut } from 'next-auth/react';
+import ReactLoader from '@/components/ReactLoader';
 
 const Header = () => {
   const [isToggleOpen, setIsToggleOpen] = useState(false);
   const handleToggleOpen = () => {
     setIsToggleOpen(!isToggleOpen);
   };
-
+  const [isPending, startTransition] = useTransition()
   const handleToggleClose = () => {
     setIsToggleOpen(false);
   };
@@ -22,18 +23,20 @@ const Header = () => {
     color: "#fff",
   }
 
-  const handleLogout = async (isPhone: boolean = false) => {
-    await signOut({ redirect: false })
-    if (isPhone) {
-      setIsToggleOpen(false)
-    }
-    window.location.href = '/login'
+  const handleLogout = (isPhone: boolean = false) => {
+    startTransition(async () => {
+      await signOut({ redirect: false })
+      if (isPhone) {
+        setIsToggleOpen(false)
+      }
+      window.location.href = '/login'
+    })
   };
 
   const NavLink = ({ href, children, className }: { href: string; children: React.ReactNode; className?: string }) => {
     return (
-      <Link 
-        href={href} 
+      <Link
+        href={href}
         className={className}
         onClick={handleToggleClose}
       >
@@ -66,7 +69,7 @@ const Header = () => {
             </div>
           </div>
           <div onClick={() => handleLogout()} className="right flex items-center gap-6">
-            <p  className="text-white  cursor-pointer text-xs">
+            <p className="text-white  cursor-pointer text-xs">
               Login
             </p>
           </div>
@@ -82,7 +85,7 @@ const Header = () => {
           <button className="close-btn lg:hidden" onClick={handleToggleClose}>
             <ToggleClose />
           </button>
-            <li>
+          <li>
             <NavLink href="/" className="nav-menu-list">Home</NavLink>
           </li>
           <li>
@@ -98,7 +101,7 @@ const Header = () => {
             <NavLink href="/contact" className="nav-menu-list lg:!inline-block lg:text-sm lg:text-white lg:bg-[#283C63] rounded-[30px] lg:!px-[30px] !py-[13px]">Contact</NavLink>
           </li>
           <li className="md:hidden mt-4" onClick={() => handleLogout(true)}>
-            <p  className="text-white cursor-pointer text-sm bg-[#283C63] rounded-[30px] px-[30px] py-[13px]">
+            <p className="text-white cursor-pointer text-sm bg-[#283C63] rounded-[30px] px-[30px] py-[13px]">
               Login
             </p>
           </li>
@@ -108,6 +111,13 @@ const Header = () => {
           <ToggleIcon />
         </p>
       </div>
+      {
+        isPending && (
+          <div className='fixed top-0 left-0 w-full h-full bg-white bg-opacity-50 flex items-center justify-center'>
+            <ReactLoader />
+          </div>
+        )
+      }
     </div>
   );
 };

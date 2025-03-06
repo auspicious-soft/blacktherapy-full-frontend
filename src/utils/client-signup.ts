@@ -35,6 +35,10 @@ export const submitClientForm = async (
         delete formattedData.insuranceCompany;
         break;
     }
+    let diagnosedWithMentalHealthConditionYes = ""
+    if (formattedData.diagnosedWithMentalHealthConditionYes === diagnosedWithMentalHealthConditionYes) {
+      delete formattedData.diagnosedWithMentalHealthConditionYes
+    }
     // Object.keys(formattedData).forEach(key => {
     //   if (formattedData[key] === null || formattedData[key] === undefined || formattedData[key] === '') {
     //     delete formattedData[key];
@@ -51,13 +55,13 @@ export const submitClientForm = async (
       }, 2000);
       return true;
     } 
-    
+
     else {
       toast.error("Failed to add client data");
       return false;
     }
-  } catch (error:any) {
-    if(error.status == 400) {
+  } catch (error: any) {
+    if (error.status == 400) {
       toast.error("Email already exists");
       return false;
     }
