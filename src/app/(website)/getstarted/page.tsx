@@ -12,7 +12,7 @@ const Page = () => {
     const [formData, setFormData] = useState<any>({
         // role: 'client',
         serviceSubscribed: '', // Options: 'me', 'us', 'teen'
-        insuranceCoverage: '',
+        insuranceCoverage: 'no',
         insuranceCompany: {
             memberOrSubscriberId: '',
             firstName: '',
