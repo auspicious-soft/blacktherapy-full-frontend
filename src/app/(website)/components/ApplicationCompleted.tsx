@@ -2,8 +2,6 @@
 import React from 'react';
 import Image from 'next/image';
 import kerry from "@/assets/images/kerry.png"
-import Link from 'next/link';
-import { ButtonSvg } from '@/utils/svgicons';
 import { useRouter } from 'next/navigation';
 import { signOut } from 'next-auth/react';
 
