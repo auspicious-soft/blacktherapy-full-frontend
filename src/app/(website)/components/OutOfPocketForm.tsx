@@ -378,7 +378,7 @@ const OutOfPocketForm: React.FC<OutOfPocketFormProps> = ({ onBack, formData, set
                         required
                         name="diagnosedWithMentalHealthConditionYes"
                         placeholder="Which condition"
-                        className="py-[10px] px-4 border border-[#dbe0eb] rounded-[20px] my-4"
+                        className="py-[10px] px-4 border border-[#dbe0eb] rounded-[20px] my-4 text-black"
                         value={formData["diagnosedWithMentalHealthConditionYes"] || ""}
                         onChange={(e) => {
                           setFormData((prevData: any) => ({
