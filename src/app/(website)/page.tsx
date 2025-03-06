@@ -64,7 +64,7 @@ const FirstSection: React.FC = () => {
           </div>
         </div>
         <div className="second md:w-[50%] md:py-[17px] flex flex-col-reverse gap-[30px] md:flex-col items-center justify-between">
-          <Link href="/getstarted" rel="" className="bg-[#f3d529] flex items-center justify-center gap-3 p-4 px-5 font-normal rounded-3xl">
+          <Link href="/getstarted" rel="" className="text-black bg-[#f3d529] flex items-center justify-center gap-3 p-4 px-5 font-normal rounded-3xl">
             Find Your Therapist Today<ButtonSvg2 />
           </Link>
           <div className="w-full">
@@ -167,7 +167,7 @@ const ForthSection = () => {
             ✔ Overcome <b>trauma and life challenges</b> <br />
             ✔ Work with a therapist who <b>understands Black cultural experiences</b> <br />
           </p>
-          <Link href="/getstarted" rel="" className="bg-[#f3d529] flex items-center justify-center gap-3 p-4 px-5 font-normal rounded-3xl mt-4">
+          <Link href="/getstarted" rel="" className="bg-[#f3d529] flex items-center justify-center gap-3 p-4 px-5 font-normal rounded-3xl mt-4 text-black">
             Find a Therapist Who Gets You<ButtonSvg2 />
           </Link>
         </div>
