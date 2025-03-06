@@ -119,7 +119,7 @@ const Page: React.FC = () => {
                 <button type="submit" className="button w-full">{!isPending ? 'Submit' : 'Submitting...'} </button>
               </form>
               {(isPending ) && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-20 z-50">
+                <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-20 z-50">
                 </div>
               )}
             </div>
