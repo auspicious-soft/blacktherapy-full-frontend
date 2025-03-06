@@ -298,7 +298,7 @@ const OutOfPocketForm: React.FC<OutOfPocketFormProps> = ({ onBack, formData, set
             required
             name={question.key}
             placeholder={question.placeholder}
-            className="py-[10px] px-4 border border-[#dbe0eb] rounded-[20px]"
+            className="py-[10px] px-4 border border-[#dbe0eb] rounded-[20px] text-black"
             value={formData[question.key] || ""}
             onChange={(e) =>
               handleAnswerChange(question.key, e.target.value)
@@ -397,7 +397,7 @@ const OutOfPocketForm: React.FC<OutOfPocketFormProps> = ({ onBack, formData, set
                 type={question.type}
                 name={question.key}
                 placeholder={question.placeholder}
-                className="text-sm md:text-base py-[10px] px-4 border border-[#dbe0eb] rounded-[20px] text-[#686C78]"
+                className="text-sm md:text-base py-[10px] px-4 border border-[#dbe0eb] rounded-[20px] !text-[#686C78] "
                 value={formData[question.key] || ""}
                 onChange={(e) =>
                   handleAnswerChange(question.key, e.target.value)
@@ -444,6 +444,10 @@ const OutOfPocketForm: React.FC<OutOfPocketFormProps> = ({ onBack, formData, set
           )
         )}
       </div>
+      {isPending && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-20 z-50">
+        </div>
+      )}
     </div>
   );
 };

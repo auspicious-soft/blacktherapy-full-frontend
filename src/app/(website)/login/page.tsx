@@ -18,6 +18,7 @@ const Page: React.FC = () => {
   const [password, setPassword] = useState("");
   const router = useRouter();
   const [isPending, startTransition] = React.useTransition();
+  
   useEffect(() => {
     if (session) {
       if ((session as any)?.user?.role === 'therapist') {
@@ -38,7 +39,7 @@ const Page: React.FC = () => {
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault();
     if (!email || !password) return toast.error('All fields are required')
-    startTransition(async() => {
+    startTransition(async () => {
       const resss = await loginAction({ email, password })
       if (resss?.success) {
         toast.success('Logged in successfully')
@@ -117,6 +118,10 @@ const Page: React.FC = () => {
                 <Link href="/forgotpassword" className="text-[#686c78] text-sm text-right inline-block w-full mb-4 md:mb-[30px]">Forgot Password</Link>
                 <button type="submit" className="button w-full">{!isPending ? 'Submit' : 'Submitting...'} </button>
               </form>
+              {(isPending ) && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-20 z-50">
+                </div>
+              )}
             </div>
           </div>
         </div>
