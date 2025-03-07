@@ -15,21 +15,32 @@ const Page = () => {
                     </div>
                     <div className='md:w-[76%] text-center md:text-left'>
                         <h2 className='text-xl mb-3 md:mb-6 md:text-3xl text-[#283c63]'>Welcome to the Black Therapy Network Family!</h2>
-                        <p className='text-[#686c78] text-sm md:text-base md:leading-7'>Welcome to <strong>The Black Therapy Network!</strong> You’ve just taken an important step toward prioritizing your mental wellness, and we’re honored to support you on this journey. Our mission is to make therapy accessible, culturally aligned, and empowering—<strong>for us, by us</strong>.</p>
+                        <div className="max-w-[900px] w-full mb-8 text-[#686c78] text-base mx-auto md:leading-7">
+                            Your account has been successfully created, and now it&apos;s time for the next step. Right now, people are waiting for a therapist who understands them—<strong>someone like you</strong>.
+                            <br /><br />
+                            The Black Therapy Network isn&apos;t just a platform; it&apos;s a movement to make therapy accessible, meaningful, and culturally aligned. We&apos;re excited to have you join us in making a real difference.
+                            <br /><br />
+                            <strong>Next Steps:</strong>
+                            <br />
+                            • Log in using the credentials you <strong>created on the previous page</strong>.
+                            <br />
+                            • Complete your application by providing the <strong>required information and supporting documents</strong>.
+                            <br /><br />
+                            Your expertise is needed, and we can&apos;t wait to have you on board.
+                            <br /><br />
+                            {/* <p className='w-full font-bold flex justify-end'> - Kerry Shipman, Founder & CEO</p> */}
+                        </div>
                         <div className='md:text-right mt-5'>
                             <p className="text-[#283c63] text-xl leading-7 font-bold">Kerry Shipman</p>
-                            <p className="text-[#686c78] text-base leading-7">Agency Director</p>
+                            <p className="text-[#686c78] text-base leading-7">Founder & CEO</p>
                         </div>
 
                     </div>
                 </div>
-                <div className='text-center pt-[40px] md:pt-[80px]'>
-                    <h2 className="section-title md:b-5">your Account has been created.</h2>
-                    <p className="max-w-[882px] mb-3 md:mb-[30px] text-[#686c78] text-base mx-auto md:leading-7">Congratulations!! Your Account has been created. Please login using the email and password provided to complete your application.</p>
-                    <div className='flex justify-center'>
-                        <Link href="/login" className='button'>Login Now <ButtonSvg /></Link>
-                    </div>
-
+                <div className='flex justify-center p-6'>
+                    <Link href="/login" className='button button-lg'>
+                        Login to Complete Your Application <ButtonSvg />
+                    </Link>
                 </div>
             </div>
         </>
