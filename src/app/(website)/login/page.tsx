@@ -11,6 +11,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { loginAction } from "@/actions";
+import ReactLoader from "@/components/ReactLoader";
 
 const Page: React.FC = () => {
   const { data: session } = useSession();
@@ -119,7 +120,8 @@ const Page: React.FC = () => {
                 <button type="submit" className="button w-full">{!isPending ? 'Submit' : 'Submitting...'} </button>
               </form>
               {(isPending ) && (
-                <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-20 z-50">
+                <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-40 z-50">
+                  <ReactLoader/>
                 </div>
               )}
             </div>

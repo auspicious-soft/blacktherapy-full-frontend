@@ -166,7 +166,7 @@ const FourthSection = () => {
               <div className="flex items-center p-1 gap-[20px] text-[#686C78]">
                 <Image src={btnPic} alt="Pricing" width={30} height={30} className="w-[100px] h-[100px] object-cover rounded-lg bg-[#cce9fa] p-6 border-[#283c63] border-[2px]" />
                 <div>
-                  Invest in your mental health for less than $12 per day—because your well-being is worth more than a cup of coffee.
+                  Plans start at just $85 per week—far less than traditional in-office therapy.
                 </div>
               </div>
               <Link href="/plans" rel="" className="text-white bg-[#283c63] flex items-center justify-center gap-3 p-4 px-5 font-normal rounded-3xl">

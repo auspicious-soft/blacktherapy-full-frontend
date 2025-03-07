@@ -10,9 +10,11 @@ import { toast } from 'sonner';
 import ReactLoading from 'react-loading';
 import { LogOut } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { ButtonSvg } from '@/utils/svgicons';
+import Link from 'next/link';
 
 const ViewPlans = (props: any) => {
-  const { modalRef } = props;
+  const { modalRef, hideLogout = false, hideSelectYourPlanText = false, onPlansPageWebsite = false } = props;
   const session = useSession();
   const [plan, setPlan] = useState<string>("");
   const [interval, setInterval] = useState<string>("");
@@ -112,25 +114,22 @@ const ViewPlans = (props: any) => {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px]">
         <ReactLoading type={'spin'} color={'#26395e'} height={'50px'} width={'50px'} />
-        <p className="mt-4">Setting up payment...</p>
+        <p className="mt-4">Getting the payments...</p>
       </div>
     );
   }
-  
-    const handleLogout = async () => {
-      await signOut({ redirect: false })
-      router.push('/login');
-    };
+
+  const handleLogout = async () => {
+    await signOut({ redirect: false })
+    router.push('/login');
+  };
   return (
     <div className="ma" ref={modalRef}>
       <div className='flex justify-between items-center'>
-        <h2 className='mb-5'>Select your Plan</h2>
-        <a onClick={handleLogout} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <LogOut className='text-black'/>
-          <span className="text-[#283C63] text-[600] font-bold">Log Out</span>
-        </a>
+        {!hideSelectYourPlanText && <h2 className='mb-5'>Select your Plan</h2>}
+        {!hideLogout && <a onClick={handleLogout} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px' }}> <LogOut className='text-black' /> <span className="text-[#283C63] text-[600] font-bold">Log Out</span> </a>}
       </div>
-      <div className='gap-[30px] grid grid-cols-2'>
+      <div className='gap-[30px] grid md:grid-cols-2 grid-cols-1 '>
         {/* Stay Rooted Plan */}
         <div className='bg-white rounded-[20px]'>
           <div className='bg-[#0A1C42] rounded-tl-[20px] rounded-br-[50px] py-[26px] px-[40px] max-w-[396px]'>
@@ -146,17 +145,21 @@ const ViewPlans = (props: any) => {
               <li>Unlimited messaging with a 24-hours response time.</li>
               <li>Access to mental health resources (e.g., meditation guides and wellness Tips)</li>
             </ul>
-            <h5 className='font-bold mb-2.5'>Select plan duration</h5>
+            {!onPlansPageWebsite && <h5 className='font-bold mb-2.5'>Select plan duration</h5>}
             <label className='flex items-center gap-5 text-[#686C78] cursor-pointer'>
-              <input
+              {!onPlansPageWebsite && <input
                 type="radio"
                 checked={plan === 'stayRooted' && interval === 'week'}
                 onChange={() => handleRadioChange('stayRooted', 'week')}
                 className='w-[20px] h-[20px] accent-[#26395E]'
-              />
+              />}
               <span> Weekly <span className='font-bold text-[#26395E]'>(Billed $85)</span></span>
             </label>
+            {onPlansPageWebsite && <Link href="/getstarted" rel="" className="mt-6 text-white bg-[#283c63] flex items-center justify-center gap-3 p-4 px-5 font-normal rounded-3xl">
+              Select Plan<ButtonSvg />
+            </Link>}
           </div>
+
         </div>
 
         {/* Glow Up Plan */}
@@ -174,27 +177,30 @@ const ViewPlans = (props: any) => {
               <li>Unlimited messaging with a 24-hours response time.</li>
               <li>Access to workshops, community forum, wellness resources, and group therapy.</li>
             </ul>
-            <h5 className='font-bold mb-2.5'>Select plan duration</h5>
+            {!onPlansPageWebsite && <h5 className='font-bold mb-2.5'>Select plan duration</h5>}
             <div className='flex gap-[50px] items-center'>
               <label className='flex items-center gap-5 text-[#686C78] cursor-pointer'>
-                <input
+                {!onPlansPageWebsite && <input
                   type="radio"
                   checked={plan === 'glowUp' && interval === 'week'}
                   onChange={() => handleRadioChange('glowUp', 'week')}
                   className='w-[20px] h-[20px] accent-[#26395E]'
-                />
+                />}
                 <span> Weekly <span className='font-bold text-[#26395E]'>(Billed $125)</span></span>
               </label>
               <label className='flex items-center gap-5 text-[#686C78] cursor-pointer'>
-                <input
+                {!onPlansPageWebsite && <input
                   type="radio"
                   checked={plan === 'glowUp' && interval === 'month'}
                   onChange={() => handleRadioChange('glowUp', 'month')}
                   className='w-[20px] h-[20px] accent-[#26395E]'
-                />
+                />}
                 <span>Monthly <span className='font-bold text-[#26395E]'>(Billed $500)</span></span>
               </label>
             </div>
+            {onPlansPageWebsite && <Link href="/getstarted" rel="" className="mt-6 text-white bg-[#283c63] flex items-center justify-center gap-3 p-4 px-5 font-normal rounded-3xl">
+              Select Plan<ButtonSvg />
+            </Link>}
           </div>
         </div>
       </div>

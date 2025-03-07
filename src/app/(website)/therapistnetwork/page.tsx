@@ -18,7 +18,7 @@ const Page: React.FC = () => {
     { label: 'Home', url: '/' },
     { label: 'Join Our Therapist Network', url: '/therapistnetwork' }
   ];
-  const heading = 'Normalizing:Therapy in Black Community';
+  const heading = 'Join the Black Therapy Network: Your Platform for Growth & Impact';
   const imageUrl = banner;
 
   return (
