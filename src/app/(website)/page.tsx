@@ -6,9 +6,10 @@ import gridImg3 from "@/assets/images/img3.png";
 import gridImg4 from "@/assets/images/img4.png";
 import gridImg6 from "@/assets/images/img6.jpg";
 import gridImg7 from "@/assets/images/img7.png";
+import pricingPic from "@/assets/images/pricingpic.png";
 import cardsData from "@/data/CardsData";
 import Card from "@/app/(website)/components/Card";
-import Video from 'next-video';
+import btnPic from "@/assets/images/btnpic.svg";
 import HomeIconCard from "@/app/(website)/components/HomeIconCard";
 import Footer from "@/app/(website)/components/Footer";
 import VideoPlayer from "@/app/(website)/components/VideoPlayer";
@@ -28,9 +29,9 @@ export default function Home() {
       <FirstSection />
       <SecondSection />
       <ThirdSection />
-      <ForthSection />
+      <FourthSection />
       <FifthSection />
-
+      <SixthSection />
     </div>
   );
 }
@@ -148,7 +149,41 @@ const ThirdSection = () => {
   );
 };
 
-const ForthSection = () => {
+const FourthSection = () => {
+  return (
+    <div className="section-three flex gap-x-[100px] justify-between">
+      <div className="container pt-[50px] md:pt-[40px]">
+        <div className="sm:flex justify-between gap-[100px] sm:space-y-0 space-y-8">
+          <div className="flex-1">
+            <h1 className="text-[40px] pb-[20px]">Affordable Therapy, Designed for You</h1>
+            <div className="flex flex-col gap-8">
+              <div className="flex items-center p-1 gap-[20px] text-[#686C78]">
+                <Image src={btnPic} alt="Pricing" width={30} height={30} className="w-[100px] h-[100px] object-cover rounded-lg bg-[#cce9fa] p-6 border-[#283c63] border-[2px]" />
+                <div>
+                  Invest in your mental health for less than $12 per day—because your well-being is worth more than a cup of coffee.
+                </div>
+              </div>
+              <div className="flex items-center p-1 gap-[20px] text-[#686C78]">
+                <Image src={btnPic} alt="Pricing" width={30} height={30} className="w-[100px] h-[100px] object-cover rounded-lg bg-[#cce9fa] p-6 border-[#283c63] border-[2px]" />
+                <div>
+                  Invest in your mental health for less than $12 per day—because your well-being is worth more than a cup of coffee.
+                </div>
+              </div>
+              <Link href="/plans" rel="" className="text-white bg-[#283c63] flex items-center justify-center gap-3 p-4 px-5 font-normal rounded-3xl">
+                See Pricing Plans<ButtonSvg />
+              </Link>
+            </div>
+          </div>
+          <div className="sm:flex-1 hidden sm:block">
+            <Image src={pricingPic} alt="Pricing" width={532} height={458} className="w-full h-full object-cover rounded-lg" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const FifthSection = () => {
   return (
     <div className="section-four overflow-hidden container mt-[50px] md:mt-[100px]">
       <h2 className="section-title mb-6">Benefits of Therapy</h2>
@@ -178,7 +213,7 @@ const ForthSection = () => {
     </div>
   );
 };
-const FifthSection: React.FC = () => {
+const SixthSection: React.FC = () => {
   return (
     <div className="section-five container py-[50px] md:py-[100px] ">
       <h2 className="section-title text-center mb-5">Did You Know?</h2>
