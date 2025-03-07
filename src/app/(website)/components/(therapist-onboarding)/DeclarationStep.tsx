@@ -46,6 +46,7 @@ const DeclarationStep: React.FC<BackgroundProps> = ({
   setIsValid,
   nextStep
 }) => {
+  const [loading, setLoading] = React.useState(false);
   const sigCanvasRef = useRef<SignatureCanvas | null>(null);
   const session = useSession()
   const router = useRouter();
@@ -67,6 +68,7 @@ const DeclarationStep: React.FC<BackgroundProps> = ({
   // };
   const [isPending, startTransition] = React.useTransition();
   const handleSubmit = () => {
+    setLoading(true);
     startTransition(async () => {
       await submitForm(formData, userEmail as string, router);
     })
@@ -130,7 +132,7 @@ const DeclarationStep: React.FC<BackgroundProps> = ({
           <p> I understand that no employee or representative of this organization, other than its Director or Director of Operations, has the authority to enter into an agreement for employment for any specified period of time, or to make any express or implied agreement contrary to the foregoing. </p>
           <p>Further, the Director of this organization may not alter the at will nature of the employment relationship or enter into any employment agreement for a specified time unless the Director  and I both sign a written agreement that clearly and expressly specifies the intent to do so.
             <br /><br />
-          I agree that this shall constitute a final and fully binding integrated agreement with respect to the atw ill nature of my employment relationship and that there are no oral or collateral agreements regarding this issue. </p>
+            I agree that this shall constitute a final and fully binding integrated agreement with respect to the atw ill nature of my employment relationship and that there are no oral or collateral agreements regarding this issue. </p>
           <p>Except as required in the performance of my duties, I understand and agree that I will not at any time during or after my employment use or disseminate any confidential information or any other information of a secret, proprietary, or generally undisclosed nature relating to this employer, or its programs, clients, employees, plans or procedures (all of which constitute trade secrets). I agree to deliver to this employer/organization any copies of confidential information, or other company property, upon termination of the employment relationship or at any time upon request. </p>
           <p>I also agree not to solicit employees or clients of this employer/organization either during or for one year after employment to leave the organization and commence work with another company.
             <br /><br />
@@ -176,6 +178,11 @@ const DeclarationStep: React.FC<BackgroundProps> = ({
           {!isPending ? <button onClick={handleSubmit} className="button">Submit <ButtonSvg /></button>
             :
             <div className="px-5">
+              <ReactLoader />
+            </div>
+          }
+          {
+            loading && <div className="text-white fixed inset-0 flex items-center justify-center bg-white bg-opacity-20 z-50">
               <ReactLoader />
             </div>
           }

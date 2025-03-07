@@ -20,8 +20,8 @@ import ReactLoader from "@/components/ReactLoader";
 
 const steps = [
   { component: WelcomeProcess, requiresValidation: false },
-  { component: ApplicationProcess, requiresValidation: false },
-  { Component: CompensationPay, requiresValidation: true },
+  // { component: ApplicationProcess, requiresValidation: false },
+  // { Component: CompensationPay, requiresValidation: true },
   { component: PersonalDetails, requiresValidation: true },
   { component: EmploymentStatus, requiresValidation: true },
   { component: EducationalStep, requiresValidation: true },
@@ -34,6 +34,7 @@ const steps = [
 ];
 
 const OnboardingForm = (props: any) => {
+  const [loading, setLoading] = useState(false);
   const [isPending, startTransition] = React.useTransition();
   const router = useRouter();
   const session = useSession()
@@ -41,7 +42,7 @@ const OnboardingForm = (props: any) => {
   const userEmail = session?.data?.user?.email;
   const [currentStep, setCurrentStep] = useState(currentStepDefault)
   const [formData, setFormData] = useState<any>({
-    licenceType: "",
+    // licenceType: "",
     email: userEmail,
     firstName: "",
     lastName: "",
@@ -116,6 +117,8 @@ const OnboardingForm = (props: any) => {
 
   const nextStep = () => {
     const step = steps[currentStep - 1];
+    console.log('currentStep: ', currentStep);
+    console.log('step: ', step);
     const requiresValidation = step.requiresValidation && !isValid;
 
     if (!requiresValidation || isValid) {
@@ -131,6 +134,7 @@ const OnboardingForm = (props: any) => {
     }
   };
   const handleSubmit = async () => {
+    setLoading(true);
     startTransition(async () => {
       await submitForm(formData, userEmail as string, router);
     })
@@ -197,6 +201,11 @@ const OnboardingForm = (props: any) => {
         {currentStep === 10 && (<>{!isPending ? <button className="button" onClick={handleSubmit} style={buttonStyle}>Submit </button> : <ReactLoader />}</>)}
       </div>
       {renderStep()}
+      {
+        loading && <div className="text-white fixed inset-0 flex items-center justify-center bg-white bg-opacity-20 z-50">
+          <ReactLoader />
+        </div>
+      }
     </div>
   );
 };
