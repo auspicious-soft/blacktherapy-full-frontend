@@ -106,7 +106,7 @@ const GetStarted: React.FC = () => {
           <p className="mb-4">
             At <strong>Black Therapy Network (BTN)</strong>, we connect Black therapists with clients seeking culturally competent care. Enjoy <strong>flexible scheduling</strong>, a <strong>steady client stream</strong>, and <strong>hassle-free practice management</strong> while making a real difference.
           </p>
-          <ul className="space-y-2">
+          <ul className="space-y-2 text-black ">
             <li className="flex items-start">
               <span className="mr-2">•</span>
               <span><strong>Competitive Pay & Reliable Income</strong> – No need to search for clients.</span>
