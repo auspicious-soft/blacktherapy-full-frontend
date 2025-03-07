@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import Modal from "react-modal";
 import { getImageUrlOfS3, nonMilitaryTime } from "@/utils";
 import { toast } from "sonner";
+import ReactLoader from "@/components/ReactLoader";
 
 
 const DashboardAssignment = (props: any) => {
@@ -19,7 +20,7 @@ const DashboardAssignment = (props: any) => {
   const [renewPopupOpen, setRenewPopupOpen] = useState(false);
   const [teamPopupOpen, setTeamPopupOpen] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState<any>(null);
-
+  const [loading, setLoading] = useState(false);
 
   const handlePageClick = (selectedItem: { selected: number }) => {
     setQuery(`page=${selectedItem.selected + 1}&limit=${rowsPerPage}`)
@@ -42,6 +43,7 @@ const DashboardAssignment = (props: any) => {
   };
 
   const handleChat = (id: string) => {
+    setLoading(true);
     isChatAllowed ? router.push(`/customer/appointments/chats/${id}`) : toast.error('Chat not allowed')
   };
 
@@ -292,6 +294,11 @@ const DashboardAssignment = (props: any) => {
         </div>
 
       </Modal>
+      {
+        loading && <div className="text-white fixed inset-0 flex items-center justify-center bg-white bg-opacity-20 z-50">
+          <ReactLoader />
+        </div>
+      }
     </>
   );
 };

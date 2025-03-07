@@ -10,6 +10,8 @@ import { ViewIcon } from "@/utils/svgicons";
 import Modal from 'react-modal';
 import { getImageUrlOfS3, nonMilitaryTime } from "@/utils";
 import profilePic from "@/assets/images/profile.png";
+import { set } from "date-fns";
+import ReactLoader from "@/components/ReactLoader";
 
 const UpcomingAppointments = (props: PreviousAppointmentsProps) => {
   const { data, error, setQuery, isChatAllowed, isVideoCount, video, message } = props;
@@ -20,10 +22,12 @@ const UpcomingAppointments = (props: PreviousAppointmentsProps) => {
   const rowsPerPage = 10
   const [careTeam, setCareTeam] = useState<any>();
   const [teamPopupOpen, setTeamPopupOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
   const handlePageClick = (selectedItem: { selected: number }) => {
     setQuery(`page=${selectedItem.selected + 1}&limit=${rowsPerPage}`);
   };
   const handleChat = (id: string) => {
+    setLoading(true);
     isChatAllowed ? router.push(`/customer/appointments/chats/${id}`) : toast.error('Chat not allowed');
   }
   const handleViewTeam = (care: any) => {
@@ -90,9 +94,9 @@ const UpcomingAppointments = (props: PreviousAppointmentsProps) => {
                           :
                           'Video chat limit reached for current plan'}
                       </button> : <p className="cursor-not-allowed">No Video</p>}</td>
-                      <td>
-                        {item?.status}
-                      </td>
+                    <td>
+                      {item?.status}
+                    </td>
                     <td>
                       <span className="cursor-pointer w-[26px] flex" onClick={() => handleViewTeam(item?.peerSupportIds)}>
                         <ViewIcon />
@@ -167,6 +171,11 @@ const UpcomingAppointments = (props: PreviousAppointmentsProps) => {
           Close
         </button>
       </Modal>
+      {
+        loading && <div className="text-white fixed inset-0 flex items-center justify-center bg-white bg-opacity-20 z-50">
+          <ReactLoader/>
+        </div>
+      }
     </>
   );
 };

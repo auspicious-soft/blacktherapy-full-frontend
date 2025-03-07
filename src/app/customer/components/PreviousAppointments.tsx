@@ -9,6 +9,7 @@ import { getImageUrlOfS3, nonMilitaryTime } from "@/utils";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import profilePic from "@/assets/images/profile.png";
+import ReactLoader from "@/components/ReactLoader";
 
 export interface PreviousAppointmentsProps {
   data: any;
@@ -33,8 +34,10 @@ const PreviousAppointments = (props: PreviousAppointmentsProps) => {
     setQuery(`page=${selectedItem.selected + 1}&limit=${rowsPerPage}`)
   }
   const [teamPopupOpen, setTeamPopupOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleChat = (id: string) => {
+    setLoading(true);
     isChatAllowed ? router.push(`/customer/appointments/chats/${id}`) : toast.error('Chat not allowed')
   }
 
@@ -186,6 +189,12 @@ const PreviousAppointments = (props: PreviousAppointmentsProps) => {
           Close
         </button>
       </Modal>
+
+      {
+        loading && <div className="text-white fixed inset-0 flex items-center justify-center bg-white bg-opacity-20 z-50">
+          <ReactLoader />
+        </div>
+      }
     </>
   );
 };

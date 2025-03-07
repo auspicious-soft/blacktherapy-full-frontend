@@ -27,6 +27,7 @@ import { deleteImageFromS3 } from '@/actions';
 const Page = () => {
   const [showModal, setShowModal] = useState(false);
   const [downloading, setDownloading] = useState(false)
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
   const [isPending, startTransition] = useTransition()
   const session = useSession()
@@ -46,6 +47,7 @@ const Page = () => {
   const [notesType, setNotesType] = useState<"SOAP Note" | "Mental Status Exam" | "Biopsychosocial Assessment" | "Pie Note" | "">("")
 
   const handleChat = (id: string) => {
+    setLoading(true);
     router.push(`/therapist/assignments/chats/${id}`);
   };
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
@@ -498,7 +500,11 @@ const Page = () => {
           </Modal>
         )
       }
-
+      {
+        loading && <div className="text-white fixed inset-0 flex items-center justify-center bg-white bg-opacity-20 z-50">
+          <ReactLoader />
+        </div>
+      }
     </div >
   );
 };
