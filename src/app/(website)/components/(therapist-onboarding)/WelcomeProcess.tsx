@@ -10,52 +10,97 @@ export const WelcomeProcess = ({
       <h2 className="section-title mb-[10px] md:mb-5">
         Remote Mental Health Therapist Employment Application
       </h2>
-      <p className="text[#13233B] md:text-lg text-base font-semibold text-center mb-5">
-        Welcome to The Black Therapy Network
-      </p>
-      <p className="text-gray-500 md:text-base text-sm mb-5">
-        Thank you for your interest in joining The Black Therapy Network as a
-        Remote Licensed Mental Health Therapist role. We are dedicated to
-        providing professional, affordable, and personalized therapy to the
-        African American community through a secure online platform.
-      </p>
-      <div className="text-gray-500 md:text-base text-sm">
-        <b>Job Responsibilities: </b>
-        <ul className="list-disc pl-8 my-5">
-          <li>Conduct evidencebased therapy sessions with highfunctioning patients (ages 10 to 18+).</li>
-          <li>Complete diagnostic assessments and create measurable treatment plans.</li>
-          <li>Develop rapport and sustain therapeutic relationships.</li>
-          <li>Provide culturally reflective services tailored to individual client needs.Utilize evidencebased approaches and mindfulnessbased practices.</li>
-          <li>Must be comfortable with technology and navigating new EHR systems.</li>
-          <li>Excellent writing skills.</li>
-        </ul>
-      </div>
-      <div className="text-gray-500 md:text-base text-sm">
-        <b>Requirements: </b>
-        <ul className="list-disc pl-8 my-5">
-          <li>Master’s degree in the mental health field from an accredited institution.</li>
-          <li>Active licensure in good standing for clinical practice in North Carolina (LPC, LMHC, LMHCA, LMFT, LCSW, LCSWA, LCAS, LCAS-A).</li>
-          <li>Associate Licensure Require Supervision Agreement Prior to starting.</li>
-          <li>Monthly Virtual Clinical Meetings Attendance.</li>
-          <li>Monthly Calendar Availability.</li>
-          <li>Case Load Availability.</li>
-          <li>Able to pass a background check and be credentialed by Insurance Panels, state and federal programs.</li>
-          <li>Malpractice Insurance.</li>
-          <li>Minimum caseload requirement.</li>
-          <li>Listing on popular therapy platforms under our agency.</li>
-        </ul>
-      </div>
-      <div className="text-gray-500 md:text-base text-sm">
-        <b>About The Black Therapy Network: </b>
-        The Black Therapy Network is dedicated to meeting the mental health needs of the African American community. We offer flexible remote opportunities that allow you to balance personal commitments with professional growth.
+      <div className="welcome-container">
+        <h1 className="text-[30px] font-bold">Welcome to The Black Therapy Network</h1>
         <br />
-        Our parent company, The Black Therapy Network LLC, and administrative offices are based in Charlotte, North Carolina.
-        <b>What We Offer:</b>
-        <ul className="list-disc pl-8 my-5">
-          <li>Competitive compensation based on experience and qualifications.</li>
-          <li>Comprehensive support and resources to help you meet clinical goals.</li>
-          <li>*Opportunities for professional development and growth within our network.</li>
+        <p>
+          Thank you for your interest in joining <strong>The Black Therapy Network</strong> as a{' '}
+          <strong>Remote Licensed Mental Health Therapist</strong>. We are committed to providing{' '}
+          <strong>accessible, culturally competent therapy</strong> for the Black community nationwide.
+        </p>
+        <br />
+        <p>
+          This is more than just a platform—it’s a movement. We connect therapists with clients who need
+          support, offering a flexible, remote-first opportunity to make an impact.
+        </p>
+        <br />
+
+        <h2 style={{ fontSize: '24px', fontWeight: 'bold', padding: 3  }}>Job Responsibilities:</h2>
+        <ul>
+          <li>Provide <strong>virtual therapy sessions</strong> to individuals seeking culturally competent care.</li>
+          <li>Conduct <strong>diagnostic assessments</strong> and develop <strong>personalized treatment plans</strong>.</li>
+          <li>Build and maintain <strong>strong therapeutic relationships</strong> with clients.</li>
+          <li>Use <strong>evidence-based and mindfulness practices</strong> tailored to each client’s needs.</li>
+          <li>Maintain accurate <strong>session notes and documentation</strong> in the provided platform.</li>
+          <li>Participate in <strong>ongoing professional development</strong> and training opportunities.</li>
         </ul>
+        <br />
+
+        <h2 style={{ fontSize: '24px', fontWeight: 'bold', padding: 3  }}>Requirements:</h2>
+        <h3 style={{ fontSize: '20px', fontWeight: 'bold' }}>Licensed Therapists:</h3>
+        <ul>
+          <li><strong>Master’s degree or higher</strong> in a mental health-related field.</li>
+          <li>
+            <strong>Active independent licensure</strong> in any U.S. state (
+            <em>LPC, LMHC, LPCC, LCPC, LMFT, LCSW, LISW, PsyD, PhD</em>).
+          </li>
+        </ul>
+        <br />
+        <h3 style={{ fontSize: '20px', fontWeight: 'bold', padding: 3  }}>Associate-Level Therapists:</h3>
+        <ul>
+          <li>
+            Must have <strong>active associate licensure</strong> (
+            <em>LPC-A, APC, LPCA, LAC, LCSW-A, LMSW, CSWA, LSWAIC, LMFT-A, LAMFT</em>) in any U.S. state.
+          </li>
+          <li>A <strong>Supervision Agreement</strong> is required before starting.</li>
+        </ul>
+        <br />
+        <h3 style={{ fontSize: '20px', fontWeight: 'bold', padding: 3  }}>General Requirements:</h3>
+        <ul>
+          <li>
+            <strong>Ability to provide virtual therapy</strong> in a secure, HIPAA-compliant environment.
+          </li>
+          <li>Comfortable with <strong>technology and online therapy platforms</strong>.</li>
+          <li>
+            <strong>Strong written and verbal communication skills</strong> for documentation and client
+            engagement.
+          </li>
+          <li>
+            Must have <strong>reliable internet and a private space</strong> for conducting virtual sessions.
+          </li>
+        </ul>
+        <br />
+
+        <h2 style={{ fontSize: '24px', fontWeight: 'bold' }}>Compensation & Benefits:</h2>
+        <p>
+          We believe in <strong>fair and competitive compensation</strong> for our therapists. Earnings are
+          based on <strong>session rates, experience, and caseload volume</strong>.
+        </p>
+        <ul>
+          <li><strong>Competitive per-session pay</strong> with opportunities for increased earnings.</li>
+          <li><strong>Flexible scheduling</strong> – Set your own hours and availability.</li>
+          <li>
+            <strong>Full support team</strong> – We handle marketing, client matching, and platform management.
+          </li>
+          <li>
+            <strong>Opportunities for professional growth</strong> within a network of culturally competent
+            providers.
+          </li>
+        </ul>
+        <p><em>Exact pay structure will be discussed during the onboarding process.</em></p>
+        <br />
+
+        <h2 style={{ fontSize: '24px', fontWeight: 'bold' }}>Next Steps:</h2>
+        <ol>
+          <li><strong>Complete your application</strong> by submitting the required details and supporting documents.</li>
+          <li><strong>Our team will review your application</strong> and contact you with next steps.</li>
+          <li>Once onboarded, <strong>set your availability and begin accepting clients</strong>.</li>
+        </ol>
+        <br />
+        <p>
+          We’re excited to welcome you to <strong>The Black Therapy Network</strong>, where your expertise
+          is needed, valued, and celebrated.
+        </p>
       </div>
     </div>
   );

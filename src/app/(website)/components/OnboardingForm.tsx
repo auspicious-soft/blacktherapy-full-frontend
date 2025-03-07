@@ -140,29 +140,29 @@ const OnboardingForm = (props: any) => {
     switch (currentStep) {
       case 1:
         return <WelcomeProcess requiresValidation={false} nextStep={nextStep} />
+      // case 2:
+      //   return <ApplicationProcess requiresValidation={false} nextStep={nextStep} />
+      // case 3:
+      //   return <CompensationPay formData={formData} setFormData={setFormData} setIsValid={setIsValid} nextStep={nextStep} />
       case 2:
-        return <ApplicationProcess requiresValidation={false} nextStep={nextStep} />
-      case 3:
-        return <CompensationPay formData={formData} setFormData={setFormData} setIsValid={setIsValid} nextStep={nextStep} />
-      case 4:
         return <PersonalDetails formData={formData} setFormData={setFormData} setIsValid={setIsValid} nextStep={nextStep} />
-      case 5:
+      case 3:
         return <EmploymentStatus formData={formData} setFormData={setFormData} setIsValid={setIsValid} nextStep={nextStep} />
-      case 6:
+      case 4:
         return <EducationalStep formData={formData} setFormData={setFormData} setIsValid={setIsValid} nextStep={nextStep} />
-      case 7:
+      case 5:
         return <FormStepSeven formData={formData} setFormData={setFormData} setIsValid={setIsValid} nextStep={nextStep} />
-      case 8:
+      case 6:
         return <References formData={formData} setFormData={setFormData} setIsValid={setIsValid} nextStep={nextStep} />
-      case 9:
+      case 7:
         return <QualifiedStep formData={formData} setFormData={setFormData} setIsValid={setIsValid} nextStep={nextStep} />
-      case 10:
+      case 8:
         return <BackgroundChecks formData={formData} setFormData={setFormData} setIsValid={setIsValid} nextStep={nextStep} />
-      case 11:
+      case 9:
         return <UploadDocuments formData={formData} setFormData={setFormData} setIsValid={setIsValid} nextStep={nextStep} />
-      case 12:
+      case 10:
         return <DeclarationStep formData={formData} setFormData={setFormData} setIsValid={setIsValid} nextStep={nextStep} />;
-      case 13:
+      case 11:
         return <ApplicationCompleted />
       default:
         return null;
@@ -179,22 +179,22 @@ const OnboardingForm = (props: any) => {
   return (
     <div>
       <div className="navigation flex items-center justify-between mb-5 md:mb-8">
-        {(currentStep >= 1 && currentStep <= 12) && (
+        {(currentStep >= 1 && currentStep <= 10) && (
           <button
             disabled={currentStep === 1}
-            className="button"
+            className="font-bold button"
             onClick={prevStep}
             style={buttonStyle}
           >
             &lt;&lt; Previous
           </button>
         )}
-        {currentStep < 12 && (
-          <button className="button" onClick={nextStep} style={buttonStyle}>
+        {currentStep < 10 && (
+          <button className="font-bold button" onClick={nextStep} style={buttonStyle}>
             Next &gt;&gt;
           </button>
         )}
-        {currentStep === 12 && (<>{!isPending ? <button className="button" onClick={handleSubmit} style={buttonStyle}>Submit </button> : <ReactLoader />}</>)}
+        {currentStep === 10 && (<>{!isPending ? <button className="button" onClick={handleSubmit} style={buttonStyle}>Submit </button> : <ReactLoader />}</>)}
       </div>
       {renderStep()}
     </div>
