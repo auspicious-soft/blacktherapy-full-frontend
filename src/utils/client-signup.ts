@@ -50,11 +50,9 @@ export const submitClientForm = async (
     if (response?.status === 201) {
       toast.success("Client data added successfully");
       setFormData({});
-      setTimeout(() => {
-        window.location.href = "/client-signup-success";
-      }, 2000);
+      window.location.href = "/client-signup-success";
       return true;
-    } 
+    }
 
     else {
       toast.error("Failed to add client data");
