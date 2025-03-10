@@ -1,21 +1,22 @@
 "use client"
-import React, { useState, useTransition } from 'react';
+import React, { useState } from 'react';
 import ReactPaginate from 'react-paginate';
 import { TicketTableIcon } from '@/utils/svgicons';
 import SearchBar from '@/app/admin/components/SearchBar';
-import {  getAdminTicketsData, updateAdminTicketsData } from '@/services/admin/admin-service';
+import { getAdminTicketsData, updateAdminTicketsData } from '@/services/admin/admin-service';
 import useSWR from 'swr';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
+import ReactLoader from '@/components/ReactLoader';
 
 
 const Page: React.FC = () => {
-  const [isPending, startTransition] = useTransition();
+  const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState('page=1&limit=10&'); //?${query}
   const { data, error, isLoading, mutate } = useSWR(`/admin/tickets/?${query}`, getAdminTicketsData);
   const ticketsData = data?.data?.data?.data;
   const total = data?.data?.total ?? 0;
- const router = useRouter();
+  const router = useRouter();
   const rowsPerPage = 10;
 
   const handlePageClick = (selectedItem: { selected: number }) => {
@@ -53,17 +54,19 @@ const Page: React.FC = () => {
   };
 
   const handleChat = (id: string) => {
+    setLoading(true);
     router.push(`/admin/tickets-page/chats/${id}`);
+    setLoading(false);
   };
 
-  
+
   return (
     <div>
       <h1 className="font-antic text-[#283C63] text-[30px] leading-[1.2em] mb-[25px] lg:text-[40px] lg:mb-[50px]">
-      Tickets
+        Tickets
       </h1>
       <div className='flex justify-end mb-5'>
-          <SearchBar setQuery={setQuery} placeholder='Search ticket Id'/>
+        <SearchBar setQuery={setQuery} placeholder='Search ticket Id' />
       </div>
       <div className='table-common overflo-custom'>
         <table className="">
@@ -95,27 +98,27 @@ const Page: React.FC = () => {
               ticketsData?.map((row: any) => (
                 <tr key={row?._id}>
                   <td>#{row?.ticketId}</td>
-                  
+
                   <td>{row?.sender?.firstName} {row?.sender?.lastName}</td>
                   <td>{row?.title}</td>
                   <td>{new Date(row?.createdAt).toLocaleDateString('en-US')}</td>
-                  
+
                   <td> <p className={`px-[10px] py-[2px] w-20 text-[10px] text-center rounded-3xl ${getStatusColor(row?.status)}`}>{row?.status}</p>
                   </td>
 
-                  <td><button onClick={()=>handleChat(row?.roomId)}><TicketTableIcon/> </button> </td>
-                    <td>  
+                  <td><button onClick={() => handleChat(row?.roomId)}><TicketTableIcon /> </button> </td>
+                  <td>
                     <select
-                    name="status"
-                    value={row?.status}
-                    onChange={(event)=>handleInputChange(event, row?._id)}
-                    className="w-auto border-none h-auto bg-transparent p-0 pr-4"
-                  >
-                    <option value="Completed">Completed</option>
-                    <option value="Pending">Pending</option>
+                      name="status"
+                      value={row?.status}
+                      onChange={(event) => handleInputChange(event, row?._id)}
+                      className="w-auto border-none h-auto bg-transparent p-0 pr-4"
+                    >
+                      <option value="Completed">Completed</option>
+                      <option value="Pending">Pending</option>
                     </select>
-                    </td>
-                    
+                  </td>
+
                 </tr>
               ))
             ) : (
@@ -151,6 +154,13 @@ const Page: React.FC = () => {
           disabledClassName={'opacity-50 cursor-not-allowed'}
         />
       </div>
+      {
+        loading && (
+          <div className="fixed inset-0 bg-white bg-opacity-50 z-50 flex items-center justify-center">
+            <ReactLoader/>
+          </div>
+        )
+      }
     </div>
   );
 };
