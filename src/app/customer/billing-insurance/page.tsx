@@ -1,6 +1,6 @@
 'use client'
 import useSWR from "swr";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Modal from 'react-modal';
 import BillingDetails from "../components/BillingDetails";
 import { getCustomerSubscriptionDetails, getProfileService, getSubscriptionById } from "@/services/client/client-service";
@@ -16,16 +16,19 @@ const Page = () => {
   const [openPlansModal, setOpenPlansModal] = useState(false)
   const [openCancelPlanModal, setOpenCancelPlanModal] = useState(false)
   const id = session?.data?.user?.id
-  const { data: userData, error: userError, isLoading: userLoading } = useSWR(id ? `/client/${id}` : null, getProfileService);
+  const { data: userData, error: userError, isLoading: userLoading } = useSWR(id ? `/client/${id}` : null, getProfileService, { revalidateOnFocus: false });
   const insuranceData = userData?.data?.data?.insuranceCompany
   const stripeCustomerId = userData?.data?.data?.stripeCustomerId
   const planOrSubscriptionId = userData?.data?.data?.planOrSubscriptionId
   const { data, error, isLoading } = useSWR(stripeCustomerId ? `${stripeCustomerId}` : null, getCustomerSubscriptionDetails, { revalidateOnFocus: false });
   const { data: currentSubscriptionData } = useSWR(planOrSubscriptionId ? `${planOrSubscriptionId}` : null, getSubscriptionById, { revalidateOnFocus: false });
+  useEffect(() => {
+    if (error) toast.error('Error loading subscription details')
+    if (userError) toast.error('Error loading user details')
+  }, [error, userError])
+
   if (isLoading) return <ReactLoading type={'spin'} color={'#26395e'} height={'50px'} width={'50px'} />
   if (userLoading) return <ReactLoading type={'spin'} color={'#26395e'} height={'50px'} width={'50px'} />
-  if (error) return toast.error('Error loading subscription details')
-  if (userError) return toast.error('Error loading user details')
 
 
   return (
@@ -45,7 +48,7 @@ const Page = () => {
           <h6 className="text-[#686868]">Plan Details</h6>
           <div className="flex justify-between items-center gap-10 mt-[10px]">
             <p className="font-gothamMedium">Plan Name</p>
-            <h5 className="font-bold">{userData?.data?.data?.planType === 'glowUp' ? 'Glow Up' : 'Stay Rooted'}</h5>
+            <h5 className="font-bold">{userData?.data?.data?.planType === 'glowUp' ? 'Glow Up' : userData?.data?.data?.planType === 'stayRooted' ? 'Stay Rooted' : 'No active Plan'}</h5>
 
           </div>
           <div className="flex justify-between items-center gap-10 mt-[10px]">
