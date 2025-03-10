@@ -1,210 +1,105 @@
-import { addClientBilling, ClientsBilllingStats } from '@/services/admin/admin-service';
-import { CloseIcon } from '@/utils/svgicons';
-import React, { useState, useEffect, useTransition } from 'react';
+// import { addClientBilling, ClientsBilllingStats } from '@/services/admin/admin-service';
+'use client'
+import useSWR from "swr";
+import { useEffect, useRef, useState } from "react";
 import Modal from 'react-modal';
-import { toast } from 'sonner';
-import useSWR from 'swr';
+import BillingDetails from "@/app/customer/components/BillingDetails";
+import { getCustomerSubscriptionDetails, getProfileService, getSubscriptionById } from "@/services/client/client-service";
+import ReactLoading from "react-loading";
+import { useSession } from "next-auth/react";
+import { toast } from "sonner";
+import CancelPlan from "@/app/customer/billing-insurance/_components/CancelPlan";
+import PlansModal from "@/components/plans";
 
 interface BillingInformationTabProps {
   rowId: string;
 }
-interface FormData {
-  insuranceVerified: boolean,
-  scaleDisount: number,
-  billingStatus: string,
-  scaleTermsOrNotes: string,
-  lastInsuranceCheck: string,
-  simplePractice: boolean,
-}
+
 const BillingInformationTab: React.FC<BillingInformationTabProps> = ({ rowId }) => {
+  // const session = useSession()
+  const modalRef = useRef<any>(null);
+  const [openPlansModal, setOpenPlansModal] = useState(false)
+  const [openCancelPlanModal, setOpenCancelPlanModal] = useState(false)
+  let id = rowId
+  const { data: userData, error: userError, isLoading: userLoading } = useSWR(id ? `/client/${id}` : null, getProfileService, { revalidateOnFocus: false });
+  const insuranceData = userData?.data?.data?.insuranceCompany
+  const stripeCustomerId = userData?.data?.data?.stripeCustomerId
+  const planOrSubscriptionId = userData?.data?.data?.planOrSubscriptionId
+  const { data, error, isLoading } = useSWR(stripeCustomerId ? `${stripeCustomerId}` : null, getCustomerSubscriptionDetails, { revalidateOnFocus: false });
+  const { data: currentSubscriptionData } = useSWR(planOrSubscriptionId ? `${planOrSubscriptionId}` : null, getSubscriptionById, { revalidateOnFocus: false });
+  useEffect(() => {
+    if (error) toast.error('Error loading subscription details')
+    if (userError) toast.error('Error loading user details')
+  }, [error, userError])
 
-  const { data, error, isLoading } = useSWR(`/admin/client-billing/${rowId}`, ClientsBilllingStats, {
-    revalidateOnFocus: false,
-  });
+  if (isLoading) return <ReactLoading type={'spin'} color={'#26395e'} height={'50px'} width={'50px'} />
+  if (userLoading) return <ReactLoading type={'spin'} color={'#26395e'} height={'50px'} width={'50px'} />
 
-  const billingInfo = data?.data?.data;
-  const [isPending, startTransition] = useTransition();
-
-  const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [formData, setFormData] = useState<FormData>({
-    insuranceVerified: false,
-    scaleDisount: 0,
-    billingStatus: '',
-    scaleTermsOrNotes: '',
-    lastInsuranceCheck: '',
-    simplePractice: false,
-  });
-
-  const openModal = () => setModalIsOpen(true);
-  const closeModal = () => setModalIsOpen(false);
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: name === 'insuranceVerified' || name === 'simplePractice' ? value === 'true' : value,
-    });
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    startTransition(async () => {
-      try {
-        const response = await addClientBilling(`/admin/client-billing/${rowId}`, formData);
-        if (response?.status === 201) {
-          toast.success("Billing Added Successfully");
-          closeModal();
-          setFormData({
-            insuranceVerified: false,
-            scaleDisount: 0,
-            billingStatus: '',
-            scaleTermsOrNotes: '',
-            lastInsuranceCheck: '',
-            simplePractice: false,
-          });
-        } else {
-          toast.error("Failed to add billing entry");
-        }
-      } catch (error) {
-        console.error("Error adding billing entry:", error);
-        toast.error("An error occurred while adding the billing entry");
-      }
-    });
-  };
 
   return (
-    <div className="">
-      <div className='flex justify-end mb-[22px]'>
-        <button
-          onClick={openModal}
-          className="!text-sm !h-[40px] !px-[30px] button">Add New
-        </button>
-      </div>
+    <div>
+      <h1 className="font-antic text-[#283C63] text-[30px] leading-[1.2em] mb-[25px] lg:text-[40px] lg:mb-[50px]">Billing & Insurance</h1>
+      <div className="grid md:grid-cols-3 gap-[15px] mt-[30px]  mb-[30px] lg:gap-[24px] lg:mt-[50px] lg:mb-[45px]">
+        <div className="bg-[#283C63] carg-bg  rounded-[10px] py-6 px-[15px] lg:px-[30px]">
+          <h6 className="text-[#DEDEDE]">Insurance Details</h6>
+          <h2 className="text-[#fff] leading-7 mt-2 text-[26px] ">{insuranceData?.insuranceCompanyName}</h2>
+          <div className=" mt-4">
+            <p className="font-gothamMedium text-[#DEDEDE]">Member Id</p>
+            <h5 className="text-[#fff] ">{insuranceData?.memberOrSubscriberId}</h5>
+          </div>
 
-      <div className='table-common overflow-custom'>
-        <table>
-          <thead>
-            <tr>
-              <th>Insurance Verified</th>
-              <th>Scale/Discount</th>
-              <th>Billing Status</th>
-              <th>Scale Terms/Note</th>
-              <th>Last Insurance Check</th>
-              <th>Simple Practice</th>
-              <th>Date</th>
-            </tr>
-          </thead>
-          <tbody>
-            {isLoading ? (
-              <tr>
-                <td colSpan={5} className="">Loading...</td>
-              </tr>
-            ) : error ? (
-              <tr>
-                <td colSpan={5} className="text-center text-red-500">Error loading payments data.</td>
-              </tr>
-            ) : billingInfo?.length > 0 ? (
-              billingInfo?.map((row: any) => (
-                <tr key={row?._id}>
-                  <td>{row?.insuranceVerified ? 'Yes' : 'No'}</td>
-                  <td>{row?.scaleDisount || 'N/A'}</td>
-                  <td>{row?.billingStatus}</td>
-                  <td>{row?.scaleTermsNote || 'N/A'}</td>
-                  <td>{row?.lastInsuranceCheck ? 'Yes' : 'No'}</td>
-                  <td>{row?.simplePractice ? 'Yes' : 'No'}</td>
-                  <td>{new Date(row?.createdAt).toLocaleDateString('en-US')}</td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td className='w-full flex justify-center p-3 items-center' colSpan={5} >No data found</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
-
-      <Modal
-        isOpen={modalIsOpen}
-        onRequestClose={closeModal}
-        contentLabel="Add New Entry"
-        className="rounded-lg w-full max-w-4xl mx-auto bg-white shadow-lg max-h-[90vh] overflow-auto"
-        overlayClassName="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center"
-      >
-        <div className="flex items-center justify-between  p-5 md:py-[25px] md:px-[35px] bg-[#283C63]">
-          <h2 className="font-gothamMedium !text-white">Add New</h2>
-          <button onClick={closeModal}>
-            <CloseIcon />
-          </button>
         </div>
-        <form onSubmit={handleSubmit} className='bg-white p-5 md:px-[35px] md:py-10'>
-          <div className="grid md:grid-cols-2 gap-4 md:gap-[30px]">
-            <div>
-              <label className="block mb-2">Insurance Verified</label>
-              <select name="insuranceVerified"
-                value={formData.insuranceVerified ? 'true' : 'false'}
-                onChange={handleInputChange}>
-                <option value="" disabled>--Select-</option>
-                <option value="true">Yes</option>
-                <option value="false">No</option>
-              </select>
-            </div>
-            <div>
-              <label className="block mb-2">Scale/Discount</label>
-              <input
-                type="number"
-                name="scaleDisount"
-                value={formData.scaleDisount}
-                onChange={handleInputChange}
-              />
-            </div>
-            <div>
-              <label className="block mb-2">Billing Status</label>
-              <select
-                name="billingStatus"
-                value={formData.billingStatus}
-                onChange={handleInputChange}
-              >
-                <option value="" disabled>--Select--</option>
-                <option value="pending">Pending</option>
-                <option value="approved">Approved</option>
-                <option value="rejected">Rejected</option>
-              </select>
-            </div>
-            <div>
-              <label className="block mb-2">Scale Terms/Note</label>
-              <input
-                type="text"
-                name="scaleTermsOrNotes"
-                value={formData.scaleTermsOrNotes}
-                onChange={handleInputChange}
-              />
-            </div>
-            <div>
-              <label className="block mb-2">Last Insurance Check</label>
-              <input
-                type="text"
-                name="lastInsuranceCheck"
-                value={formData.lastInsuranceCheck}
-                onChange={handleInputChange}
-              />
-            </div>
-            <div>
-              <label className="block mb-2">Entered into Simple Practice</label>
-              <select name="simplePractice"
-                value={formData.simplePractice ? 'true' : 'false'}
-                onChange={handleInputChange}>
-                <option value="" disabled>--Select--</option>
-                <option value="true">Yes</option>
-                <option value="false">No</option>
-              </select>
-            </div>
+        <div className="bg-[#FFD899]   carg-bg rounded-[10px] py-6 px-[15px] lg:px-[30px]">
+          <h6 className="text-[#686868]">Plan Details</h6>
+          <div className="flex justify-between items-center gap-10 mt-[10px]">
+            <p className="font-gothamMedium">Plan Name</p>
+            <h5 className="font-bold">{userData?.data?.data?.planType === 'glowUp' ? 'Glow Up' : userData?.data?.data?.planType === 'stayRooted' ? 'Stay Rooted' : 'No active Plan'}</h5>
+
           </div>
-          <div className='mt-10 flex justify-end'>
-            <button type="submit" className="button">Add Billing Info</button>
+          <div className="flex justify-between items-center gap-10 mt-[10px]">
+            <p className="font-gothamMedium">Start Date</p>
+            <h5 className="font-bold">{currentSubscriptionData?.current_period_start ? new Date(currentSubscriptionData?.current_period_start * 1000).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : 'N/A'}</h5>
           </div>
-        </form>
-      </Modal>
+          <div className="flex justify-between items-center gap-10 mt-[10px]">
+            <p className="font-gothamMedium">Renewal Date</p>
+            <h5 className="font-bold">{currentSubscriptionData?.current_period_end ? new Date(currentSubscriptionData?.current_period_end * 1000).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : 'N/A'}</h5>
+
+          </div>
+          {currentSubscriptionData && <button className="renew-btn flex items-center gap-[15px] text-[#fff] font-bold mt-6 bg-red-800 p-[10px] rounded-lg" onClick={() => setOpenCancelPlanModal(true)}>Cancel Subscription</button>}
+        </div>
+        {!rowId && <div className="bg-[#FFBBCD]  flex flex-col carg-bg rounded-[10px] py-6 px-[15px] lg:px-[30px]">
+          <h6 className="text-lg font-bold">Our Plans</h6>
+          <div className="flex justify-between items-center gap-10 mt-[10px]">
+            <h5 className="text-base">Stay Rooted Plan</h5>
+            <p className="font-gothamMedium font-bold">Weekly</p>
+          </div>
+          <div className="flex justify-between items-center gap-10 mt-[10px]">
+            <h5 className="text-base">Glow Up Plan</h5>
+            <p className="font-gothamMedium font-bold">Weekly, Monthly</p>
+          </div>
+          <div className="mt-auto">
+            <button onClick={() => setOpenPlansModal(true)} className="button !h-10">View Details</button>
+          </div>
+        </div>}
+      </div>
+
+      <p className="text-[26px] text-[#283C63] leading-7 mb-5 ">Billing details</p>
+
+      <BillingDetails hasMore={data?.has_more ?? false} billingData={data?.data as any ?? []} isLoading={isLoading} />
+
+      {openPlansModal && <PlansModal modalRef={modalRef} openPlansModal={openPlansModal} setOpenPlansModal={setOpenPlansModal} />}
+
+      {openCancelPlanModal && (
+        <Modal
+          isOpen={openCancelPlanModal}
+          className="modal bg-[#fff] bg-flower max-w-[800px] p-10 mx-auto rounded-[20px] w-full overflo-custom "
+          overlayClassName="w-full h-full p-3 fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center"
+          onRequestClose={() => setOpenCancelPlanModal(false)} >
+          <CancelPlan
+            currentPlanOrSubscriptionId={currentSubscriptionData?.id as string}
+            userId={id as string} handleClose={() => setOpenCancelPlanModal(false)} />
+        </Modal>
+      )}
     </div>
   );
 };

@@ -9,7 +9,6 @@ interface ClientsAssignmentsProps {
 }
 
 const ClientsAssignmentsTab: React.FC<ClientsAssignmentsProps> = ({ row, mutate }) => {
-  console.log('row: ', row);
   const [formData, setFormData] = useState({
     reasonForLookingHelp: row?.reasonForLookingHelp?.join(", ") || "",
     manageStress: row?.manageStress?.join(", ") || "",
