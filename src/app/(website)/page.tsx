@@ -11,13 +11,13 @@ import cardsData from "@/data/CardsData";
 import Card from "@/app/(website)/components/Card";
 import btnPic from "@/assets/images/btnpic.svg";
 import HomeIconCard from "@/app/(website)/components/HomeIconCard";
-import Footer from "@/app/(website)/components/Footer";
 import VideoPlayer from "@/app/(website)/components/VideoPlayer";
 import React from 'react';
 import Link from "next/link";
 import { metadata } from './metadata';
 import { Calendar, Check } from "lucide-react";
 import { MdChatBubble } from "react-icons/md";
+import { SeventhSection } from "./_components/seventh-client-landing-section";
 
 export { metadata };
 
@@ -32,6 +32,7 @@ export default function Home() {
       <FourthSection />
       <FifthSection />
       <SixthSection />
+      <SeventhSection />
     </div>
   );
 }

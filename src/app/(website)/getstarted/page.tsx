@@ -67,7 +67,7 @@ const Page = () => {
                         </p>
                         <div className="md:max-w-[489px] space-y-5">
                             {/* Individual Therapy Card */}
-                            <div onClick={() => handleStartClick('me')} className="cursor-pointer flex items-center justify-between bg-[#CCE9FA] rounded-[20px] p-5">
+                            <div onClick={() => handleStartClick('me')} className="hover:opacity-70 cursor-pointer flex items-center justify-between bg-[#CCE9FA] rounded-[20px] p-5">
                                 <div className="flex items-center gap-4 md:gap-[27px]">
                                     <p className="start"><FaqTitle /></p>
                                     <div className='max-w-[250px]'>
@@ -84,7 +84,7 @@ const Page = () => {
                             </div>
 
                             {/* Couple Therapy Card */}
-                            <div onClick={() => handleStartClick('us')} className="cursor-pointer flex items-center justify-between bg-[#FFBBCD] rounded-[20px] p-5">
+                            <div onClick={() => handleStartClick('us')} className="hover:opacity-70 cursor-pointer flex items-center justify-between bg-[#FFBBCD] rounded-[20px] p-5">
                                 <div className="flex items-center gap-4 md:gap-[27px]">
                                     <p className="start"><FaqTitle /></p>
                                     <div className='max-w-[250px]'>
@@ -101,7 +101,7 @@ const Page = () => {
                             </div>
 
                             {/* Teen Therapy Card */}
-                            <div onClick={() => handleStartClick('teen')} className="cursor-pointer flex items-center justify-between bg-[#FFD899] rounded-[20px] p-5">
+                            <div onClick={() => handleStartClick('teen')} className="hover:opacity-70 cursor-pointer flex items-center justify-between bg-[#FFD899] rounded-[20px] p-5">
                                 <div className="flex items-center gap-4 md:gap-[27px]">
                                     <p className="start"><FaqTitle /></p>
                                     <div className='max-w-[250px]'>
