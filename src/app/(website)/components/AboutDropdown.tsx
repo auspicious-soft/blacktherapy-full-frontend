@@ -7,13 +7,45 @@ import { DropDown } from '@/utils/svgicons';
 const dropdownData = [
   {
     title: 'Our mission',
-    content: 'At the Black Therapy Network, our mission is to provide accessible and culturally sensitive online therapy services exclusively for the African American community. We are committed to fostering mental and emotional well-being by offering a safe, supportive, and affirming space where individuals, couples, and children can explore their inner worlds, heal from past wounds, and cultivate resilience. Through our specialized approach, we aim to empower our clients to lead healthier, more fulfilling lives, rooted in their unique identities and experiences.',
+    content: (
+      <div className="bg-white rounded-lg p-4 mt-4">
+        <p className="mb-4 text-gray-800 text-base md:leading-7">
+          The Black Therapy Network is committed to providing 
+          <strong> accessible, culturally affirming online therapy </strong> 
+          for the African American community. We create a safe, supportive space 
+          where individuals, couples, and families can heal, grow, and build resilience.
+        </p>
+        
+        <p className="text-gray-800 text-base md:leading-7">
+          Through our specialized approach, we empower clients to lead healthier, 
+          more fulfilling lives—rooted in their cultural identities, experiences, and strengths.
+        </p>
+      </div>
+    ),
   },
   {
     title: 'Our Vision',
-    content: 'Our vision at the Black Therapy Network is to create a transformative impact within the African American community by becoming a beacon of healing, growth, and cultural understanding. We aspire to be the go-to platform where individuals, couples, and families find exceptional online therapy services tailored to their specific needs and cultural background. Through our commitment to innovation, inclusivity, and quality care, we envision a future where the stigma surrounding mental health in the African American community is dismantled, and every person feels empowered to prioritize their emotional well-being without hesitation.',
+    content: (
+      <div className="bg-white rounded-lg p-4 mt-4">
+        <p className="mb-4 text-gray-800 text-base md:leading-7">
+          We strive to be the 
+          <strong> premier online therapy platform </strong> 
+          for Black individuals, couples, and families—offering care that truly 
+          understands their experiences.
+        </p>
+        
+        <p className="text-gray-800 text-base md:leading-7">
+          By prioritizing 
+          <strong> inclusivity, innovation, and high-quality care</strong>, 
+          we aim to 
+          <strong> dismantle the stigma </strong> 
+          surrounding mental health in the Black community. Our vision is a future 
+          where every person feels empowered to prioritize their emotional well-being 
+          <strong> without hesitation</strong>.
+        </p>
+      </div>
+    ),
   },
-
 ];
 
 const AboutThird: React.FC = () => {
@@ -29,7 +61,7 @@ const AboutThird: React.FC = () => {
 
   return (
     <div className="about-dropdown container py-[50px] md:py-[100px]">
-      <div className="gap-5 md:gap-0 md:p-[35px] p-5 lg:py-[50px] lg:pl-[80px] lg:pr-[50px]  grid md:grid-cols-[minmax(0,_7fr)_minmax(0,_5fr)] bg-[#283C63] rounded-[20px]">
+      <div className="gap-5 md:gap-0 md:p-[35px] p-5 lg:py-[50px] lg:pl-[80px] lg:pr-[50px] grid md:grid-cols-[minmax(0,_7fr)_minmax(0,_5fr)] bg-[#283C63] rounded-[20px]">
         <div className="md:pr-[55px]">
           {dropdownData.map((dropdown, index) => (
             <div className='border-b-[1px] pb-8 mb-3 border-slate-500' key={index}>
@@ -47,7 +79,7 @@ const AboutThird: React.FC = () => {
                   dropdownStates[index] ? 'max-h-screen' : 'max-h-0'
                 }`}
               >
-                <p className='text-white text-base md:leading-7 mt-5'>{dropdown.content}</p>
+                {dropdown.content}
               </div>
             </div>
           ))}

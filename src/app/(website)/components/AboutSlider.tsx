@@ -1,7 +1,7 @@
 "use client"; // <===== REQUIRED
 
 import React from "react";
-import Image, {StaticImageData} from 'next/image';
+import Image, { StaticImageData } from 'next/image';
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
@@ -36,25 +36,23 @@ const AboutSlider: React.FC<DemoSliderProps> = ({ data }) => {
             modules={[Autoplay, Navigation, Pagination]}
           >
             {data.map(({ id, image, tagline, name, title }) => (
-              <SwiperSlide key={id}>
-                <h2
-                  className="text-zinc-800 text-[24px] md:text-[46px] md:leading-[66px] mb-5 md:mb-[48px]"
-                > Client Reviews</h2>
-                  <div className="flex gap-5">
-                    <CommaIcon />
-                    <p className="text-gray-500 text-base md:leading-7  max-w-[480px] w-[calc(100%-30px)]">
-                      {title}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-5 mt-[30px] md:mt-[65px] pl-[49px]">
-                <div className="imgg ">
-                <Image src={image}  alt="" className="w-[67px] h-[67px] rounded-full "/>
+              <SwiperSlide key={id} className="cursor-pointer">
+                <h2 className="text-zinc-800 text-[24px] md:text-[46px] md:leading-[66px] mb-5 md:mb-[48px]"> Client Review</h2>
+                <div className="flex gap-5">
+                  <CommaIcon />
+                  <p className="text-gray-500 text-base md:leading-7  max-w-[480px] w-[calc(100%-30px)]">
+                    {title}
+                  </p>
                 </div>
-                <div className="text">
+                <div className="flex items-center gap-5 mt-[30px] md:mt-[65px] pl-[49px]">
+                  <div className="imgg ">
+                    <Image src={image} alt="" className="w-[67px] h-[67px] rounded-full object-cover " />
+                  </div>
+                  <div className="text">
                     <h3 className="text-zinc-800 text-xl">{name} </h3>
                     <p className="text-gray-500 text-base ">{tagline} </p>
+                  </div>
                 </div>
-               </div>
               </SwiperSlide>
             ))}
           </Swiper>
