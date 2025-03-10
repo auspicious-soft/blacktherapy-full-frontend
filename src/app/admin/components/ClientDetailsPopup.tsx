@@ -22,10 +22,8 @@ interface ClientDetailsPopupProps {
 }
 
 const ClientDetailsPopup = (props: ClientDetailsPopupProps) => {
-  const { row } = props;
+  const { row, mutate, role } = props;
 
-  const { mutate } = props;
-  const { role } = props;
   const [activeTab, setActiveTab] = useState("tab1");
   const handleTabClick = (tab: string) => {
     setActiveTab(tab);
