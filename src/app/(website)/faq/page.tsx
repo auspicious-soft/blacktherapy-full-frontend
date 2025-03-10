@@ -229,35 +229,29 @@ const Page: React.FC = () => {
                 </h2>
                 {section.items.map((dropdown, itemIndex) => (
                   <div className="md:mb-[10px] mb-3" key={itemIndex}>
-                    <h3
-                      className={`md:text-lg text-base py-[10px] px-3 md:p-5 bg-[#283C63] rounded-[20px] !text-white cursor-pointer flex justify-between md:items-center ${dropdownStates[
+                    <div
+                      className={`flex md:text-lg text-base py-[10px] px-3 md:p-5 bg-[#283C63] rounded-[20px] !text-white cursor-pointer justify-between md:items-center ${dropdownStates[
                         faqData
                           .slice(0, sectionIndex)
-                          .reduce(
-                            (acc, sec) => acc + sec.items.length,
-                            0
-                          ) + itemIndex
+                          .reduce((acc, sec) => acc + sec.items.length, 0) + itemIndex
                       ]
                         ? "active"
                         : ""
                         }`}
                       onClick={() => toggleDropdown(sectionIndex, itemIndex)}
                     >
-                      <span className="flex md:items-center gap-[10px] md:gap-5">
+                      <p className="flex md:items-center gap-[10px] md:gap-5">
                         {dropdown.title}
-                      </span>
-                      <span className="drop mt-1 md:mt-0">
+                      </p>
+                      <p>
                         <DropDown />
-                      </span>
-                    </h3>
+                      </p>
+                    </div>
                     <div
                       className={`transition-max-height duration-300 ease-in-out overflow-hidden ${dropdownStates[
                         faqData
                           .slice(0, sectionIndex)
-                          .reduce(
-                            (acc, sec) => acc + sec.items.length,
-                            0
-                          ) + itemIndex
+                          .reduce((acc, sec) => acc + sec.items.length, 0) + itemIndex
                       ]
                         ? "max-h-screen"
                         : "max-h-0"

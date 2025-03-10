@@ -65,7 +65,7 @@ const FirstSection: React.FC = () => {
           </div>
         </div>
         <div className="second md:w-[50%] md:py-[17px] flex flex-col-reverse gap-[30px] md:flex-col items-center justify-between">
-          <Link href="/getstarted" rel="" className="text-black bg-[#f3d529] flex items-center justify-center gap-3 p-4 px-5 font-normal rounded-3xl">
+          <Link href="/getstarted" rel="" className="text-black bg-[#f3d529] flex items-center justify-center gap-3 p-4 px-5 font-normal rounded-3xl hover:opacity-60">
             Find Your Therapist Today<ButtonSvg2 />
           </Link>
           <div className="w-full">
@@ -169,7 +169,7 @@ const FourthSection = () => {
                   Plans start at just $85 per week—far less than traditional in-office therapy.
                 </div>
               </div>
-              <Link href="/plans" rel="" className="text-white bg-[#283c63] flex items-center justify-center gap-3 p-4 px-5 font-normal rounded-3xl">
+              <Link href="/plans" rel="" className="text-white bg-[#283c63] flex items-center justify-center gap-3 p-4 px-5 font-normal rounded-3xl hover:opacity-60">
                 See Pricing Plans<ButtonSvg />
               </Link>
             </div>
@@ -202,7 +202,7 @@ const FifthSection = () => {
             ✔ Overcome <b>trauma and life challenges</b> <br />
             ✔ Work with a therapist who <b>understands Black cultural experiences</b> <br />
           </p>
-          <Link href="/getstarted" rel="" className="bg-[#f3d529] flex items-center justify-center gap-3 p-4 px-5 font-normal rounded-3xl mt-4 text-black">
+          <Link href="/getstarted" rel="" className="bg-[#f3d529] hover:opacity-50 flex items-center justify-center gap-3 p-4 px-5 font-normal rounded-3xl mt-4 text-black">
             Find a Therapist Who Gets You<ButtonSvg2 />
           </Link>
         </div>
