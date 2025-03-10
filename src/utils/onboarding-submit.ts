@@ -26,7 +26,7 @@ const booleanFields = [
   "againConsentAgreement",
 ];
 
-export const submitForm = async (formData: any, userEmail: string, router: any) => {
+export const submitForm = async (formData: any, userEmail: string, router: any, setLoading:any) => {
   if (!userEmail) {
     toast.error("User email is required.");
     return;
@@ -101,5 +101,6 @@ export const submitForm = async (formData: any, userEmail: string, router: any) 
       return
     }
     toast.error("An error occurred while adding the Therapist Data");
+    setLoading(false)
   }
 };

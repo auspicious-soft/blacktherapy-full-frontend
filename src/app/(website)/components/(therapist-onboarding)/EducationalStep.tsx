@@ -52,7 +52,7 @@ const EducationalQuestions = [
     key: "employmentDesired",
     type: "select",
     options: ["Full-Time Only", "Part-Time Only", "Full or Part Time"],
-    placeholder: "option",
+    placeholder: "Select an option",
   },
   {
     question: "Start Time",

@@ -136,8 +136,9 @@ const OnboardingForm = (props: any) => {
   const handleSubmit = async () => {
     setLoading(true);
     startTransition(async () => {
-      await submitForm(formData, userEmail as string, router);
+      await submitForm(formData, userEmail as string, router, setLoading);
     })
+    // setLoading(false)
   };
 
   const renderStep = () => {
