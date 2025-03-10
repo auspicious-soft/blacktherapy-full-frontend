@@ -24,7 +24,7 @@ const Page: React.FC = () => {
 
   return (
     <div className="main">
-      <title>Our Network | Black Therapy Network</title>
+      <title>Join Our Network | Black Therapy Network</title>
       <BannerSection breadcrumbs={breadcrumbs} heading={heading} imageUrl={imageUrl} />
       <GetStarted />
       <Requirements />
