@@ -70,7 +70,7 @@ const DeclarationStep: React.FC<BackgroundProps> = ({
   const handleSubmit = () => {
     setLoading(true);
     startTransition(async () => {
-      await submitForm(formData, userEmail as string, router);
+      await submitForm(formData, userEmail as string, router, setLoading);
     })
   };
 
